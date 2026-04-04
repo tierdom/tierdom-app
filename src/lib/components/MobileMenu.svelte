@@ -1,0 +1,55 @@
+<script lang="ts">
+	import NavLink from './NavLink.svelte';
+
+	type Props = {
+		open: boolean;
+		onclose: () => void;
+		categories: { id: number; slug: string; name: string }[];
+	};
+
+	let { open, onclose, categories }: Props = $props();
+
+	$effect(() => {
+		if (open) {
+			document.body.style.overflow = 'hidden';
+		}
+		return () => {
+			document.body.style.overflow = '';
+		};
+	});
+
+	function handleKeydown(e: KeyboardEvent) {
+		if (e.key === 'Escape') onclose();
+	}
+</script>
+
+<svelte:window onkeydown={open ? handleKeydown : undefined} />
+
+<!-- Backdrop -->
+<div
+	class="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-200 md:hidden
+		{open ? 'opacity-100' : 'pointer-events-none opacity-0'}"
+	onclick={onclose}
+	onkeydown={undefined}
+	role="button"
+	tabindex="-1"
+	aria-label="Close menu"
+></div>
+
+<!-- Panel -->
+<aside
+	class="fixed left-0 top-0 z-50 flex h-full w-72 max-w-[75vw] flex-col border-r border-subtle bg-elevated transition-transform duration-300 ease-out md:hidden
+		{open ? 'translate-x-0' : '-translate-x-full'}"
+>
+	<div class="border-b border-subtle px-5 py-4">
+		<span class="text-sm font-bold tracking-widest text-accent uppercase">tierdom</span>
+	</div>
+
+	<nav class="flex-1 overflow-y-auto py-2">
+		{#each categories as cat (cat.id)}
+			<NavLink href={`/category/${cat.slug}`} label={cat.name} variant="mobile" onclick={onclose} />
+		{/each}
+		<div class="my-2 border-t border-subtle"></div>
+		<NavLink href="/about" label="About" variant="mobile" onclick={onclose} />
+	</nav>
+</aside>
