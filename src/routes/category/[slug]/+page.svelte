@@ -1,6 +1,10 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import { pushState } from '$app/navigation';
+	import { page } from '$app/state';
 	import TierListItem from '$lib/components/TierListItem.svelte';
+	import Dialog from '$lib/components/Dialog.svelte';
+	import ItemDetail from '$lib/components/ItemDetail.svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -13,6 +17,20 @@
 		E: 'bg-[var(--tier-e-bg)] text-[var(--tier-e-fg)]',
 		F: 'bg-[var(--tier-f-bg)] text-[var(--tier-f-fg)]'
 	};
+
+	let allItems = $derived(
+		data.tiers.flatMap((t) => t.items.map((item) => ({ ...item, tier: t.tier })))
+	);
+	let selectedSlug = $derived(page.state.showItem ?? page.url.searchParams.get('item'));
+	let selectedItem = $derived(allItems.find((i) => i.slug === selectedSlug) ?? null);
+
+	function openItem(slug: string) {
+		pushState(`?item=${slug}`, { showItem: slug });
+	}
+
+	function closeItem() {
+		pushState(`/category/${data.category.slug}`, {});
+	}
 </script>
 
 <svelte:head>
@@ -40,7 +58,11 @@
 				<!-- Items -->
 				<div class="flex flex-1 flex-wrap bg-surface">
 					{#each items as item (item.id)}
-						<TierListItem name={item.name} score={item.score} />
+						<TierListItem
+							name={item.name}
+							score={item.score}
+							onclick={() => openItem(item.slug)}
+						/>
 					{/each}
 				</div>
 			</div>
@@ -51,3 +73,14 @@
 		{/if}
 	</div>
 </section>
+
+<Dialog open={selectedItem !== null} onclose={closeItem}>
+	{#if selectedItem}
+		<ItemDetail
+			name={selectedItem.name}
+			score={selectedItem.score}
+			description={selectedItem.description}
+			tier={selectedItem.tier}
+		/>
+	{/if}
+</Dialog>

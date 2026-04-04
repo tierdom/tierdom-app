@@ -1,0 +1,106 @@
+<script lang="ts">
+	import type { Snippet } from 'svelte';
+
+	type Props = {
+		open: boolean;
+		onclose: () => void;
+		children: Snippet;
+	};
+
+	let { open, onclose, children }: Props = $props();
+	let dialogEl: HTMLDialogElement | undefined = $state();
+	let closingProgrammatically = false;
+
+	$effect(() => {
+		if (!dialogEl) return;
+		if (open && !dialogEl.open) {
+			dialogEl.showModal();
+			document.body.style.overflow = 'hidden';
+		} else if (!open && dialogEl.open) {
+			closingProgrammatically = true;
+			dialogEl.close();
+			document.body.style.overflow = '';
+			closingProgrammatically = false;
+		}
+	});
+
+	function handleClick(e: MouseEvent) {
+		if (e.target === dialogEl) onclose();
+	}
+
+	function handleClose() {
+		document.body.style.overflow = '';
+		if (!closingProgrammatically) onclose();
+	}
+</script>
+
+<dialog
+	bind:this={dialogEl}
+	class="dialog"
+	onclick={handleClick}
+	onclose={handleClose}
+>
+	<div class="relative max-h-[85vh] w-[90vw] max-w-2xl overflow-y-auto border border-subtle bg-elevated p-6">
+		<button
+			onclick={onclose}
+			class="absolute right-4 top-4 cursor-pointer p-1 text-secondary transition-colors hover:text-primary"
+			aria-label="Close"
+		>
+			<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+				<path d="M5 5l10 10M15 5L5 15" />
+			</svg>
+		</button>
+		{@render children()}
+	</div>
+</dialog>
+
+<style>
+	.dialog {
+		background: transparent;
+		border: none;
+		padding: 0;
+		margin: auto;
+		max-width: none;
+		max-height: none;
+		overflow: visible;
+		opacity: 0;
+		transform: scale(0.95);
+		transition:
+			opacity 200ms ease,
+			transform 200ms ease,
+			overlay 200ms ease allow-discrete,
+			display 200ms ease allow-discrete;
+	}
+
+	.dialog[open] {
+		opacity: 1;
+		transform: scale(1);
+	}
+
+	@starting-style {
+		.dialog[open] {
+			opacity: 0;
+			transform: scale(0.95);
+		}
+	}
+
+	.dialog::backdrop {
+		background: rgba(0, 0, 0, 0.6);
+		backdrop-filter: blur(8px);
+		opacity: 0;
+		transition:
+			opacity 200ms ease,
+			overlay 200ms ease allow-discrete,
+			display 200ms ease allow-discrete;
+	}
+
+	.dialog[open]::backdrop {
+		opacity: 1;
+	}
+
+	@starting-style {
+		.dialog[open]::backdrop {
+			opacity: 0;
+		}
+	}
+</style>
