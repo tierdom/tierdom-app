@@ -9,5 +9,6 @@ Architectural decisions for this project are documented as Architecture Decision
 | [0003](docs/decisions/0003-tooling-and-developer-experience.md)  | Tooling and Developer Experience  | Accepted |
 | [0004](docs/decisions/0004-domain-model.md)                      | Domain Model                      | Accepted |
 | [0005](docs/decisions/0005-frontend-styling.md)                  | Frontend Styling                  | Accepted |
+| [0006](docs/decisions/0006-admin-interface.md)                   | Admin Interface                   | Accepted |
 
 Use the `/adr` skill to create new records.

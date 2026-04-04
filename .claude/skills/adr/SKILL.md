@@ -31,7 +31,8 @@ Proposed
 ```
 
 4. Fill in what you know from $ARGUMENTS. Leave placeholders for anything not specified.
-5. Print the file path so I can open it.
+5. Add or update the entry in the ADR index table in `ARCHITECTURE.md` at the project root. Match the existing table format (ADR link, Title, Status columns). If updating an existing ADR, update its row; if creating a new one, append a row.
+6. Print the file path so I can open it.
 
 If $ARGUMENTS is empty, ask me for the ADR title and context before creating the file.
 
