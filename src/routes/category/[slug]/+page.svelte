@@ -21,15 +21,19 @@
 	let allItems = $derived(
 		data.tiers.flatMap((t) => t.items.map((item) => ({ ...item, tier: t.tier })))
 	);
-	let selectedSlug = $derived(page.state.showItem ?? page.url.searchParams.get('item'));
-	let selectedItem = $derived(allItems.find((i) => i.slug === selectedSlug) ?? null);
+
+	let selectedItem = $derived(
+		page.state.showItem
+			? (allItems.find((i) => i.slug === page.state.showItem) ?? null)
+			: null
+	);
 
 	function openItem(slug: string) {
-		pushState(`?item=${slug}`, { showItem: slug });
+		pushState('', { showItem: slug });
 	}
 
 	function closeItem() {
-		pushState(`/category/${data.category.slug}`, {});
+		pushState('', {});
 	}
 </script>
 
@@ -74,13 +78,13 @@
 	</div>
 </section>
 
-<Dialog open={selectedItem !== null} onclose={closeItem}>
-	{#if selectedItem}
+{#if selectedItem}
+	<Dialog open onclose={closeItem}>
 		<ItemDetail
 			name={selectedItem.name}
 			score={selectedItem.score}
 			description={selectedItem.description}
 			tier={selectedItem.tier}
 		/>
-	{/if}
-</Dialog>
+	</Dialog>
+{/if}

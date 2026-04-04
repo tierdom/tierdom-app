@@ -9,28 +9,20 @@
 
 	let { open, onclose, children }: Props = $props();
 	let dialogEl: HTMLDialogElement | undefined = $state();
-	let closingProgrammatically = false;
 
 	$effect(() => {
 		if (!dialogEl) return;
 		if (open && !dialogEl.open) {
 			dialogEl.showModal();
 			document.body.style.overflow = 'hidden';
-		} else if (!open && dialogEl.open) {
-			closingProgrammatically = true;
-			dialogEl.close();
-			document.body.style.overflow = '';
-			closingProgrammatically = false;
 		}
+		return () => {
+			document.body.style.overflow = '';
+		};
 	});
 
 	function handleClick(e: MouseEvent) {
 		if (e.target === dialogEl) onclose();
-	}
-
-	function handleClose() {
-		document.body.style.overflow = '';
-		if (!closingProgrammatically) onclose();
 	}
 </script>
 
@@ -38,7 +30,10 @@
 	bind:this={dialogEl}
 	class="dialog"
 	onclick={handleClick}
-	onclose={handleClose}
+	oncancel={(e) => {
+		e.preventDefault();
+		onclose();
+	}}
 >
 	<div class="relative max-h-[85vh] w-[90vw] max-w-2xl overflow-y-auto border border-subtle bg-elevated p-6">
 		<button
