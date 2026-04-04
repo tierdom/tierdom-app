@@ -3,10 +3,7 @@
 	import favicon from '$lib/assets/favicon.svg';
 	import { resolve } from '$app/paths';
 
-	let { children } = $props();
-
-	// All items link to / until real routes are implemented
-	const nav = ['Home', 'Category One', 'Category Two', 'Category Three', 'About'];
+	let { children, data } = $props();
 </script>
 
 <svelte:head>
@@ -24,15 +21,15 @@
 			tierdom
 		</a>
 
-		<!-- Nav items — scrollable on very small screens, wrap on mobile -->
+		<!-- Nav items — scrollable on very small screens -->
 		<ul class="flex flex-1 items-center gap-1 overflow-x-auto">
-			{#each nav as label (label)}
+			{#each data.categories as cat (cat.id)}
 				<li class="shrink-0">
 					<a
-						href={resolve('/')}
+						href={`/category/${cat.slug}`}
 						class="rounded px-3 py-1.5 text-sm text-secondary transition-colors hover:bg-surface hover:text-primary"
 					>
-						{label}
+						{cat.name}
 					</a>
 				</li>
 			{/each}

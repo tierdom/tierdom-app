@@ -1,0 +1,58 @@
+<script lang="ts">
+	import type { PageData } from './$types';
+
+	let { data }: { data: PageData } = $props();
+
+	const tierStyles: Record<string, string> = {
+		S: 'bg-[var(--tier-s-bg)] text-[var(--tier-s-fg)]',
+		A: 'bg-[var(--tier-a-bg)] text-[var(--tier-a-fg)]',
+		B: 'bg-[var(--tier-b-bg)] text-[var(--tier-b-fg)]',
+		C: 'bg-[var(--tier-c-bg)] text-[var(--tier-c-fg)]',
+		D: 'bg-[var(--tier-d-bg)] text-[var(--tier-d-fg)]',
+		E: 'bg-[var(--tier-e-bg)] text-[var(--tier-e-fg)]',
+		F: 'bg-[var(--tier-f-bg)] text-[var(--tier-f-fg)]'
+	};
+</script>
+
+<svelte:head>
+	<title>{data.category.name} — tierdom</title>
+</svelte:head>
+
+<section class="py-10">
+	<!-- Category header -->
+	<h1 class="text-2xl font-bold text-primary">{data.category.name}</h1>
+	{#if data.category.description}
+		<p class="mt-2 max-w-2xl text-sm text-secondary">{data.category.description}</p>
+	{/if}
+
+	<!-- Tier rows -->
+	<div class="mt-8 flex flex-col gap-2">
+		{#each data.tiers as { tier, items } (tier)}
+			<div class="flex min-h-16 overflow-hidden rounded-lg border border-subtle">
+				<!-- Tier label -->
+				<div
+					class="flex w-14 shrink-0 items-center justify-center text-xl font-black {tierStyles[tier]}"
+				>
+					{tier}
+				</div>
+
+				<!-- Items -->
+				<div class="flex flex-1 flex-wrap gap-2 bg-surface p-2">
+					{#each items as item (item.id)}
+						<div
+							class="flex items-center rounded border border-subtle bg-elevated px-3 py-1.5 text-sm text-primary"
+							title={item.description ?? undefined}
+						>
+							<span>{item.name}</span>
+							<span class="ml-2 text-xs text-secondary">{item.score}</span>
+						</div>
+					{/each}
+				</div>
+			</div>
+		{/each}
+
+		{#if data.tiers.length === 0}
+			<p class="text-secondary">No items in this category yet.</p>
+		{/if}
+	</div>
+</section>
