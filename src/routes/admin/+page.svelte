@@ -12,18 +12,18 @@
 	<h1 class="text-xl font-bold text-primary">Dashboard</h1>
 
 	<div class="mt-6 grid grid-cols-3 gap-4">
-		<div class="rounded-lg border border-subtle bg-elevated p-4">
+		<a href="/admin/categories" class="rounded-lg border border-subtle bg-elevated p-4 transition-colors hover:border-accent/40">
 			<p class="text-2xl font-bold text-primary">{data.counts.categories}</p>
 			<p class="text-xs text-secondary">Categories</p>
-		</div>
+		</a>
 		<div class="rounded-lg border border-subtle bg-elevated p-4">
 			<p class="text-2xl font-bold text-primary">{data.counts.items}</p>
 			<p class="text-xs text-secondary">Items</p>
 		</div>
-		<div class="rounded-lg border border-subtle bg-elevated p-4">
+		<a href="/admin/tags" class="rounded-lg border border-subtle bg-elevated p-4 transition-colors hover:border-accent/40">
 			<p class="text-2xl font-bold text-primary">{data.counts.tags}</p>
 			<p class="text-xs text-secondary">Tags</p>
-		</div>
+		</a>
 	</div>
 
 	<p class="mt-8 text-xs text-secondary">
