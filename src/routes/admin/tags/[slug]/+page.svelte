@@ -27,7 +27,7 @@
 
 <section>
 	<div class="flex items-center gap-3">
-		<button onclick={cancel} class="text-sm text-secondary hover:text-primary">
+		<button onclick={cancel} class="cursor-pointer text-sm text-secondary hover:text-primary">
 			&larr; Back to tags
 		</button>
 		<h1 class="text-xl font-bold text-primary">{data.tag.label}</h1>
@@ -46,14 +46,14 @@
 		<div class="flex items-center gap-3">
 			<button
 				type="submit"
-				class="rounded bg-accent px-4 py-2 text-sm font-semibold text-canvas transition-opacity hover:opacity-80"
+				class="cursor-pointer rounded bg-accent px-4 py-2 text-sm font-semibold text-canvas transition-opacity hover:opacity-80"
 			>
 				Save
 			</button>
 			<button
 				type="button"
 				onclick={cancel}
-				class="rounded border border-subtle px-4 py-2 text-sm text-secondary transition-colors hover:text-primary"
+				class="cursor-pointer rounded border border-subtle px-4 py-2 text-sm text-secondary transition-colors hover:text-primary"
 			>
 				Cancel
 			</button>

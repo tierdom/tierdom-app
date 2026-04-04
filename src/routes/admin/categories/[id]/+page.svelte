@@ -38,7 +38,7 @@
 		<div>
 			<button
 				type="submit"
-				class="rounded bg-accent px-4 py-2 text-sm font-semibold text-canvas transition-opacity hover:opacity-80"
+				class="cursor-pointer rounded bg-accent px-4 py-2 text-sm font-semibold text-canvas transition-opacity hover:opacity-80"
 			>
 				Save
 			</button>
@@ -56,7 +56,7 @@
 	>
 		<button
 			type="submit"
-			class="rounded bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-80"
+			class="cursor-pointer rounded bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-80"
 		>
 			Delete category
 		</button>
@@ -97,7 +97,7 @@
 								<input type="hidden" name="id" value={item.id} />
 								<button
 									type="submit"
-									class="rounded px-2 py-1 text-xs text-red-400 hover:bg-red-400/10"
+									class="cursor-pointer rounded px-2 py-1 text-xs text-red-400 hover:bg-red-400/10"
 								>
 									delete
 								</button>
@@ -124,7 +124,7 @@
 			<div>
 				<button
 					type="submit"
-					class="rounded bg-accent px-4 py-2 text-sm font-semibold text-canvas transition-opacity hover:opacity-80"
+					class="cursor-pointer rounded bg-accent px-4 py-2 text-sm font-semibold text-canvas transition-opacity hover:opacity-80"
 				>
 					Add item
 				</button>

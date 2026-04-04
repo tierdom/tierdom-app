@@ -45,7 +45,7 @@
 		<div>
 			<button
 				type="submit"
-				class="rounded bg-accent px-4 py-2 text-sm font-semibold text-canvas transition-opacity hover:opacity-80"
+				class="cursor-pointer rounded bg-accent px-4 py-2 text-sm font-semibold text-canvas transition-opacity hover:opacity-80"
 			>
 				Save
 			</button>
@@ -63,7 +63,7 @@
 	>
 		<button
 			type="submit"
-			class="rounded bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-80"
+			class="cursor-pointer rounded bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-80"
 		>
 			Delete item
 		</button>
