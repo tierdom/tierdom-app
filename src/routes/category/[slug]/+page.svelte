@@ -27,18 +27,18 @@
 	{/if}
 
 	<!-- Tier rows -->
-	<div class="mt-8 flex flex-col">
+	<div class="mt-8 flex flex-col gap-1">
 		{#each data.tiers as { tier, items } (tier)}
-			<div class="flex overflow-hidden">
+			<div class="flex overflow-hidden border-2 border-subtle">
 				<!-- Tier label -->
 				<div
-					class="flex w-14 shrink-0 items-center justify-center text-xl font-black {tierStyles[tier]}"
+					class="flex w-14 shrink-0 items-start justify-center pt-3 text-xl font-black {tierStyles[tier]}"
 				>
 					{tier}
 				</div>
 
 				<!-- Items -->
-				<div class="flex flex-1 flex-wrap">
+				<div class="flex flex-1 flex-wrap bg-surface">
 					{#each items as item (item.id)}
 						<TierListItem name={item.name} score={item.score} />
 					{/each}
