@@ -20,7 +20,22 @@
 <!-- ─── Footer ────────────────────────────────────────────────────────────── -->
 <footer class="mt-16 border-t border-subtle py-8">
 	<div class="mx-auto max-w-6xl px-4 text-center">
-		<p class="text-sm text-secondary">tierdom-pro — my personal tier lists</p>
-		<p class="mt-1 text-xs text-secondary/50">placeholder footer · replace me</p>
+		<p class="text-sm text-secondary">
+			tierdom — personal tier lists by
+			<a
+				href="https://jeroenheijmans.nl"
+				class="text-accent/70 hover:text-accent transition-colors"
+				target="_blank"
+				rel="noopener noreferrer">Jeroen Heijmans</a
+			>
+		</p>
+		<p class="mt-1 text-xs text-secondary/50">
+			<a
+				href="https://github.com/jeroenheijmans/tierdom-pro"
+				class="hover:text-secondary transition-colors"
+				target="_blank"
+				rel="noopener noreferrer">Source on GitHub</a
+			>
+		</p>
 	</div>
 </footer>
