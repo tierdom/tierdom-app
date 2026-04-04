@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { deserialize } from '$app/forms';
 	import Button from '$lib/components/admin/Button.svelte';
 	import FormField from '$lib/components/admin/FormField.svelte';
+	import TagPicker from '$lib/components/admin/TagPicker.svelte';
 	import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
 	import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
 	import type { PageData } from './$types';
@@ -12,6 +14,7 @@
 	let { data }: { data: PageData } = $props();
 
 	let dirty = $state(false);
+	let selectedTags = $state<string[]>([]);
 
 	function markDirty() {
 		dirty = true;
@@ -20,6 +23,22 @@
 	function cancel() {
 		if (dirty && !confirm('You have unsaved changes. Discard them?')) return;
 		goto(`/admin/categories/${data.category.id}`);
+	}
+
+	function handleTagsChange(slugs: string[]) {
+		selectedTags = slugs;
+		markDirty();
+	}
+
+	async function handleCreateTag(label: string) {
+		const body = new FormData();
+		body.set('label', label);
+		const response = await fetch('?/createTag', { method: 'POST', body });
+		const result = deserialize(await response.text());
+		if (result.type === 'success' && result.data) {
+			return result.data.tag as { slug: string; label: string };
+		}
+		throw new Error('Failed to create tag');
 	}
 </script>
 
@@ -50,6 +69,12 @@
 			min={0}
 			max={100}
 			step={1}
+		/>
+		<TagPicker
+			allTags={data.allTags}
+			selectedSlugs={selectedTags}
+			onchange={handleTagsChange}
+			oncreate={handleCreateTag}
 		/>
 		<FormField label="Description" name="description" multiline />
 	</form>
