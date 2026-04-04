@@ -5,6 +5,8 @@
 	import SortableList from '$lib/components/admin/SortableList.svelte';
 	import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
 	import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
+	import { scoreToTier } from '$lib/tier';
+	import TierBadge from '$lib/components/admin/TierBadge.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -13,6 +15,25 @@
 	const { enhance } = loader;
 
 	let dirty = $state(false);
+	let showCutoffs = $state(
+		data.category.cutoffS != null ||
+			data.category.cutoffA != null ||
+			data.category.cutoffB != null ||
+			data.category.cutoffC != null ||
+			data.category.cutoffD != null ||
+			data.category.cutoffE != null ||
+			data.category.cutoffF != null
+	);
+
+	const cutoffs = $derived({
+		S: data.category.cutoffS,
+		A: data.category.cutoffA,
+		B: data.category.cutoffB,
+		C: data.category.cutoffC,
+		D: data.category.cutoffD,
+		E: data.category.cutoffE,
+		F: data.category.cutoffF
+	});
 
 	function markDirty() {
 		dirty = true;
@@ -27,6 +48,15 @@
 		const body = new FormData();
 		body.set('order', JSON.stringify(orderedIds));
 		await fetch('?/reorderItems', { method: 'POST', body });
+	});
+
+	const handleSortByScore = loader.withLoading(async () => {
+		if (!confirm('Sort all items by score (highest first)? This replaces the current order.')) return;
+		const sorted = [...data.items].sort((a, b) => b.score - a.score);
+		const body = new FormData();
+		body.set('order', JSON.stringify(sorted.map((i) => i.id)));
+		await fetch('?/reorderItems', { method: 'POST', body });
+		location.reload();
 	});
 </script>
 
@@ -47,17 +77,27 @@
 		<FormField label="Slug" name="slug" value={data.category.slug} />
 		<FormField label="Description" name="description" value={data.category.description} multiline />
 
-		<h2 class="mt-2 text-sm font-semibold text-secondary">Tier cutoffs</h2>
-		<p class="text-xs text-secondary/70">Minimum score to reach each tier. Leave empty for defaults (S=90, A=75, B=60, C=45, D=30, E=15, F=0).</p>
-		<div class="grid grid-cols-4 gap-3 sm:grid-cols-7">
-			<FormField label="S" name="cutoffS" type="number" value={data.category.cutoffS} min={0} max={100} />
-			<FormField label="A" name="cutoffA" type="number" value={data.category.cutoffA} min={0} max={100} />
-			<FormField label="B" name="cutoffB" type="number" value={data.category.cutoffB} min={0} max={100} />
-			<FormField label="C" name="cutoffC" type="number" value={data.category.cutoffC} min={0} max={100} />
-			<FormField label="D" name="cutoffD" type="number" value={data.category.cutoffD} min={0} max={100} />
-			<FormField label="E" name="cutoffE" type="number" value={data.category.cutoffE} min={0} max={100} />
-			<FormField label="F" name="cutoffF" type="number" value={data.category.cutoffF} min={0} max={100} />
-		</div>
+		{#if showCutoffs}
+			<h2 class="mt-2 text-sm font-semibold text-secondary">Tier cutoffs</h2>
+			<p class="text-xs text-secondary/70">Minimum score to reach each tier. Leave empty for defaults (S=90, A=75, B=60, C=45, D=30, E=15, F=0).</p>
+			<div class="grid grid-cols-4 gap-3 sm:grid-cols-7">
+				<FormField label="S" name="cutoffS" type="number" value={data.category.cutoffS} min={0} max={100} />
+				<FormField label="A" name="cutoffA" type="number" value={data.category.cutoffA} min={0} max={100} />
+				<FormField label="B" name="cutoffB" type="number" value={data.category.cutoffB} min={0} max={100} />
+				<FormField label="C" name="cutoffC" type="number" value={data.category.cutoffC} min={0} max={100} />
+				<FormField label="D" name="cutoffD" type="number" value={data.category.cutoffD} min={0} max={100} />
+				<FormField label="E" name="cutoffE" type="number" value={data.category.cutoffE} min={0} max={100} />
+				<FormField label="F" name="cutoffF" type="number" value={data.category.cutoffF} min={0} max={100} />
+			</div>
+		{:else}
+			<button
+				type="button"
+				class="mt-1 cursor-pointer self-start text-xs text-secondary hover:text-primary"
+				onclick={() => (showCutoffs = true)}
+			>
+				Customize tier cutoffs…
+			</button>
+		{/if}
 
 	</form>
 
@@ -78,12 +118,24 @@
 	</div>
 
 	<!-- Items list -->
-	<h2 class="mt-10 text-lg font-bold text-primary">Items ({data.items.length})</h2>
+	<div class="mt-10 flex items-center gap-3">
+		<h2 class="text-lg font-bold text-primary">Items ({data.items.length})</h2>
+		{#if data.items.length > 1}
+			<button
+				type="button"
+				class="cursor-pointer text-xs text-secondary hover:text-primary"
+				onclick={handleSortByScore}
+			>
+				Sort by score
+			</button>
+		{/if}
+	</div>
 
 	{#if data.items.length > 0}
 		<div class="mt-4 w-full text-sm">
 			<div class="flex border-b border-subtle pb-2 text-left text-xs text-secondary">
 				<div class="w-8"></div>
+				<div class="w-8 font-medium">Tier</div>
 				<div class="flex-1 font-medium">Name</div>
 				<div class="w-16 font-medium">Score</div>
 				<div class="w-24 text-right font-medium">Actions</div>
@@ -91,7 +143,11 @@
 
 			<SortableList items={data.items} onreorder={handleReorderItems}>
 				{#snippet row(item)}
+					{@const tier = scoreToTier(item.score as number, cutoffs)}
 					<div class="flex flex-1 items-center py-2">
+						<div class="w-8 flex-shrink-0">
+							<TierBadge {tier} />
+						</div>
 						<div class="flex-1 text-primary">
 							<a href="/admin/items/{item.id}" class="text-accent hover:underline">
 								{item.name}
