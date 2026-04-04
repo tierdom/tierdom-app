@@ -6,16 +6,16 @@
    ────────────────────────────────────────────────────────────────────────── */
 :root {
 	/* Backgrounds */
-	--c-canvas: #05090f;
-	--c-surface: #0a1020;
-	--c-elevated: #0e1a30;
+	--c-canvas: #0b1120;
+	--c-surface: #111b2e;
+	--c-elevated: #172440;
 
 	/* Borders */
-	--c-subtle: #1a2d48;
+	--c-subtle: #243654;
 
 	/* Text */
-	--c-primary: #c9d8e8;
-	--c-secondary: #4a5c72;
+	--c-primary: #edf2f8;
+	--c-secondary: #8899b0;
 
 	/* Accent */
 	--c-accent: #38bdf8;
@@ -56,6 +56,7 @@
 /* ─── Base styles ────────────────────────────────────────────────────────── */
 @layer base {
 	html {
+		font-size: 118.75%;
 		color-scheme: dark;
 		scroll-behavior: smooth;
 	}

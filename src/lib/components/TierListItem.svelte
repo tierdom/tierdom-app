@@ -43,6 +43,6 @@
 
 	<!-- Score bar at the very bottom -->
 	<div class="absolute inset-x-0 bottom-0 h-1">
-		<div class="h-full" style:width="{score}%" style:background={barColor}></div>
+		<div class="h-full opacity-60" style:width="{score}%" style:background={barColor}></div>
 	</div>
 </div>
