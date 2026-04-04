@@ -39,6 +39,7 @@ The entire app ships as a single Docker image. The database is a SQLite file mou
 docker run -d \
   -p 3000:3000 \
   -v /your/data/path:/app/data \
+  -e DATABASE_URL=/app/data/db.sqlite \
   -e ADMIN_PASSWORD=your_password \
   ghcr.io/yourname/tierdom-pro:latest
 ```
@@ -53,14 +54,35 @@ cp /your/data/path/db.sqlite /your/backup/path/db-$(date +%Y%m%d).sqlite
 
 ---
 
+## Development
+
+```sh
+npm install
+npm run dev
+```
+
+To recreate this project scaffold from scratch:
+
+```sh
+npx sv@0.14.0 create --template minimal --types ts \
+  --add prettier eslint 'vitest=usages:unit' playwright 'tailwindcss=plugins:none' \
+  'drizzle=database:sqlite+sqlite:better-sqlite3' 'sveltekit-adapter=adapter:node' \
+  'mcp=ide:claude-code+setup:local' \
+  --no-download-check --install npm .
+```
+
+---
+
 ## Tech stack
 
-| Layer | Choice |
-|---|---|
-| Framework | SvelteKit (TypeScript) |
-| Database | SQLite via Drizzle ORM |
-| Runtime | Node.js (Alpine) |
-| Deployment | Single Docker image |
+| Layer      | Choice                                  |
+| ---------- | --------------------------------------- |
+| Framework  | SvelteKit 2 + Svelte 5 (TypeScript)     |
+| Database   | SQLite via Drizzle ORM (better-sqlite3) |
+| Styling    | Tailwind CSS v4                         |
+| Testing    | Vitest + Playwright                     |
+| Runtime    | Node.js (Alpine)                        |
+| Deployment | Single Docker image                     |
 
 ---
 

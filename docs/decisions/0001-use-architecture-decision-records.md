@@ -6,7 +6,7 @@ Accepted
 
 ## Context
 
-As tierdom-pro grows, architectural decisions will be made that are not obvious from reading the code alone. Without a record of *why* a choice was made, future contributors (or the author returning after a break) must either reverse-engineer the reasoning or risk undoing deliberate decisions by accident.
+As tierdom-pro grows, architectural decisions will be made that are not obvious from reading the code alone. Without a record of _why_ a choice was made, future contributors (or the author returning after a break) must either reverse-engineer the reasoning or risk undoing deliberate decisions by accident.
 
 A lightweight, file-based approach keeps the decisions close to the code, version-controlled, and easy to write.
 

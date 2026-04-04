@@ -12,14 +12,14 @@ tierdom-pro needs to be self-hostable by a non-technical user on a bare VPS with
 
 **Single-process, single-image full-stack application.**
 
-| Concern | Choice | Rationale |
-|---|---|---|
-| Framework | SvelteKit (TypeScript) | Smallest compiled JS bundle, excellent SSR, low boilerplate, handles both frontend and backend in one process |
-| Database | SQLite via Drizzle ORM | File-based, zero infrastructure, trivial to back up via volume mount |
-| Runtime | Node.js (Alpine) | Lightweight base image, SvelteKit Node adapter |
-| Deployment | Single Docker image | One `docker run` command, no orchestration required |
-| Auth | Single-user, session-based | One admin account; sessions handled in SvelteKit hooks, no external auth service |
-| CMS | DB-backed, custom-built | Lightweight static page editing without an external CMS dependency |
+| Concern    | Choice                     | Rationale                                                                                                     |
+| ---------- | -------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Framework  | SvelteKit (TypeScript)     | Smallest compiled JS bundle, excellent SSR, low boilerplate, handles both frontend and backend in one process |
+| Database   | SQLite via Drizzle ORM     | File-based, zero infrastructure, trivial to back up via volume mount                                          |
+| Runtime    | Node.js (Alpine)           | Lightweight base image, SvelteKit Node adapter                                                                |
+| Deployment | Single Docker image        | One `docker run` command, no orchestration required                                                           |
+| Auth       | Single-user, session-based | One admin account; sessions handled in SvelteKit hooks, no external auth service                              |
+| CMS        | DB-backed, custom-built    | Lightweight static page editing without an external CMS dependency                                            |
 
 **Route structure** separates the two sides using SvelteKit route groups:
 
