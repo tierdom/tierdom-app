@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import TierListItem from '$lib/components/TierListItem.svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -26,9 +27,9 @@
 	{/if}
 
 	<!-- Tier rows -->
-	<div class="mt-8 flex flex-col gap-2">
+	<div class="mt-8 flex flex-col">
 		{#each data.tiers as { tier, items } (tier)}
-			<div class="flex min-h-16 overflow-hidden rounded-lg border border-subtle">
+			<div class="flex overflow-hidden">
 				<!-- Tier label -->
 				<div
 					class="flex w-14 shrink-0 items-center justify-center text-xl font-black {tierStyles[tier]}"
@@ -37,15 +38,9 @@
 				</div>
 
 				<!-- Items -->
-				<div class="flex flex-1 flex-wrap gap-2 bg-surface p-2">
+				<div class="flex flex-1 flex-wrap">
 					{#each items as item (item.id)}
-						<div
-							class="flex items-center rounded border border-subtle bg-elevated px-3 py-1.5 text-sm text-primary"
-							title={item.description ?? undefined}
-						>
-							<span>{item.name}</span>
-							<span class="ml-2 text-xs text-secondary">{item.score}</span>
-						</div>
+						<TierListItem name={item.name} score={item.score} />
 					{/each}
 				</div>
 			</div>
