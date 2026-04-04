@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import Button from '$lib/components/admin/Button.svelte';
-	import FormField from '$lib/components/admin/FormField.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -70,18 +69,12 @@
 		<p class="mt-6 text-sm text-secondary">No categories yet.</p>
 	{/if}
 
-	<!-- Create form -->
-	<div class="mt-8 rounded-lg border border-subtle bg-elevated p-4">
-		<h2 class="text-sm font-semibold text-secondary">New category</h2>
-		<form method="POST" action="?/create" use:enhance class="mt-3 flex flex-col gap-3">
-			<div class="grid grid-cols-2 gap-3">
-				<FormField label="Name" name="name" required />
-				<FormField label="Slug" name="slug" help="Auto-generated from name if empty" />
-			</div>
-			<FormField label="Description" name="description" multiline />
-			<div>
-				<Button type="submit">Create</Button>
-			</div>
-		</form>
+	<div class="mt-8">
+		<a
+			href="/admin/categories/create"
+			class="inline-block rounded bg-accent px-4 py-2 text-sm font-semibold text-canvas transition-opacity hover:opacity-80"
+		>
+			New category
+		</a>
 	</div>
 </section>

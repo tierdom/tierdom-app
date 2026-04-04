@@ -110,19 +110,12 @@
 		<p class="mt-4 text-sm text-secondary">No items yet.</p>
 	{/if}
 
-	<!-- Add item -->
-	<div class="mt-6 rounded-lg border border-subtle bg-elevated p-4">
-		<h2 class="text-sm font-semibold text-secondary">Add item</h2>
-		<form method="POST" action="?/createItem" use:enhance class="mt-3 flex flex-col gap-3">
-			<div class="grid grid-cols-3 gap-3">
-				<FormField label="Name" name="name" required />
-				<FormField label="Score" name="score" type="number" required min={0} max={100} step={1} />
-				<FormField label="Slug" name="slug" help="Auto-generated if empty" />
-			</div>
-			<FormField label="Description" name="description" multiline />
-			<div>
-				<Button type="submit">Add item</Button>
-			</div>
-		</form>
+	<div class="mt-6">
+		<a
+			href="/admin/categories/{data.category.id}/create-item"
+			class="inline-block rounded bg-accent px-4 py-2 text-sm font-semibold text-canvas transition-opacity hover:opacity-80"
+		>
+			New item
+		</a>
 	</div>
 </section>

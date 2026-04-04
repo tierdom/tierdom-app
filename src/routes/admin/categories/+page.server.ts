@@ -1,15 +1,8 @@
 import { db } from '$lib/server/db';
 import { category, tierListItem } from '$lib/server/db/schema';
-import { asc, count, eq, sql } from 'drizzle-orm';
+import { asc, count, eq } from 'drizzle-orm';
 import { fail } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
-
-function slugify(text: string): string {
-	return text
-		.toLowerCase()
-		.replace(/[^a-z0-9]+/g, '-')
-		.replace(/^-|-$/g, '');
-}
 
 export const load: PageServerLoad = async () => {
 	const cats = await db
@@ -29,28 +22,6 @@ export const load: PageServerLoad = async () => {
 };
 
 export const actions: Actions = {
-	create: async ({ request }) => {
-		const data = await request.formData();
-		const name = data.get('name')?.toString()?.trim();
-		if (!name) return fail(400, { error: 'Name is required' });
-
-		const slug = data.get('slug')?.toString()?.trim() || slugify(name);
-		const description = data.get('description')?.toString()?.trim() || null;
-
-		const [maxOrder] = await db
-			.select({ max: sql<number>`coalesce(max(${category.order}), -1)` })
-			.from(category);
-
-		await db.insert(category).values({
-			slug,
-			name,
-			description,
-			order: maxOrder.max + 1
-		});
-
-		return { success: true };
-	},
-
 	delete: async ({ request }) => {
 		const data = await request.formData();
 		const id = Number(data.get('id'));

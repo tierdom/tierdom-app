@@ -55,4 +55,13 @@
 	{:else}
 		<p class="mt-6 text-sm text-secondary">No tags yet.</p>
 	{/if}
+
+	<div class="mt-8">
+		<a
+			href="/admin/tags/create"
+			class="inline-block rounded bg-accent px-4 py-2 text-sm font-semibold text-canvas transition-opacity hover:opacity-80"
+		>
+			New tag
+		</a>
+	</div>
 </section>

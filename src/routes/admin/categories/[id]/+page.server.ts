@@ -1,6 +1,6 @@
 import { db } from '$lib/server/db';
 import { category, tierListItem } from '$lib/server/db/schema';
-import { eq, asc, sql } from 'drizzle-orm';
+import { eq, asc } from 'drizzle-orm';
 import { error, fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
 
@@ -68,37 +68,6 @@ export const actions: Actions = {
 		const id = Number(params.id);
 		await db.delete(category).where(eq(category.id, id));
 		redirect(303, '/admin/categories');
-	},
-
-	createItem: async ({ request, params }) => {
-		const categoryId = Number(params.id);
-		const data = await request.formData();
-		const name = data.get('name')?.toString()?.trim();
-		if (!name) return fail(400, { error: 'Item name is required' });
-
-		const slug = data.get('slug')?.toString()?.trim() || slugify(name);
-		const score = Math.round(Number(data.get('score')));
-		if (isNaN(score) || score < 0 || score > 100) {
-			return fail(400, { error: 'Score must be an integer 0-100' });
-		}
-
-		const description = data.get('description')?.toString()?.trim() || null;
-
-		const [maxOrder] = await db
-			.select({ max: sql<number>`coalesce(max(${tierListItem.order}), -1)` })
-			.from(tierListItem)
-			.where(eq(tierListItem.categoryId, categoryId));
-
-		await db.insert(tierListItem).values({
-			categoryId,
-			slug,
-			name,
-			description,
-			score,
-			order: maxOrder.max + 1
-		});
-
-		return { success: true };
 	},
 
 	deleteItem: async ({ request }) => {
