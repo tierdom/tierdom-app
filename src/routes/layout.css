@@ -1,1 +1,81 @@
 @import 'tailwindcss';
+
+/* ─── Default theme: deep dark blue sci-fi ─────────────────────────────────
+   All semantic color values live here on :root so swapping themes later is
+   just a matter of overriding these variables (e.g. [data-theme="light"]).
+   ────────────────────────────────────────────────────────────────────────── */
+:root {
+	/* Backgrounds */
+	--c-canvas: #05090f;
+	--c-surface: #0a1020;
+	--c-elevated: #0e1a30;
+
+	/* Borders */
+	--c-subtle: #1a2d48;
+
+	/* Text */
+	--c-primary: #c9d8e8;
+	--c-secondary: #4a5c72;
+
+	/* Accent */
+	--c-accent: #38bdf8;
+	--c-accent-muted: #0c4a6e;
+
+	/* Tier colors — background and foreground per tier (S best → F worst) */
+	--tier-s-bg: #facc15;
+	--tier-s-fg: #0a0a0a;
+	--tier-a-bg: #f97316;
+	--tier-a-fg: #0a0a0a;
+	--tier-b-bg: #84cc16;
+	--tier-b-fg: #0a0a0a;
+	--tier-c-bg: #3b82f6;
+	--tier-c-fg: #ffffff;
+	--tier-d-bg: #8b5cf6;
+	--tier-d-fg: #ffffff;
+	--tier-e-bg: #64748b;
+	--tier-e-fg: #e2e8f0;
+	--tier-f-bg: #1e293b;
+	--tier-f-fg: #475569;
+}
+
+/* ─── Register semantic tokens as Tailwind utilities ────────────────────────
+   @theme inline keeps values as var() references so themes can swap them at
+   runtime. Utilities generated: bg-canvas, text-primary, border-subtle, etc.
+   ────────────────────────────────────────────────────────────────────────── */
+@theme inline {
+	--color-canvas: var(--c-canvas);
+	--color-surface: var(--c-surface);
+	--color-elevated: var(--c-elevated);
+	--color-subtle: var(--c-subtle);
+	--color-primary: var(--c-primary);
+	--color-secondary: var(--c-secondary);
+	--color-accent: var(--c-accent);
+	--color-accent-muted: var(--c-accent-muted);
+}
+
+/* ─── Base styles ────────────────────────────────────────────────────────── */
+@layer base {
+	html {
+		color-scheme: dark;
+		scroll-behavior: smooth;
+	}
+
+	body {
+		background-color: var(--c-canvas);
+		color: var(--c-primary);
+		-webkit-font-smoothing: antialiased;
+		text-rendering: optimizeLegibility;
+	}
+
+	/* Subtle custom scrollbar that fits the dark theme */
+	* {
+		scrollbar-width: thin;
+		scrollbar-color: var(--c-subtle) transparent;
+	}
+
+	/* Focus ring using accent color */
+	:focus-visible {
+		outline: 2px solid var(--c-accent);
+		outline-offset: 2px;
+	}
+}
