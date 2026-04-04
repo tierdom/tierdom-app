@@ -1,8 +1,12 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
 	import Button from '$lib/components/admin/Button.svelte';
 	import FormField from '$lib/components/admin/FormField.svelte';
+	import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
+	import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
+
+	const loader = createAdminLoader();
+	const { enhance } = loader;
 
 	let dirty = $state(false);
 
@@ -21,6 +25,7 @@
 </svelte:head>
 
 <section>
+	<AdminOverlay loading={loader.loading} />
 	<div class="flex items-center gap-3">
 		<a href="/admin/tags" class="text-sm text-secondary hover:text-primary">&larr; Back</a>
 		<h1 class="text-xl font-bold text-primary">New tag</h1>

@@ -1,12 +1,16 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
 	import Button from '$lib/components/admin/Button.svelte';
 	import FormField from '$lib/components/admin/FormField.svelte';
 	import SortableList from '$lib/components/admin/SortableList.svelte';
+	import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
+	import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
+
+	const loader = createAdminLoader();
+	const { enhance } = loader;
 
 	let dirty = $state(false);
 
@@ -19,11 +23,11 @@
 		goto('/admin/categories');
 	}
 
-	async function handleReorderItems(orderedIds: number[]) {
+	const handleReorderItems = loader.withLoading(async (orderedIds: number[]) => {
 		const body = new FormData();
 		body.set('order', JSON.stringify(orderedIds));
 		await fetch('?/reorderItems', { method: 'POST', body });
-	}
+	});
 </script>
 
 <svelte:head>
@@ -31,6 +35,7 @@
 </svelte:head>
 
 <section>
+	<AdminOverlay loading={loader.loading} />
 	<div class="flex items-center gap-3">
 		<a href="/admin/categories" class="text-sm text-secondary hover:text-primary">&larr; Back</a>
 		<h1 class="text-xl font-bold text-primary">{data.category.name}</h1>

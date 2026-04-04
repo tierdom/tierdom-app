@@ -1,9 +1,13 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
 	import Button from '$lib/components/admin/Button.svelte';
 	import FormField from '$lib/components/admin/FormField.svelte';
+	import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
+	import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
 	import type { PageData } from './$types';
+
+	const loader = createAdminLoader();
+	const { enhance } = loader;
 
 	let { data }: { data: PageData } = $props();
 
@@ -24,6 +28,7 @@
 </svelte:head>
 
 <section>
+	<AdminOverlay loading={loader.loading} />
 	<div class="flex items-center gap-3">
 		<a
 			href="/admin/categories/{data.item.categoryId}"

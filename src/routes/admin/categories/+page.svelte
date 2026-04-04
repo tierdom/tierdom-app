@@ -1,16 +1,20 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import Button from '$lib/components/admin/Button.svelte';
 	import SortableList from '$lib/components/admin/SortableList.svelte';
+	import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
+	import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
 
-	async function handleReorder(orderedIds: number[]) {
+	const loader = createAdminLoader();
+	const { enhance } = loader;
+
+	const handleReorder = loader.withLoading(async (orderedIds: number[]) => {
 		const body = new FormData();
 		body.set('order', JSON.stringify(orderedIds));
 		await fetch('?/reorder', { method: 'POST', body });
-	}
+	});
 </script>
 
 <svelte:head>
@@ -18,6 +22,7 @@
 </svelte:head>
 
 <section>
+	<AdminOverlay loading={loader.loading} />
 	<h1 class="text-xl font-bold text-primary">Categories</h1>
 
 	{#if data.categories.length > 0}
