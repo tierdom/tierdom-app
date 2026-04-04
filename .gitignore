@@ -23,10 +23,8 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 # Playwright
 test-results
-# SQLite — runtime files only, never commit
-*.db
-*.db-shm
-*.db-wal
-*.sqlite
+# Data directory — ignore everything except the folder anchor
+data/*
+!data/.gitkeep
 
 .sessions
