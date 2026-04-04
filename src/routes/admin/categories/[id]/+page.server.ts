@@ -1,5 +1,5 @@
 import { db } from '$lib/server/db';
-import { category, tierListItem } from '$lib/server/db/schema';
+import { category, tierListItem, itemTag, tag } from '$lib/server/db/schema';
 import { eq, asc } from 'drizzle-orm';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { applyOrder } from '$lib/server/reorder';
@@ -23,7 +23,30 @@ export const load: PageServerLoad = async ({ params }) => {
 		.where(eq(tierListItem.categoryId, id))
 		.orderBy(asc(tierListItem.order));
 
-	return { category: cat, items };
+	const itemIds = items.map((i) => i.id);
+	const tagsPerItem =
+		itemIds.length > 0
+			? await db
+					.select({ itemId: itemTag.itemId, slug: tag.slug, label: tag.label })
+					.from(itemTag)
+					.innerJoin(tag, eq(tag.slug, itemTag.tagSlug))
+					.innerJoin(tierListItem, eq(tierListItem.id, itemTag.itemId))
+					.where(eq(tierListItem.categoryId, id))
+			: [];
+
+	const tagsByItemId = new Map<number, { slug: string; label: string }[]>();
+	for (const row of tagsPerItem) {
+		const existing = tagsByItemId.get(row.itemId) ?? [];
+		existing.push({ slug: row.slug, label: row.label });
+		tagsByItemId.set(row.itemId, existing);
+	}
+
+	const itemsWithTags = items.map((item) => ({
+		...item,
+		tags: tagsByItemId.get(item.id) ?? []
+	}));
+
+	return { category: cat, items: itemsWithTags };
 };
 
 export const actions: Actions = {

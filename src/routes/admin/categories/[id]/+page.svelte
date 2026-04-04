@@ -137,6 +137,7 @@
 				<div class="w-8"></div>
 				<div class="w-8 font-medium">Tier</div>
 				<div class="flex-1 font-medium">Name</div>
+				<div class="hidden flex-1 font-medium lg:block">Tags</div>
 				<div class="w-16 font-medium">Score</div>
 				<div class="w-24 text-right font-medium">Actions</div>
 			</div>
@@ -152,6 +153,11 @@
 							<a href="/admin/items/{item.id}" class="text-accent hover:underline">
 								{item.name}
 							</a>
+						</div>
+						<div class="hidden flex-1 lg:flex lg:flex-wrap lg:gap-1">
+							{#each (item.tags as { slug: string; label: string }[]) as t (t.slug)}
+								<span class="rounded-full bg-subtle/30 px-2 py-0.5 text-[0.65rem] text-secondary/70">{t.label}</span>
+							{/each}
 						</div>
 						<div class="w-16 text-secondary">{item.score}</div>
 						<div class="w-24 text-right">
