@@ -22,20 +22,20 @@
 	--c-accent-muted: #0c4a6e;
 
 	/* Tier colors — background and foreground per tier (S best → F worst) */
-	--tier-s-bg: #facc15;
+	--tier-s-bg: #e07a79;
 	--tier-s-fg: #0a0a0a;
-	--tier-a-bg: #f97316;
+	--tier-a-bg: #ebba79;
 	--tier-a-fg: #0a0a0a;
-	--tier-b-bg: #84cc16;
+	--tier-b-bg: #f2ed82;
 	--tier-b-fg: #0a0a0a;
-	--tier-c-bg: #3b82f6;
-	--tier-c-fg: #ffffff;
-	--tier-d-bg: #8b5cf6;
-	--tier-d-fg: #ffffff;
-	--tier-e-bg: #64748b;
-	--tier-e-fg: #e2e8f0;
-	--tier-f-bg: #1e293b;
-	--tier-f-fg: #475569;
+	--tier-c-bg: #a9d86d;
+	--tier-c-fg: #0a0a0a;
+	--tier-d-bg: #91b8e6;
+	--tier-d-fg: #0a0a0a;
+	--tier-e-bg: #7879c1;
+	--tier-e-fg: #0a0a0a;
+	--tier-f-bg: #ce86ca;
+	--tier-f-fg: #0a0a0a;
 }
 
 /* ─── Register semantic tokens as Tailwind utilities ────────────────────────
