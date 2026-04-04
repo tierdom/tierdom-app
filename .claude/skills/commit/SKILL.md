@@ -48,6 +48,7 @@ Help me create a git commit for the current changes in this SvelteKit project.
   - Max **72 characters per line**
   - Explain _why_, not _what_ — the diff shows what
   - Wrap bullet points at 72 chars
+- **Never** add a `Co-Authored-By` trailer or any Claude attribution
 
 ### Examples
 

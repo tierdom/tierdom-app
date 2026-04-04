@@ -1,3 +1,9 @@
+## Git
+
+**Never** add a `Co-Authored-By` trailer or any Claude attribution to commit messages.
+
+---
+
 ## Project Configuration
 
 - **Language**: TypeScript
