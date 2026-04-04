@@ -1,9 +1,22 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { goto } from '$app/navigation';
+	import Button from '$lib/components/admin/Button.svelte';
 	import FormField from '$lib/components/admin/FormField.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
+
+	let dirty = $state(false);
+
+	function markDirty() {
+		dirty = true;
+	}
+
+	function cancel() {
+		if (dirty && !confirm('You have unsaved changes. Discard them?')) return;
+		goto(`/admin/categories/${data.item.categoryId}`);
+	}
 </script>
 
 <svelte:head>
@@ -21,7 +34,7 @@
 		<h1 class="text-xl font-bold text-primary">{data.item.name}</h1>
 	</div>
 
-	<form method="POST" action="?/update" use:enhance class="mt-6 flex flex-col gap-3">
+	<form id="edit-item" method="POST" action="?/update" use:enhance oninput={markDirty} class="mt-6 flex flex-col gap-3">
 		<FormField label="Name" name="name" value={data.item.name} required />
 		<FormField label="Slug" name="slug" value={data.item.slug} />
 		<FormField
@@ -42,30 +55,20 @@
 			multiline
 		/>
 
-		<div>
-			<button
-				type="submit"
-				class="cursor-pointer rounded bg-accent px-4 py-2 text-sm font-semibold text-canvas transition-opacity hover:opacity-80"
-			>
-				Save
-			</button>
-		</div>
 	</form>
 
-	<form
-		method="POST"
-		action="?/delete"
-		use:enhance
-		onsubmit={(e) => {
-			if (!confirm('Delete this item?')) e.preventDefault();
-		}}
-		class="mt-2"
-	>
-		<button
-			type="submit"
-			class="cursor-pointer rounded bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-80"
+	<div class="mt-4 flex flex-col gap-3 md:flex-row md:items-center">
+		<Button type="submit" form="edit-item">Save</Button>
+		<Button variant="secondary" type="button" onclick={cancel}>Cancel</Button>
+		<form
+			method="POST"
+			action="?/delete"
+			use:enhance
+			onsubmit={(e) => {
+				if (!confirm('Delete this item?')) e.preventDefault();
+			}}
 		>
-			Delete item
-		</button>
-	</form>
+			<Button variant="danger" type="submit">Delete</Button>
+		</form>
+	</div>
 </section>

@@ -26,5 +26,10 @@ export const actions: Actions = {
 			.where(eq(tag.slug, params.slug));
 
 		redirect(303, '/admin/tags');
+	},
+
+	delete: async ({ params }) => {
+		await db.delete(tag).where(eq(tag.slug, params.slug));
+		redirect(303, '/admin/tags');
 	}
 };

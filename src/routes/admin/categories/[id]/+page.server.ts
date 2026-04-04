@@ -61,7 +61,7 @@ export const actions: Actions = {
 			})
 			.where(eq(category.id, id));
 
-		return { success: true };
+		redirect(303, '/admin/categories');
 	},
 
 	delete: async ({ params }) => {

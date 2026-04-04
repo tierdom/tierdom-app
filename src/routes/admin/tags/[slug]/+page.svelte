@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
+	import Button from '$lib/components/admin/Button.svelte';
 	import FormField from '$lib/components/admin/FormField.svelte';
 	import type { PageData } from './$types';
 
@@ -12,11 +13,8 @@
 		dirty = true;
 	}
 
-	function cancel(e: MouseEvent) {
-		if (dirty && !confirm('You have unsaved changes. Discard them?')) {
-			e.preventDefault();
-			return;
-		}
+	function cancel() {
+		if (dirty && !confirm('You have unsaved changes. Discard them?')) return;
 		goto('/admin/tags');
 	}
 </script>
@@ -34,6 +32,7 @@
 	</div>
 
 	<form
+		id="edit-tag"
 		method="POST"
 		action="?/update"
 		use:enhance
@@ -42,21 +41,20 @@
 	>
 		<FormField label="Label" name="label" value={data.tag.label} required />
 		<FormField label="Slug" name="slug" value={data.tag.slug} required />
-
-		<div class="flex items-center gap-3">
-			<button
-				type="submit"
-				class="cursor-pointer rounded bg-accent px-4 py-2 text-sm font-semibold text-canvas transition-opacity hover:opacity-80"
-			>
-				Save
-			</button>
-			<button
-				type="button"
-				onclick={cancel}
-				class="cursor-pointer rounded border border-subtle px-4 py-2 text-sm text-secondary transition-colors hover:text-primary"
-			>
-				Cancel
-			</button>
-		</div>
 	</form>
+
+	<div class="mt-4 flex flex-col gap-3 md:flex-row md:items-center">
+		<Button type="submit" form="edit-tag">Save</Button>
+		<Button variant="secondary" type="button" onclick={cancel}>Cancel</Button>
+		<form
+			method="POST"
+			action="?/delete"
+			use:enhance
+			onsubmit={(e) => {
+				if (!confirm('Delete this tag?')) e.preventDefault();
+			}}
+		>
+			<Button variant="danger" type="submit">Delete</Button>
+		</form>
+	</div>
 </section>

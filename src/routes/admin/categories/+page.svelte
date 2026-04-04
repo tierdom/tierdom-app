@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import Button from '$lib/components/admin/Button.svelte';
 	import FormField from '$lib/components/admin/FormField.svelte';
 	import type { PageData } from './$types';
 
@@ -40,24 +41,12 @@
 							<form method="POST" action="?/reorder" use:enhance>
 								<input type="hidden" name="id" value={cat.id} />
 								<input type="hidden" name="direction" value="up" />
-								<button
-									type="submit"
-									disabled={i === 0}
-									class="cursor-pointer rounded px-2 py-1 text-xs text-secondary hover:bg-elevated hover:text-primary disabled:opacity-30"
-								>
-									up
-								</button>
+								<Button variant="table" type="submit" disabled={i === 0}>up</Button>
 							</form>
 							<form method="POST" action="?/reorder" use:enhance>
 								<input type="hidden" name="id" value={cat.id} />
 								<input type="hidden" name="direction" value="down" />
-								<button
-									type="submit"
-									disabled={i === data.categories.length - 1}
-									class="cursor-pointer rounded px-2 py-1 text-xs text-secondary hover:bg-elevated hover:text-primary disabled:opacity-30"
-								>
-									down
-								</button>
+								<Button variant="table" type="submit" disabled={i === data.categories.length - 1}>down</Button>
 							</form>
 							<form
 								method="POST"
@@ -70,12 +59,7 @@
 								}}
 							>
 								<input type="hidden" name="id" value={cat.id} />
-								<button
-									type="submit"
-									class="cursor-pointer rounded px-2 py-1 text-xs text-red-400 hover:bg-red-400/10"
-								>
-									delete
-								</button>
+								<Button variant="table-danger" type="submit">delete</Button>
 							</form>
 						</td>
 					</tr>
@@ -96,12 +80,7 @@
 			</div>
 			<FormField label="Description" name="description" multiline />
 			<div>
-				<button
-					type="submit"
-					class="cursor-pointer rounded bg-accent px-4 py-2 text-sm font-semibold text-canvas transition-opacity hover:opacity-80"
-				>
-					Create
-				</button>
+				<Button type="submit">Create</Button>
 			</div>
 		</form>
 	</div>

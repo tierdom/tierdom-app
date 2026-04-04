@@ -1,9 +1,22 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { goto } from '$app/navigation';
+	import Button from '$lib/components/admin/Button.svelte';
 	import FormField from '$lib/components/admin/FormField.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
+
+	let dirty = $state(false);
+
+	function markDirty() {
+		dirty = true;
+	}
+
+	function cancel() {
+		if (dirty && !confirm('You have unsaved changes. Discard them?')) return;
+		goto('/admin/categories');
+	}
 </script>
 
 <svelte:head>
@@ -17,7 +30,7 @@
 	</div>
 
 	<!-- Edit category -->
-	<form method="POST" action="?/update" use:enhance class="mt-6 flex flex-col gap-3">
+	<form id="edit-category" method="POST" action="?/update" use:enhance oninput={markDirty} class="mt-6 flex flex-col gap-3">
 		<FormField label="Name" name="name" value={data.category.name} required />
 		<FormField label="Slug" name="slug" value={data.category.slug} />
 		<FormField label="Description" name="description" value={data.category.description} multiline />
@@ -35,32 +48,23 @@
 			<FormField label="F" name="cutoffF" type="number" value={data.category.cutoffF} min={0} max={100} />
 		</div>
 
-		<div>
-			<button
-				type="submit"
-				class="cursor-pointer rounded bg-accent px-4 py-2 text-sm font-semibold text-canvas transition-opacity hover:opacity-80"
-			>
-				Save
-			</button>
-		</div>
 	</form>
 
-	<form
-		method="POST"
-		action="?/delete"
-		use:enhance
-		onsubmit={(e) => {
-			if (!confirm('Delete this category and all its items?')) e.preventDefault();
-		}}
-		class="mt-2"
-	>
-		<button
-			type="submit"
-			class="cursor-pointer rounded bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-80"
+	<div class="mt-4 flex flex-col gap-3 md:flex-row md:items-center">
+		<Button type="submit" form="edit-category">Save</Button>
+		<Button variant="secondary" type="button" onclick={cancel}>Cancel</Button>
+		<form
+			id="delete-category"
+			method="POST"
+			action="?/delete"
+			use:enhance
+			onsubmit={(e) => {
+				if (!confirm('Delete this category and all its items?')) e.preventDefault();
+			}}
 		>
-			Delete category
-		</button>
-	</form>
+			<Button variant="danger" type="submit">Delete</Button>
+		</form>
+	</div>
 
 	<!-- Items list -->
 	<h2 class="mt-10 text-lg font-bold text-primary">Items ({data.items.length})</h2>
@@ -95,12 +99,7 @@
 								}}
 							>
 								<input type="hidden" name="id" value={item.id} />
-								<button
-									type="submit"
-									class="cursor-pointer rounded px-2 py-1 text-xs text-red-400 hover:bg-red-400/10"
-								>
-									delete
-								</button>
+								<Button variant="table-danger" type="submit">delete</Button>
 							</form>
 						</td>
 					</tr>
@@ -122,12 +121,7 @@
 			</div>
 			<FormField label="Description" name="description" multiline />
 			<div>
-				<button
-					type="submit"
-					class="cursor-pointer rounded bg-accent px-4 py-2 text-sm font-semibold text-canvas transition-opacity hover:opacity-80"
-				>
-					Add item
-				</button>
+				<Button type="submit">Add item</Button>
 			</div>
 		</form>
 	</div>
