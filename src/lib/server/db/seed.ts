@@ -1,8 +1,26 @@
-import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db';
-import { category, tierListItem, tag, itemTag } from '$lib/server/db/schema';
+/**
+ * Standalone seed script — run via `npm run db:seed`.
+ *
+ * Connects directly to the database (same DATABASE_URL as drizzle-kit),
+ * wipes existing data, and inserts demo categories, tags, and items.
+ */
 
-// ─── Demo data ────────────────────────────────────────────────────────────────
+import { drizzle } from 'drizzle-orm/better-sqlite3';
+import Database from 'better-sqlite3';
+import * as schema from './schema';
+
+const { category, tierListItem, tag, itemTag } = schema;
+
+if (!process.env.DATABASE_URL) {
+	console.error('DATABASE_URL is not set');
+	process.exit(1);
+}
+
+const client = new Database(process.env.DATABASE_URL);
+client.pragma('foreign_keys = ON');
+const db = drizzle(client, { schema });
+
+// ─── Demo data ───────────────────────────────────────────────────────────────
 
 const TAGS = [
 	{ slug: 'classic', label: 'Classic' },
@@ -46,7 +64,7 @@ const CATEGORIES = [
 			{ name: 'The Talos Principle', score: 60, tags: ['sci-fi'] },
 			{ name: 'A Short Hike', score: 58, tags: ['indie'] },
 			{ name: 'Genshin Impact', score: 50, tags: ['overrated'] },
-			{ name: 'No Man\'s Sky (launch)', score: 40, tags: ['overrated', 'sci-fi'] },
+			{ name: "No Man's Sky (launch)", score: 40, tags: ['overrated', 'sci-fi'] },
 			{ name: 'Forspoken', score: 32, tags: ['overrated'] },
 			{ name: 'Redfall', score: 20, tags: ['overrated'] },
 			{ name: 'Anthem', score: 10, tags: ['overrated'] }
@@ -83,7 +101,11 @@ const CATEGORIES = [
 			{ name: 'The Fault in Our Stars', score: 46, tags: ['overrated'] },
 			{ name: 'Halo: The Fall of Reach', score: 50, tags: ['sci-fi', 'nostalgia'] },
 			{ name: 'Bobiverse 1', score: 72, tags: ['sci-fi', 'comedy'] },
-			{ name: 'Sword of Truth: Wizards First Rule', score: 28, tags: ['fantasy', 'overrated'] }
+			{
+				name: 'Sword of Truth: Wizards First Rule',
+				score: 28,
+				tags: ['fantasy', 'overrated']
+			}
 		]
 	},
 	{
@@ -94,9 +116,17 @@ const CATEGORIES = [
 		order: 2,
 		items: [
 			{ name: 'Annihilation', score: 95, tags: ['masterpiece', 'sci-fi', 'horror'] },
-			{ name: '2001: A Space Odyssey', score: 93, tags: ['masterpiece', 'classic', 'sci-fi'] },
+			{
+				name: '2001: A Space Odyssey',
+				score: 93,
+				tags: ['masterpiece', 'classic', 'sci-fi']
+			},
 			{ name: 'Stalker (1979)', score: 91, tags: ['masterpiece', 'classic', 'sci-fi'] },
-			{ name: 'The Thing (1982)', score: 90, tags: ['masterpiece', 'classic', 'horror'] },
+			{
+				name: 'The Thing (1982)',
+				score: 90,
+				tags: ['masterpiece', 'classic', 'horror']
+			},
 			{ name: 'Blade Runner 2049', score: 88, tags: ['masterpiece', 'sci-fi'] },
 			{ name: 'Parasite', score: 86, tags: ['masterpiece'] },
 			{ name: 'Arrival', score: 84, tags: ['sci-fi', 'masterpiece'] },
@@ -104,7 +134,11 @@ const CATEGORIES = [
 			{ name: 'The Witch', score: 80, tags: ['horror', 'hidden-gem'] },
 			{ name: 'Midsommar', score: 78, tags: ['horror'] },
 			{ name: 'Under the Skin', score: 76, tags: ['sci-fi', 'hidden-gem'] },
-			{ name: 'Everything Everywhere All at Once', score: 74, tags: ['indie'] },
+			{
+				name: 'Everything Everywhere All at Once',
+				score: 74,
+				tags: ['indie']
+			},
 			{ name: 'Hereditary', score: 72, tags: ['horror'] },
 			{ name: 'The Lighthouse', score: 70, tags: ['horror', 'indie'] },
 			{ name: 'Dune: Part One', score: 68, tags: ['sci-fi'] },
@@ -113,7 +147,11 @@ const CATEGORIES = [
 			{ name: 'The Northman', score: 60, tags: ['indie'] },
 			{ name: 'Mandy (2018)', score: 65, tags: ['horror', 'hidden-gem'] },
 			{ name: 'Nope', score: 58, tags: ['sci-fi', 'horror'] },
-			{ name: 'Transformers: Age of Extinction', score: 12, tags: ['overrated'] },
+			{
+				name: 'Transformers: Age of Extinction',
+				score: 12,
+				tags: ['overrated']
+			},
 			{ name: 'Avatar (2009)', score: 45, tags: ['overrated', 'sci-fi'] },
 			{ name: 'Cats (2019)', score: 5, tags: ['horror'] },
 			{ name: 'Morbius', score: 18, tags: ['overrated'] },
@@ -122,70 +160,67 @@ const CATEGORIES = [
 	}
 ];
 
-// ─── Endpoint ─────────────────────────────────────────────────────────────────
+// ─── Seed ────────────────────────────────────────────────────────────────────
 
-export async function POST() {
-	// Wipe existing data in dependency order
-	await db.delete(itemTag);
-	await db.delete(tierListItem);
-	await db.delete(tag);
-	await db.delete(category);
-
-	// Insert tags
-	await db.insert(tag).values(TAGS);
-
-	// Insert categories and their items
-	let totalItems = 0;
-
-	for (const cat of CATEGORIES) {
-		const [inserted] = await db
-			.insert(category)
-			.values({
-				slug: cat.slug,
-				name: cat.name,
-				description: cat.description,
-				order: cat.order
-			})
-			.returning({ id: category.id });
-
-		const categoryId = inserted.id;
-
-		// Insert items
-		for (let i = 0; i < cat.items.length; i++) {
-			const item = cat.items[i];
-			const slug = item.name
-				.toLowerCase()
-				.replace(/[^a-z0-9]+/g, '-')
-				.replace(/^-|-$/g, '');
-
-			const [insertedItem] = await db
-				.insert(tierListItem)
-				.values({
-					categoryId,
-					slug,
-					name: item.name,
-					score: item.score,
-					order: i
-				})
-				.returning({ id: tierListItem.id });
-
-			// Insert item → tag relations
-			if (item.tags.length > 0) {
-				await db.insert(itemTag).values(
-					item.tags.map((tagSlug) => ({ itemId: insertedItem.id, tagSlug }))
-				);
-			}
-
-			totalItems++;
-		}
-	}
-
-	return json({
-		ok: true,
-		seeded: {
-			categories: CATEGORIES.length,
-			tags: TAGS.length,
-			items: totalItems
-		}
-	});
+function slugify(name: string): string {
+	return name
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, '-')
+		.replace(/^-|-$/g, '');
 }
+
+console.log('Seeding database...');
+
+// Wipe existing data in dependency order
+db.delete(itemTag).run();
+db.delete(tierListItem).run();
+db.delete(tag).run();
+db.delete(category).run();
+
+// Insert tags
+db.insert(tag).values(TAGS).run();
+
+// Insert categories and their items
+let totalItems = 0;
+
+for (const cat of CATEGORIES) {
+	const inserted = db
+		.insert(category)
+		.values({
+			slug: cat.slug,
+			name: cat.name,
+			description: cat.description,
+			order: cat.order
+		})
+		.returning({ id: category.id })
+		.get();
+
+	for (let i = 0; i < cat.items.length; i++) {
+		const item = cat.items[i];
+		const insertedItem = db
+			.insert(tierListItem)
+			.values({
+				categoryId: inserted.id,
+				slug: slugify(item.name),
+				name: item.name,
+				score: item.score,
+				order: i
+			})
+			.returning({ id: tierListItem.id })
+			.get();
+
+		if (item.tags.length > 0) {
+			db.insert(itemTag)
+				.values(item.tags.map((tagSlug) => ({ itemId: insertedItem.id, tagSlug })))
+				.run();
+		}
+
+		totalItems++;
+	}
+}
+
+client.close();
+
+console.log(
+	`Seeded ${CATEGORIES.length} categories, ${TAGS.length} tags, ${totalItems} items.`
+);

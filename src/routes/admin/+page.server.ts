@@ -1,7 +1,7 @@
 import { db } from '$lib/server/db';
 import { category, tierListItem, tag } from '$lib/server/db/schema';
 import { count } from 'drizzle-orm';
-import type { PageServerLoad, Actions } from './$types';
+import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
 	const [cats] = await db.select({ count: count() }).from(category);
@@ -15,11 +15,4 @@ export const load: PageServerLoad = async () => {
 			tags: tags.count
 		}
 	};
-};
-
-export const actions: Actions = {
-	seed: async ({ fetch }) => {
-		const res = await fetch('/api/admin/seed', { method: 'POST' });
-		return await res.json();
-	}
 };

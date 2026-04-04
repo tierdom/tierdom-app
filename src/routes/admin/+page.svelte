@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -27,15 +26,7 @@
 		</div>
 	</div>
 
-	<div class="mt-8">
-		<h2 class="text-sm font-semibold text-secondary">Actions</h2>
-		<form method="POST" action="?/seed" use:enhance class="mt-2">
-			<button
-				type="submit"
-				class="rounded bg-accent px-4 py-2 text-sm font-semibold text-canvas transition-opacity hover:opacity-80"
-			>
-				Seed database
-			</button>
-		</form>
-	</div>
+	<p class="mt-8 text-xs text-secondary">
+		To seed the database with demo data, run <code class="text-primary">npm run db:seed</code>
+	</p>
 </section>
