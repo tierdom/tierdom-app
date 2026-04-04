@@ -47,7 +47,6 @@
 			max={100}
 			step={1}
 		/>
-		<FormField label="Order" name="order" type="number" value={data.item.order} />
 		<FormField
 			label="Description"
 			name="description"

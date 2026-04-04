@@ -37,7 +37,6 @@ export const actions: Actions = {
 		}
 
 		const description = data.get('description')?.toString()?.trim() || null;
-		const order = Number(data.get('order')) || 0;
 
 		const [maxOrder] = await db
 			.select({ max: sql<number>`coalesce(max(${tierListItem.order}), -1)` })
@@ -50,7 +49,7 @@ export const actions: Actions = {
 			name,
 			description,
 			score,
-			order: order || maxOrder.max + 1
+			order: maxOrder.max + 1
 		});
 
 		redirect(303, `/admin/categories/${categoryId}`);

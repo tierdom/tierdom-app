@@ -30,8 +30,6 @@
 		<FormField label="Name" name="name" required />
 		<FormField label="Slug" name="slug" help="Auto-generated from name if empty" />
 		<FormField label="Description" name="description" multiline />
-		<FormField label="Order" name="order" type="number" />
-
 		<h2 class="mt-2 text-sm font-semibold text-secondary">Tier cutoffs</h2>
 		<p class="text-xs text-secondary/70">Minimum score to reach each tier. Leave empty for defaults (S=90, A=75, B=60, C=45, D=30, E=15, F=0).</p>
 		<div class="grid grid-cols-4 gap-3 sm:grid-cols-7">

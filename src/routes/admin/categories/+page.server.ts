@@ -2,6 +2,7 @@ import { db } from '$lib/server/db';
 import { category, tierListItem } from '$lib/server/db/schema';
 import { asc, count, eq } from 'drizzle-orm';
 import { fail } from '@sveltejs/kit';
+import { applyOrder } from '$lib/server/reorder';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async () => {
@@ -33,29 +34,21 @@ export const actions: Actions = {
 
 	reorder: async ({ request }) => {
 		const data = await request.formData();
-		const id = Number(data.get('id'));
-		const direction = data.get('direction')?.toString();
-		if (!id || (direction !== 'up' && direction !== 'down')) {
-			return fail(400, { error: 'Invalid reorder request' });
+		const orderJson = data.get('order')?.toString();
+		if (!orderJson) return fail(400, { error: 'Missing order' });
+
+		let orderedIds: number[];
+		try {
+			orderedIds = JSON.parse(orderJson);
+		} catch {
+			return fail(400, { error: 'Invalid order format' });
 		}
 
-		const cats = await db
-			.select({ id: category.id, order: category.order })
-			.from(category)
-			.orderBy(asc(category.order));
+		if (!Array.isArray(orderedIds) || !orderedIds.every((id) => typeof id === 'number')) {
+			return fail(400, { error: 'Invalid order data' });
+		}
 
-		const idx = cats.findIndex((c) => c.id === id);
-		if (idx === -1) return fail(404, { error: 'Category not found' });
-
-		const swapIdx = direction === 'up' ? idx - 1 : idx + 1;
-		if (swapIdx < 0 || swapIdx >= cats.length) return { success: true };
-
-		const a = cats[idx];
-		const b = cats[swapIdx];
-
-		await db.update(category).set({ order: b.order }).where(eq(category.id, a.id));
-		await db.update(category).set({ order: a.order }).where(eq(category.id, b.id));
-
+		await applyOrder(category, category.id, category.order, orderedIds);
 		return { success: true };
 	}
 };

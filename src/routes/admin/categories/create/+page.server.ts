@@ -19,7 +19,6 @@ export const actions: Actions = {
 
 		const slug = data.get('slug')?.toString()?.trim() || slugify(name);
 		const description = data.get('description')?.toString()?.trim() || null;
-		const order = Number(data.get('order')) || 0;
 
 		const cutoffS = data.get('cutoffS')?.toString()?.trim();
 		const cutoffA = data.get('cutoffA')?.toString()?.trim();
@@ -37,7 +36,7 @@ export const actions: Actions = {
 			slug,
 			name,
 			description,
-			order: order || maxOrder.max + 1,
+			order: maxOrder.max + 1,
 			cutoffS: cutoffS ? Number(cutoffS) : null,
 			cutoffA: cutoffA ? Number(cutoffA) : null,
 			cutoffB: cutoffB ? Number(cutoffB) : null,

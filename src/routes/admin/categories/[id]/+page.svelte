@@ -3,6 +3,7 @@
 	import { goto } from '$app/navigation';
 	import Button from '$lib/components/admin/Button.svelte';
 	import FormField from '$lib/components/admin/FormField.svelte';
+	import SortableList from '$lib/components/admin/SortableList.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -16,6 +17,12 @@
 	function cancel() {
 		if (dirty && !confirm('You have unsaved changes. Discard them?')) return;
 		goto('/admin/categories');
+	}
+
+	async function handleReorderItems(orderedIds: number[]) {
+		const body = new FormData();
+		body.set('order', JSON.stringify(orderedIds));
+		await fetch('?/reorderItems', { method: 'POST', body });
 	}
 </script>
 
@@ -34,7 +41,6 @@
 		<FormField label="Name" name="name" value={data.category.name} required />
 		<FormField label="Slug" name="slug" value={data.category.slug} />
 		<FormField label="Description" name="description" value={data.category.description} multiline />
-		<FormField label="Order" name="order" type="number" value={data.category.order} />
 
 		<h2 class="mt-2 text-sm font-semibold text-secondary">Tier cutoffs</h2>
 		<p class="text-xs text-secondary/70">Minimum score to reach each tier. Leave empty for defaults (S=90, A=75, B=60, C=45, D=30, E=15, F=0).</p>
@@ -70,30 +76,29 @@
 	<h2 class="mt-10 text-lg font-bold text-primary">Items ({data.items.length})</h2>
 
 	{#if data.items.length > 0}
-		<table class="mt-4 w-full text-sm">
-			<thead>
-				<tr class="border-b border-subtle text-left text-xs text-secondary">
-					<th class="pb-2 font-medium">Name</th>
-					<th class="pb-2 font-medium">Score</th>
-					<th class="pb-2 font-medium">Order</th>
-					<th class="pb-2 text-right font-medium">Actions</th>
-				</tr>
-			</thead>
-			<tbody>
-				{#each data.items as item (item.id)}
-					<tr class="border-b border-subtle/50">
-						<td class="py-2 text-primary">
+		<div class="mt-4 w-full text-sm">
+			<div class="flex border-b border-subtle pb-2 text-left text-xs text-secondary">
+				<div class="w-8"></div>
+				<div class="flex-1 font-medium">Name</div>
+				<div class="w-16 font-medium">Score</div>
+				<div class="w-24 text-right font-medium">Actions</div>
+			</div>
+
+			<SortableList items={data.items} onreorder={handleReorderItems}>
+				{#snippet row(item)}
+					<div class="flex flex-1 items-center py-2">
+						<div class="flex-1 text-primary">
 							<a href="/admin/items/{item.id}" class="text-accent hover:underline">
 								{item.name}
 							</a>
-						</td>
-						<td class="py-2 text-secondary">{item.score}</td>
-						<td class="py-2 text-secondary">{item.order}</td>
-						<td class="py-2 text-right">
+						</div>
+						<div class="w-16 text-secondary">{item.score}</div>
+						<div class="w-24 text-right">
 							<form
 								method="POST"
 								action="?/deleteItem"
 								use:enhance
+								class="inline"
 								onsubmit={(e) => {
 									if (!confirm(`Delete "${item.name}"?`)) e.preventDefault();
 								}}
@@ -101,11 +106,11 @@
 								<input type="hidden" name="id" value={item.id} />
 								<Button variant="table-danger" type="submit">delete</Button>
 							</form>
-						</td>
-					</tr>
-				{/each}
-			</tbody>
-		</table>
+						</div>
+					</div>
+				{/snippet}
+			</SortableList>
+		</div>
 	{:else}
 		<p class="mt-4 text-sm text-secondary">No items yet.</p>
 	{/if}

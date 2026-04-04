@@ -33,7 +33,6 @@ export const actions: Actions = {
 		}
 
 		const description = data.get('description')?.toString()?.trim() || null;
-		const order = Number(data.get('order')) || 0;
 
 		const [item] = await db
 			.select({ categoryId: tierListItem.categoryId })
@@ -43,7 +42,7 @@ export const actions: Actions = {
 
 		await db
 			.update(tierListItem)
-			.set({ name, slug, score, description, order })
+			.set({ name, slug, score, description })
 			.where(eq(tierListItem.id, id));
 
 		redirect(303, `/admin/categories/${item.categoryId}`);

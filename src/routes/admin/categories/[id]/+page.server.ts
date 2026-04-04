@@ -2,6 +2,7 @@ import { db } from '$lib/server/db';
 import { category, tierListItem } from '$lib/server/db/schema';
 import { eq, asc } from 'drizzle-orm';
 import { error, fail, redirect } from '@sveltejs/kit';
+import { applyOrder } from '$lib/server/reorder';
 import type { PageServerLoad, Actions } from './$types';
 
 function slugify(text: string): string {
@@ -34,7 +35,6 @@ export const actions: Actions = {
 
 		const slug = data.get('slug')?.toString()?.trim() || slugify(name);
 		const description = data.get('description')?.toString()?.trim() || null;
-		const order = Number(data.get('order')) || 0;
 
 		const cutoffS = data.get('cutoffS')?.toString()?.trim();
 		const cutoffA = data.get('cutoffA')?.toString()?.trim();
@@ -50,7 +50,6 @@ export const actions: Actions = {
 				name,
 				slug,
 				description,
-				order,
 				cutoffS: cutoffS ? Number(cutoffS) : null,
 				cutoffA: cutoffA ? Number(cutoffA) : null,
 				cutoffB: cutoffB ? Number(cutoffB) : null,
@@ -68,6 +67,26 @@ export const actions: Actions = {
 		const id = Number(params.id);
 		await db.delete(category).where(eq(category.id, id));
 		redirect(303, '/admin/categories');
+	},
+
+	reorderItems: async ({ request }) => {
+		const data = await request.formData();
+		const orderJson = data.get('order')?.toString();
+		if (!orderJson) return fail(400, { error: 'Missing order' });
+
+		let orderedIds: number[];
+		try {
+			orderedIds = JSON.parse(orderJson);
+		} catch {
+			return fail(400, { error: 'Invalid order format' });
+		}
+
+		if (!Array.isArray(orderedIds) || !orderedIds.every((id) => typeof id === 'number')) {
+			return fail(400, { error: 'Invalid order data' });
+		}
+
+		await applyOrder(tierListItem, tierListItem.id, tierListItem.order, orderedIds);
+		return { success: true };
 	},
 
 	deleteItem: async ({ request }) => {

@@ -1,9 +1,16 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import Button from '$lib/components/admin/Button.svelte';
+	import SortableList from '$lib/components/admin/SortableList.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
+
+	async function handleReorder(orderedIds: number[]) {
+		const body = new FormData();
+		body.set('order', JSON.stringify(orderedIds));
+		await fetch('?/reorder', { method: 'POST', body });
+	}
 </script>
 
 <svelte:head>
@@ -13,44 +20,32 @@
 <section>
 	<h1 class="text-xl font-bold text-primary">Categories</h1>
 
-	<!-- Category table -->
 	{#if data.categories.length > 0}
-		<table class="mt-6 w-full text-sm">
-			<thead>
-				<tr class="border-b border-subtle text-left text-xs text-secondary">
-					<th class="pb-2 font-medium">Name</th>
-					<th class="pb-2 font-medium">Slug</th>
-					<th class="pb-2 font-medium">Items</th>
-					<th class="pb-2 font-medium">Order</th>
-					<th class="pb-2 text-right font-medium">Actions</th>
-				</tr>
-			</thead>
-			<tbody>
-				{#each data.categories as cat, i (cat.id)}
-					<tr class="border-b border-subtle/50">
-						<td class="py-2 text-primary">
+		<div class="mt-6 w-full text-sm">
+			<div class="flex border-b border-subtle pb-2 text-left text-xs text-secondary">
+				<div class="w-8"></div>
+				<div class="flex-1 font-medium">Name</div>
+				<div class="flex-1 font-medium">Slug</div>
+				<div class="w-16 font-medium">Items</div>
+				<div class="w-24 text-right font-medium">Actions</div>
+			</div>
+
+			<SortableList items={data.categories} onreorder={handleReorder}>
+				{#snippet row(cat)}
+					<div class="flex flex-1 items-center py-2">
+						<div class="flex-1 text-primary">
 							<a href="/admin/categories/{cat.id}" class="text-accent hover:underline">
 								{cat.name}
 							</a>
-						</td>
-						<td class="py-2 text-secondary">{cat.slug}</td>
-						<td class="py-2 text-secondary">{cat.itemCount}</td>
-						<td class="py-2 text-secondary">{cat.order}</td>
-						<td class="flex items-center justify-end gap-1 py-2">
-							<form method="POST" action="?/reorder" use:enhance>
-								<input type="hidden" name="id" value={cat.id} />
-								<input type="hidden" name="direction" value="up" />
-								<Button variant="table" type="submit" disabled={i === 0}>up</Button>
-							</form>
-							<form method="POST" action="?/reorder" use:enhance>
-								<input type="hidden" name="id" value={cat.id} />
-								<input type="hidden" name="direction" value="down" />
-								<Button variant="table" type="submit" disabled={i === data.categories.length - 1}>down</Button>
-							</form>
+						</div>
+						<div class="flex-1 text-secondary">{cat.slug}</div>
+						<div class="w-16 text-secondary">{cat.itemCount}</div>
+						<div class="w-24 text-right">
 							<form
 								method="POST"
 								action="?/delete"
 								use:enhance
+								class="inline"
 								onsubmit={(e) => {
 									if (!confirm(`Delete "${cat.name}"? This also removes all its items.`)) {
 										e.preventDefault();
@@ -60,11 +55,11 @@
 								<input type="hidden" name="id" value={cat.id} />
 								<Button variant="table-danger" type="submit">delete</Button>
 							</form>
-						</td>
-					</tr>
-				{/each}
-			</tbody>
-		</table>
+						</div>
+					</div>
+				{/snippet}
+			</SortableList>
+		</div>
 	{:else}
 		<p class="mt-6 text-sm text-secondary">No categories yet.</p>
 	{/if}
