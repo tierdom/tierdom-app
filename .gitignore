@@ -28,3 +28,5 @@ test-results
 *.sqlite
 data/*.db
 data/*.sqlite
+
+.sessions
