@@ -85,6 +85,7 @@
 			score={selectedItem.score}
 			description={selectedItem.description}
 			tier={selectedItem.tier}
+			tags={selectedItem.tags}
 		/>
 	</Dialog>
 {/if}

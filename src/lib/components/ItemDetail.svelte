@@ -1,12 +1,15 @@
 <script lang="ts">
+	type Tag = { slug: string; label: string };
+
 	type Props = {
 		name: string;
 		score: number;
 		description?: string | null;
 		tier: string;
+		tags?: Tag[];
 	};
 
-	let { name, score, description, tier }: Props = $props();
+	let { name, score, description, tier, tags = [] }: Props = $props();
 
 	let barColor = $derived(`hsl(${(score / 100) * 120}, 70%, 45%)`);
 
@@ -46,6 +49,15 @@
 			style:background={barColor}
 		></div>
 	</div>
+
+	<!-- Tags -->
+	{#if tags.length > 0}
+		<div class="flex flex-wrap gap-1.5">
+			{#each tags as t (t.slug)}
+				<span class="rounded-full border border-subtle px-2.5 py-0.5 text-xs text-secondary">{t.label}</span>
+			{/each}
+		</div>
+	{/if}
 
 	<!-- Description / review -->
 	{#if description}
