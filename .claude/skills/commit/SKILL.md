@@ -9,6 +9,7 @@ Help me create a git commit for the current changes in this SvelteKit project.
 1. Run `git status` and `git diff` (both staged and unstaged) to understand what has changed.
 2. Pick the most fitting emoji and type from the table below.
 3. Stage the relevant files and create the commit immediately — do not ask for confirmation first. Claude Code's built-in permission prompt is the approval gate.
+4. Note: after the commit command runs, the user may be prompted for a GPG signing passphrase. If the process pauses briefly, that's why — just wait for it to complete.
 
 ## Emoji types
 
