@@ -1,13 +1,12 @@
 <script lang="ts">
 	import './layout.css';
-	import favicon from '$lib/assets/favicon.svg';
 	import { resolve } from '$app/paths';
 
 	let { children, data } = $props();
 </script>
 
 <svelte:head>
-	<link rel="icon" href={favicon} />
+	<link rel="icon" type="image/png" href="/favicon.png" />
 </svelte:head>
 
 <!-- ─── Fixed top navigation ──────────────────────────────────────────────── -->
