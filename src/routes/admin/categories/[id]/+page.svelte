@@ -117,7 +117,7 @@
 		<form method="POST" action="?/createItem" use:enhance class="mt-3 flex flex-col gap-3">
 			<div class="grid grid-cols-3 gap-3">
 				<FormField label="Name" name="name" required />
-				<FormField label="Score" name="score" type="number" required min={0} max={100} step={0.1} />
+				<FormField label="Score" name="score" type="number" required min={0} max={100} step={1} />
 				<FormField label="Slug" name="slug" help="Auto-generated if empty" />
 			</div>
 			<FormField label="Description" name="description" multiline />

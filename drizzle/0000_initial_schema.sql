@@ -33,7 +33,7 @@ CREATE TABLE `tier_list_item` (
 	`slug` text NOT NULL,
 	`name` text NOT NULL,
 	`description` text,
-	`score` real NOT NULL,
+	`score` integer NOT NULL,
 	`order` integer DEFAULT 0 NOT NULL,
 	FOREIGN KEY (`category_id`) REFERENCES `category`(`id`) ON UPDATE no action ON DELETE cascade
 );

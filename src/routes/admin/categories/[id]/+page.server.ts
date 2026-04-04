@@ -77,9 +77,9 @@ export const actions: Actions = {
 		if (!name) return fail(400, { error: 'Item name is required' });
 
 		const slug = data.get('slug')?.toString()?.trim() || slugify(name);
-		const score = Number(data.get('score'));
+		const score = Math.round(Number(data.get('score')));
 		if (isNaN(score) || score < 0 || score > 100) {
-			return fail(400, { error: 'Score must be 0-100' });
+			return fail(400, { error: 'Score must be an integer 0-100' });
 		}
 
 		const description = data.get('description')?.toString()?.trim() || null;

@@ -32,7 +32,7 @@
 			required
 			min={0}
 			max={100}
-			step={0.1}
+			step={1}
 		/>
 		<FormField label="Order" name="order" type="number" value={data.item.order} />
 		<FormField

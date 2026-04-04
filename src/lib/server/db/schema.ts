@@ -27,7 +27,7 @@ export const tierListItem = sqliteTable(
 		slug: text('slug').notNull(),
 		name: text('name').notNull(),
 		description: text('description'),
-		score: real('score').notNull(),
+		score: integer('score').notNull(),
 		order: integer('order').notNull().default(0)
 	},
 	(t) => [unique('item_category_slug').on(t.categoryId, t.slug)]
