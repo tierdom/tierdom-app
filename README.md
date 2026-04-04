@@ -15,6 +15,16 @@ The entire app ships as a single Docker image. The database is a SQLite file mou
 
 ---
 
+## Documentation
+
+| Document                           | Description                                  |
+| ---------------------------------- | -------------------------------------------- |
+| [DOMAIN.md](DOMAIN.md)             | Core domain model — entities, tiers, scoring |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | Architecture decision records index          |
+| [GUIDELINES.md](GUIDELINES.md)     | Development guidelines                       |
+
+---
+
 ## Features
 
 - Topic sections (Games, Books, Movies, Board Games, and more — fully configurable)
