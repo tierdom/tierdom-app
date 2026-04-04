@@ -6,6 +6,7 @@
 </script>
 
 <svelte:head>
+	<title>tierdom</title>
 	<link rel="icon" type="image/png" href="/favicon.png" />
 </svelte:head>
 
