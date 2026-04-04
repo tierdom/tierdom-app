@@ -34,7 +34,7 @@
 </script>
 
 <svelte:head>
-	<title>{data.category.name} — tierdom</title>
+	<title>{selectedItem ? `${selectedItem.name} — ` : ''}{data.category.name} — tierdom</title>
 </svelte:head>
 
 <section class="py-10">
