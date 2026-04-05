@@ -28,8 +28,10 @@
 		"@sveltejs/adapter-node": "5.5.2",
 		"@sveltejs/kit": "2.50.2",
 		"@sveltejs/vite-plugin-svelte": "6.2.4",
+		"@tailwindcss/typography": "0.5.19",
 		"@tailwindcss/vite": "4.1.18",
 		"@types/better-sqlite3": "7.6.13",
+		"@types/dompurify": "3.0.5",
 		"@types/node": "24",
 		"drizzle-kit": "0.31.8",
 		"drizzle-orm": "0.45.1",
@@ -49,6 +51,8 @@
 		"vitest": "4.1.0"
 	},
 	"dependencies": {
-		"better-sqlite3": "12.6.2"
+		"better-sqlite3": "12.6.2",
+		"isomorphic-dompurify": "3.7.1",
+		"marked": "17.0.5"
 	}
 }

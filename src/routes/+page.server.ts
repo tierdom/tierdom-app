@@ -1,7 +1,8 @@
 import type { PageServerLoad } from './$types';
 import { db } from '$lib/server/db';
-import { category, tierListItem } from '$lib/server/db/schema';
+import { category, tierListItem, page } from '$lib/server/db/schema';
 import { asc, count, eq } from 'drizzle-orm';
+import { renderMarkdown } from '$lib/server/markdown';
 
 export const load: PageServerLoad = async () => {
 	const categories = await db
@@ -17,5 +18,15 @@ export const load: PageServerLoad = async () => {
 		.groupBy(category.id)
 		.orderBy(asc(category.order));
 
-	return { categoriesWithCounts: categories };
+	const categoriesWithHtml = categories.map((cat) => ({
+		...cat,
+		descriptionHtml: renderMarkdown(cat.description)
+	}));
+
+	const [homePage] = await db.select().from(page).where(eq(page.slug, 'home')).limit(1);
+
+	return {
+		categoriesWithCounts: categoriesWithHtml,
+		page: homePage ? { ...homePage, contentHtml: renderMarkdown(homePage.content) } : null
+	};
 };

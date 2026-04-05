@@ -1,4 +1,29 @@
 @import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+/* ─── Prose color overrides for the dark theme ─────────────────────────────
+   prose-invert handles the light-on-dark flip. We override the *-invert-*
+   source variables so the inverted palette uses our semantic color tokens.
+   ────────────────────────────────────────────────────────────────────────── */
+.prose {
+	--tw-prose-invert-body: var(--c-secondary);
+	--tw-prose-invert-headings: var(--c-primary);
+	--tw-prose-invert-lead: var(--c-secondary);
+	--tw-prose-invert-links: var(--c-accent);
+	--tw-prose-invert-bold: var(--c-primary);
+	--tw-prose-invert-counters: var(--c-secondary);
+	--tw-prose-invert-bullets: var(--c-subtle);
+	--tw-prose-invert-hr: var(--c-subtle);
+	--tw-prose-invert-quotes: var(--c-primary);
+	--tw-prose-invert-quote-borders: var(--c-accent-muted);
+	--tw-prose-invert-captions: var(--c-secondary);
+	--tw-prose-invert-kbd: var(--c-primary);
+	--tw-prose-invert-code: var(--c-accent);
+	--tw-prose-invert-pre-code: var(--c-primary);
+	--tw-prose-invert-pre-bg: var(--c-surface);
+	--tw-prose-invert-th-borders: var(--c-subtle);
+	--tw-prose-invert-td-borders: var(--c-subtle);
+}
 
 /* ─── Default theme: deep dark blue sci-fi ─────────────────────────────────
    All semantic color values live here on :root so swapping themes later is

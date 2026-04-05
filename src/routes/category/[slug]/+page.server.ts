@@ -3,6 +3,7 @@ import { eq, asc } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';
 import { db } from '$lib/server/db';
 import { category, tierListItem, itemTag, tag } from '$lib/server/db/schema';
+import { renderMarkdown } from '$lib/server/markdown';
 
 export type Tier = 'S' | 'A' | 'B' | 'C' | 'D' | 'E' | 'F';
 
@@ -26,11 +27,7 @@ function scoreToTier(score: number, cutoffs: Record<Tier, number>): Tier {
 }
 
 export const load: PageServerLoad = async ({ params }) => {
-	const [cat] = await db
-		.select()
-		.from(category)
-		.where(eq(category.slug, params.slug))
-		.limit(1);
+	const [cat] = await db.select().from(category).where(eq(category.slug, params.slug)).limit(1);
 
 	if (!cat) error(404, 'Category not found');
 
@@ -66,6 +63,7 @@ export const load: PageServerLoad = async ({ params }) => {
 
 	const itemsWithTags = items.map((item) => ({
 		...item,
+		descriptionHtml: renderMarkdown(item.description),
 		tags: tagsByItemId.get(item.id) ?? []
 	}));
 
@@ -82,5 +80,8 @@ export const load: PageServerLoad = async ({ params }) => {
 		items: grouped.get(t)!
 	}));
 
-	return { category: cat, tiers };
+	return {
+		category: { ...cat, descriptionHtml: renderMarkdown(cat.description) },
+		tiers
+	};
 };

@@ -9,7 +9,7 @@ import { drizzle } from 'drizzle-orm/better-sqlite3';
 import Database from 'better-sqlite3';
 import * as schema from './schema';
 
-const { category, tierListItem, tag, itemTag } = schema;
+const { category, tierListItem, tag, itemTag, page } = schema;
 
 if (!process.env.DATABASE_URL) {
 	console.error('DATABASE_URL is not set');
@@ -35,17 +35,37 @@ const TAGS = [
 	{ slug: 'comedy', label: 'Comedy' }
 ];
 
-const CATEGORIES = [
+type SeedItem = { name: string; score: number; tags: string[]; description?: string };
+
+const CATEGORIES: {
+	slug: string;
+	name: string;
+	description: string;
+	order: number;
+	items: SeedItem[];
+}[] = [
 	{
 		slug: 'video-games',
 		name: 'Video Games',
 		description:
-			'Every game I have played ranked from S-tier masterpieces down to the ones I wish I could forget.',
+			'Every game I have played ranked from **S-tier masterpieces** down to the ones I wish I could forget.\n\nGenres span RPGs, platformers, roguelikes, and more.',
 		order: 0,
 		items: [
-			{ name: 'Hollow Knight', score: 97, tags: ['indie', 'masterpiece', 'fantasy'] },
+			{
+				name: 'Hollow Knight',
+				score: 97,
+				tags: ['indie', 'masterpiece', 'fantasy'],
+				description:
+					'A **masterclass** in metroidvania design. The atmosphere, the music, the challenge — everything clicks.\n\nTeam Cherry created something truly special with a tiny budget.'
+			},
 			{ name: 'The Witcher 3', score: 94, tags: ['masterpiece', 'fantasy'] },
-			{ name: 'Disco Elysium', score: 92, tags: ['indie', 'masterpiece'] },
+			{
+				name: 'Disco Elysium',
+				score: 92,
+				tags: ['indie', 'masterpiece'],
+				description:
+					'An RPG where *every skill is a voice in your head*. The writing is unmatched in games.\n\nNothing else plays like this.'
+			},
 			{ name: 'Hades', score: 91, tags: ['indie', 'masterpiece'] },
 			{ name: 'Dark Souls', score: 88, tags: ['classic', 'masterpiece'] },
 			{ name: 'Celeste', score: 86, tags: ['indie', 'hidden-gem'] },
@@ -74,13 +94,25 @@ const CATEGORIES = [
 		slug: 'books',
 		name: 'Books',
 		description:
-			'Fiction and non-fiction both. Sorted by how much the book actually stuck with me long after reading.',
+			'Fiction and non-fiction both. Sorted by how much the book actually *stuck with me* long after reading.\n\nHeavy on sci-fi and fantasy, with a few literary outliers.',
 		order: 1,
 		items: [
-			{ name: 'Blood Meridian', score: 96, tags: ['masterpiece', 'classic'] },
+			{
+				name: 'Blood Meridian',
+				score: 96,
+				tags: ['masterpiece', 'classic'],
+				description:
+					'McCarthy at his most **brutal and poetic**. The Judge is one of the greatest villains in all of literature.\n\nNot for the faint of heart.'
+			},
 			{ name: 'Infinite Jest', score: 93, tags: ['masterpiece', 'classic'] },
 			{ name: 'The Road', score: 91, tags: ['masterpiece', 'horror'] },
-			{ name: 'Dune', score: 90, tags: ['masterpiece', 'sci-fi'] },
+			{
+				name: 'Dune',
+				score: 90,
+				tags: ['masterpiece', 'sci-fi'],
+				description:
+					'The **definitive** science fiction epic. World-building that puts most fantasy to shame.\n\nHerbert created an entire universe of politics, religion, and ecology.'
+			},
 			{ name: 'Piranesi', score: 88, tags: ['hidden-gem', 'fantasy'] },
 			{ name: 'The Name of the Wind', score: 85, tags: ['fantasy'] },
 			{ name: 'Recursion', score: 83, tags: ['sci-fi'] },
@@ -112,10 +144,16 @@ const CATEGORIES = [
 		slug: 'movies',
 		name: 'Movies',
 		description:
-			'Films ranked by lasting impression — not box office, not hype, just how they hold up on reflection.',
+			'Films ranked by **lasting impression** — not box office, not hype, just how they hold up on reflection.\n\nHeavy on horror and sci-fi; blockbusters need not apply.',
 		order: 2,
 		items: [
-			{ name: 'Annihilation', score: 95, tags: ['masterpiece', 'sci-fi', 'horror'] },
+			{
+				name: 'Annihilation',
+				score: 95,
+				tags: ['masterpiece', 'sci-fi', 'horror'],
+				description:
+					"Garland turned VanderMeer's *weird fiction* into something even stranger on screen. The Shimmer is **unforgettable**.\n\nThe bear scene alone earns it a spot in S-tier."
+			},
 			{
 				name: '2001: A Space Odyssey',
 				score: 93,
@@ -127,7 +165,13 @@ const CATEGORIES = [
 				score: 90,
 				tags: ['masterpiece', 'classic', 'horror']
 			},
-			{ name: 'Blade Runner 2049', score: 88, tags: ['masterpiece', 'sci-fi'] },
+			{
+				name: 'Blade Runner 2049',
+				score: 88,
+				tags: ['masterpiece', 'sci-fi'],
+				description:
+					"Villeneuve proved a *Blade Runner* sequel could work. Deakins' cinematography is **breathtaking**.\n\nSlow, meditative, and visually perfect."
+			},
 			{ name: 'Parasite', score: 86, tags: ['masterpiece'] },
 			{ name: 'Arrival', score: 84, tags: ['sci-fi', 'masterpiece'] },
 			{ name: 'Mad Max: Fury Road', score: 82, tags: ['classic'] },
@@ -160,6 +204,45 @@ const CATEGORIES = [
 	}
 ];
 
+const PAGES = [
+	{
+		slug: 'home',
+		title: 'Home',
+		content: `# Welcome to **tierdom**
+
+A personal, self-hosted collection of tier-ranked lists. No algorithms, no ads — just honest rankings from S to F.`
+	},
+	{
+		slug: 'about',
+		title: 'About tierdom',
+		content: `**Tierdom** is a personal, self-hosted tier list application. Instead of scattering reviews and ratings across dozens of proprietary platforms, everything lives in one place — owned and controlled by me.
+
+## Why self-host?
+
+Review platforms like IMDB, Goodreads, and BoardGameGeek are great resources, but they each lock your data into their own silo with their own rating scale. Tierdom brings all of that together under a single, consistent system.
+
+| Feature | Self-hosted | Proprietary |
+|---|---|---|
+| Data ownership | Full | Theirs |
+| Minimalist UI | Yes | Varies |
+| Uniform rankings | S–F everywhere | Per-platform |
+| Ad-free | Always | Rarely |
+| Custom categories | Unlimited | Fixed |
+
+## What's in a name?
+
+**Tierdom** blends "tier" (as in tier lists) with "fiefdom" — a small, self-governed domain. It's a nod to the idea of owning your own little corner of the ranking world.
+
+## Who made this?
+
+Tierdom is built and maintained by [Jeroen Heijmans](https://jeroenheijmans.nl). It started as a small side project and grew into the thing you see here.
+
+## Open source
+
+The source code is publicly available on [GitHub](https://github.com/jeroenheijmans/tierdom-pro). Feel free to explore, fork, or draw inspiration for your own tier list project.`
+	}
+];
+
 // ─── Seed ────────────────────────────────────────────────────────────────────
 
 function slugify(name: string): string {
@@ -176,9 +259,11 @@ db.delete(itemTag).run();
 db.delete(tierListItem).run();
 db.delete(tag).run();
 db.delete(category).run();
+db.delete(page).run();
 
-// Insert tags
+// Insert tags and pages
 db.insert(tag).values(TAGS).run();
+db.insert(page).values(PAGES).run();
 
 // Insert categories and their items
 let totalItems = 0;
@@ -203,6 +288,7 @@ for (const cat of CATEGORIES) {
 				categoryId: inserted.id,
 				slug: slugify(item.name),
 				name: item.name,
+				description: item.description ?? null,
 				score: item.score,
 				order: i
 			})
@@ -221,6 +307,4 @@ for (const cat of CATEGORIES) {
 
 client.close();
 
-console.log(
-	`Seeded ${CATEGORIES.length} categories, ${TAGS.length} tags, ${totalItems} items.`
-);
+console.log(`Seeded ${CATEGORIES.length} categories, ${TAGS.length} tags, ${totalItems} items.`);

@@ -19,21 +19,18 @@
 	<title>Home — tierdom</title>
 </svelte:head>
 
-<!-- Hero -->
-<section class="py-16 text-center md:py-24">
-	<h1 class="text-4xl font-extrabold tracking-tight text-primary md:text-5xl">
-		Welcome to <span class="text-accent">tierdom</span>
-	</h1>
-	<p class="mx-auto mt-4 max-w-xl text-lg text-secondary">
-		A personal, self-hosted collection of tier-ranked lists. No algorithms, no ads — just honest
-		rankings from S to F.
-	</p>
-</section>
+<!-- CMS hero -->
+{#if data.page?.contentHtml}
+	<section class="py-16 text-center md:py-24">
+		<!-- eslint-disable-next-line svelte/no-at-html-tags — sanitised by DOMPurify server-side -->
+		<div class="mx-auto prose prose-lg max-w-xl prose-invert">{@html data.page.contentHtml}</div>
+	</section>
+{/if}
 
 <!-- Categories -->
 {#if data.categoriesWithCounts.length > 0}
 	<section class="pb-16">
-		<h2 class="mb-6 text-center text-sm font-semibold uppercase tracking-widest text-secondary">
+		<h2 class="mb-6 text-center text-sm font-semibold tracking-widest text-secondary uppercase">
 			Browse the lists
 		</h2>
 		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -45,8 +42,11 @@
 					<h3 class="text-lg font-bold text-primary group-hover:text-accent">
 						{cat.name}
 					</h3>
-					{#if cat.description}
-						<p class="mt-1 text-sm text-secondary line-clamp-2">{cat.description}</p>
+					{#if cat.descriptionHtml}
+						<div class="prose prose-sm mt-1 line-clamp-2 prose-invert [&>*]:m-0">
+							<!-- eslint-disable-next-line svelte/no-at-html-tags — sanitised by DOMPurify server-side -->
+							{@html cat.descriptionHtml}
+						</div>
 					{/if}
 					<p class="mt-3 text-xs text-secondary/60">
 						{cat.itemCount}
@@ -60,7 +60,7 @@
 
 <!-- Tier system -->
 <section class="pb-16">
-	<h2 class="mb-6 text-center text-sm font-semibold uppercase tracking-widest text-secondary">
+	<h2 class="mb-6 text-center text-sm font-semibold tracking-widest text-secondary uppercase">
 		The tier system
 	</h2>
 	<div class="mx-auto flex max-w-md flex-col gap-1">

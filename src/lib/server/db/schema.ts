@@ -51,6 +51,12 @@ export const itemTag = sqliteTable(
 	(t) => [primaryKey({ columns: [t.itemId, t.tagSlug] })]
 );
 
+export const page = sqliteTable('page', {
+	slug: text('slug').primaryKey(),
+	title: text('title').notNull(),
+	content: text('content').notNull()
+});
+
 // ─── Relations ────────────────────────────────────────────────────────────────
 
 export const categoryRelations = relations(category, ({ many }) => ({

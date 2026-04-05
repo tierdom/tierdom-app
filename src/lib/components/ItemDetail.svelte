@@ -4,12 +4,12 @@
 	type Props = {
 		name: string;
 		score: number;
-		description?: string | null;
+		descriptionHtml?: string | null;
 		tier: string;
 		tags?: Tag[];
 	};
 
-	let { name, score, description, tier, tags = [] }: Props = $props();
+	let { name, score, descriptionHtml, tier, tags = [] }: Props = $props();
 
 	let barColor = $derived(`hsl(${(score / 100) * 120}, 70%, 45%)`);
 
@@ -43,28 +43,30 @@
 
 	<!-- Score bar -->
 	<div class="h-3 w-full overflow-hidden bg-black/30">
-		<div
-			class="h-full opacity-80"
-			style:width="{score}%"
-			style:background={barColor}
-		></div>
+		<div class="h-full opacity-80" style:width="{score}%" style:background={barColor}></div>
 	</div>
 
 	<!-- Tags -->
 	{#if tags.length > 0}
 		<div class="flex flex-wrap gap-1.5">
 			{#each tags as t (t.slug)}
-				<span class="rounded-full border border-subtle px-2.5 py-0.5 text-xs text-secondary">{t.label}</span>
+				<span class="rounded-full border border-subtle px-2.5 py-0.5 text-xs text-secondary"
+					>{t.label}</span
+				>
 			{/each}
 		</div>
 	{/if}
 
 	<!-- Description / review -->
-	{#if description}
-		<div class="whitespace-pre-wrap text-sm leading-relaxed text-secondary">
-			{description}
-		</div>
+	{#if descriptionHtml}
+		<!-- eslint-disable-next-line svelte/no-at-html-tags — sanitised by DOMPurify server-side -->
+		<div class="prose prose-sm prose-invert">{@html descriptionHtml}</div>
 	{:else}
-		<p class="whitespace-pre-wrap text-sm leading-relaxed text-secondary">This is a placeholder review. The actual review content will appear here once it has been written. It will contain thoughts, opinions, and a detailed assessment of this item — covering what makes it stand out, where it falls short, and how it compares to similar entries in the list.</p>
+		<p class="text-sm leading-relaxed text-secondary">
+			This is a placeholder review. The actual review content will appear here once it has been
+			written. It will contain thoughts, opinions, and a detailed assessment of this item — covering
+			what makes it stand out, where it falls short, and how it compares to similar entries in the
+			list.
+		</p>
 	{/if}
 </div>

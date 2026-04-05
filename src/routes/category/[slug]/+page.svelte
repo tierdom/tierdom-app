@@ -23,9 +23,7 @@
 	);
 
 	let selectedItem = $derived(
-		page.state.showItem
-			? (allItems.find((i) => i.slug === page.state.showItem) ?? null)
-			: null
+		page.state.showItem ? (allItems.find((i) => i.slug === page.state.showItem) ?? null) : null
 	);
 
 	function openItem(slug: string) {
@@ -44,8 +42,11 @@
 <section class="py-10">
 	<!-- Category header -->
 	<h1 class="text-2xl font-bold text-primary">{data.category.name}</h1>
-	{#if data.category.description}
-		<p class="mt-2 max-w-2xl text-sm text-secondary">{data.category.description}</p>
+	{#if data.category.descriptionHtml}
+		<!-- eslint-disable-next-line svelte/no-at-html-tags — sanitised by DOMPurify server-side -->
+		<div class="prose prose-sm mt-2 max-w-2xl prose-invert">
+			{@html data.category.descriptionHtml}
+		</div>
 	{/if}
 
 	<!-- Tier rows -->
@@ -54,7 +55,9 @@
 			<div class="flex overflow-hidden border-2 border-subtle">
 				<!-- Tier label -->
 				<div
-					class="flex w-14 shrink-0 items-start justify-center pt-3 text-xl font-black {tierStyles[tier]}"
+					class="flex w-14 shrink-0 items-start justify-center pt-3 text-xl font-black {tierStyles[
+						tier
+					]}"
 				>
 					{tier}
 				</div>
@@ -62,11 +65,7 @@
 				<!-- Items -->
 				<div class="flex flex-1 flex-wrap bg-surface">
 					{#each items as item (item.id)}
-						<TierListItem
-							name={item.name}
-							score={item.score}
-							onclick={() => openItem(item.slug)}
-						/>
+						<TierListItem name={item.name} score={item.score} onclick={() => openItem(item.slug)} />
 					{/each}
 				</div>
 			</div>
@@ -83,7 +82,7 @@
 		<ItemDetail
 			name={selectedItem.name}
 			score={selectedItem.score}
-			description={selectedItem.description}
+			descriptionHtml={selectedItem.descriptionHtml}
 			tier={selectedItem.tier}
 			tags={selectedItem.tags}
 		/>
