@@ -5,9 +5,10 @@
 		open: boolean;
 		onclose: () => void;
 		categories: { id: number; slug: string; name: string }[];
+		extraLinks: { href: string; label: string }[];
 	};
 
-	let { open, onclose, categories }: Props = $props();
+	let { open, onclose, categories, extraLinks }: Props = $props();
 
 	$effect(() => {
 		if (open) {
@@ -50,6 +51,8 @@
 			<NavLink href={`/category/${cat.slug}`} label={cat.name} variant="mobile" onclick={onclose} />
 		{/each}
 		<div class="my-2 border-t border-subtle"></div>
-		<NavLink href="/about" label="About" variant="mobile" onclick={onclose} />
+		{#each extraLinks as link (link.href)}
+			<NavLink href={link.href} label={link.label} variant="mobile" onclick={onclose} />
+		{/each}
 	</nav>
 </aside>

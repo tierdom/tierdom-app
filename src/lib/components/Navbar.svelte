@@ -13,6 +13,11 @@
 	let { categories }: Props = $props();
 	let menuOpen = $state(false);
 
+	const extraLinks: { href: string; label: string }[] = [
+		{ href: '/about', label: 'About' },
+		{ href: '/admin', label: 'Admin' }
+	];
+
 	// Close mobile menu on navigation
 	afterNavigate(() => {
 		menuOpen = false;
@@ -41,22 +46,25 @@
 		<!-- Spacer -->
 		<div class="flex-1"></div>
 
-		<!-- About (desktop) -->
-		<div class="hidden md:block">
-			<NavLink href="/about" label="About" />
-		</div>
-
-		<!-- Admin shortcut (desktop) -->
-		<a
-			href={resolve('/admin')}
-			class="ml-4 hidden rounded border p-1.5 transition-colors md:inline-flex {page.url.pathname.startsWith('/admin')
-				? 'border-accent text-accent'
-				: 'border-subtle text-secondary hover:bg-surface hover:text-primary'}"
-			aria-label="Admin"
-			aria-current={page.url.pathname.startsWith('/admin') ? 'page' : undefined}
-		>
-			<Pencil size={14} />
-		</a>
+		<!-- Extra links (desktop) -->
+		{#each extraLinks as link (link.href)}
+			{#if link.href === '/admin'}
+				<a
+					href={resolve('/admin')}
+					class="ml-4 hidden rounded border p-1.5 transition-colors md:inline-flex {page.url.pathname.startsWith('/admin')
+						? 'border-accent text-accent'
+						: 'border-subtle text-secondary hover:bg-surface hover:text-primary'}"
+					aria-label="Admin"
+					aria-current={page.url.pathname.startsWith('/admin') ? 'page' : undefined}
+				>
+					<Pencil size={14} />
+				</a>
+			{:else}
+				<div class="hidden md:block">
+					<NavLink href={link.href} label={link.label} />
+				</div>
+			{/if}
+		{/each}
 
 		<!-- Hamburger button (mobile) -->
 		<button
@@ -76,4 +84,4 @@
 	</nav>
 </header>
 
-<MobileMenu open={menuOpen} onclose={() => (menuOpen = false)} {categories} />
+<MobileMenu open={menuOpen} onclose={() => (menuOpen = false)} {categories} {extraLinks} />
