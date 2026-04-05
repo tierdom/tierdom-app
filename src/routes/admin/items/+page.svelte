@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { formatRelativeDate } from '$lib/format-date';
 	import { Trash2 } from 'lucide-svelte';
 	import Button from '$lib/components/admin/Button.svelte';
 	import TierBadge from '$lib/components/admin/TierBadge.svelte';
@@ -50,6 +51,7 @@
 				<div class="flex-1 font-medium">Name</div>
 				<div class="hidden w-40 font-medium sm:block">Category</div>
 				<div class="w-14 font-medium">Score</div>
+				<div class="hidden w-24 font-medium md:block">Updated</div>
 				<div class="w-20 text-right font-medium">Actions</div>
 			</div>
 
@@ -88,6 +90,9 @@
 						{item.categoryName}
 					</div>
 					<div class="w-14 text-secondary">{item.score}</div>
+					<div class="hidden w-24 text-xs text-secondary md:block">
+						{formatRelativeDate(item.updatedAt)}
+					</div>
 					<div class="w-20 text-right">
 						<form
 							method="POST"

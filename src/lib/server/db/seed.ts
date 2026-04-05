@@ -305,6 +305,33 @@ for (const cat of CATEGORIES) {
 	}
 }
 
+// ─── Randomize timestamps ────────────────────────────────────────────────────
+// Spread created_at over the past 6 months. ~1/3 of rows get a later updated_at.
+// Because the triggers use WHEN OLD.updated_at = NEW.updated_at, explicitly
+// setting updated_at in these UPDATEs bypasses the trigger automatically.
+
+const SIX_MONTHS_SEC = 6 * 30 * 24 * 60 * 60;
+
+client.exec(`
+	-- Assign random created_at in the past 6 months
+	UPDATE category       SET created_at = datetime('now', '-' || (abs(random()) % ${SIX_MONTHS_SEC}) || ' seconds');
+	UPDATE tier_list_item SET created_at = datetime('now', '-' || (abs(random()) % ${SIX_MONTHS_SEC}) || ' seconds');
+	UPDATE tag            SET created_at = datetime('now', '-' || (abs(random()) % ${SIX_MONTHS_SEC}) || ' seconds');
+	UPDATE page           SET created_at = datetime('now', '-' || (abs(random()) % ${SIX_MONTHS_SEC}) || ' seconds');
+
+	-- Default: updated_at = created_at (never edited)
+	UPDATE category       SET updated_at = created_at;
+	UPDATE tier_list_item SET updated_at = created_at;
+	UPDATE tag            SET updated_at = created_at;
+	UPDATE page           SET updated_at = created_at;
+
+	-- ~1/3 of rows: bump updated_at to a random point between created_at and now
+	UPDATE category       SET updated_at = datetime(created_at, '+' || (abs(random()) % max(1, cast((julianday('now') - julianday(created_at)) * 86400 as integer))) || ' seconds') WHERE abs(random()) % 3 = 0;
+	UPDATE tier_list_item SET updated_at = datetime(created_at, '+' || (abs(random()) % max(1, cast((julianday('now') - julianday(created_at)) * 86400 as integer))) || ' seconds') WHERE abs(random()) % 3 = 0;
+	UPDATE tag            SET updated_at = datetime(created_at, '+' || (abs(random()) % max(1, cast((julianday('now') - julianday(created_at)) * 86400 as integer))) || ' seconds') WHERE abs(random()) % 3 = 0;
+	UPDATE page           SET updated_at = datetime(created_at, '+' || (abs(random()) % max(1, cast((julianday('now') - julianday(created_at)) * 86400 as integer))) || ' seconds') WHERE abs(random()) % 3 = 0;
+`);
+
 client.close();
 
 console.log(`Seeded ${CATEGORIES.length} categories, ${TAGS.length} tags, ${totalItems} items.`);

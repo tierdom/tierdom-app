@@ -12,5 +12,6 @@ Architectural decisions for this project are documented as Architecture Decision
 | [0006](docs/decisions/0006-admin-interface.md)                   | Admin Interface                   | Accepted |
 | [0007](docs/decisions/0007-markdown-rendering.md)                | Markdown Rendering                | Accepted |
 | [0008](docs/decisions/0008-use-lucide-svelte-for-icons.md)      | Use lucide-svelte for Icons       | Accepted |
+| [0009](docs/decisions/0009-add-created-at-and-updated-at-timestamps.md) | Add created_at and updated_at Timestamps | Accepted |
 
 Use the `/adr` skill to create new records.

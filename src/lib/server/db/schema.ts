@@ -1,5 +1,5 @@
 import { integer, primaryKey, real, sqliteTable, text, unique } from 'drizzle-orm/sqlite-core';
-import { relations } from 'drizzle-orm';
+import { relations, sql } from 'drizzle-orm';
 
 export const category = sqliteTable('category', {
 	id: integer('id').primaryKey({ autoIncrement: true }),
@@ -14,7 +14,9 @@ export const category = sqliteTable('category', {
 	cutoffC: integer('cutoff_c'),
 	cutoffD: integer('cutoff_d'),
 	cutoffE: integer('cutoff_e'),
-	cutoffF: integer('cutoff_f')
+	cutoffF: integer('cutoff_f'),
+	createdAt: text('created_at').notNull().default(sql`(datetime('now'))`),
+	updatedAt: text('updated_at').notNull().default(sql`(datetime('now'))`)
 });
 
 export const tierListItem = sqliteTable(
@@ -28,14 +30,18 @@ export const tierListItem = sqliteTable(
 		name: text('name').notNull(),
 		description: text('description'),
 		score: integer('score').notNull(),
-		order: integer('order').notNull().default(0)
+		order: integer('order').notNull().default(0),
+		createdAt: text('created_at').notNull().default(sql`(datetime('now'))`),
+		updatedAt: text('updated_at').notNull().default(sql`(datetime('now'))`)
 	},
 	(t) => [unique('item_category_slug').on(t.categoryId, t.slug)]
 );
 
 export const tag = sqliteTable('tag', {
 	slug: text('slug').primaryKey(),
-	label: text('label').notNull()
+	label: text('label').notNull(),
+	createdAt: text('created_at').notNull().default(sql`(datetime('now'))`),
+	updatedAt: text('updated_at').notNull().default(sql`(datetime('now'))`)
 });
 
 export const itemTag = sqliteTable(
@@ -54,7 +60,9 @@ export const itemTag = sqliteTable(
 export const page = sqliteTable('page', {
 	slug: text('slug').primaryKey(),
 	title: text('title').notNull(),
-	content: text('content').notNull()
+	content: text('content').notNull(),
+	createdAt: text('created_at').notNull().default(sql`(datetime('now'))`),
+	updatedAt: text('updated_at').notNull().default(sql`(datetime('now'))`)
 });
 
 // ─── Relations ────────────────────────────────────────────────────────────────

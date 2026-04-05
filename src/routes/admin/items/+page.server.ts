@@ -1,6 +1,6 @@
 import { db } from '$lib/server/db';
 import { tierListItem, category, itemTag, tag } from '$lib/server/db/schema';
-import { eq, asc } from 'drizzle-orm';
+import { eq, desc } from 'drizzle-orm';
 import { fail } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
 
@@ -19,11 +19,12 @@ export const load: PageServerLoad = async () => {
 			cutoffC: category.cutoffC,
 			cutoffD: category.cutoffD,
 			cutoffE: category.cutoffE,
-			cutoffF: category.cutoffF
+			cutoffF: category.cutoffF,
+			updatedAt: tierListItem.updatedAt
 		})
 		.from(tierListItem)
 		.innerJoin(category, eq(category.id, tierListItem.categoryId))
-		.orderBy(asc(category.order), asc(tierListItem.order));
+		.orderBy(desc(tierListItem.updatedAt));
 
 	const allTags = await db
 		.select({ itemId: itemTag.itemId, slug: tag.slug, label: tag.label })

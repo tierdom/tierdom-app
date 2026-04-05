@@ -26,11 +26,12 @@ export const load: PageServerLoad = async () => {
 			name: tierListItem.name,
 			score: tierListItem.score,
 			categoryId: tierListItem.categoryId,
-			categoryName: category.name
+			categoryName: category.name,
+			updatedAt: tierListItem.updatedAt
 		})
 		.from(tierListItem)
 		.innerJoin(category, eq(category.id, tierListItem.categoryId))
-		.orderBy(desc(tierListItem.id))
+		.orderBy(desc(tierListItem.updatedAt))
 		.limit(5);
 
 	const pages = await db.select({ slug: page.slug, title: page.title }).from(page);

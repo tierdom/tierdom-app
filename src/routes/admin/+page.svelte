@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { formatRelativeDate } from '$lib/format-date';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -77,7 +78,9 @@
 							class="flex items-center justify-between rounded border border-subtle bg-surface px-3 py-2 text-sm transition-colors hover:border-accent/40"
 						>
 							<span class="text-primary">{item.name}</span>
-							<span class="text-xs text-secondary">{item.categoryName}</span>
+							<span class="text-xs text-secondary"
+								>{item.categoryName} &middot; {formatRelativeDate(item.updatedAt)}</span
+							>
 						</a>
 					</li>
 				{/each}
@@ -85,7 +88,7 @@
 					<li class="px-3 py-2 text-xs text-secondary">No items yet</li>
 				{/if}
 			</ul>
-			<p class="mt-2 px-1 text-xs text-secondary/50">Recently added</p>
+			<p class="mt-2 px-1 text-xs text-secondary/50">Recently updated</p>
 		</div>
 	</div>
 </section>
