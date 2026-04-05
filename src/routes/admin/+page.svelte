@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { formatRelativeDate } from '$lib/format-date';
+	import { Plus } from 'lucide-svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -94,7 +95,15 @@
 					<li class="px-3 py-2 text-xs text-secondary">No items yet</li>
 				{/if}
 			</ul>
-			<p class="mt-2 px-1 text-xs text-secondary/50">Recently updated</p>
+			<div class="mt-2 flex items-center justify-between px-1">
+				<p class="text-xs text-secondary/50">Recently updated</p>
+				<a
+					href="/admin/items/new-item"
+					class="inline-flex items-center gap-1 text-xs text-accent hover:underline"
+				>
+					<Plus size={12} />New item
+				</a>
+			</div>
 		</div>
 	</div>
 </section>
