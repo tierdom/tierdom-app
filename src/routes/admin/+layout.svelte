@@ -7,6 +7,7 @@
 		{ href: '/admin', label: 'Dashboard' },
 		{ href: '/admin/pages', label: 'Pages' },
 		{ href: '/admin/categories', label: 'Categories' },
+		{ href: '/admin/items', label: 'Items (all)' },
 		{ href: '/admin/tags', label: 'Tags' }
 	];
 </script>
