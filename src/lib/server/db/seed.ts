@@ -178,6 +178,18 @@ const CATEGORIES: {
 			{ name: 'The Witch', score: 80, tags: ['horror', 'hidden-gem'] },
 			{ name: 'Midsommar', score: 78, tags: ['horror'] },
 			{ name: 'Under the Skin', score: 76, tags: ['sci-fi', 'hidden-gem'] },
+			{ name: 'Get Out', score: 75, tags: ['horror'] },
+			{ name: 'Ex Machina', score: 87, tags: ['sci-fi'] },
+			{ name: 'Whiplash', score: 85, tags: ['masterpiece'] },
+			{ name: 'The Prestige', score: 83, tags: ['classic'] },
+			{ name: "Pan's Labyrinth", score: 81, tags: ['fantasy', 'horror'] },
+			{ name: 'Sicario', score: 79, tags: ['classic'] },
+			{ name: 'There Will Be Blood', score: 89, tags: ['masterpiece', 'classic'] },
+			{ name: 'No Country for Old Men', score: 88, tags: ['masterpiece', 'classic'] },
+			{ name: 'The Babadook', score: 77, tags: ['horror', 'indie'] },
+			{ name: 'Color Out of Space', score: 76, tags: ['horror', 'sci-fi'] },
+			{ name: 'It Follows', score: 75, tags: ['horror', 'indie'] },
+			{ name: 'Coherence', score: 75, tags: ['sci-fi', 'indie', 'hidden-gem'] },
 			{
 				name: 'Everything Everywhere All at Once',
 				score: 74,
@@ -186,10 +198,12 @@ const CATEGORIES: {
 			{ name: 'Hereditary', score: 72, tags: ['horror'] },
 			{ name: 'The Lighthouse', score: 70, tags: ['horror', 'indie'] },
 			{ name: 'Dune: Part One', score: 68, tags: ['sci-fi'] },
-			{ name: 'Get Out', score: 75, tags: ['horror'] },
 			{ name: 'Interstellar', score: 63, tags: ['sci-fi', 'overrated'] },
 			{ name: 'The Northman', score: 60, tags: ['indie'] },
 			{ name: 'Mandy (2018)', score: 65, tags: ['horror', 'hidden-gem'] },
+			{ name: 'The Menu', score: 67, tags: ['comedy', 'horror'] },
+			{ name: 'The Banshees of Inisherin', score: 71, tags: ['comedy'] },
+			{ name: 'Triangle of Sadness', score: 62, tags: ['comedy'] },
 			{ name: 'Nope', score: 58, tags: ['sci-fi', 'horror'] },
 			{
 				name: 'Transformers: Age of Extinction',
@@ -199,8 +213,43 @@ const CATEGORIES: {
 			{ name: 'Avatar (2009)', score: 45, tags: ['overrated', 'sci-fi'] },
 			{ name: 'Cats (2019)', score: 5, tags: ['horror'] },
 			{ name: 'Morbius', score: 18, tags: ['overrated'] },
-			{ name: 'Venom (2018)', score: 38, tags: ['overrated', 'comedy'] }
+			{ name: 'Venom (2018)', score: 38, tags: ['overrated', 'comedy'] },
+			{ name: 'The Emoji Movie', score: 3, tags: ['comedy', 'overrated'] },
+			{ name: 'Dragonball Evolution', score: 4, tags: ['overrated'] },
+			{ name: 'Battlefield Earth', score: 2, tags: ['sci-fi', 'overrated'] },
+			{ name: 'Movie 43', score: 6, tags: ['comedy', 'overrated'] },
+			{ name: 'Disaster Movie', score: 1, tags: ['comedy', 'overrated'] },
+			{ name: 'Epic Movie', score: 7, tags: ['comedy', 'overrated'] },
+			{ name: 'The Last Airbender', score: 8, tags: ['fantasy', 'overrated'] },
+			{ name: 'Birdemic', score: 3, tags: ['horror', 'comedy'] },
+			{ name: 'Son of the Mask', score: 5, tags: ['comedy', 'overrated'] },
+			{ name: 'Jaws: The Revenge', score: 9, tags: ['horror', 'overrated'] },
+			{ name: 'Alone in the Dark (2005)', score: 6, tags: ['horror', 'overrated'] },
+			{ name: 'Catwoman (2004)', score: 10, tags: ['overrated'] },
+			{ name: 'Bloodshot', score: 11, tags: ['overrated', 'sci-fi'] },
+			{ name: 'Left Behind (2014)', score: 4, tags: ['overrated'] }
 		]
+	},
+	{
+		slug: 'board-games',
+		name: 'Board Games',
+		description:
+			'A small but growing collection of **tabletop games** ranked by replayability and fun factor.\n\nOnly the ones that actually hit the table more than once.',
+		order: 3,
+		items: [
+			{ name: 'Gloomhaven', score: 95, tags: ['masterpiece', 'fantasy'] },
+			{ name: 'Spirit Island', score: 92, tags: ['indie', 'hidden-gem'] },
+			{ name: 'Catan', score: 48, tags: ['classic', 'nostalgia', 'overrated'] },
+			{ name: 'Pandemic', score: 42, tags: ['classic'] },
+			{ name: 'Exploding Kittens', score: 25, tags: ['comedy', 'overrated'] }
+		]
+	},
+	{
+		slug: 'recipes',
+		name: 'Recipes',
+		description: 'Recipes I have tried, ranked by taste and effort. *Coming soon.*',
+		order: 4,
+		items: []
 	}
 ];
 

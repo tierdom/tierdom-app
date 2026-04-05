@@ -21,7 +21,7 @@
 </script>
 
 <div
-	class="group relative aspect-square w-28 shrink-0 cursor-pointer overflow-hidden border border-black/90 transition-[border-color] duration-200 hover:border-black sm:w-32 md:w-36"
+	class="group relative aspect-square w-1/2 cursor-pointer overflow-hidden border-2 border-black/90 transition-[border-color] duration-200 hover:border-black sm:w-1/3 md:w-1/4 lg:w-1/6 xl:w-[12.5%]"
 	title={name}
 	role="button"
 	tabindex={0}

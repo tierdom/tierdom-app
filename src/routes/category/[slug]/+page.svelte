@@ -19,6 +19,16 @@
 		F: 'bg-[var(--tier-f-bg)] text-[var(--tier-f-fg)]'
 	};
 
+	const tierBorderStyles: Record<string, string> = {
+		S: 'border-[var(--tier-s-bg)]',
+		A: 'border-[var(--tier-a-bg)]',
+		B: 'border-[var(--tier-b-bg)]',
+		C: 'border-[var(--tier-c-bg)]',
+		D: 'border-[var(--tier-d-bg)]',
+		E: 'border-[var(--tier-e-bg)]',
+		F: 'border-[var(--tier-f-bg)]'
+	};
+
 	let allItems = $derived(
 		data.tiers.flatMap((t) => t.items.map((item) => ({ ...item, tier: t.tier })))
 	);
@@ -48,31 +58,38 @@
 	{/if}
 
 	<!-- Tier rows -->
-	<div class="mt-8 flex flex-col gap-1">
-		{#each data.tiers as { tier, items } (tier)}
-			<div class="flex overflow-hidden border-2 border-subtle">
-				<!-- Tier label -->
-				<div
-					class="flex w-14 shrink-0 items-start justify-center pt-3 text-xl font-black {tierStyles[
-						tier
-					]}"
-				>
-					{tier}
-				</div>
+	{#if allItems.length > 0}
+		<div class="mt-8 flex flex-col gap-1">
+			{#each data.tiers as { tier, items } (tier)}
+				<div class="flex overflow-hidden border-2 {tierBorderStyles[tier]}">
+					<!-- Tier label -->
+					<div
+						class="flex w-14 shrink-0 items-start justify-center pt-3 text-xl font-black {tierStyles[
+							tier
+						]}"
+					>
+						{tier}
+					</div>
 
-				<!-- Items -->
-				<div class="flex flex-1 flex-wrap bg-surface">
-					{#each items as item (item.id)}
-						<TierListItem name={item.name} score={item.score} onclick={() => openItem(item.slug)} />
-					{/each}
+					<!-- Items -->
+					<div class="flex flex-1 flex-wrap bg-surface">
+						{#each items as item (item.id)}
+							<TierListItem
+								name={item.name}
+								score={item.score}
+								onclick={() => openItem(item.slug)}
+							/>
+						{/each}
+						{#if items.length === 0}
+							<div class="aspect-square w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/6 xl:w-[12.5%]"></div>
+						{/if}
+					</div>
 				</div>
-			</div>
-		{/each}
-
-		{#if data.tiers.length === 0}
-			<p class="text-secondary">No items in this category yet.</p>
-		{/if}
-	</div>
+			{/each}
+		</div>
+	{:else}
+		<p class="mt-8 text-secondary">No items in this category yet.</p>
+	{/if}
 </section>
 
 {#if selectedItem}

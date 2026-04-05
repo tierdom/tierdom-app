@@ -74,8 +74,7 @@ export const load: PageServerLoad = async ({ params }) => {
 		grouped.get(tier)!.push(item);
 	}
 
-	// Only include tiers that have at least one item
-	const tiers = TIERS.filter((t) => grouped.get(t)!.length > 0).map((t) => ({
+	const tiers = TIERS.map((t) => ({
 		tier: t,
 		items: grouped.get(t)!
 	}));
