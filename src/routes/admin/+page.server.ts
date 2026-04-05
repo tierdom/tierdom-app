@@ -13,7 +13,8 @@ export const load: PageServerLoad = async () => {
 		.select({
 			id: category.id,
 			name: category.name,
-			itemCount: count(tierListItem.id)
+			itemCount: count(tierListItem.id),
+			updatedAt: category.updatedAt
 		})
 		.from(category)
 		.leftJoin(tierListItem, eq(tierListItem.categoryId, category.id))
@@ -34,7 +35,7 @@ export const load: PageServerLoad = async () => {
 		.orderBy(desc(tierListItem.updatedAt))
 		.limit(5);
 
-	const pages = await db.select({ slug: page.slug, title: page.title }).from(page);
+	const pages = await db.select({ slug: page.slug, title: page.title, updatedAt: page.updatedAt }).from(page);
 
 	return {
 		counts: {

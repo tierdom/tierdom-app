@@ -30,11 +30,14 @@
 							class="flex items-center justify-between rounded border border-subtle bg-surface px-3 py-2 text-sm transition-colors hover:border-accent/40"
 						>
 							<span class="text-primary">{pg.title}</span>
-							<span class="text-xs text-secondary">/{pg.slug}</span>
+							<span class="text-xs text-secondary"
+								>/{pg.slug} &middot; {formatRelativeDate(pg.updatedAt)}</span
+							>
 						</a>
 					</li>
 				{/each}
 			</ul>
+			<p class="mt-2 px-1 text-xs text-secondary/50">All pages</p>
 		</div>
 
 		<!-- Categories -->
@@ -54,11 +57,14 @@
 							class="flex items-center justify-between rounded border border-subtle bg-surface px-3 py-2 text-sm transition-colors hover:border-accent/40"
 						>
 							<span class="text-primary">{cat.name}</span>
-							<span class="text-xs text-secondary">{cat.itemCount} items</span>
+							<span class="text-xs text-secondary"
+								>{cat.itemCount} items &middot; {formatRelativeDate(cat.updatedAt)}</span
+							>
 						</a>
 					</li>
 				{/each}
 			</ul>
+			<p class="mt-2 px-1 text-xs text-secondary/50">All categories</p>
 		</div>
 
 		<!-- Items -->

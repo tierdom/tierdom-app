@@ -7,6 +7,7 @@
 	import MarkdownField from '$lib/components/admin/MarkdownField.svelte';
 	import SortableList from '$lib/components/admin/SortableList.svelte';
 	import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
+	import Timestamps from '$lib/components/admin/Timestamps.svelte';
 	import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
 	import { scoreToTier } from '$lib/tier';
 	import TierBadge from '$lib/components/admin/TierBadge.svelte';
@@ -76,6 +77,7 @@
 	<div class="flex items-center gap-3">
 		<a href="/admin/categories" class="text-sm text-secondary hover:text-primary">&larr; Back</a>
 		<h1 class="text-xl font-bold text-primary">{data.category.name}</h1>
+		<Timestamps createdAt={data.category.createdAt} updatedAt={data.category.updatedAt} />
 	</div>
 
 	<!-- Edit category -->

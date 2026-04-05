@@ -4,6 +4,7 @@
 	import FormField from '$lib/components/admin/FormField.svelte';
 	import MarkdownField from '$lib/components/admin/MarkdownField.svelte';
 	import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
+	import Timestamps from '$lib/components/admin/Timestamps.svelte';
 	import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
 	import type { PageData } from './$types';
 
@@ -21,6 +22,7 @@
 	<div class="flex items-center gap-3">
 		<a href="/admin/pages" class="text-sm text-secondary hover:text-primary">&larr; Pages</a>
 		<h1 class="text-xl font-bold text-primary">Edit: {data.page.title}</h1>
+		<Timestamps createdAt={data.page.createdAt} updatedAt={data.page.updatedAt} />
 	</div>
 
 	<form method="POST" action="?/update" use:enhance class="mt-6 flex flex-col gap-4">
