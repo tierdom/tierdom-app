@@ -2,6 +2,8 @@
 
 **Never** add a `Co-Authored-By` trailer or any Claude attribution to commit messages.
 
+**Never** commit on your own — always wait for the user to invoke `/commit`.
+
 ## Skills
 
 This project has purpose-built skills in `.claude/skills/` — use them instead of doing tasks manually. Key ones: `/commit`, `/db`, `/drizzle`, `/frontend`, `/lint`.
