@@ -12,7 +12,15 @@ function slugify(text: string): string {
 		.replace(/^-|-$/g, '');
 }
 
-export const load: PageServerLoad = async ({ params }) => {
+function getBackUrl(source: URL | FormData, fallbackCategoryId: number): string {
+	const from =
+		source instanceof URL
+			? source.searchParams.get('from')
+			: source.get('_from')?.toString();
+	return from || `/admin/categories/${fallbackCategoryId}`;
+}
+
+export const load: PageServerLoad = async ({ params, url }) => {
 	const id = Number(params.id);
 	const [item] = await db.select().from(tierListItem).where(eq(tierListItem.id, id)).limit(1);
 	if (!item) error(404, 'Item not found');
@@ -23,7 +31,9 @@ export const load: PageServerLoad = async ({ params }) => {
 		.from(itemTag)
 		.where(eq(itemTag.itemId, id));
 
-	return { item, allTags, itemTags: currentTags.map((t) => t.slug) };
+	const backUrl = getBackUrl(url, item.categoryId);
+
+	return { item, allTags, itemTags: currentTags.map((t) => t.slug), backUrl };
 };
 
 export const actions: Actions = {
@@ -56,12 +66,10 @@ export const actions: Actions = {
 		const tagSlugs = data.getAll('tags').map((s) => s.toString());
 		await db.delete(itemTag).where(eq(itemTag.itemId, id));
 		if (tagSlugs.length > 0) {
-			await db
-				.insert(itemTag)
-				.values(tagSlugs.map((tagSlug) => ({ itemId: id, tagSlug })));
+			await db.insert(itemTag).values(tagSlugs.map((tagSlug) => ({ itemId: id, tagSlug })));
 		}
 
-		redirect(303, `/admin/categories/${item.categoryId}`);
+		redirect(303, getBackUrl(data, item.categoryId));
 	},
 
 	createTag: async ({ request }) => {
@@ -73,8 +81,9 @@ export const actions: Actions = {
 		return { tag: newTag };
 	},
 
-	delete: async ({ params }) => {
+	delete: async ({ request, params }) => {
 		const id = Number(params.id);
+		const data = await request.formData();
 		const [item] = await db
 			.select({ categoryId: tierListItem.categoryId })
 			.from(tierListItem)
@@ -82,6 +91,6 @@ export const actions: Actions = {
 			.limit(1);
 
 		await db.delete(tierListItem).where(eq(tierListItem.id, id));
-		redirect(303, `/admin/categories/${item?.categoryId ?? ''}`);
+		redirect(303, getBackUrl(data, item?.categoryId ?? 0));
 	}
 };

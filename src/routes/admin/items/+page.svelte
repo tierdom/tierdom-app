@@ -68,7 +68,10 @@
 					</div>
 					<div class="min-w-0 flex-1 text-primary">
 						<div class="flex items-center gap-1.5">
-							<a href="/admin/items/{item.id}" class="shrink-0 text-accent hover:underline">
+							<a
+								href="/admin/items/{item.id}?from=/admin/items"
+								class="shrink-0 text-accent hover:underline"
+							>
 								{item.name}
 							</a>
 							{#if item.tags.length > 0}

@@ -24,7 +24,7 @@
 
 	function cancel() {
 		if (dirty && !confirm('You have unsaved changes. Discard them?')) return;
-		goto(`/admin/categories/${data.item.categoryId}`);
+		goto(data.backUrl);
 	}
 
 	function handleTagsChange(slugs: string[]) {
@@ -51,12 +51,7 @@
 <section>
 	<AdminOverlay loading={loader.loading} />
 	<div class="flex items-center gap-3">
-		<a
-			href="/admin/categories/{data.item.categoryId}"
-			class="text-sm text-secondary hover:text-primary"
-		>
-			&larr; Back to category
-		</a>
+		<a href={data.backUrl} class="text-sm text-secondary hover:text-primary"> &larr; Back </a>
 		<h1 class="text-xl font-bold text-primary">{data.item.name}</h1>
 	</div>
 
@@ -68,6 +63,7 @@
 		oninput={markDirty}
 		class="mt-6 flex flex-col gap-3"
 	>
+		<input type="hidden" name="_from" value={data.backUrl} />
 		<FormField label="Name" name="name" value={data.item.name} required />
 		<FormField label="Slug" name="slug" value={data.item.slug} />
 		<FormField
@@ -100,6 +96,7 @@
 				if (!confirm('Delete this item?')) e.preventDefault();
 			}}
 		>
+			<input type="hidden" name="_from" value={data.backUrl} />
 			<Button variant="danger" type="submit">Delete</Button>
 		</form>
 	</div>
