@@ -1,10 +1,10 @@
 ---
-name: update-deps
-description: Safely update npm dependencies with supply chain security checks. Reviews outdated packages, checks for vulnerabilities, and updates package.json with pinned exact versions.
+name: deps
+description: Install or update npm dependencies with supply chain security checks. Pins exact versions, audits vulnerabilities, and verifies the build after changes.
 allowed-tools: Bash Read Edit
 ---
 
-Help me safely update dependencies in this project following supply chain security best practices.
+Help me install or update dependencies in this project following supply chain security best practices.
 
 ## Process
 
