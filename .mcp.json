@@ -10,11 +10,6 @@
 			"type": "stdio",
 			"command": "npx",
 			"args": ["-y", "@playwright/mcp@latest"]
-		},
-		"sqlite": {
-			"type": "stdio",
-			"command": "npx",
-			"args": ["-y", "@modelcontextprotocol/server-sqlite", "./data/local.db"]
 		}
 	}
 }
