@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { formatRelativeDate } from '$lib/format-date';
 	import { goto } from '$app/navigation';
 	import { deserialize } from '$app/forms';
 	import { Save, X, Trash2 } from 'lucide-svelte';
@@ -54,6 +55,9 @@
 	<div class="flex items-center gap-3">
 		<a href={data.backUrl} class="text-sm text-secondary hover:text-primary"> &larr; Back </a>
 		<h1 class="text-xl font-bold text-primary">{data.item.name}</h1>
+		<span class="text-xs text-secondary/60">
+			updated {formatRelativeDate(data.item.updatedAt)} &middot; created {formatRelativeDate(data.item.createdAt)}
+		</span>
 	</div>
 
 	<form
