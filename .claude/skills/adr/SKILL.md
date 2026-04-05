@@ -1,6 +1,6 @@
 ---
 name: adr
-description: Create a new Architecture Decision Record (ADR) in docs/decisions/. Automatically picks the next sequential number and fills in the lightweight template.
+description: Create a new Architecture Decision Record (ADR) in docs/decisions/. MUST be used whenever writing an ADR — never create ADR files manually. Picks the next sequential number, fills the template, and updates ARCHITECTURE.md.
 allowed-tools: Bash Read Write Glob
 ---
 
