@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { formatRelativeDate } from '$lib/format-date';
-	import { Trash2 } from 'lucide-svelte';
+	import { ArrowDown, Trash2 } from 'lucide-svelte';
 	import Button from '$lib/components/admin/Button.svelte';
 	import TierBadge from '$lib/components/admin/TierBadge.svelte';
 	import TagPill from '$lib/components/admin/TagPill.svelte';
@@ -51,7 +51,7 @@
 				<div class="flex-1 font-medium">Name</div>
 				<div class="hidden w-40 font-medium sm:block">Category</div>
 				<div class="w-14 font-medium">Score</div>
-				<div class="hidden w-24 font-medium md:block">Updated</div>
+				<div class="hidden w-24 font-medium md:flex md:items-center md:gap-0.5">Updated <ArrowDown size={10} /></div>
 				<div class="w-20 text-right font-medium">Actions</div>
 			</div>
 
