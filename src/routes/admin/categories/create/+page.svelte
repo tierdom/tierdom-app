@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import Button from '$lib/components/admin/Button.svelte';
 	import FormField from '$lib/components/admin/FormField.svelte';
+	import MarkdownField from '$lib/components/admin/MarkdownField.svelte';
 	import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
 	import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
 
@@ -31,12 +32,22 @@
 		<h1 class="text-xl font-bold text-primary">New category</h1>
 	</div>
 
-	<form id="create-category" method="POST" action="?/create" use:enhance oninput={markDirty} class="mt-6 flex flex-col gap-3">
+	<form
+		id="create-category"
+		method="POST"
+		action="?/create"
+		use:enhance
+		oninput={markDirty}
+		class="mt-6 flex flex-col gap-3"
+	>
 		<FormField label="Name" name="name" required />
 		<FormField label="Slug" name="slug" help="Auto-generated from name if empty" />
-		<FormField label="Description" name="description" multiline />
+		<MarkdownField label="Description" name="description" />
 		<h2 class="mt-2 text-sm font-semibold text-secondary">Tier cutoffs</h2>
-		<p class="text-xs text-secondary/70">Minimum score to reach each tier. Leave empty for defaults (S=90, A=75, B=60, C=45, D=30, E=15, F=0).</p>
+		<p class="text-xs text-secondary/70">
+			Minimum score to reach each tier. Leave empty for defaults (S=90, A=75, B=60, C=45, D=30,
+			E=15, F=0).
+		</p>
 		<div class="grid grid-cols-4 gap-3 sm:grid-cols-7">
 			<FormField label="S" name="cutoffS" type="number" min={0} max={100} />
 			<FormField label="A" name="cutoffA" type="number" min={0} max={100} />

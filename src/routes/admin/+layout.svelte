@@ -6,7 +6,8 @@
 	const links = [
 		{ href: '/admin', label: 'Dashboard' },
 		{ href: '/admin/categories', label: 'Categories' },
-		{ href: '/admin/tags', label: 'Tags' }
+		{ href: '/admin/tags', label: 'Tags' },
+		{ href: '/admin/pages', label: 'Pages' }
 	];
 </script>
 
@@ -25,10 +26,7 @@
 				</a>
 			{/each}
 		</div>
-		<a
-			href="/"
-			class="ml-auto text-xs text-secondary transition-colors hover:text-primary"
-		>
+		<a href="/" class="ml-auto text-xs text-secondary transition-colors hover:text-primary">
 			Back to site
 		</a>
 	</div>

@@ -3,6 +3,7 @@
 	import { deserialize } from '$app/forms';
 	import Button from '$lib/components/admin/Button.svelte';
 	import FormField from '$lib/components/admin/FormField.svelte';
+	import MarkdownField from '$lib/components/admin/MarkdownField.svelte';
 	import TagPicker from '$lib/components/admin/TagPicker.svelte';
 	import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
 	import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
@@ -58,25 +59,24 @@
 		<h1 class="text-xl font-bold text-primary">New item</h1>
 	</div>
 
-	<form id="create-item" method="POST" action="?/create" use:enhance oninput={markDirty} class="mt-6 flex flex-col gap-3">
+	<form
+		id="create-item"
+		method="POST"
+		action="?/create"
+		use:enhance
+		oninput={markDirty}
+		class="mt-6 flex flex-col gap-3"
+	>
 		<FormField label="Name" name="name" required />
 		<FormField label="Slug" name="slug" help="Auto-generated from name if empty" />
-		<FormField
-			label="Score"
-			name="score"
-			type="number"
-			required
-			min={0}
-			max={100}
-			step={1}
-		/>
+		<FormField label="Score" name="score" type="number" required min={0} max={100} step={1} />
 		<TagPicker
 			allTags={data.allTags}
 			selectedSlugs={selectedTags}
 			onchange={handleTagsChange}
 			oncreate={handleCreateTag}
 		/>
-		<FormField label="Description" name="description" multiline />
+		<MarkdownField label="Description" name="description" />
 	</form>
 
 	<div class="mt-4 flex flex-col gap-3 md:flex-row md:items-center">

@@ -7,6 +7,7 @@
 		required?: boolean;
 		help?: string;
 		multiline?: boolean;
+		rows?: number;
 		min?: number;
 		max?: number;
 		step?: number;
@@ -20,6 +21,7 @@
 		required = false,
 		help,
 		multiline = false,
+		rows = 3,
 		min,
 		max,
 		step
@@ -36,8 +38,8 @@
 			{name}
 			{required}
 			class="rounded border border-subtle bg-surface px-3 py-2 text-sm text-primary placeholder:text-secondary/50 focus:border-accent focus:outline-none"
-			rows={3}
-		>{value ?? ''}</textarea>
+			{rows}>{value ?? ''}</textarea
+		>
 	{:else}
 		<input
 			id={name}

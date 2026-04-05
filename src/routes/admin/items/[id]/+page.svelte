@@ -3,6 +3,7 @@
 	import { deserialize } from '$app/forms';
 	import Button from '$lib/components/admin/Button.svelte';
 	import FormField from '$lib/components/admin/FormField.svelte';
+	import MarkdownField from '$lib/components/admin/MarkdownField.svelte';
 	import TagPicker from '$lib/components/admin/TagPicker.svelte';
 	import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
 	import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
@@ -59,7 +60,14 @@
 		<h1 class="text-xl font-bold text-primary">{data.item.name}</h1>
 	</div>
 
-	<form id="edit-item" method="POST" action="?/update" use:enhance oninput={markDirty} class="mt-6 flex flex-col gap-3">
+	<form
+		id="edit-item"
+		method="POST"
+		action="?/update"
+		use:enhance
+		oninput={markDirty}
+		class="mt-6 flex flex-col gap-3"
+	>
 		<FormField label="Name" name="name" value={data.item.name} required />
 		<FormField label="Slug" name="slug" value={data.item.slug} />
 		<FormField
@@ -78,12 +86,7 @@
 			onchange={handleTagsChange}
 			oncreate={handleCreateTag}
 		/>
-		<FormField
-			label="Description"
-			name="description"
-			value={data.item.description}
-			multiline
-		/>
+		<MarkdownField label="Description" name="description" value={data.item.description} />
 	</form>
 
 	<div class="mt-4 flex flex-col gap-3 md:flex-row md:items-center">

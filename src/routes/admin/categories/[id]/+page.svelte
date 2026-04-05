@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import Button from '$lib/components/admin/Button.svelte';
 	import FormField from '$lib/components/admin/FormField.svelte';
+	import MarkdownField from '$lib/components/admin/MarkdownField.svelte';
 	import SortableList from '$lib/components/admin/SortableList.svelte';
 	import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
 	import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
@@ -51,7 +52,8 @@
 	});
 
 	const handleSortByScore = loader.withLoading(async () => {
-		if (!confirm('Sort all items by score (highest first)? This replaces the current order.')) return;
+		if (!confirm('Sort all items by score (highest first)? This replaces the current order.'))
+			return;
 		const sorted = [...data.items].sort((a, b) => b.score - a.score);
 		const body = new FormData();
 		body.set('order', JSON.stringify(sorted.map((i) => i.id)));
@@ -72,22 +74,81 @@
 	</div>
 
 	<!-- Edit category -->
-	<form id="edit-category" method="POST" action="?/update" use:enhance oninput={markDirty} class="mt-6 flex flex-col gap-3">
+	<form
+		id="edit-category"
+		method="POST"
+		action="?/update"
+		use:enhance
+		oninput={markDirty}
+		class="mt-6 flex flex-col gap-3"
+	>
 		<FormField label="Name" name="name" value={data.category.name} required />
 		<FormField label="Slug" name="slug" value={data.category.slug} />
-		<FormField label="Description" name="description" value={data.category.description} multiline />
+		<MarkdownField label="Description" name="description" value={data.category.description} />
 
 		{#if showCutoffs}
 			<h2 class="mt-2 text-sm font-semibold text-secondary">Tier cutoffs</h2>
-			<p class="text-xs text-secondary/70">Minimum score to reach each tier. Leave empty for defaults (S=90, A=75, B=60, C=45, D=30, E=15, F=0).</p>
+			<p class="text-xs text-secondary/70">
+				Minimum score to reach each tier. Leave empty for defaults (S=90, A=75, B=60, C=45, D=30,
+				E=15, F=0).
+			</p>
 			<div class="grid grid-cols-4 gap-3 sm:grid-cols-7">
-				<FormField label="S" name="cutoffS" type="number" value={data.category.cutoffS} min={0} max={100} />
-				<FormField label="A" name="cutoffA" type="number" value={data.category.cutoffA} min={0} max={100} />
-				<FormField label="B" name="cutoffB" type="number" value={data.category.cutoffB} min={0} max={100} />
-				<FormField label="C" name="cutoffC" type="number" value={data.category.cutoffC} min={0} max={100} />
-				<FormField label="D" name="cutoffD" type="number" value={data.category.cutoffD} min={0} max={100} />
-				<FormField label="E" name="cutoffE" type="number" value={data.category.cutoffE} min={0} max={100} />
-				<FormField label="F" name="cutoffF" type="number" value={data.category.cutoffF} min={0} max={100} />
+				<FormField
+					label="S"
+					name="cutoffS"
+					type="number"
+					value={data.category.cutoffS}
+					min={0}
+					max={100}
+				/>
+				<FormField
+					label="A"
+					name="cutoffA"
+					type="number"
+					value={data.category.cutoffA}
+					min={0}
+					max={100}
+				/>
+				<FormField
+					label="B"
+					name="cutoffB"
+					type="number"
+					value={data.category.cutoffB}
+					min={0}
+					max={100}
+				/>
+				<FormField
+					label="C"
+					name="cutoffC"
+					type="number"
+					value={data.category.cutoffC}
+					min={0}
+					max={100}
+				/>
+				<FormField
+					label="D"
+					name="cutoffD"
+					type="number"
+					value={data.category.cutoffD}
+					min={0}
+					max={100}
+				/>
+				<FormField
+					label="E"
+					name="cutoffE"
+					type="number"
+					value={data.category.cutoffE}
+					min={0}
+					max={100}
+				/>
+				<FormField
+					label="F"
+					name="cutoffF"
+					type="number"
+					value={data.category.cutoffF}
+					min={0}
+					max={100}
+				/>
 			</div>
 		{:else}
 			<button
@@ -98,7 +159,6 @@
 				Customize tier cutoffs…
 			</button>
 		{/if}
-
 	</form>
 
 	<div class="mt-4 flex flex-col gap-3 md:flex-row md:items-center">
@@ -155,8 +215,10 @@
 							</a>
 						</div>
 						<div class="hidden flex-1 lg:flex lg:flex-wrap lg:gap-1">
-							{#each (item.tags as { slug: string; label: string }[]) as t (t.slug)}
-								<span class="rounded-full bg-subtle/30 px-2 py-0.5 text-[0.65rem] text-secondary/70">{t.label}</span>
+							{#each item.tags as { slug: string; label: string }[] as t (t.slug)}
+								<span class="rounded-full bg-subtle/30 px-2 py-0.5 text-[0.65rem] text-secondary/70"
+									>{t.label}</span
+								>
 							{/each}
 						</div>
 						<div class="w-16 text-secondary">{item.score}</div>
