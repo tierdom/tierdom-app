@@ -22,7 +22,7 @@
 		<h1 class="text-xl font-bold text-primary">Edit: {data.page.title}</h1>
 	</div>
 
-	<form method="POST" action="?/update" use:enhance class="mt-6 flex max-w-xl flex-col gap-4">
+	<form method="POST" action="?/update" use:enhance class="mt-6 flex flex-col gap-4">
 		<FormField label="Title" name="title" value={data.page.title} required />
 		<MarkdownField value={data.page.content} required />
 		<div>

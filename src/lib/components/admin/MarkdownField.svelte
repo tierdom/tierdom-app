@@ -16,4 +16,4 @@
 	let { label = 'Content', name = 'content', value = '', required = false }: Props = $props();
 </script>
 
-<FormField {label} {name} {value} {required} multiline rows={6} help="Supports Markdown" />
+<FormField {label} {name} {value} {required} multiline rows={9} help="Supports Markdown" />

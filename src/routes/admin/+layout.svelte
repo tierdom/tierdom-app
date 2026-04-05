@@ -5,9 +5,9 @@
 
 	const links = [
 		{ href: '/admin', label: 'Dashboard' },
+		{ href: '/admin/pages', label: 'Pages' },
 		{ href: '/admin/categories', label: 'Categories' },
-		{ href: '/admin/tags', label: 'Tags' },
-		{ href: '/admin/pages', label: 'Pages' }
+		{ href: '/admin/tags', label: 'Tags' }
 	];
 </script>
 
