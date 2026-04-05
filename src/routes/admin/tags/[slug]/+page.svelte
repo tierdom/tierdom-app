@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import { Save, X, Trash2 } from 'lucide-svelte';
 	import Button from '$lib/components/admin/Button.svelte';
 	import FormField from '$lib/components/admin/FormField.svelte';
@@ -20,7 +21,7 @@
 
 	function cancel() {
 		if (dirty && !confirm('You have unsaved changes. Discard them?')) return;
-		goto('/admin/tags');
+		goto(resolve('/admin/tags'));
 	}
 </script>
 

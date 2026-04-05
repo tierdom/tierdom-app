@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { formatRelativeDate } from '$lib/format-date';
 	import { ArrowDown, Plus, Trash2 } from 'lucide-svelte';
 	import Button from '$lib/components/admin/Button.svelte';
@@ -38,7 +39,7 @@
 	<div class="flex items-center justify-between">
 		<h1 class="text-xl font-bold text-primary">Items ({data.items.length})</h1>
 		<a
-			href="/admin/items/new-item"
+			href={resolve('/admin/items/new-item')}
 			class="inline-flex items-center gap-1.5 rounded bg-accent px-4 py-2 text-sm font-semibold text-canvas transition-opacity hover:opacity-80"
 		>
 			<Plus size={16} />New item
@@ -81,7 +82,10 @@
 					</div>
 					<div class="min-w-0 flex-1 text-primary">
 						<div class="flex items-center gap-1.5">
-							<a href="/admin/items/{item.id}" class="shrink-0 text-accent hover:underline">
+							<a
+								href={resolve(`/admin/items/${item.id}`)}
+								class="shrink-0 text-accent hover:underline"
+							>
 								{item.name}
 							</a>
 							{#if item.tags.length > 0}

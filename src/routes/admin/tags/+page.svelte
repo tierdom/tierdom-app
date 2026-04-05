@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { Plus } from 'lucide-svelte';
 	import type { PageData } from './$types';
 
@@ -26,7 +27,7 @@
 				{#each data.tags as tag (tag.slug)}
 					<tr class="border-b border-subtle/50">
 						<td class="py-2 text-primary">
-							<a href="/admin/tags/{tag.slug}" class="text-accent hover:underline">
+							<a href={resolve(`/admin/tags/${tag.slug}`)} class="text-accent hover:underline">
 								{tag.label}
 							</a>
 						</td>
@@ -37,7 +38,7 @@
 								<div class="flex flex-wrap gap-2">
 									{#each tag.categories as cat (cat.categoryId)}
 										<a
-											href="/admin/categories/{cat.categoryId}"
+											href={resolve(`/admin/categories/${cat.categoryId}`)}
 											class="text-accent hover:underline"
 										>
 											{cat.categoryName}
@@ -59,7 +60,7 @@
 
 	<div class="mt-8">
 		<a
-			href="/admin/tags/create"
+			href={resolve('/admin/tags/create')}
 			class="inline-flex items-center gap-1.5 rounded bg-accent px-4 py-2 text-sm font-semibold text-canvas transition-opacity hover:opacity-80"
 		>
 			<Plus size={16} />New tag

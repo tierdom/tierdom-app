@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import { Plus, X } from 'lucide-svelte';
 	import Button from '$lib/components/admin/Button.svelte';
 	import FormField from '$lib/components/admin/FormField.svelte';
@@ -17,7 +18,7 @@
 
 	function cancel() {
 		if (dirty && !confirm('You have unsaved changes. Discard them?')) return;
-		goto('/admin/tags');
+		goto(resolve('/admin/tags'));
 	}
 </script>
 
@@ -28,7 +29,9 @@
 <section>
 	<AdminOverlay loading={loader.loading} />
 	<div class="flex items-center gap-3">
-		<a href="/admin/tags" class="text-sm text-secondary hover:text-primary">&larr; Back</a>
+		<a href={resolve('/admin/tags')} class="text-sm text-secondary hover:text-primary"
+			>&larr; Back</a
+		>
 		<h1 class="text-xl font-bold text-primary">New tag</h1>
 	</div>
 

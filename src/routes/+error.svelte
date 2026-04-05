@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { resolve } from '$app/paths';
 </script>
 
 <svelte:head>
@@ -23,7 +24,7 @@
 	{/if}
 
 	<a
-		href="/"
+		href={resolve('/')}
 		class="mt-4 inline-block border border-subtle px-4 py-2 text-secondary transition-colors hover:bg-surface hover:text-primary"
 	>
 		Back to safety

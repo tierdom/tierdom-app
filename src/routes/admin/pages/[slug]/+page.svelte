@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { Save } from 'lucide-svelte';
 	import Button from '$lib/components/admin/Button.svelte';
 	import FormField from '$lib/components/admin/FormField.svelte';
@@ -20,7 +21,9 @@
 
 <section>
 	<div class="flex items-center gap-3">
-		<a href="/admin/pages" class="text-sm text-secondary hover:text-primary">&larr; Pages</a>
+		<a href={resolve('/admin/pages')} class="text-sm text-secondary hover:text-primary"
+			>&larr; Pages</a
+		>
 		<h1 class="text-xl font-bold text-primary">Edit: {data.page.title}</h1>
 		<Timestamps createdAt={data.page.createdAt} updatedAt={data.page.updatedAt} />
 	</div>

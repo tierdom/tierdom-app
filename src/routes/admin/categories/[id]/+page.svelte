@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { formatRelativeDate } from '$lib/format-date';
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import { ArrowDown, Save, X, Trash2, Plus } from 'lucide-svelte';
 	import Button from '$lib/components/admin/Button.svelte';
 	import FormField from '$lib/components/admin/FormField.svelte';
@@ -48,7 +49,7 @@
 
 	function cancel() {
 		if (dirty && !confirm('You have unsaved changes. Discard them?')) return;
-		goto('/admin/categories');
+		goto(resolve('/admin/categories'));
 	}
 
 	const handleReorderItems = loader.withLoading(async (orderedIds: number[]) => {
@@ -72,7 +73,9 @@
 <section>
 	<AdminOverlay loading={loader.loading} />
 	<div class="flex items-center gap-3">
-		<a href="/admin/categories" class="text-sm text-secondary hover:text-primary">&larr; Back</a>
+		<a href={resolve('/admin/categories')} class="text-sm text-secondary hover:text-primary"
+			>&larr; Back</a
+		>
 		<h1 class="text-xl font-bold text-primary">{data.category.name}</h1>
 		<Timestamps createdAt={data.category.createdAt} updatedAt={data.category.updatedAt} />
 	</div>
@@ -217,7 +220,7 @@
 						<div class="min-w-0 flex-1 text-primary">
 							<div class="flex items-center gap-1.5">
 								<a
-									href="/admin/items/{item.id}?returnTo=categories"
+									href={resolve(`/admin/items/${item.id}?returnTo=categories`)}
 									class="shrink-0 text-accent hover:underline"
 								>
 									{item.name}
@@ -259,7 +262,7 @@
 
 	<div class="mt-6">
 		<a
-			href="/admin/items/new-item?category={data.category.id}&returnTo=categories"
+			href={resolve(`/admin/items/new-item?category=${data.category.id}&returnTo=categories`)}
 			class="inline-flex items-center gap-1.5 rounded bg-accent px-4 py-2 text-sm font-semibold text-canvas transition-opacity hover:opacity-80"
 		>
 			<Plus size={16} />New item

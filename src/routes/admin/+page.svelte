@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { formatRelativeDate } from '$lib/format-date';
+	import { resolve } from '$app/paths';
 	import { Plus } from 'lucide-svelte';
 	import type { PageData } from './$types';
 
@@ -17,7 +18,7 @@
 		<!-- Pages -->
 		<div>
 			<a
-				href="/admin/pages"
+				href={resolve('/admin/pages')}
 				class="block rounded-lg border border-subtle bg-elevated px-4 py-3 transition-colors hover:border-accent/40"
 			>
 				<p class="text-2xl font-bold text-primary">{data.counts.pages}</p>
@@ -27,7 +28,7 @@
 				{#each data.pages as pg (pg.slug)}
 					<li>
 						<a
-							href="/admin/pages/{pg.slug}"
+							href={resolve(`/admin/pages/${pg.slug}`)}
 							class="flex items-center justify-between rounded border border-subtle bg-surface px-3 py-2 text-sm transition-colors hover:border-accent/40"
 						>
 							<span class="text-primary">{pg.title}</span>
@@ -44,7 +45,7 @@
 		<!-- Categories -->
 		<div>
 			<a
-				href="/admin/categories"
+				href={resolve('/admin/categories')}
 				class="block rounded-lg border border-subtle bg-elevated px-4 py-3 transition-colors hover:border-accent/40"
 			>
 				<p class="text-2xl font-bold text-primary">{data.counts.categories}</p>
@@ -54,7 +55,7 @@
 				{#each data.categories as cat (cat.id)}
 					<li>
 						<a
-							href="/admin/categories/{cat.id}"
+							href={resolve(`/admin/categories/${cat.id}`)}
 							class="flex items-center justify-between rounded border border-subtle bg-surface px-3 py-2 text-sm transition-colors hover:border-accent/40"
 						>
 							<span class="text-primary">{cat.name}</span>
@@ -71,7 +72,7 @@
 		<!-- Items -->
 		<div>
 			<a
-				href="/admin/items"
+				href={resolve('/admin/items')}
 				class="block rounded-lg border border-subtle bg-elevated px-4 py-3 transition-colors hover:border-accent/40"
 			>
 				<p class="text-2xl font-bold text-primary">{data.counts.items}</p>
@@ -81,7 +82,7 @@
 				{#each data.recentItems as item (item.id)}
 					<li>
 						<a
-							href="/admin/items/{item.id}"
+							href={resolve(`/admin/items/${item.id}`)}
 							class="flex items-center justify-between rounded border border-subtle bg-surface px-3 py-2 text-sm transition-colors hover:border-accent/40"
 						>
 							<span class="text-primary">{item.name}</span>
@@ -98,7 +99,7 @@
 			<div class="mt-2 flex items-center justify-between px-1">
 				<p class="text-xs text-secondary/50">Recently updated</p>
 				<a
-					href="/admin/items/new-item"
+					href={resolve('/admin/items/new-item')}
 					class="inline-flex items-center gap-1 text-xs text-accent hover:underline"
 				>
 					<Plus size={12} />New item

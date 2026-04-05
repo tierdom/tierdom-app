@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import Timestamps from '$lib/components/admin/Timestamps.svelte';
 	import ItemForm from '$lib/components/admin/ItemForm.svelte';
 	import type { PageData } from './$types';
@@ -16,7 +17,9 @@
 
 <section>
 	<div class="flex items-center gap-3">
-		<a href={data.backUrl} class="text-sm text-secondary hover:text-primary"> &larr; Back </a>
+		<a href={resolve(data.backUrl as '/')} class="text-sm text-secondary hover:text-primary">
+			&larr; Back
+		</a>
 		{#if data.mode === 'create'}
 			<h1 class="text-xl font-bold text-primary">New item</h1>
 		{:else}

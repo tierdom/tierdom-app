@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import { deserialize } from '$app/forms';
 	import { Plus, Save, X, Trash2 } from 'lucide-svelte';
 	import Button from '$lib/components/admin/Button.svelte';
@@ -48,7 +49,7 @@
 
 	function cancel() {
 		if (dirty && !confirm('You have unsaved changes. Discard them?')) return;
-		goto(backUrl);
+		goto(resolve(backUrl as '/'));
 	}
 
 	function handleTagsChange(slugs: string[]) {

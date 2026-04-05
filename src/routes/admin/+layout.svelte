@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { resolve } from '$app/paths';
 
 	let { children } = $props();
 
@@ -20,7 +21,7 @@
 		<div class="flex flex-wrap items-center gap-1">
 			{#each links as link (link.href)}
 				<a
-					href={link.href}
+					href={resolve(link.href as '/')}
 					class="rounded px-3 py-1 text-sm transition-colors {page.url.pathname === link.href
 						? 'bg-elevated text-primary'
 						: 'text-secondary hover:text-primary'}"

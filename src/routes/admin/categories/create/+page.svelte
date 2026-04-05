@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import { Plus, X } from 'lucide-svelte';
 	import Button from '$lib/components/admin/Button.svelte';
 	import FormField from '$lib/components/admin/FormField.svelte';
@@ -18,7 +19,7 @@
 
 	function cancel() {
 		if (dirty && !confirm('You have unsaved changes. Discard them?')) return;
-		goto('/admin/categories');
+		goto(resolve('/admin/categories'));
 	}
 </script>
 
@@ -29,7 +30,9 @@
 <section>
 	<AdminOverlay loading={loader.loading} />
 	<div class="flex items-center gap-3">
-		<a href="/admin/categories" class="text-sm text-secondary hover:text-primary">&larr; Back</a>
+		<a href={resolve('/admin/categories')} class="text-sm text-secondary hover:text-primary"
+			>&larr; Back</a
+		>
 		<h1 class="text-xl font-bold text-primary">New category</h1>
 	</div>
 
