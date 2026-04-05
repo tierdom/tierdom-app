@@ -51,7 +51,9 @@
 			{#if link.href === '/admin'}
 				<a
 					href={resolve('/admin')}
-					class="ml-4 hidden rounded border p-1.5 transition-colors md:inline-flex {page.url.pathname.startsWith('/admin')
+					class="ml-4 hidden rounded border p-1.5 transition-colors md:inline-flex {page.url.pathname.startsWith(
+						'/admin'
+					)
 						? 'border-accent text-accent'
 						: 'border-subtle text-secondary hover:bg-surface hover:text-primary'}"
 					aria-label="Admin"

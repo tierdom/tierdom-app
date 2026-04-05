@@ -38,7 +38,7 @@
 			return;
 		}
 
-		const row = (e.currentTarget as HTMLElement);
+		const row = e.currentTarget as HTMLElement;
 		const rect = row.getBoundingClientRect();
 		const midY = rect.top + rect.height / 2;
 		dropPosition = e.clientY < midY ? 'above' : 'below';
@@ -65,12 +65,14 @@
 		const reordered = [...localItems];
 		const [moved] = reordered.splice(fromIndex, 1);
 
-		let insertAt = toIndex;
-		if (fromIndex < toIndex) {
-			insertAt = dropPosition === 'above' ? toIndex - 1 : toIndex;
-		} else {
-			insertAt = dropPosition === 'above' ? toIndex : toIndex + 1;
-		}
+		const insertAt =
+			fromIndex < toIndex
+				? dropPosition === 'above'
+					? toIndex - 1
+					: toIndex
+				: dropPosition === 'above'
+					? toIndex
+					: toIndex + 1;
 		reordered.splice(insertAt, 0, moved);
 		localItems = reordered;
 

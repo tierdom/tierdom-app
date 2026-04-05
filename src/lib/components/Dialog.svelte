@@ -35,13 +35,22 @@
 		onclose();
 	}}
 >
-	<div class="relative max-h-[85vh] w-[90vw] max-w-2xl overflow-y-auto border border-subtle bg-elevated p-6">
+	<div
+		class="relative max-h-[85vh] w-[90vw] max-w-2xl overflow-y-auto border border-subtle bg-elevated p-6"
+	>
 		<button
 			onclick={onclose}
-			class="absolute right-4 top-4 cursor-pointer p-1 text-secondary transition-colors hover:text-primary"
+			class="absolute top-4 right-4 cursor-pointer p-1 text-secondary transition-colors hover:text-primary"
 			aria-label="Close"
 		>
-			<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+			<svg
+				width="20"
+				height="20"
+				viewBox="0 0 20 20"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+			>
 				<path d="M5 5l10 10M15 5L5 15" />
 			</svg>
 		</button>

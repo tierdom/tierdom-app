@@ -34,27 +34,29 @@
 	{:else if gradient}
 		<div class="absolute inset-0" style:background={gradient}></div>
 	{:else}
-		<div
-			class="absolute inset-0 bg-gradient-to-br from-elevated via-surface to-elevated"
-		></div>
+		<div class="absolute inset-0 bg-gradient-to-br from-elevated via-surface to-elevated"></div>
 	{/if}
 
 	<!-- Title at top -->
 	<div class="absolute inset-x-0 top-0 bg-gradient-to-b from-black/70 to-transparent p-2">
-		<span class="block origin-top-left pr-4 text-xs font-extrabold leading-tight text-white drop-shadow-md transition-transform duration-200 group-hover:scale-115 sm:text-sm">
+		<span
+			class="block origin-top-left pr-4 text-xs leading-tight font-extrabold text-white drop-shadow-md transition-transform duration-200 group-hover:scale-115 sm:text-sm"
+		>
 			{name}
 		</span>
 	</div>
 
 	<!-- Score number bottom-left, just above the bar -->
 	<span
-		class="absolute bottom-3 left-1.5 block origin-bottom-left text-xs font-bold leading-none text-white drop-shadow-md transition-transform duration-200 group-hover:scale-115"
+		class="absolute bottom-3 left-1.5 block origin-bottom-left text-xs leading-none font-bold text-white drop-shadow-md transition-transform duration-200 group-hover:scale-115"
 	>
 		{score}
 	</span>
 
 	<!-- Score bar at the very bottom -->
-	<div class="absolute inset-x-0 bottom-0 h-1 bg-black/30 transition-[height] duration-200 group-hover:h-2">
+	<div
+		class="absolute inset-x-0 bottom-0 h-1 bg-black/30 transition-[height] duration-200 group-hover:h-2"
+	>
 		<div class="h-full opacity-60" style:width="{score}%" style:background={barColor}></div>
 	</div>
 </div>

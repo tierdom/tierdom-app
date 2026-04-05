@@ -59,7 +59,9 @@
 				<div class="flex-1 font-medium">Name</div>
 				<div class="hidden w-40 font-medium sm:block">Category</div>
 				<div class="w-14 font-medium">Score</div>
-				<div class="hidden w-24 font-medium md:flex md:items-center md:gap-0.5">Updated <ArrowDown size={10} /></div>
+				<div class="hidden w-24 font-medium md:flex md:items-center md:gap-0.5">
+					Updated <ArrowDown size={10} />
+				</div>
 				<div class="w-20 text-right font-medium">Actions</div>
 			</div>
 
@@ -79,10 +81,7 @@
 					</div>
 					<div class="min-w-0 flex-1 text-primary">
 						<div class="flex items-center gap-1.5">
-							<a
-								href="/admin/items/{item.id}"
-								class="shrink-0 text-accent hover:underline"
-							>
+							<a href="/admin/items/{item.id}" class="shrink-0 text-accent hover:underline">
 								{item.name}
 							</a>
 							{#if item.tags.length > 0}

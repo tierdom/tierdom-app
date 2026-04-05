@@ -11,7 +11,9 @@
 
 	let { href, label, onclick, variant = 'desktop' }: Props = $props();
 
-	let active = $derived(href === '/' ? page.url.pathname === '/' : page.url.pathname.startsWith(href));
+	let active = $derived(
+		href === '/' ? page.url.pathname === '/' : page.url.pathname.startsWith(href)
+	);
 </script>
 
 {#if variant === 'mobile'}

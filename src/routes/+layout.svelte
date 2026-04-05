@@ -24,7 +24,7 @@
 			tierdom — personal tier lists by
 			<a
 				href="https://jeroenheijmans.nl"
-				class="text-accent/70 hover:text-accent transition-colors"
+				class="text-accent/70 transition-colors hover:text-accent"
 				target="_blank"
 				rel="noopener noreferrer">Jeroen Heijmans</a
 			>
@@ -32,7 +32,7 @@
 		<p class="mt-1 text-xs text-secondary/50">
 			<a
 				href="https://github.com/jeroenheijmans/tierdom-pro"
-				class="hover:text-secondary transition-colors"
+				class="transition-colors hover:text-secondary"
 				target="_blank"
 				rel="noopener noreferrer">Source on GitHub</a
 			>

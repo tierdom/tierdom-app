@@ -6,7 +6,10 @@
 	<title>{page.status} — tierdom</title>
 </svelte:head>
 
-<section class="flex flex-col items-center justify-center text-center" style="min-height: 85vh; padding-top: 6rem;">
+<section
+	class="flex flex-col items-center justify-center text-center"
+	style="min-height: 85vh; padding-top: 6rem;"
+>
 	<p class="leading-none font-black text-accent" style="font-size: 6rem;">{page.status}</p>
 
 	{#if page.status === 404}
@@ -21,7 +24,7 @@
 
 	<a
 		href="/"
-		class="mt-4 py-2 px-4 inline-block border border-subtle text-secondary transition-colors hover:bg-surface hover:text-primary"
+		class="mt-4 inline-block border border-subtle px-4 py-2 text-secondary transition-colors hover:bg-surface hover:text-primary"
 	>
 		Back to safety
 	</a>

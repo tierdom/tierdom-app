@@ -89,10 +89,7 @@ export const actions: Actions = {
 				.returning({ id: tierListItem.id });
 
 			const order = insertByScore(categoryId, score, name, inserted.id);
-			await db
-				.update(tierListItem)
-				.set({ order })
-				.where(eq(tierListItem.id, inserted.id));
+			await db.update(tierListItem).set({ order }).where(eq(tierListItem.id, inserted.id));
 
 			if (tagSlugs.length > 0) {
 				await db
@@ -120,10 +117,7 @@ export const actions: Actions = {
 
 		if (categoryChanged) {
 			const newOrder = insertByScore(categoryId, score, name, id);
-			await db
-				.update(tierListItem)
-				.set({ order: newOrder })
-				.where(eq(tierListItem.id, id));
+			await db.update(tierListItem).set({ order: newOrder }).where(eq(tierListItem.id, id));
 		}
 
 		// Sync tags

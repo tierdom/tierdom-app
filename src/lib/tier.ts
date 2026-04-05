@@ -12,10 +12,7 @@ const DEFAULT_CUTOFFS: Record<Tier, number> = {
 	F: 0
 };
 
-export function scoreToTier(
-	score: number,
-	cutoffs?: Partial<Record<Tier, number | null>>
-): Tier {
+export function scoreToTier(score: number, cutoffs?: Partial<Record<Tier, number | null>>): Tier {
 	const resolved: Record<Tier, number> = {
 		S: cutoffs?.S ?? DEFAULT_CUTOFFS.S,
 		A: cutoffs?.A ?? DEFAULT_CUTOFFS.A,

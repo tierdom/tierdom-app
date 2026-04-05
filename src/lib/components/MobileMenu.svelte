@@ -39,7 +39,7 @@
 
 <!-- Panel -->
 <aside
-	class="fixed left-0 top-0 z-50 flex h-full w-72 max-w-[75vw] flex-col border-r border-subtle bg-elevated transition-transform duration-300 ease-out md:hidden
+	class="fixed top-0 left-0 z-50 flex h-full w-72 max-w-[75vw] flex-col border-r border-subtle bg-elevated transition-transform duration-300 ease-out md:hidden
 		{open ? 'translate-x-0' : '-translate-x-full'}"
 >
 	<div class="border-b border-subtle px-5 py-4">

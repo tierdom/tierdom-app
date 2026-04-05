@@ -1,4 +1,4 @@
-import { integer, primaryKey, real, sqliteTable, text, unique } from 'drizzle-orm/sqlite-core';
+import { integer, primaryKey, sqliteTable, text, unique } from 'drizzle-orm/sqlite-core';
 import { relations, sql } from 'drizzle-orm';
 
 export const category = sqliteTable('category', {
@@ -15,8 +15,12 @@ export const category = sqliteTable('category', {
 	cutoffD: integer('cutoff_d'),
 	cutoffE: integer('cutoff_e'),
 	cutoffF: integer('cutoff_f'),
-	createdAt: text('created_at').notNull().default(sql`(datetime('now'))`),
-	updatedAt: text('updated_at').notNull().default(sql`(datetime('now'))`)
+	createdAt: text('created_at')
+		.notNull()
+		.default(sql`(datetime('now'))`),
+	updatedAt: text('updated_at')
+		.notNull()
+		.default(sql`(datetime('now'))`)
 });
 
 export const tierListItem = sqliteTable(
@@ -31,8 +35,12 @@ export const tierListItem = sqliteTable(
 		description: text('description'),
 		score: integer('score').notNull(),
 		order: integer('order').notNull().default(0),
-		createdAt: text('created_at').notNull().default(sql`(datetime('now'))`),
-		updatedAt: text('updated_at').notNull().default(sql`(datetime('now'))`)
+		createdAt: text('created_at')
+			.notNull()
+			.default(sql`(datetime('now'))`),
+		updatedAt: text('updated_at')
+			.notNull()
+			.default(sql`(datetime('now'))`)
 	},
 	(t) => [unique('item_category_slug').on(t.categoryId, t.slug)]
 );
@@ -40,8 +48,12 @@ export const tierListItem = sqliteTable(
 export const tag = sqliteTable('tag', {
 	slug: text('slug').primaryKey(),
 	label: text('label').notNull(),
-	createdAt: text('created_at').notNull().default(sql`(datetime('now'))`),
-	updatedAt: text('updated_at').notNull().default(sql`(datetime('now'))`)
+	createdAt: text('created_at')
+		.notNull()
+		.default(sql`(datetime('now'))`),
+	updatedAt: text('updated_at')
+		.notNull()
+		.default(sql`(datetime('now'))`)
 });
 
 export const itemTag = sqliteTable(
@@ -61,8 +73,12 @@ export const page = sqliteTable('page', {
 	slug: text('slug').primaryKey(),
 	title: text('title').notNull(),
 	content: text('content').notNull(),
-	createdAt: text('created_at').notNull().default(sql`(datetime('now'))`),
-	updatedAt: text('updated_at').notNull().default(sql`(datetime('now'))`)
+	createdAt: text('created_at')
+		.notNull()
+		.default(sql`(datetime('now'))`),
+	updatedAt: text('updated_at')
+		.notNull()
+		.default(sql`(datetime('now'))`)
 });
 
 // ─── Relations ────────────────────────────────────────────────────────────────

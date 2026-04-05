@@ -14,7 +14,9 @@
 
 <nav class="-mx-4 border-b border-subtle bg-surface md:mx-0">
 	<div class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-4 gap-y-1 px-4 py-2">
-		<span class="hidden text-xs font-bold tracking-widest text-accent uppercase md:inline">Admin</span>
+		<span class="hidden text-xs font-bold tracking-widest text-accent uppercase md:inline"
+			>Admin</span
+		>
 		<div class="flex flex-wrap items-center gap-1">
 			{#each links as link (link.href)}
 				<a

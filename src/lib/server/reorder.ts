@@ -27,7 +27,12 @@ export function applyOrder(
  * Tiebreaker: name ASC, then id ASC.
  * Shifts existing items to make room.
  */
-export function insertByScore(categoryId: number, score: number, name: string, itemId: number): number {
+export function insertByScore(
+	categoryId: number,
+	score: number,
+	name: string,
+	itemId: number
+): number {
 	const result = db
 		.select({
 			pos: sql<number>`count(*)`

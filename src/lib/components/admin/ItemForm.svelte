@@ -100,7 +100,12 @@
 	</div>
 
 	<FormField label="Name" name="name" value={initialValues.name} required />
-	<FormField label="Slug" name="slug" value={initialValues.slug} help="Auto-generated from name if empty" />
+	<FormField
+		label="Slug"
+		name="slug"
+		value={initialValues.slug}
+		help="Auto-generated from name if empty"
+	/>
 	<FormField
 		label="Score"
 		name="score"

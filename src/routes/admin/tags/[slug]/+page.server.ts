@@ -20,10 +20,7 @@ export const actions: Actions = {
 		const newSlug = data.get('slug')?.toString()?.trim();
 		if (!newSlug) return fail(400, { error: 'Slug is required' });
 
-		await db
-			.update(tag)
-			.set({ slug: newSlug, label })
-			.where(eq(tag.slug, params.slug));
+		await db.update(tag).set({ slug: newSlug, label }).where(eq(tag.slug, params.slug));
 
 		redirect(303, '/admin/tags');
 	},

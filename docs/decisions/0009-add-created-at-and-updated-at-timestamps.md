@@ -47,12 +47,14 @@ The Drizzle schema is updated first, then the existing migration is deleted and 
 ## Consequences
 
 **Positive:**
+
 - All existing insert/update code works without changes — triggers and defaults handle everything
 - ISO 8601 text is human-readable and sorts correctly
 - Admin UI gains meaningful "recently updated" ordering and visible timestamps
 - Foundation laid for future public-facing "last edited" display
 
 **Negative:**
+
 - TEXT timestamps use slightly more storage than INTEGER unix timestamps (~19 bytes vs 4–8 bytes per value), though this is negligible for our data volume
 - Triggers are invisible to Drizzle — they must be maintained manually in the migration SQL
 - Reordering items (changing `order` column) will bump `updated_at`, which may not always be desired — but for now this is acceptable and even useful behaviour

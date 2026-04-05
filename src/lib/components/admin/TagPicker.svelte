@@ -95,7 +95,12 @@
 				{@const t = knownTags.find((t) => t.slug === slug)}
 				<span class="pill">
 					{t?.label ?? slug}
-					<button type="button" class="pill-remove" onclick={() => remove(slug)} aria-label="Remove {t?.label ?? slug}">×</button>
+					<button
+						type="button"
+						class="pill-remove"
+						onclick={() => remove(slug)}
+						aria-label="Remove {t?.label ?? slug}">×</button
+					>
 				</span>
 			{/each}
 		</div>
@@ -121,7 +126,10 @@
 						<button
 							type="button"
 							class="dropdown-item"
-							onmousedown={(e) => { e.preventDefault(); select(tag.slug); }}
+							onmousedown={(e) => {
+								e.preventDefault();
+								select(tag.slug);
+							}}
 							onmouseenter={() => (highlightIndex = i)}
 						>
 							{tag.label}
@@ -133,7 +141,10 @@
 						<button
 							type="button"
 							class="dropdown-item create-item"
-							onmousedown={(e) => { e.preventDefault(); create(query.trim()); }}
+							onmousedown={(e) => {
+								e.preventDefault();
+								create(query.trim());
+							}}
 							onmouseenter={() => (highlightIndex = filtered.length)}
 						>
 							+ Create "{query.trim()}"

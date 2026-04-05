@@ -35,7 +35,9 @@ export const load: PageServerLoad = async () => {
 		.orderBy(desc(tierListItem.updatedAt))
 		.limit(5);
 
-	const pages = await db.select({ slug: page.slug, title: page.title, updatedAt: page.updatedAt }).from(page);
+	const pages = await db
+		.select({ slug: page.slug, title: page.title, updatedAt: page.updatedAt })
+		.from(page);
 
 	return {
 		counts: {

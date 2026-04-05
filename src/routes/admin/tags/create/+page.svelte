@@ -32,7 +32,14 @@
 		<h1 class="text-xl font-bold text-primary">New tag</h1>
 	</div>
 
-	<form id="create-tag" method="POST" action="?/create" use:enhance oninput={markDirty} class="mt-6 flex flex-col gap-3">
+	<form
+		id="create-tag"
+		method="POST"
+		action="?/create"
+		use:enhance
+		oninput={markDirty}
+		class="mt-6 flex flex-col gap-3"
+	>
 		<FormField label="Label" name="label" required />
 		<FormField label="Slug" name="slug" help="Auto-generated from label if empty" />
 	</form>
