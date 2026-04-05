@@ -17,7 +17,8 @@
 	const { enhance } = loader;
 
 	let dirty = $state(false);
-	let showCutoffs = $state(
+	let userWantsCutoffs = $state(false);
+	const hasCutoffs = $derived(
 		data.category.cutoffS != null ||
 			data.category.cutoffA != null ||
 			data.category.cutoffB != null ||
@@ -26,6 +27,7 @@
 			data.category.cutoffE != null ||
 			data.category.cutoffF != null
 	);
+	const showCutoffs = $derived(userWantsCutoffs || hasCutoffs);
 
 	const cutoffs = $derived({
 		S: data.category.cutoffS,
@@ -155,7 +157,7 @@
 			<button
 				type="button"
 				class="mt-1 cursor-pointer self-start text-xs text-secondary hover:text-primary"
-				onclick={() => (showCutoffs = true)}
+				onclick={() => (userWantsCutoffs = true)}
 			>
 				Customize tier cutoffs…
 			</button>
