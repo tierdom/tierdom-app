@@ -8,6 +8,7 @@
 	import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
 	import { scoreToTier } from '$lib/tier';
 	import TierBadge from '$lib/components/admin/TierBadge.svelte';
+	import TagPill from '$lib/components/admin/TagPill.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -216,9 +217,7 @@
 						</div>
 						<div class="hidden flex-1 lg:flex lg:flex-wrap lg:gap-1">
 							{#each item.tags as { slug: string; label: string }[] as t (t.slug)}
-								<span class="rounded-full bg-subtle/30 px-2 py-0.5 text-[0.65rem] text-secondary/70"
-									>{t.label}</span
-								>
+								<TagPill label={t.label} />
 							{/each}
 						</div>
 						<div class="w-16 text-secondary">{item.score}</div>
