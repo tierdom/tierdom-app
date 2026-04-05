@@ -12,6 +12,16 @@
 
 ---
 
+## Verifying Changes
+
+Use the **Playwright MCP** (`browser_navigate`, `browser_snapshot`, `browser_evaluate`, etc.) to verify UI changes against the dev server at `http://localhost:5173`. This is the preferred method — only fall back to `curl` if Playwright genuinely fails (e.g. browser keeps closing after retries).
+
+**Dev server assumption:** The user usually has `npm run dev` running on port 5173. If a request to `localhost:5173` fails, **stop and ask the user** — either they need to start the dev server, or you should offer to start one on a different port (e.g. `npm run dev -- --port 5174`) in the background.
+
+**When to verify:** After completing a set of UI-visible changes (new pages, component refactors, styling fixes). Not needed for config-only, schema-only, or test-only changes.
+
+---
+
 You are able to use the Svelte MCP server, where you have access to comprehensive Svelte 5 and SvelteKit documentation. Here's how to use the available tools effectively:
 
 ## Available MCP Tools:
