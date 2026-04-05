@@ -12,10 +12,10 @@
 	];
 </script>
 
-<nav class="border-b border-subtle bg-surface">
-	<div class="mx-auto flex max-w-6xl items-center gap-4 px-4 py-2">
-		<span class="text-xs font-bold tracking-widest text-accent uppercase">Admin</span>
-		<div class="flex items-center gap-1">
+<nav class="-mx-4 border-b border-subtle bg-surface md:mx-0">
+	<div class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-4 gap-y-1 px-4 py-2">
+		<span class="hidden text-xs font-bold tracking-widest text-accent uppercase md:inline">Admin</span>
+		<div class="flex flex-wrap items-center gap-1">
 			{#each links as link (link.href)}
 				<a
 					href={link.href}
@@ -27,9 +27,6 @@
 				</a>
 			{/each}
 		</div>
-		<a href="/" class="ml-auto text-xs text-secondary transition-colors hover:text-primary">
-			Back to site
-		</a>
 	</div>
 </nav>
 
