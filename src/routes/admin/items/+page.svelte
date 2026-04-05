@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Trash2 } from 'lucide-svelte';
 	import Button from '$lib/components/admin/Button.svelte';
 	import TierBadge from '$lib/components/admin/TierBadge.svelte';
 	import TagPill from '$lib/components/admin/TagPill.svelte';
@@ -98,7 +99,7 @@
 							}}
 						>
 							<input type="hidden" name="id" value={item.id} />
-							<Button variant="table-danger" type="submit">delete</Button>
+							<Button variant="table-danger" type="submit"><Trash2 size={12} />delete</Button>
 						</form>
 					</div>
 				</div>

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { Plus, X } from 'lucide-svelte';
 	import Button from '$lib/components/admin/Button.svelte';
 	import FormField from '$lib/components/admin/FormField.svelte';
 	import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
@@ -37,7 +38,7 @@
 	</form>
 
 	<div class="mt-4 flex flex-col gap-3 md:flex-row md:items-center">
-		<Button type="submit" form="create-tag">Create</Button>
-		<Button variant="secondary" type="button" onclick={cancel}>Cancel</Button>
+		<Button type="submit" form="create-tag"><Plus size={16} />Create</Button>
+		<Button variant="secondary" type="button" onclick={cancel}><X size={16} />Cancel</Button>
 	</div>
 </section>

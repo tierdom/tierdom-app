@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Save } from 'lucide-svelte';
 	import Button from '$lib/components/admin/Button.svelte';
 	import FormField from '$lib/components/admin/FormField.svelte';
 	import MarkdownField from '$lib/components/admin/MarkdownField.svelte';
@@ -26,7 +27,7 @@
 		<FormField label="Title" name="title" value={data.page.title} required />
 		<MarkdownField value={data.page.content} required />
 		<div>
-			<Button type="submit">Save</Button>
+			<Button type="submit"><Save size={16} />Save</Button>
 		</div>
 	</form>
 </section>

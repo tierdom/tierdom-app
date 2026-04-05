@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { Save, X, Trash2, Plus } from 'lucide-svelte';
 	import Button from '$lib/components/admin/Button.svelte';
 	import FormField from '$lib/components/admin/FormField.svelte';
 	import MarkdownField from '$lib/components/admin/MarkdownField.svelte';
@@ -165,8 +166,8 @@
 	</form>
 
 	<div class="mt-4 flex flex-col gap-3 md:flex-row md:items-center">
-		<Button type="submit" form="edit-category">Save</Button>
-		<Button variant="secondary" type="button" onclick={cancel}>Cancel</Button>
+		<Button type="submit" form="edit-category"><Save size={16} />Save</Button>
+		<Button variant="secondary" type="button" onclick={cancel}><X size={16} />Cancel</Button>
 		<form
 			id="delete-category"
 			method="POST"
@@ -176,7 +177,7 @@
 				if (!confirm('Delete this category and all its items?')) e.preventDefault();
 			}}
 		>
-			<Button variant="danger" type="submit">Delete</Button>
+			<Button variant="danger" type="submit"><Trash2 size={16} />Delete</Button>
 		</form>
 	</div>
 
@@ -234,7 +235,7 @@
 								}}
 							>
 								<input type="hidden" name="id" value={item.id} />
-								<Button variant="table-danger" type="submit">delete</Button>
+								<Button variant="table-danger" type="submit"><Trash2 size={12} />delete</Button>
 							</form>
 						</div>
 					</div>
@@ -248,9 +249,9 @@
 	<div class="mt-6">
 		<a
 			href="/admin/categories/{data.category.id}/create-item"
-			class="inline-block rounded bg-accent px-4 py-2 text-sm font-semibold text-canvas transition-opacity hover:opacity-80"
+			class="inline-flex items-center gap-1.5 rounded bg-accent px-4 py-2 text-sm font-semibold text-canvas transition-opacity hover:opacity-80"
 		>
-			New item
+			<Plus size={16} />New item
 		</a>
 	</div>
 </section>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Plus, Trash2 } from 'lucide-svelte';
 	import Button from '$lib/components/admin/Button.svelte';
 	import SortableList from '$lib/components/admin/SortableList.svelte';
 	import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
@@ -58,7 +59,7 @@
 								}}
 							>
 								<input type="hidden" name="id" value={cat.id} />
-								<Button variant="table-danger" type="submit">delete</Button>
+								<Button variant="table-danger" type="submit"><Trash2 size={12} />delete</Button>
 							</form>
 						</div>
 					</div>
@@ -72,9 +73,9 @@
 	<div class="mt-8">
 		<a
 			href="/admin/categories/create"
-			class="inline-block rounded bg-accent px-4 py-2 text-sm font-semibold text-canvas transition-opacity hover:opacity-80"
+			class="inline-flex items-center gap-1.5 rounded bg-accent px-4 py-2 text-sm font-semibold text-canvas transition-opacity hover:opacity-80"
 		>
-			New category
+			<Plus size={16} />New category
 		</a>
 	</div>
 </section>

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { deserialize } from '$app/forms';
+	import { Plus, X } from 'lucide-svelte';
 	import Button from '$lib/components/admin/Button.svelte';
 	import FormField from '$lib/components/admin/FormField.svelte';
 	import MarkdownField from '$lib/components/admin/MarkdownField.svelte';
@@ -80,7 +81,7 @@
 	</form>
 
 	<div class="mt-4 flex flex-col gap-3 md:flex-row md:items-center">
-		<Button type="submit" form="create-item">Create</Button>
-		<Button variant="secondary" type="button" onclick={cancel}>Cancel</Button>
+		<Button type="submit" form="create-item"><Plus size={16} />Create</Button>
+		<Button variant="secondary" type="button" onclick={cancel}><X size={16} />Cancel</Button>
 	</div>
 </section>

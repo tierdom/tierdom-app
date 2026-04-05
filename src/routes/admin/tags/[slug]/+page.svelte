@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { Save, X, Trash2 } from 'lucide-svelte';
 	import Button from '$lib/components/admin/Button.svelte';
 	import FormField from '$lib/components/admin/FormField.svelte';
 	import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
@@ -49,8 +50,8 @@
 	</form>
 
 	<div class="mt-4 flex flex-col gap-3 md:flex-row md:items-center">
-		<Button type="submit" form="edit-tag">Save</Button>
-		<Button variant="secondary" type="button" onclick={cancel}>Cancel</Button>
+		<Button type="submit" form="edit-tag"><Save size={16} />Save</Button>
+		<Button variant="secondary" type="button" onclick={cancel}><X size={16} />Cancel</Button>
 		<form
 			method="POST"
 			action="?/delete"
@@ -59,7 +60,7 @@
 				if (!confirm('Delete this tag?')) e.preventDefault();
 			}}
 		>
-			<Button variant="danger" type="submit">Delete</Button>
+			<Button variant="danger" type="submit"><Trash2 size={16} />Delete</Button>
 		</form>
 	</div>
 </section>
