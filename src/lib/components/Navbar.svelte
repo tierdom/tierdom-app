@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
 	import { afterNavigate } from '$app/navigation';
+	import { Pencil } from 'lucide-svelte';
 	import NavLink from './NavLink.svelte';
 	import MobileMenu from './MobileMenu.svelte';
 
@@ -43,6 +45,18 @@
 		<div class="hidden md:block">
 			<NavLink href="/about" label="About" />
 		</div>
+
+		<!-- Admin shortcut (desktop) -->
+		<a
+			href={resolve('/admin')}
+			class="ml-4 hidden rounded border p-1.5 transition-colors md:inline-flex {page.url.pathname.startsWith('/admin')
+				? 'border-accent text-accent'
+				: 'border-subtle text-secondary hover:bg-surface hover:text-primary'}"
+			aria-label="Admin"
+			aria-current={page.url.pathname.startsWith('/admin') ? 'page' : undefined}
+		>
+			<Pencil size={14} />
+		</a>
 
 		<!-- Hamburger button (mobile) -->
 		<button
