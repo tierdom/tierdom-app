@@ -1,6 +1,7 @@
 <script lang="ts">
+	import { formatRelativeDate } from '$lib/format-date';
 	import { goto } from '$app/navigation';
-	import { Save, X, Trash2, Plus } from 'lucide-svelte';
+	import { ArrowDown, Save, X, Trash2, Plus } from 'lucide-svelte';
 	import Button from '$lib/components/admin/Button.svelte';
 	import FormField from '$lib/components/admin/FormField.svelte';
 	import MarkdownField from '$lib/components/admin/MarkdownField.svelte';
@@ -198,11 +199,11 @@
 	{#if data.items.length > 0}
 		<div class="mt-4 w-full text-sm">
 			<div class="flex border-b border-subtle pb-2 text-left text-xs text-secondary">
-				<div class="w-8"></div>
+				<div class="flex w-6 shrink-0 items-center justify-center"><ArrowDown size={10} /></div>
 				<div class="w-8 font-medium">Tier</div>
 				<div class="flex-1 font-medium">Name</div>
-				<div class="hidden flex-1 font-medium lg:block">Tags</div>
 				<div class="w-16 font-medium">Score</div>
+				<div class="hidden w-24 font-medium md:block">Updated</div>
 				<div class="w-24 text-right font-medium">Actions</div>
 			</div>
 
@@ -213,17 +214,24 @@
 						<div class="w-8 flex-shrink-0">
 							<TierBadge {tier} />
 						</div>
-						<div class="flex-1 text-primary">
-							<a href="/admin/items/{item.id}" class="text-accent hover:underline">
-								{item.name}
-							</a>
-						</div>
-						<div class="hidden flex-1 lg:flex lg:flex-wrap lg:gap-1">
-							{#each item.tags as { slug: string; label: string }[] as t (t.slug)}
-								<TagPill label={t.label} />
-							{/each}
+						<div class="min-w-0 flex-1 text-primary">
+							<div class="flex items-center gap-1.5">
+								<a href="/admin/items/{item.id}" class="shrink-0 text-accent hover:underline">
+									{item.name}
+								</a>
+								{#if item.tags.length > 0}
+									<div class="hidden gap-1 lg:flex">
+										{#each item.tags as { slug: string; label: string }[] as t (t.slug)}
+											<TagPill label={t.label} />
+										{/each}
+									</div>
+								{/if}
+							</div>
 						</div>
 						<div class="w-16 text-secondary">{item.score}</div>
+						<div class="hidden w-24 text-xs text-secondary md:block">
+							{formatRelativeDate(item.updatedAt)}
+						</div>
 						<div class="w-24 text-right">
 							<form
 								method="POST"
