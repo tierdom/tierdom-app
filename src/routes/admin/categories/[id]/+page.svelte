@@ -60,10 +60,7 @@
 	const handleSortByScore = loader.withLoading(async () => {
 		if (!confirm('Sort all items by score (highest first)? This replaces the current order.'))
 			return;
-		const sorted = [...data.items].sort((a, b) => b.score - a.score);
-		const body = new FormData();
-		body.set('order', JSON.stringify(sorted.map((i) => i.id)));
-		await fetch('?/reorderItems', { method: 'POST', body });
+		await fetch('?/sortByScore', { method: 'POST', body: new FormData() });
 		location.reload();
 	});
 </script>

@@ -2,7 +2,7 @@ import { db } from '$lib/server/db';
 import { category, tierListItem, itemTag, tag } from '$lib/server/db/schema';
 import { eq, asc } from 'drizzle-orm';
 import { error, fail, redirect } from '@sveltejs/kit';
-import { applyOrder } from '$lib/server/reorder';
+import { applyOrder, sortCategoryByScore } from '$lib/server/reorder';
 import type { PageServerLoad, Actions } from './$types';
 
 function slugify(text: string): string {
@@ -109,6 +109,12 @@ export const actions: Actions = {
 		}
 
 		await applyOrder(tierListItem, tierListItem.id, tierListItem.order, orderedIds);
+		return { success: true };
+	},
+
+	sortByScore: async ({ params }) => {
+		const id = Number(params.id);
+		sortCategoryByScore(id);
 		return { success: true };
 	},
 

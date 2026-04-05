@@ -1,9 +1,10 @@
 import { db } from '$lib/server/db';
 import { category, tag, tierListItem, itemTag } from '$lib/server/db/schema';
-import { asc, eq, sql } from 'drizzle-orm';
+import { asc, eq } from 'drizzle-orm';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { getOrCreateTag } from '$lib/server/tags';
 import { slugify } from '$lib/server/slugify';
+import { insertByScore } from '$lib/server/reorder';
 import type { PageServerLoad, Actions } from './$types';
 
 type ReturnTarget = 'categories' | 'items';
@@ -81,23 +82,17 @@ export const actions: Actions = {
 			data.get('_returnTarget')?.toString() === 'categories' ? 'categories' : 'items';
 
 		if (params.id === 'new-item') {
-			// Create
-			const [maxOrder] = await db
-				.select({ max: sql<number>`coalesce(max(${tierListItem.order}), -1)` })
-				.from(tierListItem)
-				.where(eq(tierListItem.categoryId, categoryId));
-
+			// Create — insert with a temporary order, then fix it by score
 			const [inserted] = await db
 				.insert(tierListItem)
-				.values({
-					categoryId,
-					slug,
-					name,
-					description,
-					score,
-					order: maxOrder.max + 1
-				})
+				.values({ categoryId, slug, name, description, score, order: 0 })
 				.returning({ id: tierListItem.id });
+
+			const order = insertByScore(categoryId, score, name, inserted.id);
+			await db
+				.update(tierListItem)
+				.set({ order })
+				.where(eq(tierListItem.id, inserted.id));
 
 			if (tagSlugs.length > 0) {
 				await db
@@ -117,26 +112,19 @@ export const actions: Actions = {
 			.limit(1);
 
 		const categoryChanged = categoryId !== item.categoryId;
-		let newOrder: number | undefined;
-		if (categoryChanged) {
-			const [maxOrder] = await db
-				.select({ max: sql<number>`coalesce(max(${tierListItem.order}), -1)` })
-				.from(tierListItem)
-				.where(eq(tierListItem.categoryId, categoryId));
-			newOrder = maxOrder.max + 1;
-		}
 
 		await db
 			.update(tierListItem)
-			.set({
-				name,
-				slug,
-				score,
-				description,
-				categoryId,
-				...(newOrder !== undefined && { order: newOrder })
-			})
+			.set({ name, slug, score, description, categoryId })
 			.where(eq(tierListItem.id, id));
+
+		if (categoryChanged) {
+			const newOrder = insertByScore(categoryId, score, name, id);
+			await db
+				.update(tierListItem)
+				.set({ order: newOrder })
+				.where(eq(tierListItem.id, id));
+		}
 
 		// Sync tags
 		await db.delete(itemTag).where(eq(itemTag.itemId, id));
