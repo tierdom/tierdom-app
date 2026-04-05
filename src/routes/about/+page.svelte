@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import Prose from '$lib/components/Prose.svelte';
 
 	let { data }: { data: PageData } = $props();
 </script>
@@ -8,7 +9,4 @@
 	<title>{data.page.title} — tierdom</title>
 </svelte:head>
 
-<article class="mx-auto prose max-w-2xl py-12 prose-invert">
-	<!-- eslint-disable-next-line svelte/no-at-html-tags — sanitised by DOMPurify server-side -->
-	{@html data.page.contentHtml}
-</article>
+<Prose html={data.page.contentHtml} class="mx-auto max-w-2xl py-12" />

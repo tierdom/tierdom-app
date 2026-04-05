@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import type { PageData } from './$types';
+	import Prose from '$lib/components/Prose.svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -22,8 +23,7 @@
 <!-- CMS hero -->
 {#if data.page?.contentHtml}
 	<section class="py-16 text-center md:py-24">
-		<!-- eslint-disable-next-line svelte/no-at-html-tags — sanitised by DOMPurify server-side -->
-		<div class="mx-auto prose prose-lg max-w-xl prose-invert">{@html data.page.contentHtml}</div>
+		<Prose html={data.page.contentHtml} size="lg" class="mx-auto max-w-xl" />
 	</section>
 {/if}
 
@@ -43,10 +43,7 @@
 						{cat.name}
 					</h3>
 					{#if cat.descriptionHtml}
-						<div class="prose prose-sm mt-1 line-clamp-2 prose-invert [&>*]:m-0">
-							<!-- eslint-disable-next-line svelte/no-at-html-tags — sanitised by DOMPurify server-side -->
-							{@html cat.descriptionHtml}
-						</div>
+						<Prose html={cat.descriptionHtml} size="sm" class="mt-1 line-clamp-2 [&>*]:m-0" />
 					{/if}
 					<p class="mt-3 text-xs text-secondary/60">
 						{cat.itemCount}

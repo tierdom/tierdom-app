@@ -5,6 +5,7 @@
 	import TierListItem from '$lib/components/TierListItem.svelte';
 	import Dialog from '$lib/components/Dialog.svelte';
 	import ItemDetail from '$lib/components/ItemDetail.svelte';
+	import Prose from '$lib/components/Prose.svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -43,10 +44,7 @@
 	<!-- Category header -->
 	<h1 class="text-2xl font-bold text-primary">{data.category.name}</h1>
 	{#if data.category.descriptionHtml}
-		<!-- eslint-disable-next-line svelte/no-at-html-tags — sanitised by DOMPurify server-side -->
-		<div class="prose prose-sm mt-2 max-w-2xl prose-invert">
-			{@html data.category.descriptionHtml}
-		</div>
+		<Prose html={data.category.descriptionHtml} size="sm" class="mt-2 max-w-2xl" />
 	{/if}
 
 	<!-- Tier rows -->

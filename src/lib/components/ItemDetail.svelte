@@ -1,4 +1,6 @@
 <script lang="ts">
+	import Prose from '$lib/components/Prose.svelte';
+
 	type Tag = { slug: string; label: string };
 
 	type Props = {
@@ -59,8 +61,7 @@
 
 	<!-- Description / review -->
 	{#if descriptionHtml}
-		<!-- eslint-disable-next-line svelte/no-at-html-tags — sanitised by DOMPurify server-side -->
-		<div class="prose prose-sm prose-invert">{@html descriptionHtml}</div>
+		<Prose html={descriptionHtml} size="sm" />
 	{:else}
 		<p class="text-sm leading-relaxed text-secondary">
 			This is a placeholder review. The actual review content will appear here once it has been
