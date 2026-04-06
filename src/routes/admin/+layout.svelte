@@ -2,6 +2,7 @@
 	import { page } from '$app/state';
 	import { enhance } from '$app/forms';
 	import { resolve } from '$app/paths';
+	import { User } from 'lucide-svelte';
 	import type { LayoutData } from './$types';
 
 	let { children, data }: { children: import('svelte').Snippet; data: LayoutData } = $props();
@@ -34,11 +35,14 @@
 		</div>
 		{#if data.user}
 			<div class="flex items-center gap-3">
-				<span class="text-xs text-secondary">{data.user.username}</span>
+				<span class="flex items-center gap-1 text-xs text-secondary" title="Currently signed in as">
+					<User size={14} />
+					{data.user.username}
+				</span>
 				<form method="POST" action="/admin/logout" use:enhance>
 					<button
 						type="submit"
-						class="rounded px-3 py-1 text-sm text-secondary transition-colors hover:text-primary"
+						class="cursor-pointer rounded px-3 py-1 text-sm text-secondary transition-colors hover:text-primary"
 					>
 						Sign out
 					</button>

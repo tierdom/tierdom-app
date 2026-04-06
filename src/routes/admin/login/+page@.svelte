@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import Button from '$lib/components/admin/Button.svelte';
 	import type { ActionData } from './$types';
 
 	let { form }: { form: ActionData } = $props();
@@ -9,9 +10,9 @@
 	<title>Login — tierdom</title>
 </svelte:head>
 
-<div class="flex min-h-screen items-center justify-center px-4">
+<div class="flex min-h-screen items-start justify-center px-4 pt-[25vh] md:pt-[30vh]">
 	<div class="w-full max-w-sm">
-		<h1 class="mb-6 text-center text-xl font-bold text-primary">tierdom admin</h1>
+		<h1 class="mb-6 text-center text-xl font-bold text-primary">Admin Sign In</h1>
 
 		{#if form?.error}
 			<p class="mb-4 rounded border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-400">
@@ -45,12 +46,7 @@
 				/>
 			</div>
 
-			<button
-				type="submit"
-				class="rounded bg-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent/80"
-			>
-				Sign in
-			</button>
+			<Button type="submit">Sign in</Button>
 		</form>
 	</div>
 </div>
