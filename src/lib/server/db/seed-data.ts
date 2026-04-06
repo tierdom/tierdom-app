@@ -33,7 +33,7 @@ export const CATEGORIES: SeedCategory[] = [
 		slug: 'video-games',
 		name: 'Video Games',
 		description:
-			'Every game I have played ranked from **S-tier masterpieces** down to the ones I wish I could forget.\n\nGenres span RPGs, platformers, roguelikes, and more.',
+			"All the games I've ever played (as far as I can remember) ranked and stuffed into tiers. **Note:** this is what the games mean to me, and sometimes they may sit in a tier that could be considered '*too high*' if they are crap but were somehow special to me.",
 		order: 0,
 		items: [
 			{
@@ -242,33 +242,35 @@ export const PAGES = [
 	{
 		slug: 'home',
 		title: 'Home',
-		content: `# Welcome to **tierdom**
+		content: `# My personal **Tierdom**
 
-A personal, self-hosted collection of tier-ranked lists. No algorithms, no ads — just honest rankings from S to F.`
+My personal list of lists: how I rank all sorts of things, along with small reviews. Divided into _tiers_. Have a look around!`
 	},
 	{
 		slug: 'about',
 		title: 'About tierdom',
-		content: `**Tierdom** is a personal, self-hosted tier list application. Instead of scattering reviews and ratings across dozens of proprietary platforms, everything lives in one place — owned and controlled by me.
+		content: `**Tierdom** is a personal, self-hosted tier list application. Instead of scattering reviews and ratings across dozens of proprietary platforms, everything lives in one place, owned and controlled by yours truly.
 
 ## Why self-host?
 
 Review platforms like IMDB, Goodreads, and BoardGameGeek are great resources, but they each lock your data into their own silo with their own rating scale. Tierdom brings all of that together under a single, consistent system.
 
-| Feature | Self-hosted | Proprietary |
-|---|---|---|
-| Data ownership | Full | Theirs |
-| Minimalist UI | Yes | Varies |
-| Uniform rankings | S\u2013F everywhere | Per-platform |
-| Ad-free | Always | Rarely |
-| Custom categories | Unlimited | Fixed |
+|                               | Proprietary Apps | Self-hosted    |
+| ----------------------------- | ---------------- | -------------- |
+| Can show lists                | ✅               | ✅             |
+| Feature rich                  | ✅               | ❌             |
+| Minimalistic UI               | ❌               | ✅             |
+| Uniform UI across lists       | ❌               | ✅             |
+| Own your words (e.g. reviews) | ❌               | ✅             |
+| Own your data (the lists)     | ❌               | ✅             |
+| Solution rating :-)           | 😐 55 / 100 😐   | 🤩 90 / 100 🤩 |
 
-## What's in a name?
+## What is a "Tier List"?
 
-**Tierdom** blends "tier" (as in tier lists) with "fiefdom" — a small, self-governed domain. It's a nod to the idea of owning your own little corner of the ranking world.
+It's a way to rank items in a list. Items in the same "Tier" ("rank") are normally considered equal. However, at tierdom, within tiers items are also ranked. The tiers are based of the US grading system with letters (with an "S" added at the top).
 
 ## Open source
 
-The source code is publicly available on [GitHub](https://github.com/jeroenheijmans/tierdom-app). Feel free to explore, fork, or draw inspiration for your own tier list project.`
+The source code is publicly available on [GitHub](https://github.com/tierdom/tierdom-app).`
 	}
 ];

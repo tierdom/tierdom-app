@@ -55,7 +55,7 @@ export function seedPreset(preset: string): void {
 					slug: 'home',
 					title: 'Home',
 					content:
-						'# Welcome\n\nThis is your new tierdom instance. Head to [the admin](/admin) to start building your tier lists.'
+						'# Welcome\n\nThis is your new Tierdom instance. Head to [the admin](/admin) to start building your tier lists.'
 				},
 				{
 					slug: 'about',
@@ -71,7 +71,7 @@ export function seedPreset(preset: string): void {
 					slug: 'home',
 					title: 'Home',
 					content:
-						'# Welcome to **tierdom**\n\nA personal, self-hosted collection of tier-ranked lists. No algorithms, no ads — just honest rankings from S to F.'
+						'# Welcome to **Tierdom**\n\nA personal, self-hosted collection of tier-ranked lists.'
 				},
 				{
 					slug: 'about',
