@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { pushState } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import TierListItem from '$lib/components/TierListItem.svelte';
 	import Dialog from '$lib/components/Dialog.svelte';
@@ -33,16 +34,17 @@
 		data.tiers.flatMap((t) => t.items.map((item) => ({ ...item, tier: t.tier })))
 	);
 
-	let selectedItem = $derived(
-		page.state.showItem ? (allItems.find((i) => i.slug === page.state.showItem) ?? null) : null
-	);
+	let selectedItem = $derived.by(() => {
+		const slug = page.state.item ?? page.url.searchParams.get('item');
+		return slug ? (allItems.find((i) => i.slug === slug) ?? null) : null;
+	});
 
 	function openItem(slug: string) {
-		pushState('', { showItem: slug });
+		pushState(resolve(`${page.url.pathname}?item=${encodeURIComponent(slug)}`), { item: slug });
 	}
 
 	function closeItem() {
-		pushState('', {});
+		pushState(resolve(page.url.pathname), {});
 	}
 </script>
 
