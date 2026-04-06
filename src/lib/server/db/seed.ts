@@ -7,9 +7,11 @@
 
 import { drizzle } from 'drizzle-orm/better-sqlite3';
 import Database from 'better-sqlite3';
+import { randomUUID } from 'node:crypto';
+import { hashPassword } from '../auth/password';
 import * as schema from './schema';
 
-const { category, tierListItem, tag, itemTag, page } = schema;
+const { category, tierListItem, tag, itemTag, page, user, session } = schema;
 
 if (!process.env.DATABASE_URL) {
 	console.error('DATABASE_URL is not set');
@@ -304,11 +306,25 @@ function slugify(name: string): string {
 console.log('Seeding database...');
 
 // Wipe existing data in dependency order
+db.delete(session).run();
 db.delete(itemTag).run();
 db.delete(tierListItem).run();
 db.delete(tag).run();
 db.delete(category).run();
 db.delete(page).run();
+db.delete(user).run();
+
+// Insert dev admin user from env vars (defaults: admin / admin)
+const adminUsername = (process.env.ADMIN_USERNAME || 'admin').toLowerCase();
+const adminPassword = process.env.ADMIN_PASSWORD || 'admin';
+db.insert(user)
+	.values({
+		id: randomUUID(),
+		username: adminUsername,
+		passwordHash: hashPassword(adminPassword)
+	})
+	.run();
+console.log(`Created dev admin user: ${adminUsername} / ${adminPassword}`);
 
 // Insert tags and pages
 db.insert(tag).values(TAGS).run();

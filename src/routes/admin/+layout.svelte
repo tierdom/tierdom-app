@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { enhance } from '$app/forms';
 	import { resolve } from '$app/paths';
+	import type { LayoutData } from './$types';
 
-	let { children } = $props();
+	let { children, data }: { children: import('svelte').Snippet; data: LayoutData } = $props();
 
 	const links = [
 		{ href: '/admin', label: 'Dashboard' },
@@ -18,7 +20,7 @@
 		<span class="hidden text-xs font-bold tracking-widest text-accent uppercase md:inline"
 			>Admin</span
 		>
-		<div class="flex flex-wrap items-center gap-1">
+		<div class="flex flex-1 flex-wrap items-center gap-1">
 			{#each links as link (link.href)}
 				<a
 					href={resolve(link.href as '/')}
@@ -30,6 +32,19 @@
 				</a>
 			{/each}
 		</div>
+		{#if data.user}
+			<div class="flex items-center gap-3">
+				<span class="text-xs text-secondary">{data.user.username}</span>
+				<form method="POST" action="/admin/logout" use:enhance>
+					<button
+						type="submit"
+						class="rounded px-3 py-1 text-sm text-secondary transition-colors hover:text-primary"
+					>
+						Sign out
+					</button>
+				</form>
+			</div>
+		{/if}
 	</div>
 </nav>
 

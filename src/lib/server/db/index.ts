@@ -16,3 +16,9 @@ export const db = drizzle(client, { schema });
 
 // Run migrations on startup — idempotent, safe to call every boot
 migrate(db, { migrationsFolder: 'drizzle' });
+
+// Bootstrap admin user from env vars on first run (no-op if users exist)
+import { bootstrapAdminUser } from '$lib/server/auth/bootstrap';
+if (env.ADMIN_PASSWORD) {
+	bootstrapAdminUser(env.ADMIN_PASSWORD, env.ADMIN_USERNAME);
+}

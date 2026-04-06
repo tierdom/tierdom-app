@@ -26,7 +26,12 @@ allowed-tools: Bash Read Write Edit Glob
 
 ```bash
 DATABASE_URL=./data/local.db npm run db:generate
-# then rename the generated .sql file and update drizzle/meta/_journal.json tag to match
 ```
+
+**IMPORTANT — immediately after generating:**
+
+1. Rename the `.sql` file from the random name (e.g. `0001_funny_animal.sql`) to a descriptive one (e.g. `0001_add_auth_tables.sql`).
+2. Update the matching `"tag"` in `drizzle/meta/_journal.json` to match the new filename (without `.sql`).
+3. If the migration needs manual SQL (e.g. `updated_at` triggers), add it to the generated file before committing.
 
 $ARGUMENTS

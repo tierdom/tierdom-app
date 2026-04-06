@@ -2,13 +2,13 @@
 
 ## Status
 
-Investigating
+Proposed
 
 ## Context
 
 The admin interface (ADR-0006) is currently unprotected.
 ADR-0002 specifies "single-user, session-based" auth handled in SvelteKit hooks, but does not prescribe an implementation.
-This ADR investigates concrete approaches before committing to one.
+This ADR supersedes the "single-user" assumption in ADR-0002: the design supports a small number of admin accounts (a family, a small team) without requiring a full user-management system.
 
 ### Requirements
 
@@ -20,82 +20,118 @@ This ADR investigates concrete approaches before committing to one.
    The app must remain fully self-contained.
    Optional integrations (e.g. OAuth / OpenID Connect with Google, Microsoft, GitHub) are welcome but must not be required.
 
-3. **No hand-rolled cryptography or session management.**
-   Rely on established standards, well-maintained libraries, or framework-native primitives.
+3. **No hand-rolled cryptography.**
+   Rely on established standards and platform-native primitives.
+   Node.js built-in `crypto` module (scrypt, SHA-256, randomBytes, timingSafeEqual) qualifies --- these are the same primitives that auth libraries call internally.
 
 4. **Small user base, not single-user.**
-   ADR-0002 assumed a single admin account.
-   The design should support a small number of accounts (a family, a small team) without requiring a full user-management system.
-   During alpha/beta a shared admin account is acceptable, but the data model should not preclude multiple accounts later.
+   The data model supports multiple accounts.
+   During alpha/beta a shared admin account is acceptable.
 
 5. **Two-factor authentication is a strong nice-to-have.**
-   TOTP (authenticator app) support would significantly improve security for an internet-facing admin panel.
-   If 2FA adds disproportionate complexity or heavy dependencies, it can be deferred --- but the architecture should not make it hard to add.
+   TOTP (authenticator app) support is deferred to Phase 2 but the schema reserves a `totp_secret` column from day one.
 
 6. **Lightweight server-side state.**
-   The app runs on small VPS instances.
-   Avoid session stores that require Redis, Memcached, or other infrastructure.
-   Cookie-based or SQLite-backed sessions are fine.
+   SQLite-backed sessions via Drizzle ORM.
+   No Redis, Memcached, or other infrastructure.
 
 7. **Idiomatic SvelteKit.**
-   Prefer approaches that work with SvelteKit hooks, form actions, and server-only modules rather than bolt-on middleware from other ecosystems.
+   SvelteKit hooks for route protection, form actions for login/logout, `event.locals` for request-scoped user data, server-only modules for secrets.
 
 8. **Minimal dependency footprint.**
-   Fewer packages means less supply-chain risk, fewer updates to track, and a smaller image.
-   Open-source (MIT / Apache-2.0 / similar) only.
+   Phase 1 adds zero new npm packages.
+   All cryptography uses Node.js built-in `crypto`.
 
 ### Scope
 
-- **In scope:** admin route protection, login/logout flow, session handling, optional 2FA, optional third-party SSO.
+- **In scope (Phase 1):** admin route protection, login/logout flow, session handling.
+- **In scope (Phase 2, deferred):** TOTP two-factor authentication.
+- **In scope (Phase 3, deferred):** optional OAuth / SSO providers.
 - **Out of scope:** public-facing user accounts, API tokens, fine-grained RBAC, audit logging.
 
-## Research questions
+### Research findings
 
-The following questions should be answered before a decision is made.
+#### SvelteKit-native capabilities
 
-### 1. SvelteKit-native capabilities
+SvelteKit provides all the building blocks for auth without a dedicated library:
 
-- What does SvelteKit provide out of the box for auth (hooks, locals, cookies API)?
-- How do existing SvelteKit projects typically implement auth without a dedicated library?
+- `hooks.server.ts` `handle` function runs on every request --- validate session cookies and populate `event.locals`.
+- `event.cookies` API with secure defaults (httpOnly, secure on production, sameSite: lax).
+- Form actions for login/logout mutations.
+- Server-only modules (`$lib/server/`) for secrets and auth logic.
 
-### 2. Library landscape
+#### Library landscape (2026)
 
-- What are the actively maintained, open-source auth libraries compatible with SvelteKit?
-  Candidates to evaluate (non-exhaustive): Lucia, Auth.js (SvelteKit adapter), arctic, oslo.
-- For each: what does it handle (sessions, OAuth, password hashing, 2FA), what is its dependency weight, and how mature/maintained is it?
-- Note: Lucia announced deprecation in early 2025 but its patterns and guide remain influential --- evaluate whether its approach is viable without the library itself.
+| Library     | Status                  | Size    | Deps   | Notes                                                                                      |
+| ----------- | ----------------------- | ------- | ------ | ------------------------------------------------------------------------------------------ |
+| Better Auth | Active, YC-backed       | 4.34 MB | ~679   | Official SvelteKit recommendation for general-purpose apps. Drizzle + SQLite adapter. MIT. |
+| Auth.js     | Maintenance-only        | 150 kB  | ~463   | Being stewarded by Better Auth team. New projects should use Better Auth.                  |
+| oslo.js     | Stalled                 | Modular | 0 each | No commits in 2026. Single maintainer (pilcrowonpaper).                                    |
+| Lucia v3    | Deprecated (guide only) | N/A     | N/A    | Patterns remain the reference for DIY session auth.                                        |
 
-### 3. Session strategy
+Better Auth is well-maintained and feature-rich but designed for apps with public sign-up flows, social login, email verification, and password reset emails.
+Tierdom needs none of that --- it protects an admin panel for 1--5 users.
+The dependency weight and schema-management opinions of Better Auth are disproportionate to the need.
 
-- Cookie-only (signed JWT or encrypted token) vs. server-side sessions (SQLite-backed) --- trade-offs for a single-process SQLite app?
-- How does each approach interact with SvelteKit's `hooks.server.ts` and `event.locals`?
+#### Password hashing
 
-### 4. Password hashing and credential storage
+Node.js built-in `crypto.scryptSync` is NIST-recommended and works on Alpine Docker without native addons.
+Parameters: N=16384, r=8, p=1, keyLength=64 bytes.
+Storage format: `salt$hash` (both hex-encoded), 16-byte random salt per password.
 
-- Which algorithms are recommended (argon2, bcrypt, scrypt) and what are their Node.js package options and native-addon implications for Alpine Docker?
+#### Session strategy
 
-### 5. TOTP two-factor authentication
+SQLite-backed sessions with a raw token in the cookie and its SHA-256 hash in the database.
+A database leak does not compromise active sessions.
+30-day expiry with sliding window refresh (extend when less than 15 days remain).
 
-- What is the minimal package set needed to support TOTP (RFC 6238)?
-- Can TOTP be added as an optional layer without complicating the initial setup flow?
+#### External auth proxies
 
-### 6. Third-party SSO (OAuth / OpenID Connect)
-
-- Is it feasible to offer "Sign in with Google/Microsoft/GitHub" as an optional alternative to local credentials?
-- What is the minimal package surface for OAuth 2.0 / OIDC in SvelteKit?
-- How does a self-hoster configure OAuth (callback URLs, client IDs) --- is this still "minutes to set up"?
-- Can local-credential auth and SSO coexist cleanly, or does supporting both double the complexity?
-
-### 7. Comparison of integration approaches
-
-- **Minimal custom:** SvelteKit hooks + a password-hashing library + signed cookies --- how much code, what are the risks?
-- **Auth library:** Auth.js or a Lucia-inspired pattern --- what do we gain, what coupling do we accept?
-- **External auth proxy:** Authelia, Authentik, or Caddy forward-auth in front of the container --- does this conflict with the single-image constraint, or is it a viable "advanced" option to document?
+Authelia and Authentik require separate containers, conflicting with the single-image constraint (ADR-0002).
+They remain a viable option for advanced self-hosters who already run a reverse proxy --- but not the default path.
 
 ## Decision
 
-Pending investigation.
+**Implement session-based auth using zero new npm dependencies, following the Lucia v3 "build it yourself" pattern with Node.js built-in `crypto` primitives.**
+
+### Architecture
+
+```
+Request
+  → hooks.server.ts (read session cookie → SHA-256 → DB lookup)
+  → event.locals.user / event.locals.session populated
+  → /admin/* routes: redirect to /admin/login if unauthenticated
+  → form actions for login/logout (SvelteKit-native)
+```
+
+### Database tables
+
+- `user`: id (UUID), username (unique), password_hash, totp_secret (nullable), timestamps.
+- `session`: id (SHA-256 of token), user_id (FK), expires_at (Unix epoch), created_at.
+
+### Setup flow
+
+1. Self-hoster sets `ADMIN_PASSWORD` (and optional `ADMIN_USERNAME`) environment variable.
+2. On first boot, if no users exist, the app creates an admin account with the hashed password.
+3. Admin logs in at `/admin/login`.
+
+### Phased rollout
+
+- **Phase 1:** password login + sessions + route protection (this ADR).
+- **Phase 2:** TOTP two-factor authentication (separate ADR when implemented).
+- **Phase 3:** optional OAuth SSO providers (separate ADR when implemented).
 
 ## Consequences
 
-To be determined after the research questions above are answered.
+- Zero new production dependencies for Phase 1.
+  No supply-chain risk, no package updates to track.
+- All cryptographic primitives are Node.js built-ins (scrypt, SHA-256, timingSafeEqual, randomBytes).
+  Battle-tested by millions of applications.
+  Not hand-rolled --- we wire established primitives, not implement them.
+- Total auth code is ~150 lines, fully auditable.
+- The hook-based approach matches ADR-0006's design: admin routes remain auth-agnostic.
+  Adding auth does not modify any existing admin `+page.server.ts` file.
+- The `totp_secret` column is present but unused in Phase 1, avoiding a schema migration for Phase 2.
+- The `user` table supports multiple accounts from day one.
+  ADR-0002's "single-user" assumption is superseded.
+- If requirements grow beyond what DIY auth can handle (e.g. public sign-up, email verification), Better Auth can be adopted for Phase 3 without rewriting Phase 1 --- the session table and admin routes stay the same.

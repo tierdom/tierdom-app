@@ -69,6 +69,30 @@ export const itemTag = sqliteTable(
 	(t) => [primaryKey({ columns: [t.itemId, t.tagSlug] })]
 );
 
+export const user = sqliteTable('user', {
+	id: text('id').primaryKey(),
+	username: text('username').notNull().unique(),
+	passwordHash: text('password_hash').notNull(),
+	totpSecret: text('totp_secret'),
+	createdAt: text('created_at')
+		.notNull()
+		.default(sql`(datetime('now'))`),
+	updatedAt: text('updated_at')
+		.notNull()
+		.default(sql`(datetime('now'))`)
+});
+
+export const session = sqliteTable('session', {
+	id: text('id').primaryKey(),
+	userId: text('user_id')
+		.notNull()
+		.references(() => user.id, { onDelete: 'cascade' }),
+	expiresAt: integer('expires_at').notNull(),
+	createdAt: text('created_at')
+		.notNull()
+		.default(sql`(datetime('now'))`)
+});
+
 export const page = sqliteTable('page', {
 	slug: text('slug').primaryKey(),
 	title: text('title').notNull(),
@@ -99,4 +123,12 @@ export const itemTagRelations = relations(itemTag, ({ one }) => ({
 
 export const tagRelations = relations(tag, ({ many }) => ({
 	items: many(itemTag)
+}));
+
+export const userRelations = relations(user, ({ many }) => ({
+	sessions: many(session)
+}));
+
+export const sessionRelations = relations(session, ({ one }) => ({
+	user: one(user, { fields: [session.userId], references: [user.id] })
 }));
