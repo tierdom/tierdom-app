@@ -1,15 +1,19 @@
 # Tierdom App
 
-A self-hosted personal tier list aggregator. Replace scattered tools like Goodreads, IMDB, BoardGameGeek, and others with a single app you own and run yourself.
+A self-hosted personal tier list aggregator.
+Replace scattered tools like Goodreads, IMDB, BoardGameGeek, and others with a single app you own and run yourself.
 
 ## What it is
 
 **Tierdom App** has two sides:
 
-- **Public site** — A read-only view for anyone to browse your tier lists, organized by topic (Games, Books, Movies, Board Games, etc.). Each section shows items you've consumed or experienced, ranked in tiers. Also includes a home page and about page managed via a lightweight built-in CMS.
+- **Public site** — A read-only view for anyone to browse your tier lists, organized by topic (Games, Books, Movies, Board Games, etc.).
+  Each section shows items you've consumed or experienced, ranked in tiers.
+  Also includes a home page and about page managed via a lightweight built-in CMS.
 - **Admin back-office** — A private, authenticated interface for adding and editing entries, managing sections, and updating CMS content.
 
-The entire app ships as a single Docker image. The database is a SQLite file mounted as a volume, so it lives outside the container and can be backed up independently.
+The entire app ships as a single Docker image.
+The database is a SQLite file mounted as a volume, so it lives outside the container and can be backed up independently.
 
 ### Features
 
@@ -47,7 +51,8 @@ docker run -d \
   ghcr.io/yourname/tierdom-pro:latest
 ```
 
-The SQLite database is stored in `/app/data/db.sqlite` inside the container. Mount `/app/data` to a host path to persist and back up your data independently of the container.
+The SQLite database is stored in `/app/data/db.sqlite` inside the container.
+Mount `/app/data` to a host path to persist and back up your data independently of the container.
 
 ### Backup
 
