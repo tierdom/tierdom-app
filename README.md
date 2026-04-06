@@ -74,6 +74,7 @@ services:
       ADMIN_USERNAME: your_username
       ADMIN_PASSWORD: your_password # only used on first boot
       ORIGIN: https://your-domain.com
+      LOG_VERBOSE: false # Set to true for full request/response headers in logs
     restart: unless-stopped
 ```
 
@@ -105,6 +106,7 @@ services:
       ADMIN_USERNAME: your_username
       ADMIN_PASSWORD: your_password
       TLS_DOMAIN: tierdom.example.com
+      LOG_VERBOSE: false # Set to true for full request/response headers in logs
     restart: unless-stopped
 ```
 

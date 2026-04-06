@@ -30,10 +30,8 @@ COPY Caddyfile /etc/caddy/Caddyfile
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
-# Defaults for zero-config trial — override these in production
+# Default database path for zero-config trial — override at runtime
 ENV DATABASE_URL=/app/data/db.sqlite
-ENV ADMIN_USERNAME=admin
-ENV ADMIN_PASSWORD=admin
 
 VOLUME /app/data
 EXPOSE 3000 443 80

@@ -10,6 +10,7 @@ services:
       ADMIN_USERNAME: admin # The initial admin username
       ADMIN_PASSWORD: admin # The initial admin password
       ORIGIN: http://localhost:3000
+      LOG_VERBOSE: false # Set to true for full request/response headers in logs
     restart: unless-stopped
 
 volumes:

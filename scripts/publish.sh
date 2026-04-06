@@ -5,11 +5,12 @@
 # Usage: ./scripts/publish.sh <version>
 #   e.g. ./scripts/publish.sh v0.1.0-alpha.1
 #
-# Prerequisites:
-#   1. docker login  (run manually — credentials are never stored in this repo)
-#   2. docker buildx with multi-platform support:
-#        docker buildx create --name multiarch --use
-#        docker run --privileged --rm tonistiigi/binfmt --install all
+# Credentials are isolated in a temporary directory and wiped after use.
+# No persistent Docker login is created on your machine.
+#
+# Prerequisites (one-time, for multi-arch builds):
+#   docker buildx create --name multiarch --use
+#   docker run --privileged --rm tonistiigi/binfmt --install all
 #
 set -euo pipefail
 
@@ -48,6 +49,22 @@ if ! docker buildx inspect --bootstrap 2>/dev/null | grep -q "linux/arm64"; then
 	echo ""
 	die "Multi-platform buildx builder required"
 fi
+
+# --- Ephemeral Docker credentials ---
+DOCKER_CONFIG="$(mktemp -d)"
+export DOCKER_CONFIG
+
+cleanup_credentials() {
+	echo ""
+	echo "Wiping temporary Docker credentials..."
+	rm -rf "$DOCKER_CONFIG"
+}
+trap cleanup_credentials EXIT
+
+echo ""
+echo "Logging in to Docker Hub (credentials are temporary and will be wiped after use)..."
+echo ""
+docker login
 
 # --- Summary ---
 echo ""

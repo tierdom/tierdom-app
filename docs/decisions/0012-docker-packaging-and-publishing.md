@@ -97,6 +97,7 @@ This is a deliberate trade-off: manual publishing is slower but eliminates the r
 | `ADMIN_USERNAME` | No       | `admin`                                             | Username for the bootstrapped admin account                |
 | `ORIGIN`         | No       | Inferred from TLS_DOMAIN or `http://localhost:3000` | SvelteKit CSRF protection origin                           |
 | `TLS_DOMAIN`     | No       | —                                                   | Domain name for automatic Let's Encrypt HTTPS              |
+| `LOG_VERBOSE`    | No       | —                                                   | Set to `true` to include full request/response headers     |
 
 ### Volume contract
 

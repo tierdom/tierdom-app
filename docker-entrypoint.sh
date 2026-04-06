@@ -1,19 +1,42 @@
 #!/bin/sh
 set -e
 
-# Generate Caddyfile from env vars when TLS_DOMAIN is set
+# Determine Caddy listen address
 if [ -n "$TLS_DOMAIN" ]; then
-	cat > /etc/caddy/Caddyfile <<EOF
-$TLS_DOMAIN {
+	CADDY_ADDRESS="$TLS_DOMAIN"
+else
+	CADDY_ADDRESS=":3000"
+fi
+
+# Log format: compact by default, full headers with LOG_VERBOSE=true
+if [ "$LOG_VERBOSE" = "true" ]; then
+	LOG_FORMAT="format json"
+else
+	LOG_FORMAT="format filter {
+			wrap json
+			fields {
+				request>headers delete
+				resp_headers delete
+			}
+		}"
+fi
+
+# Generate Caddyfile
+cat > /etc/caddy/Caddyfile <<EOF
+$CADDY_ADDRESS {
 	reverse_proxy localhost:3001
 	encode gzip
 	log {
 		output stderr
-		format json
+		$LOG_FORMAT
 	}
 }
 EOF
-fi
+
+# Defaults for zero-config trial — override these at runtime
+: "${ADMIN_USERNAME:=admin}"
+: "${ADMIN_PASSWORD:=admin}"
+export ADMIN_USERNAME ADMIN_PASSWORD
 
 # Default ORIGIN for SvelteKit CSRF protection
 if [ -z "$ORIGIN" ]; then
