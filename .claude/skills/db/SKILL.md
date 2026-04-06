@@ -1,7 +1,7 @@
 ---
 name: db
 description: Query the local SQLite database directly. Run SELECT queries, inspect schema, check data state.
-allowed-tools: Bash Read
+allowed-tools: Bash
 ---
 
 ## Database

@@ -1,7 +1,7 @@
 ---
 name: lint
 description: Run linting and formatting checks on the project. Uses ESLint, Prettier, and svelte-check. Reports issues and offers to auto-fix.
-allowed-tools: Bash Read Edit
+allowed-tools: Bash Read
 ---
 
 Run the full linting and formatting suite for this SvelteKit + TypeScript project.

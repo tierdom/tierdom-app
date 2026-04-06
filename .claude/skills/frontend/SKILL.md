@@ -1,7 +1,7 @@
 ---
 name: frontend
 description: Write Svelte 5 components and SvelteKit pages following the project's frontend conventions — dark theme, mobile-first, minimalist Tailwind, modern CSS.
-allowed-tools: Read Glob Grep Write Edit Bash
+allowed-tools: Read Glob Grep Write Edit
 ---
 
 Help me build frontend components and pages for this SvelteKit project.
