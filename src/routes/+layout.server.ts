@@ -2,6 +2,7 @@ import type { LayoutServerLoad } from './$types';
 import { db } from '$lib/server/db';
 import { category } from '$lib/server/db/schema';
 import { asc } from 'drizzle-orm';
+import { isSetupComplete } from '$lib/server/setup';
 
 export const load: LayoutServerLoad = async ({ locals }) => {
 	const categories = await db
@@ -9,5 +10,5 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 		.from(category)
 		.orderBy(asc(category.order));
 
-	return { categories, user: locals.user };
+	return { categories, user: locals.user, setupComplete: isSetupComplete() };
 };

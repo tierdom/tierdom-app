@@ -6,8 +6,22 @@ import {
 	setSessionCookie,
 	deleteSessionCookie
 } from '$lib/server/auth/session';
+import { isSetupComplete } from '$lib/server/setup';
 
 export const handle: Handle = async ({ event, resolve }) => {
+	// Redirect to setup wizard if first-run setup has not been completed
+	if (!isSetupComplete()) {
+		const path = event.url.pathname;
+		if (
+			path !== '/setup' &&
+			path !== '/health' &&
+			!path.startsWith('/assets/') &&
+			!path.startsWith('/_app/')
+		) {
+			redirect(303, '/setup');
+		}
+	}
+
 	event.locals.user = null;
 	event.locals.session = null;
 
