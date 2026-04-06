@@ -5,6 +5,10 @@ Replace scattered tools like Goodreads, IMDB, BoardGameGeek, and others with a s
 
 > ⚠️🤖 This project has been created relying heavily on GenAI, including Agentic workflows and even Vibe Coding. This has both upsides (the project coming to life as quickly as it did, for one), and many downsides (that come along with using GenAI). We place this disclaimer here so anyone can make their own judgement about whether they want to use this project or not.
 
+**Another warning**: the project is still in early alpha phase.
+Consider it a preview version.
+Try it out through the repository or Docker Hub, at your own risk.
+
 ## What it is
 
 **Tierdom App** has two sides:
@@ -28,6 +32,8 @@ The database is a SQLite file mounted as a volume, so it lives outside the conta
 
 ### Roadmap
 
+High level features:
+
 - [x] Core tier list sections (Games, Books, Movies, Board Games)
 - [x] Tier list display (public)
 - [x] Admin interface (add/edit entries, manage sections)
@@ -37,6 +43,11 @@ The database is a SQLite file mounted as a volume, so it lives outside the conta
 - [x] Create and publish Docker image
 - [ ] Import from external sources (Goodreads CSV, etc.)
 - [ ] Export database to basic formats (markdown, json or yaml, etc.)
+
+Known issues, bugs, and small TODO's:
+
+- [ ] Session cookies are missing `httpOnly` and `secure` flags
+- [ ] Security headers (CSP, X-Frame-Options, X-Content-Type-Options) not yet configured
 
 ## Self-hosting
 

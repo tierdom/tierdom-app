@@ -46,7 +46,7 @@ db.insert(user)
 		passwordHash: hashPassword(adminPassword)
 	})
 	.run();
-console.log(`Created dev admin user: ${adminUsername} / ${adminPassword}`);
+console.log(`Created dev admin user with name ${adminUsername} and password <REDACTED>`);
 
 // Insert tags and pages
 db.insert(tag).values(TAGS).run();
