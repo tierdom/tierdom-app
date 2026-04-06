@@ -3,6 +3,8 @@
 A self-hosted personal tier list aggregator.
 Replace scattered tools like Goodreads, IMDB, BoardGameGeek, and others with a single app you own and run yourself.
 
+> ⚠️🤖 This project has been created relying heavily on GenAI, including Agentic workflows and even Vibe Coding. This has both upsides (the project coming to life as quickly as it did, for one), and many downsides (that come along with using GenAI). We place this disclaimer here so anyone can make their own judgement about whether they want to use this project or not.
+
 ## What it is
 
 **Tierdom App** has two sides:
