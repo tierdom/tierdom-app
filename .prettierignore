@@ -8,3 +8,6 @@ bun.lockb
 # Miscellaneous
 /static/
 /drizzle/
+
+# Claude Code local settings (machine-specific, not committed)
+.claude/settings.local.json
