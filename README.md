@@ -26,13 +26,14 @@ The database is a SQLite file mounted as a volume, so it lives outside the conta
 
 ### Roadmap
 
-- [ ] Core tier list sections (Games, Books, Movies, Board Games)
-- [ ] Tier list display (public)
-- [ ] Admin interface (add/edit entries, manage sections)
-- [ ] Built-in CMS (Home, About pages)
-- [ ] Docker image
+- [x] Core tier list sections (Games, Books, Movies, Board Games)
+- [x] Tier list display (public)
+- [x] Admin interface (add/edit entries, manage sections)
+- [x] Built-in CMS (Home, About pages)
+- [ ] Authentication and authorization
+- [ ] Create and publish Docker image
 - [ ] Import from external sources (Goodreads CSV, etc.)
-- [ ] RSS feed per section
+- [ ] Export database to basic formats (markdown, json or yaml, etc.)
 
 ## Self-hosting
 
