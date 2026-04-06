@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import Button from '$lib/components/admin/Button.svelte';
 	import type { ActionData } from './$types';
 
@@ -20,7 +19,7 @@
 			</p>
 		{/if}
 
-		<form method="POST" use:enhance class="flex flex-col gap-4">
+		<form method="POST" class="flex flex-col gap-4">
 			<div class="flex flex-col gap-1">
 				<label for="username" class="text-xs font-medium text-secondary">Username</label>
 				<input

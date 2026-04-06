@@ -37,14 +37,6 @@ The database is a SQLite file mounted as a volume, so it lives outside the conta
 - [ ] Import from external sources (Goodreads CSV, etc.)
 - [ ] Export database to basic formats (markdown, json or yaml, etc.)
 
-### Known issues
-
-- **Login form returns HTTP 200 for errors and redirects.**
-  SvelteKit's `use:enhance` submits forms via fetch with `x-sveltekit-action: true`.
-  The server responds with HTTP 200 and a JSON body containing the real status (e.g. 401, 303).
-  The client-side enhance handler processes it correctly, but Chrome DevTools shows 200 for every POST.
-  Fix options: remove `use:enhance` from the login form (trades SPA navigation for correct HTTP semantics), or accept this as SvelteKit's internal protocol.
-
 ## Self-hosting
 
 ### Requirements

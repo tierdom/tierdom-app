@@ -10,7 +10,7 @@
 	<link rel="icon" type="image/png" href="/favicon.png" />
 </svelte:head>
 
-<Navbar categories={data.categories} />
+<Navbar categories={data.categories} user={data.user} />
 
 <!-- ─── Main content — offset for fixed nav height ────────────────────────── -->
 <main class="mx-auto min-h-screen max-w-6xl px-4 pt-14">

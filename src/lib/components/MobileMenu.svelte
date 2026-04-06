@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import NavLink from './NavLink.svelte';
 
 	type Props = {
@@ -6,9 +7,10 @@
 		onclose: () => void;
 		categories: { id: number; slug: string; name: string }[];
 		extraLinks: { href: string; label: string }[];
+		user: { id: string; username: string } | null;
 	};
 
-	let { open, onclose, categories, extraLinks }: Props = $props();
+	let { open, onclose, categories, extraLinks, user }: Props = $props();
 
 	$effect(() => {
 		if (open) {
@@ -55,4 +57,21 @@
 			<NavLink href={link.href} label={link.label} variant="mobile" onclick={onclose} />
 		{/each}
 	</nav>
+
+	<div class="border-t border-subtle px-5 py-4">
+		{#if user}
+			<p class="mb-2 text-xs text-secondary">Signed in as {user.username}</p>
+			<NavLink href="/admin" label="Admin" variant="mobile" onclick={onclose} />
+			<form method="POST" action="/admin/logout" use:enhance class="mt-2">
+				<button
+					type="submit"
+					class="cursor-pointer text-sm text-secondary transition-colors hover:text-primary"
+				>
+					Sign out
+				</button>
+			</form>
+		{:else}
+			<NavLink href="/admin/login" label="Sign in" variant="mobile" onclick={onclose} />
+		{/if}
+	</div>
 </aside>
