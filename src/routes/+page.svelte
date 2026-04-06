@@ -33,11 +33,11 @@
 		<h2 class="mb-6 text-center text-sm font-semibold tracking-widest text-secondary uppercase">
 			Browse the lists
 		</h2>
-		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+		<div class="flex flex-wrap justify-center gap-4">
 			{#each data.categoriesWithCounts as cat (cat.id)}
 				<a
 					href={resolve(`/category/${cat.slug}`)}
-					class="group rounded-lg border border-subtle bg-surface p-6 transition-colors hover:border-accent/40 hover:bg-elevated"
+					class="group w-full rounded-lg border border-subtle bg-surface p-6 transition-colors hover:border-accent/40 hover:bg-elevated sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.75rem)]"
 				>
 					<h3 class="text-lg font-bold text-primary group-hover:text-accent">
 						{cat.name}
