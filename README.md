@@ -1,31 +1,17 @@
-# tierdom-pro
+# Tierdom App
 
-A self-hosted personal tier list aggregator. Replace scattered tools like Goodreads, Letterboxd, BoardGameGeek, and others with a single app you own and run yourself.
-
----
+A self-hosted personal tier list aggregator. Replace scattered tools like Goodreads, IMDB, BoardGameGeek, and others with a single app you own and run yourself.
 
 ## What it is
 
-**tierdom-pro** has two sides:
+**Tierdom App** has two sides:
 
 - **Public site** — A read-only view for anyone to browse your tier lists, organized by topic (Games, Books, Movies, Board Games, etc.). Each section shows items you've consumed or experienced, ranked in tiers. Also includes a home page and about page managed via a lightweight built-in CMS.
 - **Admin back-office** — A private, authenticated interface for adding and editing entries, managing sections, and updating CMS content.
 
 The entire app ships as a single Docker image. The database is a SQLite file mounted as a volume, so it lives outside the container and can be backed up independently.
 
----
-
-## Documentation
-
-| Document                           | Description                                  |
-| ---------------------------------- | -------------------------------------------- |
-| [DOMAIN.md](DOMAIN.md)             | Core domain model — entities, tiers, scoring |
-| [ARCHITECTURE.md](ARCHITECTURE.md) | Architecture decision records index          |
-| [GUIDELINES.md](GUIDELINES.md)     | Development guidelines                       |
-
----
-
-## Features
+### Features
 
 - Topic sections (Games, Books, Movies, Board Games, and more — fully configurable)
 - Tier list view per section with customizable tier labels
@@ -34,13 +20,20 @@ The entire app ships as a single Docker image. The database is a SQLite file mou
 - Self-contained: no external services required
 - Single Docker image — runs on any VPS
 
----
+### Roadmap
+
+- [ ] Core tier list sections (Games, Books, Movies, Board Games)
+- [ ] Tier list display (public)
+- [ ] Admin interface (add/edit entries, manage sections)
+- [ ] Built-in CMS (Home, About pages)
+- [ ] Docker image
+- [ ] Import from external sources (Goodreads CSV, etc.)
+- [ ] RSS feed per section
 
 ## Self-hosting
 
 ### Requirements
 
-- Docker
 - A VPS or any machine that can run Docker
 
 ### Running
@@ -62,46 +55,47 @@ The SQLite database is stored in `/app/data/db.sqlite` inside the container. Mou
 cp /your/data/path/db.sqlite /your/backup/path/db-$(date +%Y%m%d).sqlite
 ```
 
----
-
 ## Development
 
+To get started after cloning, simply run:
+
 ```sh
-npm install
+npm ci
 npm run dev
 ```
 
-To recreate this project scaffold from scratch:
+A database with example data will be seeded.
 
-```sh
-npx sv@0.14.0 create --template minimal --types ts \
-  --add prettier eslint 'vitest=usages:unit' playwright 'tailwindcss=plugins:none' \
-  'drizzle=database:sqlite+sqlite:better-sqlite3' 'sveltekit-adapter=adapter:node' \
-  'mcp=ide:claude-code+setup:local' \
-  --no-download-check --install npm .
-```
-
----
-
-## Tech stack
+### Tech stack
 
 | Layer      | Choice                                  |
 | ---------- | --------------------------------------- |
-| Framework  | SvelteKit 2 + Svelte 5 (TypeScript)     |
+| Framework  | SvelteKit + Svelte (TypeScript)         |
 | Database   | SQLite via Drizzle ORM (better-sqlite3) |
-| Styling    | Tailwind CSS v4                         |
+| Styling    | Tailwind CSS                            |
 | Testing    | Vitest + Playwright                     |
 | Runtime    | Node.js (Alpine)                        |
 | Deployment | Single Docker image                     |
 
----
+### Architecture Decision Records
 
-## Roadmap
+Architectural decisions are documented as ADRs in [`docs/decisions/`](docs/decisions/).
 
-- [ ] Core tier list sections (Games, Books, Movies, Board Games)
-- [ ] Tier list display (public)
-- [ ] Admin interface (add/edit entries, manage sections)
-- [ ] Built-in CMS (Home, About pages)
-- [ ] Docker image
-- [ ] Import from external sources (Goodreads CSV, etc.)
-- [ ] RSS feed per section
+| ADR                                                                     | Title                                    | Status   |
+| ----------------------------------------------------------------------- | ---------------------------------------- | -------- |
+| [0001](docs/decisions/0001-use-architecture-decision-records.md)        | Use Architecture Decision Records        | Accepted |
+| [0002](docs/decisions/0002-system-architecture.md)                      | System Architecture                      | Accepted |
+| [0003](docs/decisions/0003-tooling-and-developer-experience.md)         | Tooling and Developer Experience         | Accepted |
+| [0004](docs/decisions/0004-domain-model.md)                             | Domain Model                             | Accepted |
+| [0005](docs/decisions/0005-frontend-styling.md)                         | Frontend Styling                         | Accepted |
+| [0006](docs/decisions/0006-admin-interface.md)                          | Admin Interface                          | Accepted |
+| [0007](docs/decisions/0007-markdown-rendering.md)                       | Markdown Rendering                       | Accepted |
+| [0008](docs/decisions/0008-use-lucide-svelte-for-icons.md)              | Use lucide-svelte for Icons              | Accepted |
+| [0009](docs/decisions/0009-add-created-at-and-updated-at-timestamps.md) | Add created_at and updated_at Timestamps | Accepted |
+
+## References
+
+| Document               | Description                                  |
+| ---------------------- | -------------------------------------------- |
+| [DOMAIN.md](DOMAIN.md) | Core domain model — entities, tiers, scoring |
+| [CLAUDE.md](CLAUDE.md) | Development guidelines and AI instructions   |

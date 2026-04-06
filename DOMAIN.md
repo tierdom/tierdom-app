@@ -3,8 +3,6 @@
 This document describes the core domain concepts of tierdom-pro.
 For the reasoning behind key decisions, see [ADR-0004](docs/decisions/0004-domain-model.md).
 
----
-
 ## Entities
 
 ### Category
@@ -23,8 +21,6 @@ Examples: _Games_, _Books_, _Movies_, _Board Games_.
 
 A category contains many **TierListItems**. The order of items within a category is explicit and determines how they are rendered in the tier list.
 
----
-
 ### TierListItem
 
 A single item inside a category — a book, game, movie, etc. that has been rated.
@@ -40,8 +36,6 @@ A single item inside a category — a book, game, movie, etc. that has been rate
 | `order`       | integer         | Explicit display order within the category                      |
 | `tags`        | string[]        | List of tag slugs associated with this item                     |
 
----
-
 ### Tag
 
 A minor entity that maps a slug to a human-readable label.
@@ -51,8 +45,6 @@ Tags are shared across all categories.
 | ------- | ------ | ---------------------------- |
 | `slug`  | string | Primary key, e.g. `sci-fi`   |
 | `label` | string | Display label, e.g. `Sci-Fi` |
-
----
 
 ## Value Objects
 
@@ -83,8 +75,6 @@ Each tier has a hardcoded pair of CSS color variables — a background color and
 | `E`  | `--tier-e-bg`       | `--tier-e-fg`       |
 | `F`  | `--tier-f-bg`       | `--tier-f-fg`       |
 
----
-
 ### TierCutoffs
 
 Categories use a shared set of default cutoffs. Each category can override them individually.
@@ -104,8 +94,6 @@ Default cutoffs (used unless overridden per category):
 
 Example: a score of `72` maps to **B-tier** with the defaults above.
 
----
-
 ## Relationships
 
 ```
@@ -120,8 +108,6 @@ Tag (slug) ◄────────────────┘
 - Each **TierListItem** references zero or more **Tags** by slug.
 - A **Tag** exists independently and can be referenced from any category.
 - **Tiers** and **TierCutoffs** are derived from scores — they are not stored entities.
-
----
 
 ## Ordering
 
