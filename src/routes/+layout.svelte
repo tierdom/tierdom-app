@@ -24,17 +24,17 @@
 	<footer class="mt-16 border-t border-subtle py-8">
 		<div class="mx-auto max-w-6xl px-4 text-center">
 			<p class="text-sm text-secondary">
-				tierdom — personal tier lists by
+				Tierdom - Self-hosted tier lists. A project by
 				<a
 					href="https://jeroenheijmans.nl"
 					class="text-accent/70 transition-colors hover:text-accent"
 					target="_blank"
 					rel="noopener noreferrer">Jeroen Heijmans</a
-				>
+				>.
 			</p>
 			<p class="mt-1 text-xs text-secondary/50">
 				<a
-					href="https://github.com/jeroenheijmans/tierdom-pro"
+					href="https://github.com/tierdom/tierdom-app"
 					class="transition-colors hover:text-secondary"
 					target="_blank"
 					rel="noopener noreferrer">Source on GitHub</a
