@@ -32,7 +32,8 @@ The database is a SQLite file mounted as a volume, so it lives outside the conta
 - [x] Tier list display (public)
 - [x] Admin interface (add/edit entries, manage sections)
 - [x] Built-in CMS (Home, About pages)
-- [ ] Authentication and authorization
+- [x] Authentication and authorization
+- [x] Item images with placeholder gradients
 - [ ] Create and publish Docker image
 - [ ] Import from external sources (Goodreads CSV, etc.)
 - [ ] Export database to basic formats (markdown, json or yaml, etc.)
@@ -100,8 +101,8 @@ Architectural decisions are documented as ADRs in [`docs/decisions/`](docs/decis
 | [0007](docs/decisions/0007-markdown-rendering.md)                       | Markdown Rendering                       | Accepted |
 | [0008](docs/decisions/0008-use-lucide-svelte-for-icons.md)              | Use lucide-svelte for Icons              | Accepted |
 | [0009](docs/decisions/0009-add-created-at-and-updated-at-timestamps.md) | Add created_at and updated_at Timestamps | Accepted |
-| [0010](docs/decisions/0010-authentication-and-authorization.md)         | Authentication and Authorization         | Proposed |
-| [0011](docs/decisions/0011-image-support.md)                            | Image Support for Tier List Items        | Proposed |
+| [0010](docs/decisions/0010-authentication-and-authorization.md)         | Authentication and Authorization         | Accepted |
+| [0011](docs/decisions/0011-image-support.md)                            | Image Support for Tier List Items        | Accepted |
 
 ## References
 
