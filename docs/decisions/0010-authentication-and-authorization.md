@@ -135,3 +135,14 @@ Request
 - The `user` table supports multiple accounts from day one.
   ADR-0002's "single-user" assumption is superseded.
 - If requirements grow beyond what DIY auth can handle (e.g. public sign-up, email verification), Better Auth can be adopted for Phase 3 without rewriting Phase 1 --- the session table and admin routes stay the same.
+
+## Amendment: login rate limiting
+
+A post-implementation security review identified brute-force attacks as the most significant real-world risk for an internet-facing login page.
+
+**Added:** in-memory rate limiter (`src/lib/server/auth/rate-limit.ts`) that blocks an IP after 10 failed login attempts within a 1-minute window.
+On successful login, the counter resets.
+Stale entries are purged automatically every 15 minutes to prevent memory growth.
+
+This is deliberately simple: in-memory state resets on server restart, which is acceptable for a single-process app with 1--5 users.
+A persistent (SQLite-backed) rate limiter would survive restarts but adds complexity that is not warranted at this stage.

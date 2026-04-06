@@ -4,6 +4,7 @@ import { user } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 import { verifyPassword } from '$lib/server/auth/password';
 import { createSession, setSessionCookie } from '$lib/server/auth/session';
+import { isRateLimited, recordFailedAttempt, clearAttempts } from '$lib/server/auth/rate-limit';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
@@ -15,6 +16,12 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 export const actions: Actions = {
 	default: async (event) => {
+		const ip = event.getClientAddress();
+
+		if (isRateLimited(ip)) {
+			return fail(429, { error: 'Too many login attempts. Try again in a minute.' });
+		}
+
 		const data = await event.request.formData();
 		const username = data.get('username')?.toString()?.trim();
 		const password = data.get('password')?.toString();
@@ -31,8 +38,11 @@ export const actions: Actions = {
 			.all();
 
 		if (!found || !verifyPassword(password, found.passwordHash)) {
+			recordFailedAttempt(ip);
 			return fail(401, { error: 'Invalid username or password', username });
 		}
+
+		clearAttempts(ip);
 
 		const { token, expiresAt } = createSession(found.id);
 		setSessionCookie(event, token, expiresAt);
