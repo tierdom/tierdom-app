@@ -13,7 +13,7 @@ const config = {
 			return isExternalLibrary ? undefined : true;
 		}
 	},
-	kit: { adapter: adapter() }
+	kit: { adapter: adapter({ bodyParser: { maxSize: 1024 * 1024 } }) }
 };
 
 export default config;

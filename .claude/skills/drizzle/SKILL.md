@@ -1,6 +1,6 @@
 ---
 name: drizzle
-description: Create or manage Drizzle ORM migrations and schema for this project (SQLite, better-sqlite3).
+description: MUST be used whenever generating, creating, or managing Drizzle ORM migrations — including after any schema change (adding columns, tables, indexes). Handles migration naming conventions and journal updates.
 allowed-tools: Bash Read Write Edit Glob
 ---
 

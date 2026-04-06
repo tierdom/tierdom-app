@@ -22,3 +22,7 @@ import { bootstrapAdminUser } from '$lib/server/auth/bootstrap';
 if (env.ADMIN_PASSWORD) {
 	bootstrapAdminUser(env.ADMIN_PASSWORD, env.ADMIN_USERNAME);
 }
+
+// Ensure image storage directory exists
+import { ensureImageDir } from '$lib/server/images';
+ensureImageDir();

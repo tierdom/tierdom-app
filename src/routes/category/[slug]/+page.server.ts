@@ -63,6 +63,8 @@ export const load: PageServerLoad = async ({ params }) => {
 
 	const itemsWithTags = items.map((item) => ({
 		...item,
+		image: item.imageHash ? `/assets/images/${item.imageHash}.webp` : null,
+		placeholder: item.placeholder,
 		descriptionHtml: renderMarkdown(item.description),
 		tags: tagsByItemId.get(item.id) ?? []
 	}));

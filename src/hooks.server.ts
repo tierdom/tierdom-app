@@ -11,8 +11,11 @@ export const handle: Handle = async ({ event, resolve }) => {
 	event.locals.user = null;
 	event.locals.session = null;
 
+	// Skip session handling for public asset routes (keeps responses cookie-free for CDN caching)
+	const isAssetRoute = event.url.pathname.startsWith('/assets/');
+
 	const token = getSessionToken(event);
-	if (token) {
+	if (token && !isAssetRoute) {
 		const result = validateSession(token);
 		if (result.session && result.user) {
 			event.locals.user = result.user;

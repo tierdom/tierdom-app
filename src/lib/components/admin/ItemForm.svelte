@@ -5,6 +5,7 @@
 	import { Plus, Save, X, Trash2 } from 'lucide-svelte';
 	import Button from '$lib/components/admin/Button.svelte';
 	import FormField from '$lib/components/admin/FormField.svelte';
+	import ImageField from '$lib/components/admin/ImageField.svelte';
 	import MarkdownField from '$lib/components/admin/MarkdownField.svelte';
 	import TagPicker from '$lib/components/admin/TagPicker.svelte';
 	import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
@@ -31,6 +32,7 @@
 			score?: number;
 			description?: string | null;
 			categoryId?: number | null;
+			imageHash?: string | null;
 		};
 		initialTags?: string[];
 		returnTarget: 'categories' | 'items';
@@ -75,6 +77,7 @@
 	id="item-form"
 	method="POST"
 	action="?/save"
+	enctype="multipart/form-data"
 	use:enhance
 	oninput={markDirty}
 	class="mt-6 flex flex-col gap-3"
@@ -117,6 +120,8 @@
 		max={100}
 		step={1}
 	/>
+	<ImageField imageHash={initialValues.imageHash} onchange={markDirty} />
+
 	<TagPicker
 		{allTags}
 		selectedSlugs={selectedTags}

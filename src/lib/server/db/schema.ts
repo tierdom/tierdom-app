@@ -35,6 +35,8 @@ export const tierListItem = sqliteTable(
 		description: text('description'),
 		score: integer('score').notNull(),
 		order: integer('order').notNull().default(0),
+		imageHash: text('image_hash'),
+		placeholder: text('placeholder'),
 		createdAt: text('created_at')
 			.notNull()
 			.default(sql`(datetime('now'))`),

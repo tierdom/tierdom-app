@@ -9,9 +9,10 @@
 		descriptionHtml?: string | null;
 		tier: string;
 		tags?: Tag[];
+		image?: string | null;
 	};
 
-	let { name, score, descriptionHtml, tier, tags = [] }: Props = $props();
+	let { name, score, descriptionHtml, tier, tags = [], image }: Props = $props();
 
 	let barColor = $derived(`hsl(${(score / 100) * 120}, 70%, 45%)`);
 
@@ -69,5 +70,15 @@
 			what makes it stand out, where it falls short, and how it compares to similar entries in the
 			list.
 		</p>
+	{/if}
+
+	{#if image}
+		<div class="flex items-start gap-3">
+			<img
+				src={image}
+				alt={name}
+				class="aspect-square h-24 rounded border border-subtle object-cover"
+			/>
+		</div>
 	{/if}
 </div>

@@ -47,7 +47,8 @@
 				slug: data.item.slug,
 				score: data.item.score,
 				description: data.item.description,
-				categoryId: data.item.categoryId
+				categoryId: data.item.categoryId,
+				imageHash: data.item.imageHash
 			}}
 			initialTags={data.itemTags}
 			returnTarget={data.returnTarget}

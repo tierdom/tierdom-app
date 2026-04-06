@@ -3,6 +3,7 @@ import { category, tierListItem, itemTag, tag } from '$lib/server/db/schema';
 import { eq, asc } from 'drizzle-orm';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { applyOrder, sortCategoryByScore } from '$lib/server/reorder';
+import { deleteImage } from '$lib/server/images';
 import type { PageServerLoad, Actions } from './$types';
 
 function slugify(text: string): string {
@@ -88,6 +89,16 @@ export const actions: Actions = {
 
 	delete: async ({ params }) => {
 		const id = Number(params.id);
+
+		// Clean up image files before cascade delete removes the rows
+		const items = await db
+			.select({ imageHash: tierListItem.imageHash })
+			.from(tierListItem)
+			.where(eq(tierListItem.categoryId, id));
+		for (const item of items) {
+			if (item.imageHash) deleteImage(item.imageHash);
+		}
+
 		await db.delete(category).where(eq(category.id, id));
 		redirect(303, '/admin/categories');
 	},
@@ -122,6 +133,13 @@ export const actions: Actions = {
 		const data = await request.formData();
 		const id = Number(data.get('id'));
 		if (!id) return fail(400, { error: 'Invalid id' });
+
+		const [item] = await db
+			.select({ imageHash: tierListItem.imageHash })
+			.from(tierListItem)
+			.where(eq(tierListItem.id, id))
+			.limit(1);
+		if (item?.imageHash) deleteImage(item.imageHash);
 
 		await db.delete(tierListItem).where(eq(tierListItem.id, id));
 		return { success: true };

@@ -101,6 +101,7 @@ Architectural decisions are documented as ADRs in [`docs/decisions/`](docs/decis
 | [0008](docs/decisions/0008-use-lucide-svelte-for-icons.md)              | Use lucide-svelte for Icons              | Accepted |
 | [0009](docs/decisions/0009-add-created-at-and-updated-at-timestamps.md) | Add created_at and updated_at Timestamps | Accepted |
 | [0010](docs/decisions/0010-authentication-and-authorization.md)         | Authentication and Authorization         | Proposed |
+| [0011](docs/decisions/0011-image-support.md)                            | Image Support for Tier List Items        | Proposed |
 
 ## References
 

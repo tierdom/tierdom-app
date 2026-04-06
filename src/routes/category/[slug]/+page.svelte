@@ -79,6 +79,8 @@
 							<TierListItem
 								name={item.name}
 								score={item.score}
+								image={item.image ?? undefined}
+								gradient={item.placeholder ?? undefined}
 								onclick={() => openItem(item.slug)}
 							/>
 						{/each}
@@ -102,6 +104,7 @@
 			descriptionHtml={selectedItem.descriptionHtml}
 			tier={selectedItem.tier}
 			tags={selectedItem.tags}
+			image={selectedItem.image ?? undefined}
 		/>
 	</Dialog>
 {/if}

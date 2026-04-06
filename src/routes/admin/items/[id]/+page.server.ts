@@ -5,6 +5,7 @@ import { error, fail, redirect } from '@sveltejs/kit';
 import { getOrCreateTag } from '$lib/server/tags';
 import { slugify } from '$lib/server/slugify';
 import { insertByScore } from '$lib/server/reorder';
+import { processUpload, deleteImage } from '$lib/server/images';
 import type { PageServerLoad, Actions } from './$types';
 
 type ReturnTarget = 'categories' | 'items';
@@ -81,11 +82,38 @@ export const actions: Actions = {
 		const returnTarget: ReturnTarget =
 			data.get('_returnTarget')?.toString() === 'categories' ? 'categories' : 'items';
 
+		// Handle image upload
+		const imageFile = data.get('image') as File | null;
+		const wantsRemoveImage = data.get('removeImage') === '1';
+		let imageHash: string | null | undefined;
+		let placeholder: string | null | undefined;
+
+		if (imageFile && imageFile.size > 0) {
+			try {
+				const result = await processUpload(imageFile);
+				imageHash = result.hash;
+				placeholder = result.gradient;
+			} catch (e) {
+				return fail(400, { error: e instanceof Error ? e.message : 'Image upload failed' });
+			}
+		} else if (wantsRemoveImage) {
+			imageHash = null;
+			placeholder = null;
+		}
+
 		if (params.id === 'new-item') {
 			// Create — insert with a temporary order, then fix it by score
 			const [inserted] = await db
 				.insert(tierListItem)
-				.values({ categoryId, slug, name, description, score, order: 0 })
+				.values({
+					categoryId,
+					slug,
+					name,
+					description,
+					score,
+					order: 0,
+					...(imageHash !== undefined && { imageHash, placeholder })
+				})
 				.returning({ id: tierListItem.id });
 
 			const order = insertByScore(categoryId, score, name, inserted.id);
@@ -103,16 +131,28 @@ export const actions: Actions = {
 		// Update
 		const id = Number(params.id);
 		const [item] = await db
-			.select({ categoryId: tierListItem.categoryId })
+			.select({ categoryId: tierListItem.categoryId, imageHash: tierListItem.imageHash })
 			.from(tierListItem)
 			.where(eq(tierListItem.id, id))
 			.limit(1);
 
 		const categoryChanged = categoryId !== item.categoryId;
 
+		// Clean up old image if replacing or removing
+		if (imageHash !== undefined && item.imageHash && item.imageHash !== imageHash) {
+			deleteImage(item.imageHash);
+		}
+
 		await db
 			.update(tierListItem)
-			.set({ name, slug, score, description, categoryId })
+			.set({
+				name,
+				slug,
+				score,
+				description,
+				categoryId,
+				...(imageHash !== undefined && { imageHash, placeholder })
+			})
 			.where(eq(tierListItem.id, id));
 
 		if (categoryChanged) {
@@ -147,11 +187,12 @@ export const actions: Actions = {
 			data.get('_returnTarget')?.toString() === 'categories' ? 'categories' : 'items';
 
 		const [item] = await db
-			.select({ categoryId: tierListItem.categoryId })
+			.select({ categoryId: tierListItem.categoryId, imageHash: tierListItem.imageHash })
 			.from(tierListItem)
 			.where(eq(tierListItem.id, id))
 			.limit(1);
 
+		if (item?.imageHash) deleteImage(item.imageHash);
 		await db.delete(tierListItem).where(eq(tierListItem.id, id));
 		redirect(303, resolveReturnUrl(returnTarget, item?.categoryId ?? 0));
 	}
