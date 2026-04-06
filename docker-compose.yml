@@ -1,0 +1,16 @@
+services:
+  tierdom:
+    build: .
+    ports:
+      - '3000:3000'
+    volumes:
+      - tierdom-data:/app/data
+    environment:
+      DATABASE_URL: /app/data/local.db
+      ADMIN_USERNAME: admin # The initial admin username
+      ADMIN_PASSWORD: admin # The initial admin password
+      ORIGIN: http://localhost:3000
+    restart: unless-stopped
+
+volumes:
+  tierdom-data:

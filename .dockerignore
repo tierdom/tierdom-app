@@ -1,0 +1,20 @@
+# Allowlist: ignore everything, then include only what the build needs
+*
+
+# Package manifest and lockfile
+!package.json
+!package-lock.json
+
+# Application source and static assets
+!src/
+!static/
+!drizzle/
+
+# Build config
+!svelte.config.js
+!vite.config.ts
+!tsconfig.json
+
+# Docker runtime files
+!Caddyfile
+!docker-entrypoint.sh

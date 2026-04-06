@@ -34,34 +34,90 @@ The database is a SQLite file mounted as a volume, so it lives outside the conta
 - [x] Built-in CMS (Home, About pages)
 - [x] Authentication and authorization
 - [x] Item images with placeholder gradients
-- [ ] Create and publish Docker image
+- [x] Create and publish Docker image
 - [ ] Import from external sources (Goodreads CSV, etc.)
 - [ ] Export database to basic formats (markdown, json or yaml, etc.)
 
 ## Self-hosting
 
+> **Early alpha** — expect breaking changes between versions.
+> Back up your `/app/data` directory before upgrading.
+
 ### Requirements
 
 - A VPS or any machine that can run Docker
 
-### Running
+### Quick trial
 
 ```bash
-docker run -d \
-  -p 3000:3000 \
-  -v /your/data/path:/app/data \
-  -e DATABASE_URL=/app/data/db.sqlite \
-  -e ADMIN_PASSWORD=your_password \
-  ghcr.io/yourname/tierdom-pro:latest
+docker run -p 3000:3000 tierdom/tierdom-app
 ```
 
-The SQLite database is stored in `/app/data/db.sqlite` inside the container.
-Mount `/app/data` to a host path to persist and back up your data independently of the container.
+Open [http://localhost:3000](http://localhost:3000).
+Log in at `/admin` with username `admin` and password `admin`.
+Data is ephemeral — it lives inside the container and is lost when you remove it.
+
+### Running on a server
+
+Create a `docker-compose.yml` on your server:
+
+```yaml
+services:
+  tierdom:
+    image: tierdom/tierdom-app:latest
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./data:/app/data
+    environment:
+      DATABASE_URL: /app/data/db.sqlite
+      ADMIN_USERNAME: your_username
+      ADMIN_PASSWORD: your_password # only used on first boot
+      ORIGIN: https://your-domain.com
+    restart: unless-stopped
+```
+
+Then start it:
+
+```bash
+docker compose up -d
+```
+
+The SQLite database is stored in `/app/data/db.sqlite` and uploaded images in `/app/data/images/`.
+`ADMIN_USERNAME` and `ADMIN_PASSWORD` create the admin account on first boot only — changing them later has no effect.
+`ORIGIN` should match the URL users visit (needed for SvelteKit's CSRF protection).
+
+### Automatic HTTPS
+
+If you expose the container directly to the internet (no reverse proxy), set `TLS_DOMAIN` to get automatic Let's Encrypt certificates:
+
+```yaml
+services:
+  tierdom:
+    image: tierdom/tierdom-app:latest
+    ports:
+      - '443:443'
+      - '80:80'
+    volumes:
+      - ./data:/app/data
+    environment:
+      DATABASE_URL: /app/data/db.sqlite
+      ADMIN_USERNAME: your_username
+      ADMIN_PASSWORD: your_password
+      TLS_DOMAIN: tierdom.example.com
+    restart: unless-stopped
+```
+
+Caddy handles certificate provisioning and renewal automatically.
+Ports 80 and 443 must be reachable from the internet for the ACME challenge.
+`ORIGIN` is inferred from `TLS_DOMAIN` when not set explicitly.
 
 ### Backup
 
+The `data/` directory on the host contains everything: the database and all uploaded images.
+
 ```bash
-cp /your/data/path/db.sqlite /your/backup/path/db-$(date +%Y%m%d).sqlite
+cp -r ./data /your/backup/path/tierdom-$(date +%Y%m%d)
 ```
 
 ## Development
@@ -83,7 +139,7 @@ A database with example data will be seeded.
 | Database   | SQLite via Drizzle ORM (better-sqlite3) |
 | Styling    | Tailwind CSS                            |
 | Testing    | Vitest + Playwright                     |
-| Runtime    | Node.js (Alpine)                        |
+| Runtime    | Node.js 24 LTS (Alpine)                 |
 | Deployment | Single Docker image                     |
 
 ### Architecture Decision Records
@@ -103,6 +159,7 @@ Architectural decisions are documented as ADRs in [`docs/decisions/`](docs/decis
 | [0009](docs/decisions/0009-add-created-at-and-updated-at-timestamps.md) | Add created_at and updated_at Timestamps | Accepted |
 | [0010](docs/decisions/0010-authentication-and-authorization.md)         | Authentication and Authorization         | Accepted |
 | [0011](docs/decisions/0011-image-support.md)                            | Image Support for Tier List Items        | Accepted |
+| [0012](docs/decisions/0012-docker-packaging-and-publishing.md)          | Docker Packaging and Publishing          | Proposed |
 
 ## References
 
