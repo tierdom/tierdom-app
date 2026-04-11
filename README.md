@@ -43,12 +43,20 @@ High level features:
 - [x] Create and publish Docker image
 - [ ] Add significant unit test coverage where sensible
 - [ ] Add a few end-to-end test cases for safety
+- [ ] Option to add more static cms pages
+- [ ] Option to customize the footer
+- [ ] Import from our own export format
 - [ ] Import from external sources (Goodreads CSV, etc.)
 - [ ] Export database to basic formats (markdown, json or yaml, etc.)
+- [ ] Soft-delete for items + trash (and recover) feature + housekeeping to clean up later
 
 Known issues, bugs, and small TODO's:
 
+- [ ] Complete accessibility review + all fixes
+- [ ] Fix bug with dialog dismissal after F5 load of the page
+- [ ] Improve image upload (better checks on file type and limit, UX improvements)
 - [ ] Require double-confirmation for heavy deletes (e.g. category)
+- [ ] Two database seeds with sample data should get sample images too
 - [ ] Add `eslint-plugin-better-tailwindcss` to catch deprecated Tailwind v4 classes in lint
 - [ ] Session cookies are missing `httpOnly` and `secure` flags
 - [ ] Security headers (CSP, X-Frame-Options, X-Content-Type-Options) not yet configured
