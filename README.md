@@ -41,7 +41,7 @@ High level features:
 - [x] Authentication and authorization
 - [x] Item images with placeholder gradients
 - [x] Create and publish Docker image
-- [ ] Add significant unit test coverage where sensible
+- [x] Add significant unit test coverage where sensible ([ADR-0015](docs/decisions/0015-unit-testing-strategy.md))
 - [x] Add a few end-to-end test cases for safety ([ADR-0014](docs/decisions/0014-end-to-end-testing-strategy.md))
 - [ ] Option to add more static cms pages
 - [ ] Option to customize the footer
@@ -187,6 +187,7 @@ Architectural decisions are documented as ADRs in [`docs/decisions/`](docs/decis
 | [0012](docs/decisions/0012-docker-packaging-and-publishing.md)          | Docker Packaging and Publishing          | Accepted |
 | [0013](docs/decisions/0013-uuid-primary-keys.md)                        | UUID Primary Keys                        | Accepted |
 | [0014](docs/decisions/0014-end-to-end-testing-strategy.md)              | End-to-End Testing Strategy              | Accepted |
+| [0015](docs/decisions/0015-unit-testing-strategy.md)                    | Unit Testing Strategy                    | Accepted |
 
 ## References
 

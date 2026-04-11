@@ -4,7 +4,7 @@ import { eq, asc } from 'drizzle-orm';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { applyOrder, sortCategoryByScore } from '$lib/server/reorder';
 import { deleteImage } from '$lib/server/images';
-import { slugify } from '$lib/server/slugify';
+import { parseCategoryForm } from '$lib/server/forms';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
@@ -48,34 +48,14 @@ export const actions: Actions = {
   update: async ({ request, params }) => {
     const id = params.id;
     const data = await request.formData();
-    const name = data.get('name')?.toString()?.trim();
-    if (!name) return fail(400, { error: 'Name is required' });
+    const parsed = parseCategoryForm(data);
+    if ('error' in parsed) return fail(400, { error: parsed.error });
 
-    const slug = data.get('slug')?.toString()?.trim() || slugify(name);
-    const description = data.get('description')?.toString()?.trim() || null;
-
-    const cutoffS = data.get('cutoffS')?.toString()?.trim();
-    const cutoffA = data.get('cutoffA')?.toString()?.trim();
-    const cutoffB = data.get('cutoffB')?.toString()?.trim();
-    const cutoffC = data.get('cutoffC')?.toString()?.trim();
-    const cutoffD = data.get('cutoffD')?.toString()?.trim();
-    const cutoffE = data.get('cutoffE')?.toString()?.trim();
-    const cutoffF = data.get('cutoffF')?.toString()?.trim();
+    const { name, slug, description, cutoffs } = parsed;
 
     await db
       .update(category)
-      .set({
-        name,
-        slug,
-        description,
-        cutoffS: cutoffS ? Number(cutoffS) : null,
-        cutoffA: cutoffA ? Number(cutoffA) : null,
-        cutoffB: cutoffB ? Number(cutoffB) : null,
-        cutoffC: cutoffC ? Number(cutoffC) : null,
-        cutoffD: cutoffD ? Number(cutoffD) : null,
-        cutoffE: cutoffE ? Number(cutoffE) : null,
-        cutoffF: cutoffF ? Number(cutoffF) : null
-      })
+      .set({ name, slug, description, ...cutoffs })
       .where(eq(category.id, id));
 
     redirect(303, '/admin/categories');
