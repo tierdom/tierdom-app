@@ -4,11 +4,11 @@ const TIERS: Tier[] = ['S', 'A', 'B', 'C', 'D', 'E', 'F'];
 
 const DEFAULT_CUTOFFS: Record<Tier, number> = {
 	S: 90,
-	A: 75,
-	B: 60,
-	C: 45,
-	D: 30,
-	E: 15,
+	A: 80,
+	B: 70,
+	C: 55,
+	D: 40,
+	E: 20,
 	F: 0
 };
 
@@ -26,6 +26,10 @@ export function scoreToTier(score: number, cutoffs?: Partial<Record<Tier, number
 		if (score >= resolved[tier]) return tier;
 	}
 	return 'F';
+}
+
+export function scoreToBarColor(score: number): string {
+	return `hsl(${(score / 100) * 120}, 70%, 45%)`;
 }
 
 export const tierColors: Record<Tier, { bg: string; fg: string }> = {

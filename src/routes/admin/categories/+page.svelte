@@ -60,7 +60,9 @@
 								}}
 							>
 								<input type="hidden" name="id" value={cat.id} />
-								<Button variant="table-danger" type="submit"><Trash2 size={12} />delete</Button>
+								<Button variant="danger-ghost" compact type="submit"
+									><Trash2 size={12} />delete</Button
+								>
 							</form>
 						</div>
 					</div>
@@ -72,11 +74,6 @@
 	{/if}
 
 	<div class="mt-8">
-		<a
-			href={resolve('/admin/categories/create')}
-			class="inline-flex items-center gap-1.5 rounded bg-accent px-4 py-2 text-sm font-semibold text-canvas transition-opacity hover:opacity-80"
-		>
-			<Plus size={16} />New category
-		</a>
+		<Button href={resolve('/admin/categories/create')}><Plus size={16} />New category</Button>
 	</div>
 </section>

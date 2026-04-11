@@ -2,9 +2,9 @@ import { createHash, randomBytes } from 'node:crypto';
 import { db } from '$lib/server/db';
 import { session, user } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
-import type { RequestEvent } from '@sveltejs/kit';
 
-const SESSION_COOKIE = 'tierdom_session';
+export { setSessionCookie, deleteSessionCookie, getSessionToken } from './cookies';
+
 const SESSION_DURATION_MS = 30 * 24 * 60 * 60 * 1000;
 const SESSION_REFRESH_MS = 15 * 24 * 60 * 60 * 1000;
 
@@ -14,7 +14,7 @@ export type SessionValidationResult =
 	| { session: { id: string; expiresAt: number }; user: SessionUser }
 	| { session: null; user: null };
 
-function hashToken(token: string): string {
+export function hashToken(token: string): string {
 	return createHash('sha256').update(token).digest('hex');
 }
 
@@ -71,24 +71,4 @@ export function validateSession(token: string): SessionValidationResult {
 export function invalidateSession(token: string): void {
 	const id = hashToken(token);
 	db.delete(session).where(eq(session.id, id)).run();
-}
-
-export function setSessionCookie(event: RequestEvent, token: string, expiresAt: number): void {
-	event.cookies.set(SESSION_COOKIE, token, {
-		sameSite: 'lax',
-		path: '/',
-		expires: new Date(expiresAt)
-	});
-}
-
-export function deleteSessionCookie(event: RequestEvent): void {
-	event.cookies.set(SESSION_COOKIE, '', {
-		sameSite: 'lax',
-		path: '/',
-		maxAge: 0
-	});
-}
-
-export function getSessionToken(event: RequestEvent): string | undefined {
-	return event.cookies.get(SESSION_COOKIE);
 }

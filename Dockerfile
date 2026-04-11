@@ -5,7 +5,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
-RUN DATABASE_URL=./build.db npm run build && rm -f build.db*
+RUN DATA_PATH=./build-data npm run build && rm -rf build-data
 
 # Stage 2: Production runtime
 FROM node:24-alpine
@@ -31,7 +31,7 @@ COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
 # Default database path for zero-config trial — override at runtime
-ENV DATABASE_URL=/app/data/db.sqlite
+ENV DATA_PATH=/app/data
 
 VOLUME /app/data
 EXPOSE 3000 443 80

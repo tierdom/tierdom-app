@@ -41,11 +41,17 @@ High level features:
 - [x] Authentication and authorization
 - [x] Item images with placeholder gradients
 - [x] Create and publish Docker image
+- [ ] Add significant unit test coverage where sensible
+- [ ] Add a few end-to-end test cases for safety
 - [ ] Import from external sources (Goodreads CSV, etc.)
 - [ ] Export database to basic formats (markdown, json or yaml, etc.)
 
 Known issues, bugs, and small TODO's:
 
+- [ ] Change categories and items to use UUID primary keys instead
+- [ ] Require double-confirmation for heavy deletes (e.g. category)
+- [ ] Prevent (only) changes to "order" of items causing the updated property to be updated
+- [ ] Add `eslint-plugin-better-tailwindcss` to catch deprecated Tailwind v4 classes in lint
 - [ ] Session cookies are missing `httpOnly` and `secure` flags
 - [ ] Security headers (CSP, X-Frame-Options, X-Content-Type-Options) not yet configured
 
@@ -81,7 +87,7 @@ services:
     volumes:
       - ./data:/app/data
     environment:
-      DATABASE_URL: /app/data/db.sqlite
+      DATA_PATH: /app/data
       ADMIN_USERNAME: your_username
       ADMIN_PASSWORD: your_password # only used on first boot
       ORIGIN: https://your-domain.com
@@ -113,7 +119,7 @@ services:
     volumes:
       - ./data:/app/data
     environment:
-      DATABASE_URL: /app/data/db.sqlite
+      DATA_PATH: /app/data
       ADMIN_USERNAME: your_username
       ADMIN_PASSWORD: your_password
       TLS_DOMAIN: tierdom.example.com

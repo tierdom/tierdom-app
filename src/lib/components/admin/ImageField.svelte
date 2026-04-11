@@ -51,7 +51,6 @@
 		<input type="hidden" name="removeImage" value="1" />
 	{/if}
 	<div class="flex items-start gap-3">
-		<!-- Drop zone / preview -->
 		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<div
 			class="relative h-24 w-24 rounded border object-cover transition-colors {dragging

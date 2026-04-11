@@ -1,13 +1,7 @@
 import { db } from '$lib/server/db';
 import { tag } from '$lib/server/db/schema';
+import { slugify } from '$lib/server/slugify';
 import { eq } from 'drizzle-orm';
-
-function slugify(text: string): string {
-	return text
-		.toLowerCase()
-		.replace(/[^a-z0-9]+/g, '-')
-		.replace(/^-|-$/g, '');
-}
 
 export async function getOrCreateTag(label: string): Promise<{ slug: string; label: string }> {
 	const slug = slugify(label);

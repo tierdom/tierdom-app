@@ -80,7 +80,6 @@
 		<Timestamps createdAt={data.category.createdAt} updatedAt={data.category.updatedAt} />
 	</div>
 
-	<!-- Edit category -->
 	<form
 		id="edit-category"
 		method="POST"
@@ -96,8 +95,8 @@
 		{#if showCutoffs}
 			<h2 class="mt-2 text-sm font-semibold text-secondary">Tier cutoffs</h2>
 			<p class="text-xs text-secondary/70">
-				Minimum score to reach each tier. Leave empty for defaults (S=90, A=75, B=60, C=45, D=30,
-				E=15, F=0).
+				Minimum score to reach each tier. Leave empty for defaults (S=90, A=80, B=70, C=55, D=40,
+				E=20, F=0).
 			</p>
 			<div class="grid grid-cols-4 gap-3 sm:grid-cols-7">
 				<FormField
@@ -184,7 +183,6 @@
 		</form>
 	</div>
 
-	<!-- Items list -->
 	<div class="mt-10 flex items-center gap-3">
 		<h2 class="text-lg font-bold text-primary">Items ({data.items.length})</h2>
 		{#if data.items.length > 1}
@@ -214,7 +212,7 @@
 					{@const tier = scoreToTier(item.score as number, cutoffs)}
 					{@const tags = item.tags as { slug: string; label: string }[]}
 					<div class="flex flex-1 items-center py-2">
-						<div class="w-8 flex-shrink-0">
+						<div class="w-8 shrink-0">
 							<TierBadge {tier} />
 						</div>
 						<div class="min-w-0 flex-1 text-primary">
@@ -249,7 +247,9 @@
 								}}
 							>
 								<input type="hidden" name="id" value={item.id} />
-								<Button variant="table-danger" type="submit"><Trash2 size={12} />delete</Button>
+								<Button variant="danger-ghost" compact type="submit"
+									><Trash2 size={12} />delete</Button
+								>
 							</form>
 						</div>
 					</div>
@@ -261,11 +261,10 @@
 	{/if}
 
 	<div class="mt-6">
-		<a
+		<Button
 			href={resolve(`/admin/items/new-item?category=${data.category.id}&returnTo=categories`)}
-			class="inline-flex items-center gap-1.5 rounded bg-accent px-4 py-2 text-sm font-semibold text-canvas transition-opacity hover:opacity-80"
 		>
 			<Plus size={16} />New item
-		</a>
+		</Button>
 	</div>
 </section>

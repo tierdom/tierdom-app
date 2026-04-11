@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { scoreToBarColor } from '$lib/tier';
+
 	type Props = {
 		name: string;
 		score: number;
@@ -16,8 +18,10 @@
 		}
 	}
 
-	/** Map 0-100 score to a hue: 0 = deep red (0°), 100 = bright green (120°) */
-	let barColor = $derived(`hsl(${(score / 100) * 120}, 70%, 45%)`);
+	let barColor = $derived(scoreToBarColor(score));
+
+	const scrim =
+		'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.4) 25%, rgba(0,0,0,0.4) 75%, rgba(0,0,0,0.5) 100%)';
 </script>
 
 <div
@@ -32,7 +36,7 @@
 	{#if gradient}
 		<div class="absolute inset-0" style:background-image={gradient}></div>
 	{:else if !image}
-		<div class="absolute inset-0 bg-gradient-to-br from-elevated via-surface to-elevated"></div>
+		<div class="absolute inset-0 bg-linear-to-br from-elevated via-surface to-elevated"></div>
 	{/if}
 	{#if image}
 		<img src={image} alt={name} class="absolute inset-0 h-full w-full object-cover" />
@@ -40,15 +44,10 @@
 
 	<!-- Scrim overlay for text legibility (only over images) -->
 	{#if image || gradient}
-		<div
-			class="absolute inset-0"
-			style:background="linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.4) 25%,
-			rgba(0,0,0,0.4) 75%, rgba(0,0,0,0.5) 100%)"
-		></div>
+		<div class="absolute inset-0" style:background={scrim}></div>
 	{/if}
 
-	<!-- Title at top -->
-	<div class="absolute inset-x-0 top-0 bg-gradient-to-b from-black/50 to-transparent p-2">
+	<div class="absolute inset-x-0 top-0 bg-linear-to-b from-black/50 to-transparent p-2">
 		<span
 			class="block origin-top-left pr-4 text-xs leading-tight font-extrabold text-white drop-shadow-md transition-transform duration-200 group-hover:scale-115 sm:text-sm"
 		>
@@ -56,14 +55,12 @@
 		</span>
 	</div>
 
-	<!-- Score number bottom-left, just above the bar -->
 	<span
 		class="absolute bottom-3 left-1.5 block origin-bottom-left text-xs leading-none font-bold text-white drop-shadow-md transition-transform duration-200 group-hover:scale-115"
 	>
 		{score}
 	</span>
 
-	<!-- Score bar at the very bottom -->
 	<div
 		class="absolute inset-x-0 bottom-0 h-1 bg-black/30 transition-[height] duration-200 group-hover:h-2"
 	>

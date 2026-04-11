@@ -1,14 +1,8 @@
 import { db } from '$lib/server/db';
 import { tag } from '$lib/server/db/schema';
 import { fail, redirect } from '@sveltejs/kit';
+import { slugify } from '$lib/server/slugify';
 import type { Actions } from './$types';
-
-function slugify(text: string): string {
-	return text
-		.toLowerCase()
-		.replace(/[^a-z0-9]+/g, '-')
-		.replace(/^-|-$/g, '');
-}
 
 export const actions: Actions = {
 	create: async ({ request }) => {

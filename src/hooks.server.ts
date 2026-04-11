@@ -1,5 +1,6 @@
 import type { Handle } from '@sveltejs/kit';
 import { redirect } from '@sveltejs/kit';
+import { initializeApp } from '$lib/server/db/init';
 import {
 	validateSession,
 	getSessionToken,
@@ -7,6 +8,8 @@ import {
 	deleteSessionCookie
 } from '$lib/server/auth/session';
 import { isSetupComplete } from '$lib/server/setup';
+
+initializeApp();
 
 export const handle: Handle = async ({ event, resolve }) => {
 	// Redirect to setup wizard if first-run setup has not been completed

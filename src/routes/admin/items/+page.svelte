@@ -115,7 +115,9 @@
 							}}
 						>
 							<input type="hidden" name="id" value={item.id} />
-							<Button variant="table-danger" type="submit"><Trash2 size={12} />delete</Button>
+							<Button variant="danger-ghost" compact type="submit"
+								><Trash2 size={12} />delete</Button
+							>
 						</form>
 					</div>
 				</div>

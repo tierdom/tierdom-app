@@ -20,14 +20,12 @@
 	<title>Home — tierdom</title>
 </svelte:head>
 
-<!-- CMS hero -->
 {#if data.page?.contentHtml}
 	<section class="py-16 text-center md:py-24">
 		<Prose html={data.page.contentHtml} size="lg" class="mx-auto max-w-xl" />
 	</section>
 {/if}
 
-<!-- Categories -->
 {#if data.categoriesWithCounts.length > 0}
 	<section class="pb-16">
 		<h2 class="mb-6 text-center text-sm font-semibold tracking-widest text-secondary uppercase">
@@ -55,7 +53,6 @@
 	</section>
 {/if}
 
-<!-- Tier system -->
 <section class="pb-16">
 	<h2 class="mb-6 text-center text-sm font-semibold tracking-widest text-secondary uppercase">
 		The tier system

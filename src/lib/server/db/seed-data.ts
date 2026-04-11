@@ -1,10 +1,3 @@
-export function slugify(name: string): string {
-	return name
-		.toLowerCase()
-		.replace(/[^a-z0-9]+/g, '-')
-		.replace(/^-|-$/g, '');
-}
-
 export type SeedItem = { name: string; score: number; tags: string[]; description?: string };
 
 export type SeedCategory = {

@@ -28,7 +28,6 @@
 
 <svelte:window onkeydown={open ? handleKeydown : undefined} />
 
-<!-- Backdrop -->
 <div
 	class="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-200 md:hidden
 		{open ? 'opacity-100' : 'pointer-events-none opacity-0'}"
@@ -39,7 +38,6 @@
 	aria-label="Close menu"
 ></div>
 
-<!-- Panel -->
 <aside
 	class="fixed top-0 left-0 z-50 flex h-full w-72 max-w-[75vw] flex-col border-r border-subtle bg-elevated transition-transform duration-300 ease-out md:hidden
 		{open ? 'translate-x-0' : '-translate-x-full'}"

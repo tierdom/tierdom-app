@@ -1,7 +1,7 @@
 /**
  * Standalone seed script — run via `npm run db:seed`.
  *
- * Connects directly to the database (same DATABASE_URL as drizzle-kit),
+ * Connects directly to the database (same DATA_PATH as drizzle-kit),
  * wipes existing data, and inserts demo categories, tags, and items.
  */
 
@@ -10,16 +10,19 @@ import Database from 'better-sqlite3';
 import { randomUUID } from 'node:crypto';
 import { hashPassword } from '../auth/password';
 import * as schema from './schema';
-import { TAGS, CATEGORIES, PAGES, slugify } from './seed-data';
+import { TAGS, CATEGORIES, PAGES } from './seed-data';
+import { seedCategories } from './seed-utils';
 
-const { category, tierListItem, tag, itemTag, page, user, session } = schema;
+const { page, user, session, category, tierListItem, tag, itemTag } = schema;
 
-if (!process.env.DATABASE_URL) {
-	console.error('DATABASE_URL is not set');
+import { join } from 'node:path';
+
+if (!process.env.DATA_PATH) {
+	console.error('DATA_PATH is not set');
 	process.exit(1);
 }
 
-const client = new Database(process.env.DATABASE_URL);
+const client = new Database(join(process.env.DATA_PATH, 'db.sqlite'));
 client.pragma('foreign_keys = ON');
 const db = drizzle(client, { schema });
 
@@ -48,49 +51,9 @@ db.insert(user)
 	.run();
 console.log(`Created dev admin user with name ${adminUsername} and password <REDACTED>`);
 
-// Insert tags and pages
-db.insert(tag).values(TAGS).run();
+// Insert pages and seed categories with tags and items
 db.insert(page).values(PAGES).run();
-
-// Insert categories and their items
-let totalItems = 0;
-
-for (const cat of CATEGORIES) {
-	const inserted = db
-		.insert(category)
-		.values({
-			slug: cat.slug,
-			name: cat.name,
-			description: cat.description,
-			order: cat.order
-		})
-		.returning({ id: category.id })
-		.get();
-
-	for (let i = 0; i < cat.items.length; i++) {
-		const item = cat.items[i];
-		const insertedItem = db
-			.insert(tierListItem)
-			.values({
-				categoryId: inserted.id,
-				slug: slugify(item.name),
-				name: item.name,
-				description: item.description ?? null,
-				score: item.score,
-				order: i
-			})
-			.returning({ id: tierListItem.id })
-			.get();
-
-		if (item.tags.length > 0) {
-			db.insert(itemTag)
-				.values(item.tags.map((tagSlug) => ({ itemId: insertedItem.id, tagSlug })))
-				.run();
-		}
-
-		totalItems++;
-	}
-}
+const totalItems = seedCategories(db, CATEGORIES, TAGS);
 
 // ─── Randomize timestamps ────────────────────────────────────────────────────
 // Spread created_at over the past 6 months. ~1/3 of rows get a later updated_at.
