@@ -263,11 +263,10 @@
 	{/if}
 
 	<div class="mt-6">
-		<a
+		<Button
 			href={resolve(`/admin/items/new-item?category=${data.category.id}&returnTo=categories`)}
-			class="inline-flex items-center gap-1.5 rounded bg-accent px-4 py-2 text-sm font-semibold text-canvas transition-opacity hover:opacity-80"
 		>
 			<Plus size={16} />New item
-		</a>
+		</Button>
 	</div>
 </section>
