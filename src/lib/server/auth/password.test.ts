@@ -27,4 +27,10 @@ describe('hashPassword / verifyPassword', () => {
     const b = hashPassword('same');
     expect(a).not.toBe(b);
   });
+
+  it('throws on malformed stored hash', () => {
+    expect.assertions(2);
+    expect(() => verifyPassword('pass', 'not-a-hash')).toThrow();
+    expect(() => verifyPassword('pass', '')).toThrow();
+  });
 });

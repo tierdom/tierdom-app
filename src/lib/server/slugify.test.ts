@@ -36,4 +36,19 @@ describe('slugify', () => {
     expect.assertions(1);
     expect(slugify('already-a-slug')).toBe('already-a-slug');
   });
+
+  it('converts underscores to hyphens', () => {
+    expect.assertions(1);
+    expect(slugify('hello_world')).toBe('hello-world');
+  });
+
+  it('trims leading and trailing whitespace', () => {
+    expect.assertions(1);
+    expect(slugify('  hello  ')).toBe('hello');
+  });
+
+  it('collapses input that already contains hyphens', () => {
+    expect.assertions(1);
+    expect(slugify('a--b')).toBe('a-b');
+  });
 });

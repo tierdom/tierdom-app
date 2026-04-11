@@ -31,7 +31,7 @@ export function ensureImageDir(): void {
   }
 }
 
-function rgbToHex(r: number, g: number, b: number): string {
+export function rgbToHex(r: number, g: number, b: number): string {
   return `#${((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1)}`;
 }
 
@@ -48,7 +48,7 @@ export async function extractGradient(source: Buffer): Promise<string> {
   return `linear-gradient(135deg, ${c1}, ${c2}, ${c3})`;
 }
 
-function validateUpload(file: File): void {
+export function validateUpload(file: File): void {
   if (!ALLOWED_MIME_TYPES.has(file.type)) {
     throw new Error(`Unsupported image type: ${file.type}`);
   }

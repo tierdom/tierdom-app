@@ -32,11 +32,14 @@ describe('createRateLimiter', () => {
   });
 
   it('does not limit before maxAttempts is reached', () => {
-    expect.assertions(1);
+    expect.assertions(2);
     const limiter = createRateLimiter({ maxAttempts: 3 });
     limiter.recordFailedAttempt('1.2.3.4');
     limiter.recordFailedAttempt('1.2.3.4');
     expect(limiter.isRateLimited('1.2.3.4')).toBe(false);
+    // One more tips it over the edge
+    limiter.recordFailedAttempt('1.2.3.4');
+    expect(limiter.isRateLimited('1.2.3.4')).toBe(true);
   });
 
   it('resets after clearAttempts', () => {

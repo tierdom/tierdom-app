@@ -2,30 +2,30 @@ import { describe, expect, it } from 'vitest';
 import { scoreToTier, scoreToBarColor } from './tier';
 
 describe('scoreToTier', () => {
-  it('maps default boundaries correctly', () => {
-    expect.assertions(8);
-    expect(scoreToTier(100)).toBe('S');
-    expect(scoreToTier(90)).toBe('S');
-    expect(scoreToTier(89)).toBe('A');
-    expect(scoreToTier(80)).toBe('A');
-    expect(scoreToTier(70)).toBe('B');
-    expect(scoreToTier(55)).toBe('C');
-    expect(scoreToTier(40)).toBe('D');
-    expect(scoreToTier(20)).toBe('E');
-  });
-
-  it('returns F for scores below the E cutoff', () => {
-    expect.assertions(3);
-    expect(scoreToTier(19)).toBe('F');
-    expect(scoreToTier(0)).toBe('F');
-    expect(scoreToTier(-1)).toBe('F');
+  it.each([
+    [100, 'S'],
+    [90, 'S'],
+    [89, 'A'],
+    [80, 'A'],
+    [79, 'B'],
+    [70, 'B'],
+    [69, 'C'],
+    [55, 'C'],
+    [54, 'D'],
+    [40, 'D'],
+    [39, 'E'],
+    [20, 'E'],
+    [19, 'F'],
+    [0, 'F'],
+    [-1, 'F']
+  ] as const)('scoreToTier(%d) → %s', (score, expected) => {
+    expect.assertions(1);
+    expect(scoreToTier(score)).toBe(expected);
   });
 
   it('respects custom cutoff overrides', () => {
     expect.assertions(2);
-    // Raise S threshold — 91 is no longer S
     expect(scoreToTier(91, { S: 95 })).toBe('A');
-    // Lower C threshold — 50 is now C
     expect(scoreToTier(50, { C: 50 })).toBe('C');
   });
 
@@ -36,18 +36,14 @@ describe('scoreToTier', () => {
 });
 
 describe('scoreToBarColor', () => {
-  it('returns red hue for 0', () => {
+  it.each([
+    [0, 0],
+    [25, 30],
+    [50, 60],
+    [75, 90],
+    [100, 120]
+  ])('scoreToBarColor(%d) → hue %d', (score, expectedHue) => {
     expect.assertions(1);
-    expect(scoreToBarColor(0)).toBe('hsl(0, 70%, 45%)');
-  });
-
-  it('returns yellow hue for 50', () => {
-    expect.assertions(1);
-    expect(scoreToBarColor(50)).toBe('hsl(60, 70%, 45%)');
-  });
-
-  it('returns green hue for 100', () => {
-    expect.assertions(1);
-    expect(scoreToBarColor(100)).toBe('hsl(120, 70%, 45%)');
+    expect(scoreToBarColor(score)).toBe(`hsl(${expectedHue}, 70%, 45%)`);
   });
 });

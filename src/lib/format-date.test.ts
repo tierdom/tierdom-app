@@ -60,4 +60,10 @@ describe('formatRelativeDate', () => {
     expect.assertions(1);
     expect(formatRelativeDate('2025-12-25 12:00:00')).toBe('Dec 25, 2025');
   });
+
+  it('returns "just now" for future dates', () => {
+    expect.assertions(1);
+    // Future dates produce negative diffMins, which is < 1
+    expect(formatRelativeDate('2026-04-13 12:00:00')).toBe('just now');
+  });
 });
