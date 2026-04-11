@@ -43,4 +43,9 @@ tests/e2e/
 - `npm run test:e2e:reset` resets only the test database, runs migrations, and seeds it (admin/admin, 5 categories, ~108 items, 10 tags, 2 pages).
 - Smoke tests run against the dev server and use whatever database is already there.
 
+## Writing tests
+
+- **Public over admin:** Public-facing pages are the product surface — prioritize their test coverage. If admin breaks, it can wait for a fix; if public breaks, visitors see it immediately.
+- **Readable fixtures:** Test images and fixture files should be visually recognizable (e.g. 100×100 with "TEST IMG" label), not minimal 1×1 stubs. Playwright screenshots and recordings are reviewed by humans.
+
 $ARGUMENTS
