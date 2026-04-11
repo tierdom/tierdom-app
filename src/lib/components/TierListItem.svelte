@@ -19,6 +19,9 @@
 	}
 
 	let barColor = $derived(scoreToBarColor(score));
+
+	const scrim =
+		'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.4) 25%, rgba(0,0,0,0.4) 75%, rgba(0,0,0,0.5) 100%)';
 </script>
 
 <div
@@ -33,7 +36,7 @@
 	{#if gradient}
 		<div class="absolute inset-0" style:background-image={gradient}></div>
 	{:else if !image}
-		<div class="absolute inset-0 bg-gradient-to-br from-elevated via-surface to-elevated"></div>
+		<div class="absolute inset-0 bg-linear-to-br from-elevated via-surface to-elevated"></div>
 	{/if}
 	{#if image}
 		<img src={image} alt={name} class="absolute inset-0 h-full w-full object-cover" />
@@ -41,15 +44,11 @@
 
 	<!-- Scrim overlay for text legibility (only over images) -->
 	{#if image || gradient}
-		<div
-			class="absolute inset-0"
-			style:background="linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.4) 25%,
-			rgba(0,0,0,0.4) 75%, rgba(0,0,0,0.5) 100%)"
-		></div>
+		<div class="absolute inset-0" style:background={scrim}></div>
 	{/if}
 
 	<!-- Title at top -->
-	<div class="absolute inset-x-0 top-0 bg-gradient-to-b from-black/50 to-transparent p-2">
+	<div class="absolute inset-x-0 top-0 bg-linear-to-b from-black/50 to-transparent p-2">
 		<span
 			class="block origin-top-left pr-4 text-xs leading-tight font-extrabold text-white drop-shadow-md transition-transform duration-200 group-hover:scale-115 sm:text-sm"
 		>
