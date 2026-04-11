@@ -1,4 +1,7 @@
+import path from 'node:path';
 import { test, expect } from '@playwright/test';
+
+const TEST_IMAGE = path.resolve('tests/e2e/fixtures/test-image.png');
 
 test('items list shows seeded items', async ({ page }) => {
   await page.goto('/admin/items');
@@ -18,11 +21,13 @@ test('create, edit, and delete an item', async ({ page }) => {
   const main = page.getByRole('main');
   const unique = `E2E-${Date.now()}`;
 
-  // Create
+  // Create with image
   await page.goto('/admin/items/new-item');
   await page.locator('#categoryId').selectOption({ label: 'Video Games' });
   await page.locator('#name').fill(unique);
   await page.locator('#score').fill('50');
+  await page.locator('input[name="image"]').setInputFiles(TEST_IMAGE);
+  await expect(page.locator('img[alt="Preview"]')).toBeVisible();
   await page.locator('button[form="item-form"]').click();
 
   // Should redirect after creation
@@ -36,6 +41,9 @@ test('create, edit, and delete an item', async ({ page }) => {
   // Navigate to edit
   await main.getByRole('link', { name: unique }).click();
   await expect(page.locator('#name')).toHaveValue(unique);
+
+  // Verify image was saved — edit page shows the uploaded image
+  await expect(page.locator('img[alt="Preview"]')).toBeVisible();
 
   // Edit score
   await page.locator('#score').fill('75');
