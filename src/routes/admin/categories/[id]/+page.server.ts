@@ -4,14 +4,8 @@ import { eq, asc } from 'drizzle-orm';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { applyOrder, sortCategoryByScore } from '$lib/server/reorder';
 import { deleteImage } from '$lib/server/images';
+import { slugify } from '$lib/server/slugify';
 import type { PageServerLoad, Actions } from './$types';
-
-function slugify(text: string): string {
-	return text
-		.toLowerCase()
-		.replace(/[^a-z0-9]+/g, '-')
-		.replace(/^-|-$/g, '');
-}
 
 export const load: PageServerLoad = async ({ params }) => {
 	const id = Number(params.id);
