@@ -13,7 +13,7 @@
 	let { variant = 'primary', compact = false, children, ...rest }: Props = $props();
 
 	const base = 'cursor-pointer inline-flex items-center justify-center rounded';
-	const size = compact ? 'gap-1 px-2 py-1 text-xs' : 'gap-1.5 px-4 py-2 text-sm';
+	let size = $derived(compact ? 'gap-1 px-2 py-1 text-xs' : 'gap-1.5 px-4 py-2 text-sm');
 
 	const styles: Record<Variant, string> = {
 		primary: 'bg-accent font-semibold text-canvas transition-opacity hover:opacity-80',
