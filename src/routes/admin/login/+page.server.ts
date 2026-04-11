@@ -19,7 +19,7 @@ export const actions: Actions = {
 		const ip = event.getClientAddress();
 
 		if (isRateLimited(ip)) {
-			return fail(429, { error: 'Too many login attempts. Try again in a minute.' });
+			return fail(429, { error: 'Too many login attempts. Try again in a minute.', username: '' });
 		}
 
 		const data = await event.request.formData();
