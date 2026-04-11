@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
-	import { deserialize } from '$app/forms';
 	import { Plus, Save, X, Trash2 } from 'lucide-svelte';
 	import Button from '$lib/components/admin/Button.svelte';
 	import FormField from '$lib/components/admin/FormField.svelte';
@@ -10,9 +9,9 @@
 	import TagPicker from '$lib/components/admin/TagPicker.svelte';
 	import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
 	import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
+	import { createTag } from '$lib/components/admin/create-tag';
 
 	type Category = { id: number; name: string };
-	type Tag = { slug: string; label: string };
 
 	let {
 		mode,
@@ -25,7 +24,7 @@
 	}: {
 		mode: 'create' | 'edit';
 		categories: Category[];
-		allTags: Tag[];
+		allTags: { slug: string; label: string }[];
 		initialValues?: {
 			name?: string;
 			slug?: string;
@@ -57,17 +56,6 @@
 	function handleTagsChange(slugs: string[]) {
 		selectedTags = slugs;
 		markDirty();
-	}
-
-	async function handleCreateTag(label: string) {
-		const body = new FormData();
-		body.set('label', label);
-		const response = await fetch('?/createTag', { method: 'POST', body });
-		const result = deserialize(await response.text());
-		if (result.type === 'success' && result.data) {
-			return result.data.tag as { slug: string; label: string };
-		}
-		throw new Error('Failed to create tag');
 	}
 </script>
 
@@ -126,7 +114,7 @@
 		{allTags}
 		selectedSlugs={selectedTags}
 		onchange={handleTagsChange}
-		oncreate={handleCreateTag}
+		oncreate={createTag}
 	/>
 	<MarkdownField label="Description" name="description" value={initialValues.description} />
 </form>
