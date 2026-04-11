@@ -5,10 +5,10 @@ import { asc } from 'drizzle-orm';
 import { isSetupComplete } from '$lib/server/setup';
 
 export const load: LayoutServerLoad = async ({ locals }) => {
-	const categories = await db
-		.select({ id: category.id, slug: category.slug, name: category.name })
-		.from(category)
-		.orderBy(asc(category.order));
+  const categories = await db
+    .select({ id: category.id, slug: category.slug, name: category.name })
+    .from(category)
+    .orderBy(asc(category.order));
 
-	return { categories, user: locals.user, setupComplete: isSetupComplete() };
+  return { categories, user: locals.user, setupComplete: isSetupComplete() };
 };

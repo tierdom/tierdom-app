@@ -6,49 +6,49 @@ import { applyOrder } from '$lib/server/reorder';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async () => {
-	const cats = await db
-		.select({
-			id: category.id,
-			slug: category.slug,
-			name: category.name,
-			order: category.order,
-			itemCount: count(tierListItem.id)
-		})
-		.from(category)
-		.leftJoin(tierListItem, eq(tierListItem.categoryId, category.id))
-		.groupBy(category.id)
-		.orderBy(asc(category.order));
+  const cats = await db
+    .select({
+      id: category.id,
+      slug: category.slug,
+      name: category.name,
+      order: category.order,
+      itemCount: count(tierListItem.id)
+    })
+    .from(category)
+    .leftJoin(tierListItem, eq(tierListItem.categoryId, category.id))
+    .groupBy(category.id)
+    .orderBy(asc(category.order));
 
-	return { categories: cats };
+  return { categories: cats };
 };
 
 export const actions: Actions = {
-	delete: async ({ request }) => {
-		const data = await request.formData();
-		const id = Number(data.get('id'));
-		if (!id) return fail(400, { error: 'Invalid id' });
+  delete: async ({ request }) => {
+    const data = await request.formData();
+    const id = Number(data.get('id'));
+    if (!id) return fail(400, { error: 'Invalid id' });
 
-		await db.delete(category).where(eq(category.id, id));
-		return { success: true };
-	},
+    await db.delete(category).where(eq(category.id, id));
+    return { success: true };
+  },
 
-	reorder: async ({ request }) => {
-		const data = await request.formData();
-		const orderJson = data.get('order')?.toString();
-		if (!orderJson) return fail(400, { error: 'Missing order' });
+  reorder: async ({ request }) => {
+    const data = await request.formData();
+    const orderJson = data.get('order')?.toString();
+    if (!orderJson) return fail(400, { error: 'Missing order' });
 
-		let orderedIds: number[];
-		try {
-			orderedIds = JSON.parse(orderJson);
-		} catch {
-			return fail(400, { error: 'Invalid order format' });
-		}
+    let orderedIds: number[];
+    try {
+      orderedIds = JSON.parse(orderJson);
+    } catch {
+      return fail(400, { error: 'Invalid order format' });
+    }
 
-		if (!Array.isArray(orderedIds) || !orderedIds.every((id) => typeof id === 'number')) {
-			return fail(400, { error: 'Invalid order data' });
-		}
+    if (!Array.isArray(orderedIds) || !orderedIds.every((id) => typeof id === 'number')) {
+      return fail(400, { error: 'Invalid order data' });
+    }
 
-		await applyOrder(category, category.id, category.order, orderedIds);
-		return { success: true };
-	}
+    await applyOrder(category, category.id, category.order, orderedIds);
+    return { success: true };
+  }
 };

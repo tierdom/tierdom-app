@@ -1,8 +1,8 @@
 :3000 {
-	reverse_proxy localhost:3001
-	encode gzip
-	log {
-		output stderr
-		format json
-	}
+  reverse_proxy localhost:3001
+  encode gzip
+  log {
+    output stderr
+    format json
+  }
 }

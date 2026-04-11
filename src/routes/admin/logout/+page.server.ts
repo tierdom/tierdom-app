@@ -3,12 +3,12 @@ import { invalidateSession, getSessionToken, deleteSessionCookie } from '$lib/se
 import type { Actions } from './$types';
 
 export const actions: Actions = {
-	default: async (event) => {
-		const token = getSessionToken(event);
-		if (token) {
-			invalidateSession(token);
-		}
-		deleteSessionCookie(event);
-		redirect(303, '/admin/login');
-	}
+  default: async (event) => {
+    const token = getSessionToken(event);
+    if (token) {
+      invalidateSession(token);
+    }
+    deleteSessionCookie(event);
+    redirect(303, '/admin/login');
+  }
 };

@@ -1,15 +1,15 @@
 {
-	"mcpServers": {
-		"svelte": {
-			"type": "stdio",
-			"command": "npx",
-			"env": {},
-			"args": ["-y", "@sveltejs/mcp"]
-		},
-		"playwright": {
-			"type": "stdio",
-			"command": "npx",
-			"args": ["-y", "@playwright/mcp@latest"]
-		}
-	}
+  "mcpServers": {
+    "svelte": {
+      "type": "stdio",
+      "command": "npx",
+      "env": {},
+      "args": ["-y", "@sveltejs/mcp"]
+    },
+    "playwright": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest"]
+    }
+  }
 }

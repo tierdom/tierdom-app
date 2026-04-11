@@ -7,14 +7,14 @@ import { ensureImageDir } from '$lib/server/images';
 let initialized = false;
 
 export function initializeApp(): void {
-	if (initialized) return;
-	initialized = true;
+  if (initialized) return;
+  initialized = true;
 
-	migrate(db, { migrationsFolder: 'drizzle' });
+  migrate(db, { migrationsFolder: 'drizzle' });
 
-	if (env.ADMIN_PASSWORD) {
-		bootstrapAdminUser(env.ADMIN_PASSWORD, env.ADMIN_USERNAME);
-	}
+  if (env.ADMIN_PASSWORD) {
+    bootstrapAdminUser(env.ADMIN_PASSWORD, env.ADMIN_USERNAME);
+  }
 
-	ensureImageDir();
+  ensureImageDir();
 }

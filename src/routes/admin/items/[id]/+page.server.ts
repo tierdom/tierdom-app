@@ -11,201 +11,201 @@ import type { PageServerLoad, Actions } from './$types';
 type ReturnTarget = 'categories' | 'items';
 
 function resolveReturnUrl(target: ReturnTarget, categoryId: number): string {
-	return target === 'categories' ? `/admin/categories/${categoryId}` : '/admin/items';
+  return target === 'categories' ? `/admin/categories/${categoryId}` : '/admin/items';
 }
 
 function parseItemForm(data: FormData) {
-	const name = data.get('name')?.toString()?.trim();
-	if (!name) return { error: 'Name is required' } as const;
+  const name = data.get('name')?.toString()?.trim();
+  if (!name) return { error: 'Name is required' } as const;
 
-	const slug = data.get('slug')?.toString()?.trim() || slugify(name);
-	const score = Math.round(Number(data.get('score')));
-	if (isNaN(score) || score < 0 || score > 100) {
-		return { error: 'Score must be an integer 0-100' } as const;
-	}
+  const slug = data.get('slug')?.toString()?.trim() || slugify(name);
+  const score = Math.round(Number(data.get('score')));
+  if (isNaN(score) || score < 0 || score > 100) {
+    return { error: 'Score must be an integer 0-100' } as const;
+  }
 
-	const categoryId = Number(data.get('categoryId'));
-	if (isNaN(categoryId) || categoryId <= 0) {
-		return { error: 'Category is required' } as const;
-	}
+  const categoryId = Number(data.get('categoryId'));
+  if (isNaN(categoryId) || categoryId <= 0) {
+    return { error: 'Category is required' } as const;
+  }
 
-	return {
-		name,
-		slug,
-		score,
-		categoryId,
-		description: data.get('description')?.toString()?.trim() || null,
-		tagSlugs: data.getAll('tags').map((s) => s.toString()),
-		returnTarget: (data.get('_returnTarget')?.toString() === 'categories'
-			? 'categories'
-			: 'items') as ReturnTarget
-	};
+  return {
+    name,
+    slug,
+    score,
+    categoryId,
+    description: data.get('description')?.toString()?.trim() || null,
+    tagSlugs: data.getAll('tags').map((s) => s.toString()),
+    returnTarget: (data.get('_returnTarget')?.toString() === 'categories'
+      ? 'categories'
+      : 'items') as ReturnTarget
+  };
 }
 
 async function handleImage(data: FormData) {
-	const imageFile = data.get('image') as File | null;
-	const wantsRemoveImage = data.get('removeImage') === '1';
+  const imageFile = data.get('image') as File | null;
+  const wantsRemoveImage = data.get('removeImage') === '1';
 
-	if (imageFile && imageFile.size > 0) {
-		const result = await processUpload(imageFile);
-		return { imageHash: result.hash, placeholder: result.gradient } as const;
-	} else if (wantsRemoveImage) {
-		return { imageHash: null, placeholder: null } as const;
-	}
+  if (imageFile && imageFile.size > 0) {
+    const result = await processUpload(imageFile);
+    return { imageHash: result.hash, placeholder: result.gradient } as const;
+  } else if (wantsRemoveImage) {
+    return { imageHash: null, placeholder: null } as const;
+  }
 
-	return undefined;
+  return undefined;
 }
 
 export const load: PageServerLoad = async ({ params, url }) => {
-	const isNew = params.id === 'new-item';
-	const returnTarget: ReturnTarget =
-		url.searchParams.get('returnTo') === 'categories' ? 'categories' : 'items';
-	const categories = await db
-		.select({ id: category.id, name: category.name })
-		.from(category)
-		.orderBy(asc(category.order));
-	const allTags = await db.select().from(tag).orderBy(asc(tag.label));
+  const isNew = params.id === 'new-item';
+  const returnTarget: ReturnTarget =
+    url.searchParams.get('returnTo') === 'categories' ? 'categories' : 'items';
+  const categories = await db
+    .select({ id: category.id, name: category.name })
+    .from(category)
+    .orderBy(asc(category.order));
+  const allTags = await db.select().from(tag).orderBy(asc(tag.label));
 
-	if (isNew) {
-		const prefillCategoryId = url.searchParams.has('category')
-			? Number(url.searchParams.get('category'))
-			: null;
-		return {
-			mode: 'create' as const,
-			categories,
-			allTags,
-			prefillCategoryId,
-			returnTarget,
-			backUrl: prefillCategoryId
-				? resolveReturnUrl(returnTarget, prefillCategoryId)
-				: '/admin/items'
-		};
-	}
+  if (isNew) {
+    const prefillCategoryId = url.searchParams.has('category')
+      ? Number(url.searchParams.get('category'))
+      : null;
+    return {
+      mode: 'create' as const,
+      categories,
+      allTags,
+      prefillCategoryId,
+      returnTarget,
+      backUrl: prefillCategoryId
+        ? resolveReturnUrl(returnTarget, prefillCategoryId)
+        : '/admin/items'
+    };
+  }
 
-	const id = Number(params.id);
-	const [item] = await db.select().from(tierListItem).where(eq(tierListItem.id, id)).limit(1);
-	if (!item) error(404, 'Item not found');
+  const id = Number(params.id);
+  const [item] = await db.select().from(tierListItem).where(eq(tierListItem.id, id)).limit(1);
+  if (!item) error(404, 'Item not found');
 
-	const currentTags = await db
-		.select({ slug: itemTag.tagSlug })
-		.from(itemTag)
-		.where(eq(itemTag.itemId, id));
+  const currentTags = await db
+    .select({ slug: itemTag.tagSlug })
+    .from(itemTag)
+    .where(eq(itemTag.itemId, id));
 
-	return {
-		mode: 'edit' as const,
-		item,
-		categories,
-		allTags,
-		itemTags: currentTags.map((t) => t.slug),
-		returnTarget,
-		backUrl: resolveReturnUrl(returnTarget, item.categoryId)
-	};
+  return {
+    mode: 'edit' as const,
+    item,
+    categories,
+    allTags,
+    itemTags: currentTags.map((t) => t.slug),
+    returnTarget,
+    backUrl: resolveReturnUrl(returnTarget, item.categoryId)
+  };
 };
 
 export const actions: Actions = {
-	save: async ({ request, params }) => {
-		const data = await request.formData();
-		const parsed = parseItemForm(data);
-		if ('error' in parsed) return fail(400, { error: parsed.error });
+  save: async ({ request, params }) => {
+    const data = await request.formData();
+    const parsed = parseItemForm(data);
+    if ('error' in parsed) return fail(400, { error: parsed.error });
 
-		const { name, slug, score, categoryId, description, tagSlugs, returnTarget } = parsed;
+    const { name, slug, score, categoryId, description, tagSlugs, returnTarget } = parsed;
 
-		let image: { imageHash: string | null; placeholder: string | null } | undefined;
-		try {
-			image = await handleImage(data);
-		} catch (e) {
-			return fail(400, { error: e instanceof Error ? e.message : 'Image upload failed' });
-		}
+    let image: { imageHash: string | null; placeholder: string | null } | undefined;
+    try {
+      image = await handleImage(data);
+    } catch (e) {
+      return fail(400, { error: e instanceof Error ? e.message : 'Image upload failed' });
+    }
 
-		if (params.id === 'new-item') {
-			const [inserted] = await db
-				.insert(tierListItem)
-				.values({
-					categoryId,
-					slug,
-					name,
-					description,
-					score,
-					order: 0,
-					...(image && { imageHash: image.imageHash, placeholder: image.placeholder })
-				})
-				.returning({ id: tierListItem.id });
+    if (params.id === 'new-item') {
+      const [inserted] = await db
+        .insert(tierListItem)
+        .values({
+          categoryId,
+          slug,
+          name,
+          description,
+          score,
+          order: 0,
+          ...(image && { imageHash: image.imageHash, placeholder: image.placeholder })
+        })
+        .returning({ id: tierListItem.id });
 
-			const order = insertByScore(categoryId, score, name, inserted.id);
-			await db.update(tierListItem).set({ order }).where(eq(tierListItem.id, inserted.id));
+      const order = insertByScore(categoryId, score, name, inserted.id);
+      await db.update(tierListItem).set({ order }).where(eq(tierListItem.id, inserted.id));
 
-			if (tagSlugs.length > 0) {
-				await db
-					.insert(itemTag)
-					.values(tagSlugs.map((tagSlug) => ({ itemId: inserted.id, tagSlug })));
-			}
+      if (tagSlugs.length > 0) {
+        await db
+          .insert(itemTag)
+          .values(tagSlugs.map((tagSlug) => ({ itemId: inserted.id, tagSlug })));
+      }
 
-			redirect(303, resolveReturnUrl(returnTarget, categoryId));
-		}
+      redirect(303, resolveReturnUrl(returnTarget, categoryId));
+    }
 
-		// Update
-		const id = Number(params.id);
-		const [item] = await db
-			.select({ categoryId: tierListItem.categoryId, imageHash: tierListItem.imageHash })
-			.from(tierListItem)
-			.where(eq(tierListItem.id, id))
-			.limit(1);
+    // Update
+    const id = Number(params.id);
+    const [item] = await db
+      .select({ categoryId: tierListItem.categoryId, imageHash: tierListItem.imageHash })
+      .from(tierListItem)
+      .where(eq(tierListItem.id, id))
+      .limit(1);
 
-		if (image && item.imageHash && item.imageHash !== image.imageHash) {
-			deleteImage(item.imageHash);
-		}
+    if (image && item.imageHash && item.imageHash !== image.imageHash) {
+      deleteImage(item.imageHash);
+    }
 
-		await db
-			.update(tierListItem)
-			.set({
-				name,
-				slug,
-				score,
-				description,
-				categoryId,
-				...(image && { imageHash: image.imageHash, placeholder: image.placeholder })
-			})
-			.where(eq(tierListItem.id, id));
+    await db
+      .update(tierListItem)
+      .set({
+        name,
+        slug,
+        score,
+        description,
+        categoryId,
+        ...(image && { imageHash: image.imageHash, placeholder: image.placeholder })
+      })
+      .where(eq(tierListItem.id, id));
 
-		if (categoryId !== item.categoryId) {
-			const newOrder = insertByScore(categoryId, score, name, id);
-			await db.update(tierListItem).set({ order: newOrder }).where(eq(tierListItem.id, id));
-		}
+    if (categoryId !== item.categoryId) {
+      const newOrder = insertByScore(categoryId, score, name, id);
+      await db.update(tierListItem).set({ order: newOrder }).where(eq(tierListItem.id, id));
+    }
 
-		// Sync tags
-		await db.delete(itemTag).where(eq(itemTag.itemId, id));
-		if (tagSlugs.length > 0) {
-			await db.insert(itemTag).values(tagSlugs.map((tagSlug) => ({ itemId: id, tagSlug })));
-		}
+    // Sync tags
+    await db.delete(itemTag).where(eq(itemTag.itemId, id));
+    if (tagSlugs.length > 0) {
+      await db.insert(itemTag).values(tagSlugs.map((tagSlug) => ({ itemId: id, tagSlug })));
+    }
 
-		redirect(303, resolveReturnUrl(returnTarget, categoryId));
-	},
+    redirect(303, resolveReturnUrl(returnTarget, categoryId));
+  },
 
-	createTag: async ({ request }) => {
-		const data = await request.formData();
-		const label = data.get('label')?.toString()?.trim();
-		if (!label) return fail(400, { error: 'Label is required' });
+  createTag: async ({ request }) => {
+    const data = await request.formData();
+    const label = data.get('label')?.toString()?.trim();
+    if (!label) return fail(400, { error: 'Label is required' });
 
-		const newTag = await getOrCreateTag(label);
-		return { tag: newTag };
-	},
+    const newTag = await getOrCreateTag(label);
+    return { tag: newTag };
+  },
 
-	delete: async ({ request, params }) => {
-		if (params.id === 'new-item') return fail(400, { error: 'Cannot delete a new item' });
+  delete: async ({ request, params }) => {
+    if (params.id === 'new-item') return fail(400, { error: 'Cannot delete a new item' });
 
-		const id = Number(params.id);
-		const data = await request.formData();
-		const returnTarget: ReturnTarget =
-			data.get('_returnTarget')?.toString() === 'categories' ? 'categories' : 'items';
+    const id = Number(params.id);
+    const data = await request.formData();
+    const returnTarget: ReturnTarget =
+      data.get('_returnTarget')?.toString() === 'categories' ? 'categories' : 'items';
 
-		const [item] = await db
-			.select({ categoryId: tierListItem.categoryId, imageHash: tierListItem.imageHash })
-			.from(tierListItem)
-			.where(eq(tierListItem.id, id))
-			.limit(1);
+    const [item] = await db
+      .select({ categoryId: tierListItem.categoryId, imageHash: tierListItem.imageHash })
+      .from(tierListItem)
+      .where(eq(tierListItem.id, id))
+      .limit(1);
 
-		if (item?.imageHash) deleteImage(item.imageHash);
-		await db.delete(tierListItem).where(eq(tierListItem.id, id));
-		redirect(303, resolveReturnUrl(returnTarget, item?.categoryId ?? 0));
-	}
+    if (item?.imageHash) deleteImage(item.imageHash);
+    await db.delete(tierListItem).where(eq(tierListItem.id, id));
+    redirect(303, resolveReturnUrl(returnTarget, item?.categoryId ?? 0));
+  }
 };

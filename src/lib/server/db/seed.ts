@@ -18,8 +18,8 @@ const { page, user, session, category, tierListItem, tag, itemTag } = schema;
 import { join } from 'node:path';
 
 if (!process.env.DATA_PATH) {
-	console.error('DATA_PATH is not set');
-	process.exit(1);
+  console.error('DATA_PATH is not set');
+  process.exit(1);
 }
 
 const client = new Database(join(process.env.DATA_PATH, 'db.sqlite'));
@@ -43,12 +43,12 @@ db.delete(user).run();
 const adminUsername = (process.env.ADMIN_USERNAME || 'admin').toLowerCase();
 const adminPassword = process.env.ADMIN_PASSWORD || 'admin';
 db.insert(user)
-	.values({
-		id: randomUUID(),
-		username: adminUsername,
-		passwordHash: hashPassword(adminPassword)
-	})
-	.run();
+  .values({
+    id: randomUUID(),
+    username: adminUsername,
+    passwordHash: hashPassword(adminPassword)
+  })
+  .run();
 console.log(`Created dev admin user with name ${adminUsername} and password <REDACTED>`);
 
 // Insert pages and seed categories with tags and items
@@ -63,23 +63,23 @@ const totalItems = seedCategories(db, CATEGORIES, TAGS);
 const SIX_MONTHS_SEC = 6 * 30 * 24 * 60 * 60;
 
 client.exec(`
-	-- Assign random created_at in the past 6 months
-	UPDATE category       SET created_at = datetime('now', '-' || (abs(random()) % ${SIX_MONTHS_SEC}) || ' seconds');
-	UPDATE tier_list_item SET created_at = datetime('now', '-' || (abs(random()) % ${SIX_MONTHS_SEC}) || ' seconds');
-	UPDATE tag            SET created_at = datetime('now', '-' || (abs(random()) % ${SIX_MONTHS_SEC}) || ' seconds');
-	UPDATE page           SET created_at = datetime('now', '-' || (abs(random()) % ${SIX_MONTHS_SEC}) || ' seconds');
+  -- Assign random created_at in the past 6 months
+  UPDATE category       SET created_at = datetime('now', '-' || (abs(random()) % ${SIX_MONTHS_SEC}) || ' seconds');
+  UPDATE tier_list_item SET created_at = datetime('now', '-' || (abs(random()) % ${SIX_MONTHS_SEC}) || ' seconds');
+  UPDATE tag            SET created_at = datetime('now', '-' || (abs(random()) % ${SIX_MONTHS_SEC}) || ' seconds');
+  UPDATE page           SET created_at = datetime('now', '-' || (abs(random()) % ${SIX_MONTHS_SEC}) || ' seconds');
 
-	-- Default: updated_at = created_at (never edited)
-	UPDATE category       SET updated_at = created_at;
-	UPDATE tier_list_item SET updated_at = created_at;
-	UPDATE tag            SET updated_at = created_at;
-	UPDATE page           SET updated_at = created_at;
+  -- Default: updated_at = created_at (never edited)
+  UPDATE category       SET updated_at = created_at;
+  UPDATE tier_list_item SET updated_at = created_at;
+  UPDATE tag            SET updated_at = created_at;
+  UPDATE page           SET updated_at = created_at;
 
-	-- ~1/3 of rows: bump updated_at to a random point between created_at and now
-	UPDATE category       SET updated_at = datetime(created_at, '+' || (abs(random()) % max(1, cast((julianday('now') - julianday(created_at)) * 86400 as integer))) || ' seconds') WHERE abs(random()) % 3 = 0;
-	UPDATE tier_list_item SET updated_at = datetime(created_at, '+' || (abs(random()) % max(1, cast((julianday('now') - julianday(created_at)) * 86400 as integer))) || ' seconds') WHERE abs(random()) % 3 = 0;
-	UPDATE tag            SET updated_at = datetime(created_at, '+' || (abs(random()) % max(1, cast((julianday('now') - julianday(created_at)) * 86400 as integer))) || ' seconds') WHERE abs(random()) % 3 = 0;
-	UPDATE page           SET updated_at = datetime(created_at, '+' || (abs(random()) % max(1, cast((julianday('now') - julianday(created_at)) * 86400 as integer))) || ' seconds') WHERE abs(random()) % 3 = 0;
+  -- ~1/3 of rows: bump updated_at to a random point between created_at and now
+  UPDATE category       SET updated_at = datetime(created_at, '+' || (abs(random()) % max(1, cast((julianday('now') - julianday(created_at)) * 86400 as integer))) || ' seconds') WHERE abs(random()) % 3 = 0;
+  UPDATE tier_list_item SET updated_at = datetime(created_at, '+' || (abs(random()) % max(1, cast((julianday('now') - julianday(created_at)) * 86400 as integer))) || ' seconds') WHERE abs(random()) % 3 = 0;
+  UPDATE tag            SET updated_at = datetime(created_at, '+' || (abs(random()) % max(1, cast((julianday('now') - julianday(created_at)) * 86400 as integer))) || ' seconds') WHERE abs(random()) % 3 = 0;
+  UPDATE page           SET updated_at = datetime(created_at, '+' || (abs(random()) % max(1, cast((julianday('now') - julianday(created_at)) * 86400 as integer))) || ' seconds') WHERE abs(random()) % 3 = 0;
 `);
 
 client.close();

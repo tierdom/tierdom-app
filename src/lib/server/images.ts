@@ -5,11 +5,11 @@ import { join } from 'node:path';
 import { env } from '$env/dynamic/private';
 
 const ALLOWED_MIME_TYPES = new Set([
-	'image/jpeg',
-	'image/png',
-	'image/webp',
-	'image/gif',
-	'image/avif'
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/gif',
+  'image/avif'
 ]);
 const MAX_FILE_SIZE = 1024 * 1024; // 1 MB
 const IMAGE_SIZE = 250;
@@ -17,77 +17,77 @@ const WEBP_QUALITY = 80;
 const HASH_LENGTH = 12;
 
 function getImagesDir(): string {
-	return join(env.DATA_PATH!, 'images');
+  return join(env.DATA_PATH!, 'images');
 }
 
 export function getImagePath(hash: string): string {
-	return join(getImagesDir(), `${hash}.webp`);
+  return join(getImagesDir(), `${hash}.webp`);
 }
 
 export function ensureImageDir(): void {
-	const dir = getImagesDir();
-	if (!existsSync(dir)) {
-		mkdirSync(dir, { recursive: true });
-	}
+  const dir = getImagesDir();
+  if (!existsSync(dir)) {
+    mkdirSync(dir, { recursive: true });
+  }
 }
 
 function rgbToHex(r: number, g: number, b: number): string {
-	return `#${((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1)}`;
+  return `#${((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1)}`;
 }
 
 export async function extractGradient(source: Buffer): Promise<string> {
-	const { data } = await sharp(source)
-		.resize(3, 1, { fit: 'cover', position: 'centre' })
-		.removeAlpha()
-		.raw()
-		.toBuffer({ resolveWithObject: true });
+  const { data } = await sharp(source)
+    .resize(3, 1, { fit: 'cover', position: 'centre' })
+    .removeAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
 
-	const c1 = rgbToHex(data[0], data[1], data[2]);
-	const c2 = rgbToHex(data[3], data[4], data[5]);
-	const c3 = rgbToHex(data[6], data[7], data[8]);
-	return `linear-gradient(135deg, ${c1}, ${c2}, ${c3})`;
+  const c1 = rgbToHex(data[0], data[1], data[2]);
+  const c2 = rgbToHex(data[3], data[4], data[5]);
+  const c3 = rgbToHex(data[6], data[7], data[8]);
+  return `linear-gradient(135deg, ${c1}, ${c2}, ${c3})`;
 }
 
 function validateUpload(file: File): void {
-	if (!ALLOWED_MIME_TYPES.has(file.type)) {
-		throw new Error(`Unsupported image type: ${file.type}`);
-	}
-	if (file.size > MAX_FILE_SIZE) {
-		throw new Error(`File too large (max ${MAX_FILE_SIZE / 1024 / 1024} MB)`);
-	}
+  if (!ALLOWED_MIME_TYPES.has(file.type)) {
+    throw new Error(`Unsupported image type: ${file.type}`);
+  }
+  if (file.size > MAX_FILE_SIZE) {
+    throw new Error(`File too large (max ${MAX_FILE_SIZE / 1024 / 1024} MB)`);
+  }
 }
 
 export async function processUpload(file: File): Promise<{ hash: string; gradient: string }> {
-	validateUpload(file);
+  validateUpload(file);
 
-	const buffer = Buffer.from(await file.arrayBuffer());
+  const buffer = Buffer.from(await file.arrayBuffer());
 
-	const webpBuffer = await sharp(buffer)
-		.resize(IMAGE_SIZE, IMAGE_SIZE, { fit: 'cover', position: 'centre' })
-		.webp({ quality: WEBP_QUALITY })
-		.toBuffer();
+  const webpBuffer = await sharp(buffer)
+    .resize(IMAGE_SIZE, IMAGE_SIZE, { fit: 'cover', position: 'centre' })
+    .webp({ quality: WEBP_QUALITY })
+    .toBuffer();
 
-	const hash = createHash('sha256').update(webpBuffer).digest('hex').slice(0, HASH_LENGTH);
-	const gradient = await extractGradient(buffer);
+  const hash = createHash('sha256').update(webpBuffer).digest('hex').slice(0, HASH_LENGTH);
+  const gradient = await extractGradient(buffer);
 
-	const filePath = getImagePath(hash);
-	if (!existsSync(filePath)) {
-		ensureImageDir();
-		writeFileSync(filePath, webpBuffer);
-	}
+  const filePath = getImagePath(hash);
+  if (!existsSync(filePath)) {
+    ensureImageDir();
+    writeFileSync(filePath, webpBuffer);
+  }
 
-	return { hash, gradient };
+  return { hash, gradient };
 }
 
 export function deleteImage(hash: string): void {
-	const filePath = getImagePath(hash);
-	if (existsSync(filePath)) {
-		unlinkSync(filePath);
-	}
+  const filePath = getImagePath(hash);
+  if (existsSync(filePath)) {
+    unlinkSync(filePath);
+  }
 }
 
 export function readImage(hash: string): Buffer | null {
-	const filePath = getImagePath(hash);
-	if (!existsSync(filePath)) return null;
-	return readFileSync(filePath);
+  const filePath = getImagePath(hash);
+  if (!existsSync(filePath)) return null;
+  return readFileSync(filePath);
 }

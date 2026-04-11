@@ -6,11 +6,11 @@ import { page } from '$lib/server/db/schema';
 import { renderMarkdown } from '$lib/server/markdown';
 
 export const load: PageServerLoad = async () => {
-	const [aboutPage] = await db.select().from(page).where(eq(page.slug, 'about')).limit(1);
+  const [aboutPage] = await db.select().from(page).where(eq(page.slug, 'about')).limit(1);
 
-	if (!aboutPage) error(404, 'Page not found');
+  if (!aboutPage) error(404, 'Page not found');
 
-	return {
-		page: { ...aboutPage, contentHtml: renderMarkdown(aboutPage.content) }
-	};
+  return {
+    page: { ...aboutPage, contentHtml: renderMarkdown(aboutPage.content) }
+  };
 };

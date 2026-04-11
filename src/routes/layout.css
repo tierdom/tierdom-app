@@ -6,23 +6,23 @@
    source variables so the inverted palette uses our semantic color tokens.
    ────────────────────────────────────────────────────────────────────────── */
 .prose {
-	--tw-prose-invert-body: var(--c-secondary);
-	--tw-prose-invert-headings: var(--c-primary);
-	--tw-prose-invert-lead: var(--c-secondary);
-	--tw-prose-invert-links: var(--c-accent);
-	--tw-prose-invert-bold: var(--c-primary);
-	--tw-prose-invert-counters: var(--c-secondary);
-	--tw-prose-invert-bullets: var(--c-subtle);
-	--tw-prose-invert-hr: var(--c-subtle);
-	--tw-prose-invert-quotes: var(--c-primary);
-	--tw-prose-invert-quote-borders: var(--c-accent-muted);
-	--tw-prose-invert-captions: var(--c-secondary);
-	--tw-prose-invert-kbd: var(--c-primary);
-	--tw-prose-invert-code: var(--c-accent);
-	--tw-prose-invert-pre-code: var(--c-primary);
-	--tw-prose-invert-pre-bg: var(--c-surface);
-	--tw-prose-invert-th-borders: var(--c-subtle);
-	--tw-prose-invert-td-borders: var(--c-subtle);
+  --tw-prose-invert-body: var(--c-secondary);
+  --tw-prose-invert-headings: var(--c-primary);
+  --tw-prose-invert-lead: var(--c-secondary);
+  --tw-prose-invert-links: var(--c-accent);
+  --tw-prose-invert-bold: var(--c-primary);
+  --tw-prose-invert-counters: var(--c-secondary);
+  --tw-prose-invert-bullets: var(--c-subtle);
+  --tw-prose-invert-hr: var(--c-subtle);
+  --tw-prose-invert-quotes: var(--c-primary);
+  --tw-prose-invert-quote-borders: var(--c-accent-muted);
+  --tw-prose-invert-captions: var(--c-secondary);
+  --tw-prose-invert-kbd: var(--c-primary);
+  --tw-prose-invert-code: var(--c-accent);
+  --tw-prose-invert-pre-code: var(--c-primary);
+  --tw-prose-invert-pre-bg: var(--c-surface);
+  --tw-prose-invert-th-borders: var(--c-subtle);
+  --tw-prose-invert-td-borders: var(--c-subtle);
 }
 
 /* ─── Default theme: deep dark blue sci-fi ─────────────────────────────────
@@ -30,37 +30,37 @@
    just a matter of overriding these variables (e.g. [data-theme="light"]).
    ────────────────────────────────────────────────────────────────────────── */
 :root {
-	/* Backgrounds */
-	--c-canvas: #0b1120;
-	--c-surface: #111b2e;
-	--c-elevated: #172440;
+  /* Backgrounds */
+  --c-canvas: #0b1120;
+  --c-surface: #111b2e;
+  --c-elevated: #172440;
 
-	/* Borders */
-	--c-subtle: #243654;
+  /* Borders */
+  --c-subtle: #243654;
 
-	/* Text */
-	--c-primary: #edf2f8;
-	--c-secondary: #8899b0;
+  /* Text */
+  --c-primary: #edf2f8;
+  --c-secondary: #8899b0;
 
-	/* Accent */
-	--c-accent: #38bdf8;
-	--c-accent-muted: #0c4a6e;
+  /* Accent */
+  --c-accent: #38bdf8;
+  --c-accent-muted: #0c4a6e;
 
-	/* Tier colors — background and foreground per tier (S best → F worst) */
-	--tier-s-bg: #e07a79;
-	--tier-s-fg: #0a0a0a;
-	--tier-a-bg: #ebba79;
-	--tier-a-fg: #0a0a0a;
-	--tier-b-bg: #f2ed82;
-	--tier-b-fg: #0a0a0a;
-	--tier-c-bg: #a9d86d;
-	--tier-c-fg: #0a0a0a;
-	--tier-d-bg: #91b8e6;
-	--tier-d-fg: #0a0a0a;
-	--tier-e-bg: #7879c1;
-	--tier-e-fg: #0a0a0a;
-	--tier-f-bg: #ce86ca;
-	--tier-f-fg: #0a0a0a;
+  /* Tier colors — background and foreground per tier (S best → F worst) */
+  --tier-s-bg: #e07a79;
+  --tier-s-fg: #0a0a0a;
+  --tier-a-bg: #ebba79;
+  --tier-a-fg: #0a0a0a;
+  --tier-b-bg: #f2ed82;
+  --tier-b-fg: #0a0a0a;
+  --tier-c-bg: #a9d86d;
+  --tier-c-fg: #0a0a0a;
+  --tier-d-bg: #91b8e6;
+  --tier-d-fg: #0a0a0a;
+  --tier-e-bg: #7879c1;
+  --tier-e-fg: #0a0a0a;
+  --tier-f-bg: #ce86ca;
+  --tier-f-fg: #0a0a0a;
 }
 
 /* ─── Register semantic tokens as Tailwind utilities ────────────────────────
@@ -68,40 +68,40 @@
    runtime. Utilities generated: bg-canvas, text-primary, border-subtle, etc.
    ────────────────────────────────────────────────────────────────────────── */
 @theme inline {
-	--color-canvas: var(--c-canvas);
-	--color-surface: var(--c-surface);
-	--color-elevated: var(--c-elevated);
-	--color-subtle: var(--c-subtle);
-	--color-primary: var(--c-primary);
-	--color-secondary: var(--c-secondary);
-	--color-accent: var(--c-accent);
-	--color-accent-muted: var(--c-accent-muted);
+  --color-canvas: var(--c-canvas);
+  --color-surface: var(--c-surface);
+  --color-elevated: var(--c-elevated);
+  --color-subtle: var(--c-subtle);
+  --color-primary: var(--c-primary);
+  --color-secondary: var(--c-secondary);
+  --color-accent: var(--c-accent);
+  --color-accent-muted: var(--c-accent-muted);
 }
 
 /* ─── Base styles ────────────────────────────────────────────────────────── */
 @layer base {
-	html {
-		font-size: 118.75%;
-		color-scheme: dark;
-		scroll-behavior: smooth;
-	}
+  html {
+    font-size: 118.75%;
+    color-scheme: dark;
+    scroll-behavior: smooth;
+  }
 
-	body {
-		background-color: var(--c-canvas);
-		color: var(--c-primary);
-		-webkit-font-smoothing: antialiased;
-		text-rendering: optimizeLegibility;
-	}
+  body {
+    background-color: var(--c-canvas);
+    color: var(--c-primary);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
 
-	/* Subtle custom scrollbar that fits the dark theme */
-	* {
-		scrollbar-width: thin;
-		scrollbar-color: var(--c-subtle) transparent;
-	}
+  /* Subtle custom scrollbar that fits the dark theme */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--c-subtle) transparent;
+  }
 
-	/* Focus ring using accent color */
-	:focus-visible {
-		outline: 2px solid var(--c-accent);
-		outline-offset: 2px;
-	}
+  /* Focus ring using accent color */
+  :focus-visible {
+    outline: 2px solid var(--c-accent);
+    outline-offset: 2px;
+  }
 }
