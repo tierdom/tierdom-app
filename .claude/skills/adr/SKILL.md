@@ -1,6 +1,6 @@
 ---
 name: adr
-description: Create a new Architecture Decision Record (ADR) in docs/decisions/. MUST be used whenever writing an ADR — never create ADR files manually. Picks the next sequential number, fills the template, and updates ARCHITECTURE.md.
+description: Create a new Architecture Decision Record (ADR) in docs/decisions/. MUST be used whenever writing an ADR — never create ADR files manually. Picks the next sequential number, fills the template, and updates the ADR table in README.md.
 allowed-tools: Bash Read Write Glob
 ---
 
@@ -31,7 +31,7 @@ Proposed
 ```
 
 4. Fill in what you know from $ARGUMENTS. Leave placeholders for anything not specified.
-5. Add or update the entry in the ADR index table in `ARCHITECTURE.md` at the project root. Match the existing table format (ADR link, Title, Status columns). If updating an existing ADR, update its row; if creating a new one, append a row.
+5. Add or update the entry in the **Architecture Decision Records** table in `README.md` at the project root. Match the existing table format (ADR link, Title, Status columns). If updating an existing ADR, update its row; if creating a new one, append a row.
 6. Print the file path so I can open it.
 
 If $ARGUMENTS is empty, ask me for the ADR title and context before creating the file.
