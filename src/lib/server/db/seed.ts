@@ -63,6 +63,9 @@ const totalItems = seedCategories(db, CATEGORIES, TAGS);
 const SIX_MONTHS_SEC = 6 * 30 * 24 * 60 * 60;
 
 client.exec(`
+  -- Suppress updated_at triggers during timestamp randomization
+  INSERT INTO _suppress_updated_at VALUES (1);
+
   -- Assign random created_at in the past 6 months
   UPDATE category       SET created_at = datetime('now', '-' || (abs(random()) % ${SIX_MONTHS_SEC}) || ' seconds');
   UPDATE tier_list_item SET created_at = datetime('now', '-' || (abs(random()) % ${SIX_MONTHS_SEC}) || ' seconds');
@@ -80,6 +83,9 @@ client.exec(`
   UPDATE tier_list_item SET updated_at = datetime(created_at, '+' || (abs(random()) % max(1, cast((julianday('now') - julianday(created_at)) * 86400 as integer))) || ' seconds') WHERE abs(random()) % 3 = 0;
   UPDATE tag            SET updated_at = datetime(created_at, '+' || (abs(random()) % max(1, cast((julianday('now') - julianday(created_at)) * 86400 as integer))) || ' seconds') WHERE abs(random()) % 3 = 0;
   UPDATE page           SET updated_at = datetime(created_at, '+' || (abs(random()) % max(1, cast((julianday('now') - julianday(created_at)) * 86400 as integer))) || ' seconds') WHERE abs(random()) % 3 = 0;
+
+  -- Re-enable triggers
+  DELETE FROM _suppress_updated_at;
 `);
 
 client.close();
