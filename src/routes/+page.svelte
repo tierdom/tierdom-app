@@ -41,7 +41,7 @@
             {cat.name}
           </h3>
           {#if cat.descriptionHtml}
-            <Prose html={cat.descriptionHtml} size="sm" class="mt-1 line-clamp-2 [&>*]:m-0" />
+            <Prose html={cat.descriptionHtml} size="sm" class="mt-1 line-clamp-2 *:m-0" />
           {/if}
           <p class="mt-3 text-xs text-secondary/60">
             {cat.itemCount}
