@@ -18,3 +18,10 @@ test('navigation contains links', async ({ page }) => {
   await expect(nav).toBeVisible();
   await expect(nav.getByRole('link')).not.toHaveCount(0);
 });
+
+test('invalid category slug shows 404', async ({ page }) => {
+  await page.goto('/category/nonexistent-slug-xyz');
+  await expect(page.getByText('404')).toBeVisible();
+  await expect(page.getByText('not ranked here')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Back to safety' })).toBeVisible();
+});

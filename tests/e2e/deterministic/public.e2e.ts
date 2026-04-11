@@ -27,6 +27,13 @@ test.describe('home page', () => {
 });
 
 test.describe('category page', () => {
+  test('home category card navigates to category', async ({ page }) => {
+    await page.goto('/');
+    await page.getByRole('main').getByRole('link', { name: 'Video Games' }).first().click();
+    await expect(page).toHaveURL(/\/category\/video-games/);
+    await expect(page.getByRole('heading', { name: 'Video Games' })).toBeVisible();
+  });
+
   test('video-games shows items grouped by tiers', async ({ page }) => {
     await page.goto('/category/video-games');
     await expect(page.getByRole('heading', { name: 'Video Games' })).toBeVisible();
@@ -40,14 +47,32 @@ test.describe('category page', () => {
     await expect(page.getByText('Hollow Knight')).toBeVisible();
   });
 
-  test('item detail opens on click', async ({ page }) => {
+  test('empty category renders gracefully', async ({ page }) => {
+    await page.goto('/category/recipes');
+    await expect(page.getByRole('heading', { name: 'Recipes' })).toBeVisible();
+    await expect(page.getByText('No items in this category yet')).toBeVisible();
+  });
+
+  test('item detail shows score and tags', async ({ page }) => {
     await page.goto('/category/video-games');
     await page.getByText('Hollow Knight').click();
 
-    // Dialog should appear with item details
     const dialog = page.locator('dialog[open]');
     await expect(dialog).toBeVisible();
     await expect(dialog.getByText('Hollow Knight')).toBeVisible();
+    await expect(dialog.getByText('/ 100')).toBeVisible();
+    await expect(dialog.getByText('Indie')).toBeVisible();
+  });
+
+  test('item detail closes with X button', async ({ page }) => {
+    await page.goto('/category/video-games');
+    await page.getByText('Hollow Knight').click();
+
+    const dialog = page.locator('dialog[open]');
+    await expect(dialog).toBeVisible();
+
+    await dialog.getByRole('button', { name: 'Close' }).click();
+    await expect(dialog).not.toBeVisible();
   });
 });
 
