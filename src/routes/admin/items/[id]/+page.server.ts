@@ -14,6 +14,48 @@ function resolveReturnUrl(target: ReturnTarget, categoryId: number): string {
 	return target === 'categories' ? `/admin/categories/${categoryId}` : '/admin/items';
 }
 
+function parseItemForm(data: FormData) {
+	const name = data.get('name')?.toString()?.trim();
+	if (!name) return { error: 'Name is required' } as const;
+
+	const slug = data.get('slug')?.toString()?.trim() || slugify(name);
+	const score = Math.round(Number(data.get('score')));
+	if (isNaN(score) || score < 0 || score > 100) {
+		return { error: 'Score must be an integer 0-100' } as const;
+	}
+
+	const categoryId = Number(data.get('categoryId'));
+	if (isNaN(categoryId) || categoryId <= 0) {
+		return { error: 'Category is required' } as const;
+	}
+
+	return {
+		name,
+		slug,
+		score,
+		categoryId,
+		description: data.get('description')?.toString()?.trim() || null,
+		tagSlugs: data.getAll('tags').map((s) => s.toString()),
+		returnTarget: (data.get('_returnTarget')?.toString() === 'categories'
+			? 'categories'
+			: 'items') as ReturnTarget
+	};
+}
+
+async function handleImage(data: FormData) {
+	const imageFile = data.get('image') as File | null;
+	const wantsRemoveImage = data.get('removeImage') === '1';
+
+	if (imageFile && imageFile.size > 0) {
+		const result = await processUpload(imageFile);
+		return { imageHash: result.hash, placeholder: result.gradient } as const;
+	} else if (wantsRemoveImage) {
+		return { imageHash: null, placeholder: null } as const;
+	}
+
+	return undefined;
+}
+
 export const load: PageServerLoad = async ({ params, url }) => {
 	const isNew = params.id === 'new-item';
 	const returnTarget: ReturnTarget =
@@ -63,46 +105,19 @@ export const load: PageServerLoad = async ({ params, url }) => {
 export const actions: Actions = {
 	save: async ({ request, params }) => {
 		const data = await request.formData();
-		const name = data.get('name')?.toString()?.trim();
-		if (!name) return fail(400, { error: 'Name is required' });
+		const parsed = parseItemForm(data);
+		if ('error' in parsed) return fail(400, { error: parsed.error });
 
-		const slug = data.get('slug')?.toString()?.trim() || slugify(name);
-		const score = Math.round(Number(data.get('score')));
-		if (isNaN(score) || score < 0 || score > 100) {
-			return fail(400, { error: 'Score must be an integer 0-100' });
-		}
+		const { name, slug, score, categoryId, description, tagSlugs, returnTarget } = parsed;
 
-		const categoryId = Number(data.get('categoryId'));
-		if (isNaN(categoryId) || categoryId <= 0) {
-			return fail(400, { error: 'Category is required' });
-		}
-
-		const description = data.get('description')?.toString()?.trim() || null;
-		const tagSlugs = data.getAll('tags').map((s) => s.toString());
-		const returnTarget: ReturnTarget =
-			data.get('_returnTarget')?.toString() === 'categories' ? 'categories' : 'items';
-
-		// Handle image upload
-		const imageFile = data.get('image') as File | null;
-		const wantsRemoveImage = data.get('removeImage') === '1';
-		let imageHash: string | null | undefined;
-		let placeholder: string | null | undefined;
-
-		if (imageFile && imageFile.size > 0) {
-			try {
-				const result = await processUpload(imageFile);
-				imageHash = result.hash;
-				placeholder = result.gradient;
-			} catch (e) {
-				return fail(400, { error: e instanceof Error ? e.message : 'Image upload failed' });
-			}
-		} else if (wantsRemoveImage) {
-			imageHash = null;
-			placeholder = null;
+		let image: { imageHash: string | null; placeholder: string | null } | undefined;
+		try {
+			image = await handleImage(data);
+		} catch (e) {
+			return fail(400, { error: e instanceof Error ? e.message : 'Image upload failed' });
 		}
 
 		if (params.id === 'new-item') {
-			// Create — insert with a temporary order, then fix it by score
 			const [inserted] = await db
 				.insert(tierListItem)
 				.values({
@@ -112,7 +127,7 @@ export const actions: Actions = {
 					description,
 					score,
 					order: 0,
-					...(imageHash !== undefined && { imageHash, placeholder })
+					...(image && { imageHash: image.imageHash, placeholder: image.placeholder })
 				})
 				.returning({ id: tierListItem.id });
 
@@ -136,10 +151,7 @@ export const actions: Actions = {
 			.where(eq(tierListItem.id, id))
 			.limit(1);
 
-		const categoryChanged = categoryId !== item.categoryId;
-
-		// Clean up old image if replacing or removing
-		if (imageHash !== undefined && item.imageHash && item.imageHash !== imageHash) {
+		if (image && item.imageHash && item.imageHash !== image.imageHash) {
 			deleteImage(item.imageHash);
 		}
 
@@ -151,11 +163,11 @@ export const actions: Actions = {
 				score,
 				description,
 				categoryId,
-				...(imageHash !== undefined && { imageHash, placeholder })
+				...(image && { imageHash: image.imageHash, placeholder: image.placeholder })
 			})
 			.where(eq(tierListItem.id, id));
 
-		if (categoryChanged) {
+		if (categoryId !== item.categoryId) {
 			const newOrder = insertByScore(categoryId, score, name, id);
 			await db.update(tierListItem).set({ order: newOrder }).where(eq(tierListItem.id, id));
 		}
