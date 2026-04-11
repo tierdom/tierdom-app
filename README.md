@@ -46,6 +46,7 @@ High level features:
 
 Known issues, bugs, and small TODO's:
 
+- [ ] Add `eslint-plugin-better-tailwindcss` to catch deprecated Tailwind v4 classes in lint
 - [ ] Session cookies are missing `httpOnly` and `secure` flags
 - [ ] Security headers (CSP, X-Frame-Options, X-Content-Type-Options) not yet configured
 
