@@ -1,11 +1,51 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
 	import { formatRelativeDate } from '$lib/format-date';
 	import { resolve } from '$app/paths';
 	import { Plus } from 'lucide-svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
+
+	type DashboardItem = { path: string; label: string; detail: string };
 </script>
+
+{#snippet dashboardCard(
+	path: string,
+	count: number,
+	title: string,
+	items: DashboardItem[],
+	footer: Snippet
+)}
+	<div>
+		<a
+			href={resolve(path)}
+			class="block rounded-lg border border-subtle bg-elevated px-4 py-3 transition-colors hover:border-accent/40"
+		>
+			<p class="text-2xl font-bold text-primary">{count}</p>
+			<p class="text-xs text-secondary">{title}</p>
+		</a>
+		<ul class="mt-3 flex flex-col gap-1">
+			{#each items as item (item.path)}
+				<li>
+					<a
+						href={resolve(item.path)}
+						class="flex items-center justify-between rounded border border-subtle bg-surface px-3 py-2 text-sm transition-colors hover:border-accent/40"
+					>
+						<span class="text-primary">{item.label}</span>
+						<span class="text-xs text-secondary">{item.detail}</span>
+					</a>
+				</li>
+			{/each}
+			{#if items.length === 0}
+				<li class="px-3 py-2 text-xs text-secondary">No items yet</li>
+			{/if}
+		</ul>
+		<div class="mt-2 px-1">
+			{@render footer()}
+		</div>
+	</div>
+{/snippet}
 
 <svelte:head>
 	<title>Admin — tierdom</title>
@@ -15,96 +55,60 @@
 	<h1 class="text-xl font-bold text-primary">Dashboard</h1>
 
 	<div class="mt-6 grid gap-6 lg:grid-cols-3">
-		<!-- Pages -->
-		<div>
-			<a
-				href={resolve('/admin/pages')}
-				class="block rounded-lg border border-subtle bg-elevated px-4 py-3 transition-colors hover:border-accent/40"
-			>
-				<p class="text-2xl font-bold text-primary">{data.counts.pages}</p>
-				<p class="text-xs text-secondary">Pages</p>
-			</a>
-			<ul class="mt-3 flex flex-col gap-1">
-				{#each data.pages as pg (pg.slug)}
-					<li>
-						<a
-							href={resolve(`/admin/pages/${pg.slug}`)}
-							class="flex items-center justify-between rounded border border-subtle bg-surface px-3 py-2 text-sm transition-colors hover:border-accent/40"
-						>
-							<span class="text-primary">{pg.title}</span>
-							<span class="text-xs text-secondary"
-								>/{pg.slug} &middot; {formatRelativeDate(pg.updatedAt)}</span
-							>
-						</a>
-					</li>
-				{/each}
-			</ul>
-			<p class="mt-2 px-1 text-xs text-secondary/50">All pages</p>
-		</div>
+		{@render dashboardCard(
+			'/admin/pages',
+			data.counts.pages,
+			'Pages',
+			data.pages.map((pg) => ({
+				path: `/admin/pages/${pg.slug}`,
+				label: pg.title,
+				detail: `/${pg.slug} \u00B7 ${formatRelativeDate(pg.updatedAt)}`
+			})),
+			footerAllPages
+		)}
 
-		<!-- Categories -->
-		<div>
-			<a
-				href={resolve('/admin/categories')}
-				class="block rounded-lg border border-subtle bg-elevated px-4 py-3 transition-colors hover:border-accent/40"
-			>
-				<p class="text-2xl font-bold text-primary">{data.counts.categories}</p>
-				<p class="text-xs text-secondary">Categories</p>
-			</a>
-			<ul class="mt-3 flex flex-col gap-1">
-				{#each data.categories as cat (cat.id)}
-					<li>
-						<a
-							href={resolve(`/admin/categories/${cat.id}`)}
-							class="flex items-center justify-between rounded border border-subtle bg-surface px-3 py-2 text-sm transition-colors hover:border-accent/40"
-						>
-							<span class="text-primary">{cat.name}</span>
-							<span class="text-xs text-secondary"
-								>{cat.itemCount} items &middot; {formatRelativeDate(cat.updatedAt)}</span
-							>
-						</a>
-					</li>
-				{/each}
-			</ul>
-			<p class="mt-2 px-1 text-xs text-secondary/50">All categories</p>
-		</div>
+		{@render dashboardCard(
+			'/admin/categories',
+			data.counts.categories,
+			'Categories',
+			data.categories.map((cat) => ({
+				path: `/admin/categories/${cat.id}`,
+				label: cat.name,
+				detail: `${cat.itemCount} items \u00B7 ${formatRelativeDate(cat.updatedAt)}`
+			})),
+			footerAllCategories
+		)}
 
-		<!-- Items -->
-		<div>
-			<a
-				href={resolve('/admin/items')}
-				class="block rounded-lg border border-subtle bg-elevated px-4 py-3 transition-colors hover:border-accent/40"
-			>
-				<p class="text-2xl font-bold text-primary">{data.counts.items}</p>
-				<p class="text-xs text-secondary">Items</p>
-			</a>
-			<ul class="mt-3 flex flex-col gap-1">
-				{#each data.recentItems as item (item.id)}
-					<li>
-						<a
-							href={resolve(`/admin/items/${item.id}`)}
-							class="flex items-center justify-between rounded border border-subtle bg-surface px-3 py-2 text-sm transition-colors hover:border-accent/40"
-						>
-							<span class="text-primary">{item.name}</span>
-							<span class="text-xs text-secondary"
-								>{item.categoryName} &middot; {formatRelativeDate(item.updatedAt)}</span
-							>
-						</a>
-					</li>
-				{/each}
-				{#if data.recentItems.length === 0}
-					<li class="px-3 py-2 text-xs text-secondary">No items yet</li>
-				{/if}
-			</ul>
-			<div class="mt-2 flex items-center justify-between px-1">
-				<p class="text-xs text-secondary/50">Recently updated</p>
-				<a
-					href={resolve('/admin/items/new-item')}
-					class="inline-flex items-center gap-1 text-xs text-accent hover:underline"
-				>
-					<Plus size={12} />New item
-				</a>
-			</div>
-		</div>
+		{@render dashboardCard(
+			'/admin/items',
+			data.counts.items,
+			'Items',
+			data.recentItems.map((item) => ({
+				path: `/admin/items/${item.id}`,
+				label: item.name,
+				detail: `${item.categoryName} \u00B7 ${formatRelativeDate(item.updatedAt)}`
+			})),
+			footerItems
+		)}
 	</div>
 </section>
+
+{#snippet footerAllPages()}
+	<p class="text-xs text-secondary/50">All pages</p>
+{/snippet}
+
+{#snippet footerAllCategories()}
+	<p class="text-xs text-secondary/50">All categories</p>
+{/snippet}
+
+{#snippet footerItems()}
+	<div class="flex items-center justify-between">
+		<p class="text-xs text-secondary/50">Recently updated</p>
+		<a
+			href={resolve('/admin/items/new-item')}
+			class="inline-flex items-center gap-1 text-xs text-accent hover:underline"
+		>
+			<Plus size={12} />New item
+		</a>
+	</div>
+{/snippet}
