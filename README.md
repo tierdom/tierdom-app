@@ -179,6 +179,7 @@ Architectural decisions are documented as ADRs in [`docs/decisions/`](docs/decis
 | [0010](docs/decisions/0010-authentication-and-authorization.md)         | Authentication and Authorization         | Accepted |
 | [0011](docs/decisions/0011-image-support.md)                            | Image Support for Tier List Items        | Accepted |
 | [0012](docs/decisions/0012-docker-packaging-and-publishing.md)          | Docker Packaging and Publishing          | Accepted |
+| [0013](docs/decisions/0013-uuid-primary-keys.md)                        | UUID Primary Keys                        | Accepted |
 
 ## References
 
