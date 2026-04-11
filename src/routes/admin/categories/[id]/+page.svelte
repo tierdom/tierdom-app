@@ -214,7 +214,7 @@
 					{@const tier = scoreToTier(item.score as number, cutoffs)}
 					{@const tags = item.tags as { slug: string; label: string }[]}
 					<div class="flex flex-1 items-center py-2">
-						<div class="w-8 flex-shrink-0">
+						<div class="w-8 shrink-0">
 							<TierBadge {tier} />
 						</div>
 						<div class="min-w-0 flex-1 text-primary">
