@@ -47,7 +47,6 @@
 		<div class="absolute inset-0" style:background={scrim}></div>
 	{/if}
 
-	<!-- Title at top -->
 	<div class="absolute inset-x-0 top-0 bg-linear-to-b from-black/50 to-transparent p-2">
 		<span
 			class="block origin-top-left pr-4 text-xs leading-tight font-extrabold text-white drop-shadow-md transition-transform duration-200 group-hover:scale-115 sm:text-sm"
@@ -56,14 +55,12 @@
 		</span>
 	</div>
 
-	<!-- Score number bottom-left, just above the bar -->
 	<span
 		class="absolute bottom-3 left-1.5 block origin-bottom-left text-xs leading-none font-bold text-white drop-shadow-md transition-transform duration-200 group-hover:scale-115"
 	>
 		{score}
 	</span>
 
-	<!-- Score bar at the very bottom -->
 	<div
 		class="absolute inset-x-0 bottom-0 h-1 bg-black/30 transition-[height] duration-200 group-hover:h-2"
 	>

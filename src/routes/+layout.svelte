@@ -14,13 +14,12 @@
 	<Navbar categories={data.categories} user={data.user} />
 {/if}
 
-<!-- ─── Main content — offset for fixed nav height ────────────────────────── -->
+<!-- Offset for fixed nav height -->
 <main class="mx-auto min-h-screen max-w-6xl px-4" class:pt-14={data.setupComplete}>
 	{@render children()}
 </main>
 
 {#if data.setupComplete}
-	<!-- ─── Footer ────────────────────────────────────────────────────────────── -->
 	<footer class="mt-16 border-t border-subtle py-8">
 		<div class="mx-auto max-w-6xl px-4 text-center">
 			<p class="text-sm text-secondary">

@@ -80,7 +80,6 @@
 		<Timestamps createdAt={data.category.createdAt} updatedAt={data.category.updatedAt} />
 	</div>
 
-	<!-- Edit category -->
 	<form
 		id="edit-category"
 		method="POST"
@@ -184,7 +183,6 @@
 		</form>
 	</div>
 
-	<!-- Items list -->
 	<div class="mt-10 flex items-center gap-3">
 		<h2 class="text-lg font-bold text-primary">Items ({data.items.length})</h2>
 		{#if data.items.length > 1}

@@ -19,10 +19,8 @@
 </script>
 
 <div class="flex flex-col gap-4">
-	<!-- Header -->
 	<h2 class="pr-8 text-xl font-bold text-primary">{name}</h2>
 
-	<!-- Tier badge + score -->
 	<div class="flex items-center gap-3">
 		<span
 			class="inline-flex h-8 w-8 items-center justify-center rounded text-sm font-black"
@@ -35,12 +33,10 @@
 		<span class="text-sm text-secondary">/ 100</span>
 	</div>
 
-	<!-- Score bar -->
 	<div class="h-3 w-full overflow-hidden bg-black/30">
 		<div class="h-full opacity-80" style:width="{score}%" style:background={barColor}></div>
 	</div>
 
-	<!-- Tags -->
 	{#if tags.length > 0}
 		<div class="flex flex-wrap gap-1.5">
 			{#each tags as t (t.slug)}
@@ -51,7 +47,6 @@
 		</div>
 	{/if}
 
-	<!-- Description / review -->
 	{#if descriptionHtml}
 		<Prose html={descriptionHtml} size="sm" />
 	{:else}

@@ -53,18 +53,15 @@
 </svelte:head>
 
 <section class="py-10">
-	<!-- Category header -->
 	<h1 class="text-2xl font-bold text-primary">{data.category.name}</h1>
 	{#if data.category.descriptionHtml}
 		<Prose html={data.category.descriptionHtml} size="sm" class="mt-2 max-w-2xl" />
 	{/if}
 
-	<!-- Tier rows -->
 	{#if allItems.length > 0}
 		<div class="mt-8 flex flex-col gap-1">
 			{#each data.tiers as { tier, items } (tier)}
 				<div class="flex overflow-hidden border-2 {tierBorderStyles[tier]}">
-					<!-- Tier label -->
 					<div
 						class="flex w-14 shrink-0 items-start justify-center pt-3 text-xl font-black {tierStyles[
 							tier
@@ -73,7 +70,6 @@
 						{tier}
 					</div>
 
-					<!-- Items -->
 					<div class="flex flex-1 flex-wrap bg-surface">
 						{#each items as item (item.id)}
 							<TierListItem
