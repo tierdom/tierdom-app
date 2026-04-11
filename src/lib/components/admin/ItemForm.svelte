@@ -42,6 +42,8 @@
 	const { enhance } = loader;
 
 	let dirty = $state(false);
+	// eslint-disable-next-line svelte/no-unused-svelte-ignore
+	// svelte-ignore state_referenced_locally — intentional: mutable copy of initial prop
 	let selectedTags = $state<string[]>(initialTags.slice());
 
 	function markDirty() {
