@@ -17,6 +17,8 @@ data/*
 
 # Testing
 test-results
+playwright-report
+test-data
 
 # Tooling
 vite.config.js.timestamp-*
