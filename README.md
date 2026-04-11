@@ -178,7 +178,7 @@ Architectural decisions are documented as ADRs in [`docs/decisions/`](docs/decis
 | [0009](docs/decisions/0009-add-created-at-and-updated-at-timestamps.md) | Add created_at and updated_at Timestamps | Accepted |
 | [0010](docs/decisions/0010-authentication-and-authorization.md)         | Authentication and Authorization         | Accepted |
 | [0011](docs/decisions/0011-image-support.md)                            | Image Support for Tier List Items        | Accepted |
-| [0012](docs/decisions/0012-docker-packaging-and-publishing.md)          | Docker Packaging and Publishing          | Proposed |
+| [0012](docs/decisions/0012-docker-packaging-and-publishing.md)          | Docker Packaging and Publishing          | Accepted |
 
 ## References
 
