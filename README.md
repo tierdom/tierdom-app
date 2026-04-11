@@ -41,6 +41,8 @@ High level features:
 - [x] Authentication and authorization
 - [x] Item images with placeholder gradients
 - [x] Create and publish Docker image
+- [ ] Add significant unit test coverage where sensible
+- [ ] Add a few end-to-end test cases for safety
 - [ ] Import from external sources (Goodreads CSV, etc.)
 - [ ] Export database to basic formats (markdown, json or yaml, etc.)
 
