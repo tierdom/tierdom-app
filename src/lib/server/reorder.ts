@@ -3,6 +3,9 @@ import { sql } from 'drizzle-orm';
 import { tierListItem } from '$lib/server/db/schema';
 import type { SQLiteTable, SQLiteColumn } from 'drizzle-orm/sqlite-core';
 
+const SUPPRESS_ON = sql`INSERT INTO _suppress_updated_at VALUES (1)`;
+const SUPPRESS_OFF = sql`DELETE FROM _suppress_updated_at`;
+
 /**
  * Set the `order` column for each row based on its position in `orderedIds`.
  */
@@ -13,12 +16,14 @@ export function applyOrder(
   orderedIds: string[]
 ): void {
   db.transaction((tx) => {
+    tx.run(SUPPRESS_ON);
     for (let i = 0; i < orderedIds.length; i++) {
       tx.update(table)
         .set({ [orderColumn.name]: i })
         .where(sql`${idColumn} = ${orderedIds[i]}`)
         .run();
     }
+    tx.run(SUPPRESS_OFF);
   });
 }
 
@@ -50,6 +55,7 @@ export function insertByScore(
     .all();
   const pos = result[0].pos;
 
+  db.run(SUPPRESS_ON);
   db.run(
     sql`UPDATE ${tierListItem}
       SET "order" = "order" + 1
@@ -57,6 +63,7 @@ export function insertByScore(
         AND ${tierListItem.id} != ${itemId}
         AND "order" >= ${pos}`
   );
+  db.run(SUPPRESS_OFF);
 
   return pos;
 }
@@ -66,6 +73,7 @@ export function insertByScore(
  * Single atomic UPDATE using a window function.
  */
 export function sortCategoryByScore(categoryId: string): void {
+  db.run(SUPPRESS_ON);
   db.run(
     sql`UPDATE ${tierListItem}
       SET "order" = sub.new_order
@@ -78,4 +86,5 @@ export function sortCategoryByScore(categoryId: string): void {
       ) AS sub
       WHERE ${tierListItem}.id = sub.id`
   );
+  db.run(SUPPRESS_OFF);
 }

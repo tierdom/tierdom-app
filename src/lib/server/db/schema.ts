@@ -108,6 +108,12 @@ export const page = sqliteTable('page', {
     .default(sql`(datetime('now'))`)
 });
 
+// Signal table: when a row is present, updated_at triggers are suppressed.
+// Used by reorder operations to avoid bumping timestamps on order-only changes.
+export const suppressUpdatedAt = sqliteTable('_suppress_updated_at', {
+  flag: integer('flag')
+});
+
 // ─── Relations ────────────────────────────────────────────────────────────────
 
 export const categoryRelations = relations(category, ({ many }) => ({
