@@ -1,5 +1,5 @@
 import { redirect, fail } from '@sveltejs/kit';
-import { isSetupComplete, markSetupComplete } from '$lib/server/setup';
+import { isSetupComplete } from '$lib/server/setup';
 import { seedPreset } from '$lib/server/setup-seed';
 import type { PageServerLoad, Actions } from './$types';
 
@@ -25,7 +25,6 @@ export const actions: Actions = {
 		}
 
 		seedPreset(preset);
-		markSetupComplete();
 
 		redirect(303, '/admin/login');
 	}

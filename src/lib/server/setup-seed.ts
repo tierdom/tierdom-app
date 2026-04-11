@@ -1,51 +1,10 @@
 import { db } from '$lib/server/db';
-import { category, tierListItem, tag, itemTag, page } from '$lib/server/db/schema';
+import { page } from '$lib/server/db/schema';
 import { TAGS, CATEGORIES, PAGES } from '$lib/server/db/seed-data';
-import { slugify } from '$lib/server/slugify';
+import { seedCategories } from '$lib/server/db/seed-utils';
 
 function seedPages(pages: { slug: string; title: string; content: string }[]): void {
 	db.insert(page).values(pages).run();
-}
-
-function seedCategories(categories: typeof CATEGORIES, tags: typeof TAGS | null): void {
-	if (tags && tags.length > 0) {
-		db.insert(tag).values(tags).run();
-	}
-
-	for (const cat of categories) {
-		const inserted = db
-			.insert(category)
-			.values({
-				slug: cat.slug,
-				name: cat.name,
-				description: cat.description,
-				order: cat.order
-			})
-			.returning({ id: category.id })
-			.get();
-
-		for (let i = 0; i < cat.items.length; i++) {
-			const item = cat.items[i];
-			const insertedItem = db
-				.insert(tierListItem)
-				.values({
-					categoryId: inserted.id,
-					slug: slugify(item.name),
-					name: item.name,
-					description: item.description ?? null,
-					score: item.score,
-					order: i
-				})
-				.returning({ id: tierListItem.id })
-				.get();
-
-			if (tags && item.tags.length > 0) {
-				db.insert(itemTag)
-					.values(item.tags.map((tagSlug) => ({ itemId: insertedItem.id, tagSlug })))
-					.run();
-			}
-		}
-	}
 }
 
 export function seedPreset(preset: string): void {
@@ -82,6 +41,7 @@ export function seedPreset(preset: string): void {
 				}
 			]);
 			seedCategories(
+				db,
 				[
 					{
 						slug: 'tier-list',
@@ -105,7 +65,7 @@ export function seedPreset(preset: string): void {
 
 		case 'demo':
 			seedPages(PAGES);
-			seedCategories(CATEGORIES, TAGS);
+			seedCategories(db, CATEGORIES, TAGS);
 			break;
 
 		default:
