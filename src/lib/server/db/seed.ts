@@ -1,7 +1,7 @@
 /**
  * Standalone seed script — run via `npm run db:seed`.
  *
- * Connects directly to the database (same DATABASE_URL as drizzle-kit),
+ * Connects directly to the database (same DATA_PATH as drizzle-kit),
  * wipes existing data, and inserts demo categories, tags, and items.
  */
 
@@ -15,12 +15,14 @@ import { seedCategories } from './seed-utils';
 
 const { page, user, session, category, tierListItem, tag, itemTag } = schema;
 
-if (!process.env.DATABASE_URL) {
-	console.error('DATABASE_URL is not set');
+import { join } from 'node:path';
+
+if (!process.env.DATA_PATH) {
+	console.error('DATA_PATH is not set');
 	process.exit(1);
 }
 
-const client = new Database(process.env.DATABASE_URL);
+const client = new Database(join(process.env.DATA_PATH, 'db.sqlite'));
 client.pragma('foreign_keys = ON');
 const db = drizzle(client, { schema });
 

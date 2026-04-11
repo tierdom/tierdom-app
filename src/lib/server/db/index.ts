@@ -3,9 +3,11 @@ import Database from 'better-sqlite3';
 import * as schema from './schema';
 import { env } from '$env/dynamic/private';
 
-if (!env.DATABASE_URL) throw new Error('DATABASE_URL is not set');
+import { join } from 'node:path';
 
-const client = new Database(env.DATABASE_URL);
+if (!env.DATA_PATH) throw new Error('DATA_PATH is not set');
+
+const client = new Database(join(env.DATA_PATH, 'db.sqlite'));
 
 // Enable WAL mode for better concurrent read performance
 client.pragma('journal_mode = WAL');

@@ -90,14 +90,14 @@ This is a deliberate trade-off: manual publishing is slower but eliminates the r
 
 ### Environment variable contract
 
-| Variable         | Required | Default                                             | Purpose                                                    |
-| ---------------- | -------- | --------------------------------------------------- | ---------------------------------------------------------- |
-| `DATABASE_URL`   | Yes      | —                                                   | Path to SQLite database file (e.g., `/app/data/db.sqlite`) |
-| `ADMIN_PASSWORD` | No       | —                                                   | Creates admin account on first boot if set                 |
-| `ADMIN_USERNAME` | No       | `admin`                                             | Username for the bootstrapped admin account                |
-| `ORIGIN`         | No       | Inferred from TLS_DOMAIN or `http://localhost:3000` | SvelteKit CSRF protection origin                           |
-| `TLS_DOMAIN`     | No       | —                                                   | Domain name for automatic Let's Encrypt HTTPS              |
-| `LOG_VERBOSE`    | No       | —                                                   | Set to `true` to include full request/response headers     |
+| Variable         | Required | Default                                             | Purpose                                                |
+| ---------------- | -------- | --------------------------------------------------- | ------------------------------------------------------ |
+| `DATA_PATH`      | Yes      | `/app/data`                                         | Directory for database and images (e.g., `/app/data`)  |
+| `ADMIN_PASSWORD` | No       | —                                                   | Creates admin account on first boot if set             |
+| `ADMIN_USERNAME` | No       | `admin`                                             | Username for the bootstrapped admin account            |
+| `ORIGIN`         | No       | Inferred from TLS_DOMAIN or `http://localhost:3000` | SvelteKit CSRF protection origin                       |
+| `TLS_DOMAIN`     | No       | —                                                   | Domain name for automatic Let's Encrypt HTTPS          |
+| `LOG_VERBOSE`    | No       | —                                                   | Set to `true` to include full request/response headers |
 
 ### Volume contract
 

@@ -84,7 +84,7 @@ services:
     volumes:
       - ./data:/app/data
     environment:
-      DATABASE_URL: /app/data/db.sqlite
+      DATA_PATH: /app/data
       ADMIN_USERNAME: your_username
       ADMIN_PASSWORD: your_password # only used on first boot
       ORIGIN: https://your-domain.com
@@ -116,7 +116,7 @@ services:
     volumes:
       - ./data:/app/data
     environment:
-      DATABASE_URL: /app/data/db.sqlite
+      DATA_PATH: /app/data
       ADMIN_USERNAME: your_username
       ADMIN_PASSWORD: your_password
       TLS_DOMAIN: tierdom.example.com

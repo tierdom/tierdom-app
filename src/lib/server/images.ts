@@ -1,7 +1,7 @@
 import sharp from 'sharp';
 import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync, unlinkSync, existsSync, mkdirSync } from 'node:fs';
-import { dirname, join } from 'node:path';
+import { join } from 'node:path';
 import { env } from '$env/dynamic/private';
 
 const ALLOWED_MIME_TYPES = new Set([
@@ -16,12 +16,8 @@ const IMAGE_SIZE = 250;
 const WEBP_QUALITY = 80;
 const HASH_LENGTH = 12;
 
-function getDataDir(): string {
-	return dirname(env.DATABASE_URL!);
-}
-
 function getImagesDir(): string {
-	return join(getDataDir(), 'images');
+	return join(env.DATA_PATH!, 'images');
 }
 
 export function getImagePath(hash: string): string {

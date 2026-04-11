@@ -8,8 +8,8 @@ allowed-tools: Bash Read Write Edit Glob
 
 - Schema: `src/lib/server/db/schema.ts`
 - Migrations folder: `drizzle/` (committed to repo)
-- Runtime DB: `data/local.db` (gitignored)
-- Config: `drizzle.config.ts` — reads `DATABASE_URL` from env
+- Runtime DB: `data/db.sqlite` (gitignored)
+- Config: `drizzle.config.ts` — reads `DATA_PATH` dir from env, appends `db.sqlite`
 - DB client (`src/lib/server/db/index.ts`) runs `migrate()` automatically on every boot — no manual migration step needed at runtime
 
 ## Key conventions
@@ -25,7 +25,7 @@ allowed-tools: Bash Read Write Edit Glob
 ## Workflow for a new migration
 
 ```bash
-DATABASE_URL=./data/local.db npm run db:generate
+DATA_PATH=./data npm run db:generate
 ```
 
 **IMPORTANT — immediately after generating:**
