@@ -34,7 +34,7 @@ export const load: PageServerLoad = async () => {
   // Group breakdown by tag slug
   const breakdownByTag = new Map<
     string,
-    { categoryId: number; categoryName: string; categorySlug: string; itemCount: number }[]
+    { categoryId: string; categoryName: string; categorySlug: string; itemCount: number }[]
   >();
   for (const row of breakdown) {
     const existing = breakdownByTag.get(row.tagSlug) ?? [];

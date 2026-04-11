@@ -52,7 +52,7 @@
     goto(resolve('/admin/categories'));
   }
 
-  const handleReorderItems = loader.withLoading(async (orderedIds: number[]) => {
+  const handleReorderItems = loader.withLoading(async (orderedIds: string[]) => {
     const body = new FormData();
     body.set('order', JSON.stringify(orderedIds));
     await fetch('?/reorderItems', { method: 'POST', body });

@@ -48,7 +48,6 @@ High level features:
 
 Known issues, bugs, and small TODO's:
 
-- [ ] Change categories and items to use UUID primary keys instead
 - [ ] Require double-confirmation for heavy deletes (e.g. category)
 - [ ] Prevent (only) changes to "order" of items causing the updated property to be updated
 - [ ] Add `eslint-plugin-better-tailwindcss` to catch deprecated Tailwind v4 classes in lint
@@ -178,7 +177,8 @@ Architectural decisions are documented as ADRs in [`docs/decisions/`](docs/decis
 | [0009](docs/decisions/0009-add-created-at-and-updated-at-timestamps.md) | Add created_at and updated_at Timestamps | Accepted |
 | [0010](docs/decisions/0010-authentication-and-authorization.md)         | Authentication and Authorization         | Accepted |
 | [0011](docs/decisions/0011-image-support.md)                            | Image Support for Tier List Items        | Accepted |
-| [0012](docs/decisions/0012-docker-packaging-and-publishing.md)          | Docker Packaging and Publishing          | Proposed |
+| [0012](docs/decisions/0012-docker-packaging-and-publishing.md)          | Docker Packaging and Publishing          | Accepted |
+| [0013](docs/decisions/0013-uuid-primary-keys.md)                        | UUID Primary Keys                        | Accepted |
 
 ## References
 

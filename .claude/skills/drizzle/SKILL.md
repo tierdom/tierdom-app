@@ -1,6 +1,6 @@
 ---
 name: drizzle
-description: MUST be used whenever generating, creating, or managing Drizzle ORM migrations — including after any schema change (adding columns, tables, indexes). Handles migration naming conventions and journal updates.
+description: MUST be used whenever generating, creating, or managing Drizzle ORM database migrations — including after any schema change (adding columns, tables, indexes). Handles migration naming conventions and journal updates.
 allowed-tools: Bash Read Write Edit Glob
 ---
 
@@ -16,7 +16,8 @@ allowed-tools: Bash Read Write Edit Glob
 
 - `drizzle-kit generate` produces a random name like `0001_funny_animal.sql` — **always rename** it to `0001_<description>.sql` and update the matching tag in `drizzle/meta/_journal.json`
 - Never run `db:push` — always use `db:generate` + `db:migrate` so migrations are tracked
-- Foreign keys: pass `{ onDelete: 'cascade' }` to `.references()`
+- Primary keys: use `text('id').primaryKey().$defaultFn(randomUUID)` (import from `node:crypto`) — not auto-increment integers. This enables clean export/import merging across instances
+- Foreign keys: use `text` columns to match UUID PKs, and pass `{ onDelete: 'cascade' }` to `.references()`
 - Compound unique constraints go in the table callback: `(t) => [unique('name').on(t.col1, t.col2)]`
 - Compound PKs (junction tables): `(t) => [primaryKey({ columns: [t.a, t.b] })]`
 - Cutoffs stored as nullable integers; null = use app-level default

@@ -5,7 +5,7 @@
   type Props = {
     open: boolean;
     onclose: () => void;
-    categories: { id: number; slug: string; name: string }[];
+    categories: { id: string; slug: string; name: string }[];
     extraLinks: { href: string; label: string }[];
     user: { id: string; username: string } | null;
   };

@@ -12,7 +12,7 @@
   const loader = createAdminLoader();
   const { enhance } = loader;
 
-  const handleReorder = loader.withLoading(async (orderedIds: number[]) => {
+  const handleReorder = loader.withLoading(async (orderedIds: string[]) => {
     const body = new FormData();
     body.set('order', JSON.stringify(orderedIds));
     await fetch('?/reorder', { method: 'POST', body });

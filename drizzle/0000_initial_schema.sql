@@ -1,5 +1,5 @@
 CREATE TABLE `category` (
-  `id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+  `id` text PRIMARY KEY NOT NULL,
   `slug` text NOT NULL,
   `name` text NOT NULL,
   `description` text,
@@ -17,7 +17,7 @@ CREATE TABLE `category` (
 --> statement-breakpoint
 CREATE UNIQUE INDEX `category_slug_unique` ON `category` (`slug`);--> statement-breakpoint
 CREATE TABLE `item_tag` (
-  `item_id` integer NOT NULL,
+  `item_id` text NOT NULL,
   `tag_slug` text NOT NULL,
   PRIMARY KEY(`item_id`, `tag_slug`),
   FOREIGN KEY (`item_id`) REFERENCES `tier_list_item`(`id`) ON UPDATE no action ON DELETE cascade,
@@ -40,8 +40,8 @@ CREATE TABLE `tag` (
 );
 --> statement-breakpoint
 CREATE TABLE `tier_list_item` (
-  `id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-  `category_id` integer NOT NULL,
+  `id` text PRIMARY KEY NOT NULL,
+  `category_id` text NOT NULL,
   `slug` text NOT NULL,
   `name` text NOT NULL,
   `description` text,

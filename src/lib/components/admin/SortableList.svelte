@@ -2,7 +2,7 @@
   import { flip } from 'svelte/animate';
   import type { Snippet } from 'svelte';
 
-  type Item = { id: number; [key: string]: unknown };
+  type Item = { id: string; [key: string]: unknown };
 
   let {
     items,
@@ -10,14 +10,14 @@
     row
   }: {
     items: Item[];
-    onreorder: (orderedIds: number[]) => void;
+    onreorder: (orderedIds: string[]) => void;
     row: Snippet<[item: Item]>;
   } = $props();
 
   let localItems = $derived([...items]);
 
-  let draggedId = $state<number | null>(null);
-  let dropTargetId = $state<number | null>(null);
+  let draggedId = $state<string | null>(null);
+  let dropTargetId = $state<string | null>(null);
   let dropPosition = $state<'above' | 'below'>('below');
 
   function handleDragStart(e: DragEvent, item: Item) {

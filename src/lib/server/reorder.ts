@@ -10,7 +10,7 @@ export function applyOrder(
   table: SQLiteTable,
   idColumn: SQLiteColumn,
   orderColumn: SQLiteColumn,
-  orderedIds: number[]
+  orderedIds: string[]
 ): void {
   db.transaction((tx) => {
     for (let i = 0; i < orderedIds.length; i++) {
@@ -28,10 +28,10 @@ export function applyOrder(
  * Shifts existing items to make room.
  */
 export function insertByScore(
-  categoryId: number,
+  categoryId: string,
   score: number,
   name: string,
-  itemId: number
+  itemId: string
 ): number {
   const result = db
     .select({
@@ -65,7 +65,7 @@ export function insertByScore(
  * Sort all items in a category by score DESC, name ASC, id ASC.
  * Single atomic UPDATE using a window function.
  */
-export function sortCategoryByScore(categoryId: number): void {
+export function sortCategoryByScore(categoryId: string): void {
   db.run(
     sql`UPDATE ${tierListItem}
       SET "order" = sub.new_order

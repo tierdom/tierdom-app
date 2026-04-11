@@ -25,7 +25,7 @@ export const load: PageServerLoad = async () => {
 export const actions: Actions = {
   delete: async ({ request }) => {
     const data = await request.formData();
-    const id = Number(data.get('id'));
+    const id = data.get('id')?.toString();
     if (!id) return fail(400, { error: 'Invalid id' });
 
     await db.delete(category).where(eq(category.id, id));
@@ -37,14 +37,14 @@ export const actions: Actions = {
     const orderJson = data.get('order')?.toString();
     if (!orderJson) return fail(400, { error: 'Missing order' });
 
-    let orderedIds: number[];
+    let orderedIds: string[];
     try {
       orderedIds = JSON.parse(orderJson);
     } catch {
       return fail(400, { error: 'Invalid order format' });
     }
 
-    if (!Array.isArray(orderedIds) || !orderedIds.every((id) => typeof id === 'number')) {
+    if (!Array.isArray(orderedIds) || !orderedIds.every((id) => typeof id === 'string')) {
       return fail(400, { error: 'Invalid order data' });
     }
 

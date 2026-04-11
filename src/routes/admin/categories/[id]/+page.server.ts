@@ -8,7 +8,7 @@ import { slugify } from '$lib/server/slugify';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
-  const id = Number(params.id);
+  const id = params.id;
   const [cat] = await db.select().from(category).where(eq(category.id, id)).limit(1);
   if (!cat) error(404, 'Category not found');
 
@@ -29,7 +29,7 @@ export const load: PageServerLoad = async ({ params }) => {
           .where(eq(tierListItem.categoryId, id))
       : [];
 
-  const tagsByItemId = new Map<number, { slug: string; label: string }[]>();
+  const tagsByItemId = new Map<string, { slug: string; label: string }[]>();
   for (const row of tagsPerItem) {
     const existing = tagsByItemId.get(row.itemId) ?? [];
     existing.push({ slug: row.slug, label: row.label });
@@ -46,7 +46,7 @@ export const load: PageServerLoad = async ({ params }) => {
 
 export const actions: Actions = {
   update: async ({ request, params }) => {
-    const id = Number(params.id);
+    const id = params.id;
     const data = await request.formData();
     const name = data.get('name')?.toString()?.trim();
     if (!name) return fail(400, { error: 'Name is required' });
@@ -82,7 +82,7 @@ export const actions: Actions = {
   },
 
   delete: async ({ params }) => {
-    const id = Number(params.id);
+    const id = params.id;
 
     // Clean up image files before cascade delete removes the rows
     const items = await db
@@ -102,14 +102,14 @@ export const actions: Actions = {
     const orderJson = data.get('order')?.toString();
     if (!orderJson) return fail(400, { error: 'Missing order' });
 
-    let orderedIds: number[];
+    let orderedIds: string[];
     try {
       orderedIds = JSON.parse(orderJson);
     } catch {
       return fail(400, { error: 'Invalid order format' });
     }
 
-    if (!Array.isArray(orderedIds) || !orderedIds.every((id) => typeof id === 'number')) {
+    if (!Array.isArray(orderedIds) || !orderedIds.every((id) => typeof id === 'string')) {
       return fail(400, { error: 'Invalid order data' });
     }
 
@@ -118,14 +118,14 @@ export const actions: Actions = {
   },
 
   sortByScore: async ({ params }) => {
-    const id = Number(params.id);
+    const id = params.id;
     sortCategoryByScore(id);
     return { success: true };
   },
 
   deleteItem: async ({ request }) => {
     const data = await request.formData();
-    const id = Number(data.get('id'));
+    const id = data.get('id')?.toString();
     if (!id) return fail(400, { error: 'Invalid id' });
 
     const [item] = await db
