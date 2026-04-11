@@ -37,6 +37,8 @@ For tier colors use CSS variables directly: `style="background: var(--tier-s-bg)
 - Keep components small and single-purpose
 - Co-locate component-specific CSS in `<style>` blocks using `@apply` sparingly;
   prefer direct Tailwind utilities in the template
+- When a component accepts a navigation path, call `resolve()` inside the component/snippet
+  rather than requiring callers to pass pre-resolved paths. This keeps the ESLint `no-navigation-without-resolve` rule happy without needing suppression comments
 
 ## Layout rules
 

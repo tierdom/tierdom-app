@@ -74,10 +74,8 @@ Includes Drizzle Kit migration config.
 
 This project has a husky pre-commit hook that runs `npm run lint`. If the hook fails:
 
-1. **STOP.** Do NOT attempt to fix the lint errors yourself.
-2. Report the errors to the user and ask how they want to proceed.
+1. **Check if it's a Prettier formatting issue.** If so, run `npm run format` (or `npx prettier --write` on the specific files), re-stage, and retry the commit without asking the user.
+2. **For any other failure (ESLint errors, etc.):** STOP. Do NOT attempt to fix the errors yourself. Report them to the user and ask how they want to proceed.
 3. The user may choose to fix the errors in a separate commit, or bypass the hook with `git commit --no-verify`.
-
-This is mandatory — never auto-fix lint errors during a commit, even if the fix seems trivial.
 
 $ARGUMENTS
