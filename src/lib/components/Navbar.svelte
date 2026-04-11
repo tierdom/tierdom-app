@@ -2,7 +2,7 @@
 	import { resolve } from '$app/paths';
 	import { afterNavigate } from '$app/navigation';
 	import NavLink from './NavLink.svelte';
-	import MobileMenu from './MobileMenu.svelte';
+	import NavbarMobile from './NavbarMobile.svelte';
 	import UserMenu from './UserMenu.svelte';
 
 	type Props = {
@@ -72,4 +72,4 @@
 	</nav>
 </header>
 
-<MobileMenu open={menuOpen} onclose={() => (menuOpen = false)} {categories} {extraLinks} {user} />
+<NavbarMobile open={menuOpen} onclose={() => (menuOpen = false)} {categories} {extraLinks} {user} />
