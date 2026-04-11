@@ -48,6 +48,9 @@ High level features:
 
 Known issues, bugs, and small TODO's:
 
+- [ ] Change categories and items to use UUID primary keys instead
+- [ ] Require double-confirmation for heavy deletes (e.g. category)
+- [ ] Prevent (only) changes to "order" of items causing the updated property to be updated
 - [ ] Add `eslint-plugin-better-tailwindcss` to catch deprecated Tailwind v4 classes in lint
 - [ ] Session cookies are missing `httpOnly` and `secure` flags
 - [ ] Security headers (CSP, X-Frame-Options, X-Content-Type-Options) not yet configured
