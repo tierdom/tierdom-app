@@ -1,8 +1,9 @@
 import { integer, primaryKey, sqliteTable, text, unique } from 'drizzle-orm/sqlite-core';
 import { relations, sql } from 'drizzle-orm';
+import { randomUUID } from 'node:crypto';
 
 export const category = sqliteTable('category', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
+  id: text('id').primaryKey().$defaultFn(randomUUID),
   slug: text('slug').notNull().unique(),
   name: text('name').notNull(),
   description: text('description'),
@@ -26,8 +27,8 @@ export const category = sqliteTable('category', {
 export const tierListItem = sqliteTable(
   'tier_list_item',
   {
-    id: integer('id').primaryKey({ autoIncrement: true }),
-    categoryId: integer('category_id')
+    id: text('id').primaryKey().$defaultFn(randomUUID),
+    categoryId: text('category_id')
       .notNull()
       .references(() => category.id, { onDelete: 'cascade' }),
     slug: text('slug').notNull(),
@@ -61,7 +62,7 @@ export const tag = sqliteTable('tag', {
 export const itemTag = sqliteTable(
   'item_tag',
   {
-    itemId: integer('item_id')
+    itemId: text('item_id')
       .notNull()
       .references(() => tierListItem.id, { onDelete: 'cascade' }),
     tagSlug: text('tag_slug')

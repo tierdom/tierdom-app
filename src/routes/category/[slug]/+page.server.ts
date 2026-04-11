@@ -36,7 +36,7 @@ export const load: PageServerLoad = async ({ params }) => {
     .innerJoin(tierListItem, eq(tierListItem.id, itemTag.itemId))
     .where(eq(tierListItem.categoryId, cat.id));
 
-  const tagsByItemId = new Map<number, { slug: string; label: string }[]>();
+  const tagsByItemId = new Map<string, { slug: string; label: string }[]>();
   for (const row of tagsPerItem) {
     const existing = tagsByItemId.get(row.itemId) ?? [];
     existing.push({ slug: row.slug, label: row.label });

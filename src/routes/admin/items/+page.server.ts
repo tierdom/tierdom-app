@@ -32,7 +32,7 @@ export const load: PageServerLoad = async () => {
     .from(itemTag)
     .innerJoin(tag, eq(tag.slug, itemTag.tagSlug));
 
-  const tagsByItemId = new Map<number, { slug: string; label: string }[]>();
+  const tagsByItemId = new Map<string, { slug: string; label: string }[]>();
   for (const row of allTags) {
     const existing = tagsByItemId.get(row.itemId) ?? [];
     existing.push({ slug: row.slug, label: row.label });
@@ -50,7 +50,7 @@ export const load: PageServerLoad = async () => {
 export const actions: Actions = {
   delete: async ({ request }) => {
     const data = await request.formData();
-    const id = Number(data.get('id'));
+    const id = data.get('id')?.toString();
     if (!id) return fail(400, { error: 'Invalid id' });
 
     const [item] = await db

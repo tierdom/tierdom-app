@@ -6,7 +6,7 @@
   import UserMenu from './UserMenu.svelte';
 
   type Props = {
-    categories: { id: number; slug: string; name: string }[];
+    categories: { id: string; slug: string; name: string }[];
     user: { id: string; username: string } | null;
   };
 

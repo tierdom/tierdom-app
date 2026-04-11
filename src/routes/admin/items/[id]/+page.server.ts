@@ -10,7 +10,7 @@ import type { PageServerLoad, Actions } from './$types';
 
 type ReturnTarget = 'categories' | 'items';
 
-function resolveReturnUrl(target: ReturnTarget, categoryId: number): string {
+function resolveReturnUrl(target: ReturnTarget, categoryId: string): string {
   return target === 'categories' ? `/admin/categories/${categoryId}` : '/admin/items';
 }
 
@@ -24,8 +24,8 @@ function parseItemForm(data: FormData) {
     return { error: 'Score must be an integer 0-100' } as const;
   }
 
-  const categoryId = Number(data.get('categoryId'));
-  if (isNaN(categoryId) || categoryId <= 0) {
+  const categoryId = data.get('categoryId')?.toString();
+  if (!categoryId) {
     return { error: 'Category is required' } as const;
   }
 
@@ -67,9 +67,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
   const allTags = await db.select().from(tag).orderBy(asc(tag.label));
 
   if (isNew) {
-    const prefillCategoryId = url.searchParams.has('category')
-      ? Number(url.searchParams.get('category'))
-      : null;
+    const prefillCategoryId = url.searchParams.get('category') || null;
     return {
       mode: 'create' as const,
       categories,
@@ -82,7 +80,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
     };
   }
 
-  const id = Number(params.id);
+  const id = params.id;
   const [item] = await db.select().from(tierListItem).where(eq(tierListItem.id, id)).limit(1);
   if (!item) error(404, 'Item not found');
 
@@ -144,7 +142,7 @@ export const actions: Actions = {
     }
 
     // Update
-    const id = Number(params.id);
+    const id = params.id;
     const [item] = await db
       .select({ categoryId: tierListItem.categoryId, imageHash: tierListItem.imageHash })
       .from(tierListItem)
@@ -193,7 +191,7 @@ export const actions: Actions = {
   delete: async ({ request, params }) => {
     if (params.id === 'new-item') return fail(400, { error: 'Cannot delete a new item' });
 
-    const id = Number(params.id);
+    const id = params.id;
     const data = await request.formData();
     const returnTarget: ReturnTarget =
       data.get('_returnTarget')?.toString() === 'categories' ? 'categories' : 'items';
@@ -206,6 +204,6 @@ export const actions: Actions = {
 
     if (item?.imageHash) deleteImage(item.imageHash);
     await db.delete(tierListItem).where(eq(tierListItem.id, id));
-    redirect(303, resolveReturnUrl(returnTarget, item?.categoryId ?? 0));
+    redirect(303, resolveReturnUrl(returnTarget, item?.categoryId ?? ''));
   }
 };

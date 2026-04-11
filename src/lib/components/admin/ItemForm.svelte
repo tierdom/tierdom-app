@@ -11,7 +11,7 @@
   import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
   import { createTag } from '$lib/components/admin/create-tag';
 
-  type Category = { id: number; name: string };
+  type Category = { id: string; name: string };
 
   let {
     mode,
@@ -30,7 +30,7 @@
       slug?: string;
       score?: number;
       description?: string | null;
-      categoryId?: number | null;
+      categoryId?: string | null;
       imageHash?: string | null;
     };
     initialTags?: string[];
