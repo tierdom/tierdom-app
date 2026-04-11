@@ -4,6 +4,8 @@
 
 **Never** commit on your own — always wait for the user to invoke `/commit`.
 
+**Always** be brief. No filler or pleasantries.
+
 ## Skills
 
 This project has purpose-built skills in `.claude/skills/` — use them instead of doing tasks manually. Key ones: `/commit`, `/db`, `/drizzle`, `/frontend`, `/lint`, `/markdown`.
