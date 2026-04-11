@@ -42,7 +42,7 @@ High level features:
 - [x] Item images with placeholder gradients
 - [x] Create and publish Docker image
 - [ ] Add significant unit test coverage where sensible
-- [ ] Add a few end-to-end test cases for safety ([ADR-0014](docs/decisions/0014-end-to-end-testing-strategy.md) — Proposed)
+- [x] Add a few end-to-end test cases for safety ([ADR-0014](docs/decisions/0014-end-to-end-testing-strategy.md))
 - [ ] Option to add more static cms pages
 - [ ] Option to customize the footer
 - [ ] Import from our own export format
