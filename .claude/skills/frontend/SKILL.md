@@ -70,6 +70,8 @@ Prefer modern browser features directly:
 - Alphabetise Tailwind class strings (Prettier handles this automatically)
 - One blank line between script, template, and style blocks
 - No inline `style=""` attributes except for dynamic CSS variable values
+- **No labelling comments** in templates — don't add `<!-- Header -->` or `<!-- Score bar -->` above markup that is self-evident.
+  Only add comments that explain _why_ something non-obvious is done (e.g. `<!-- Scrim overlay for text legibility -->`)
 
 ---
 
