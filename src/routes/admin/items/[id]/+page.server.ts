@@ -3,43 +3,15 @@ import { category, tag, tierListItem, itemTag } from '$lib/server/db/schema';
 import { asc, eq } from 'drizzle-orm';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { getOrCreateTag } from '$lib/server/tags';
-import { slugify } from '$lib/server/slugify';
 import { insertByScore } from '$lib/server/reorder';
 import { processUpload, deleteImage } from '$lib/server/images';
+import { parseItemForm } from '$lib/server/forms';
 import type { PageServerLoad, Actions } from './$types';
 
 type ReturnTarget = 'categories' | 'items';
 
 function resolveReturnUrl(target: ReturnTarget, categoryId: string): string {
   return target === 'categories' ? `/admin/categories/${categoryId}` : '/admin/items';
-}
-
-function parseItemForm(data: FormData) {
-  const name = data.get('name')?.toString()?.trim();
-  if (!name) return { error: 'Name is required' } as const;
-
-  const slug = data.get('slug')?.toString()?.trim() || slugify(name);
-  const score = Math.round(Number(data.get('score')));
-  if (isNaN(score) || score < 0 || score > 100) {
-    return { error: 'Score must be an integer 0-100' } as const;
-  }
-
-  const categoryId = data.get('categoryId')?.toString();
-  if (!categoryId) {
-    return { error: 'Category is required' } as const;
-  }
-
-  return {
-    name,
-    slug,
-    score,
-    categoryId,
-    description: data.get('description')?.toString()?.trim() || null,
-    tagSlugs: data.getAll('tags').map((s) => s.toString()),
-    returnTarget: (data.get('_returnTarget')?.toString() === 'categories'
-      ? 'categories'
-      : 'items') as ReturnTarget
-  };
 }
 
 async function handleImage(data: FormData) {
