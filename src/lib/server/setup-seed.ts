@@ -1,6 +1,7 @@
 import { db } from '$lib/server/db';
 import { category, tierListItem, tag, itemTag, page } from '$lib/server/db/schema';
-import { TAGS, CATEGORIES, PAGES, slugify } from '$lib/server/db/seed-data';
+import { TAGS, CATEGORIES, PAGES } from '$lib/server/db/seed-data';
+import { slugify } from '$lib/server/slugify';
 
 function seedPages(pages: { slug: string; title: string; content: string }[]): void {
 	db.insert(page).values(pages).run();

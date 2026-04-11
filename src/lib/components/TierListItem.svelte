@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { scoreToBarColor } from '$lib/tier';
+
 	type Props = {
 		name: string;
 		score: number;
@@ -16,8 +18,7 @@
 		}
 	}
 
-	/** Map 0-100 score to a hue: 0 = deep red (0°), 100 = bright green (120°) */
-	let barColor = $derived(`hsl(${(score / 100) * 120}, 70%, 45%)`);
+	let barColor = $derived(scoreToBarColor(score));
 </script>
 
 <div

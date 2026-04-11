@@ -10,7 +10,8 @@ import Database from 'better-sqlite3';
 import { randomUUID } from 'node:crypto';
 import { hashPassword } from '../auth/password';
 import * as schema from './schema';
-import { TAGS, CATEGORIES, PAGES, slugify } from './seed-data';
+import { TAGS, CATEGORIES, PAGES } from './seed-data';
+import { slugify } from '../slugify';
 
 const { category, tierListItem, tag, itemTag, page, user, session } = schema;
 

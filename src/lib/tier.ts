@@ -28,6 +28,10 @@ export function scoreToTier(score: number, cutoffs?: Partial<Record<Tier, number
 	return 'F';
 }
 
+export function scoreToBarColor(score: number): string {
+	return `hsl(${(score / 100) * 120}, 70%, 45%)`;
+}
+
 export const tierColors: Record<Tier, { bg: string; fg: string }> = {
 	S: { bg: 'var(--tier-s-bg)', fg: 'var(--tier-s-fg)' },
 	A: { bg: 'var(--tier-a-bg)', fg: 'var(--tier-a-fg)' },
