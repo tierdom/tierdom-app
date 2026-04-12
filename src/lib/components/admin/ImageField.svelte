@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ImagePlus, Trash2 } from 'lucide-svelte';
+  import { ImagePlus, Sparkles, Trash2 } from 'lucide-svelte';
 
   let {
     imageHash = null,
@@ -10,10 +10,12 @@
   } = $props();
 
   let removeImage = $state(false);
+  let useGenerated = $state(false);
   let previewUrl = $state<string | null>(null);
   let dragging = $state(false);
+  let fileInput = $state<HTMLInputElement | null>(null);
 
-  let hasExisting = $derived(!removeImage && !!imageHash);
+  let hasExisting = $derived(!removeImage && !useGenerated && !!imageHash);
   let hasImage = $derived(hasExisting || !!previewUrl);
 
   function applyFile(file: File) {
@@ -21,6 +23,7 @@
     if (previewUrl) URL.revokeObjectURL(previewUrl);
     previewUrl = URL.createObjectURL(file);
     removeImage = false;
+    useGenerated = false;
     onchange?.();
   }
 
@@ -37,10 +40,25 @@
     if (file) applyFile(file);
   }
 
+  function clearFileInput() {
+    if (fileInput) fileInput.value = '';
+  }
+
+  function handleGenerate() {
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    previewUrl = null;
+    removeImage = false;
+    useGenerated = true;
+    clearFileInput();
+    onchange?.();
+  }
+
   function handleRemove() {
     if (previewUrl) URL.revokeObjectURL(previewUrl);
     previewUrl = null;
     removeImage = true;
+    useGenerated = false;
+    clearFileInput();
     onchange?.();
   }
 </script>
@@ -49,6 +67,9 @@
   <span class="text-xs font-medium text-secondary">Image</span>
   {#if removeImage}
     <input type="hidden" name="removeImage" value="1" />
+  {/if}
+  {#if useGenerated}
+    <input type="hidden" name="generateImage" value="1" />
   {/if}
   <div class="flex items-start gap-3">
     <div
@@ -72,6 +93,11 @@
           alt="Preview"
           class="h-full w-full rounded object-cover"
         />
+      {:else if useGenerated}
+        <div class="flex h-full w-full flex-col items-center justify-center gap-1 text-accent">
+          <Sparkles size={20} />
+          <span class="text-center text-[10px] leading-tight">Auto</span>
+        </div>
       {:else}
         <div class="flex h-full w-full flex-col items-center justify-center gap-1 text-secondary">
           <ImagePlus size={20} />
@@ -87,6 +113,7 @@
         <ImagePlus size={14} />
         {hasImage ? 'Replace' : 'Upload'}
         <input
+          bind:this={fileInput}
           type="file"
           name="image"
           accept="image/*"
@@ -94,8 +121,19 @@
           onchange={handleFileChange}
         />
       </label>
-      <span class="text-[10px] text-secondary">Ideally 250 &times; 250 px</span>
-      {#if hasImage}
+      <button
+        type="button"
+        class="inline-flex cursor-pointer items-center gap-1.5 rounded border border-subtle px-3 py-1.5 text-xs text-secondary hover:border-accent hover:text-primary"
+        onclick={handleGenerate}
+      >
+        <Sparkles size={14} />Generate
+      </button>
+      {#if useGenerated}
+        <span class="text-[10px] text-secondary">Will generate on save</span>
+      {:else}
+        <span class="text-[10px] text-secondary">Ideally 250 &times; 250 px</span>
+      {/if}
+      {#if hasImage || useGenerated}
         <button
           type="button"
           class="inline-flex cursor-pointer items-center gap-1 text-xs text-red-400 hover:text-red-300"
