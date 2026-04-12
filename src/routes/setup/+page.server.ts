@@ -2,6 +2,7 @@ import { redirect, fail } from '@sveltejs/kit';
 import { isSetupComplete } from '$lib/server/setup';
 import { seedPreset } from '$lib/server/setup-seed';
 import { bootstrapAdminUser } from '$lib/server/auth/bootstrap';
+import { createSession, setSessionCookie } from '$lib/server/auth/session';
 import type { PageServerLoad, Actions } from './$types';
 
 const VALID_PRESETS = new Set(['empty', 'minimal', 'demo']);
@@ -13,12 +14,12 @@ export const load: PageServerLoad = async () => {
 };
 
 export const actions: Actions = {
-  default: async ({ request }) => {
+  default: async (event) => {
     if (isSetupComplete()) {
       redirect(303, '/');
     }
 
-    const data = await request.formData();
+    const data = await event.request.formData();
     const preset = data.get('preset');
 
     if (typeof preset !== 'string' || !VALID_PRESETS.has(preset)) {
@@ -34,8 +35,13 @@ export const actions: Actions = {
 
     const images = data.get('images') === '1';
     await seedPreset(preset, images);
-    bootstrapAdminUser(password, username);
+    const userId = bootstrapAdminUser(password, username);
 
-    redirect(303, '/admin/login');
+    if (userId) {
+      const { token, expiresAt } = createSession(userId);
+      setSessionCookie(event, token, expiresAt);
+    }
+
+    redirect(303, '/admin');
   }
 };
