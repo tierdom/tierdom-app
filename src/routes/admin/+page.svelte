@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import { formatRelativeDate } from '$lib/format-date';
-  import { resolve } from '$app/paths';
   import { Plus } from 'lucide-svelte';
   import type { PageData } from './$types';
 
@@ -17,9 +16,10 @@
   items: DashboardItem[],
   footer: Snippet
 )}
+  <!-- eslint-disable svelte/no-navigation-without-resolve -- no base path; resolve rejects dynamic strings -->
   <div>
     <a
-      href={resolve(path)}
+      href={path}
       class="block rounded-lg border border-subtle bg-elevated px-4 py-3 transition-colors hover:border-accent/40"
     >
       <p class="text-2xl font-bold text-primary">{count}</p>
@@ -29,7 +29,7 @@
       {#each items as item (item.path)}
         <li>
           <a
-            href={resolve(item.path)}
+            href={item.path}
             class="flex items-center justify-between rounded border border-subtle bg-surface px-3 py-2 text-sm transition-colors hover:border-accent/40"
           >
             <span class="text-primary">{item.label}</span>
@@ -45,6 +45,7 @@
       {@render footer()}
     </div>
   </div>
+  <!-- eslint-enable svelte/no-navigation-without-resolve -->
 {/snippet}
 
 <svelte:head>
@@ -102,13 +103,15 @@
 {/snippet}
 
 {#snippet footerItems()}
+  <!-- eslint-disable svelte/no-navigation-without-resolve -- no base path; resolve rejects dynamic strings -->
   <div class="flex items-center justify-between">
     <p class="text-xs text-secondary/50">Recently updated</p>
     <a
-      href={resolve('/admin/items/new-item')}
+      href="/admin/items/new-item"
       class="inline-flex items-center gap-1 text-xs text-accent hover:underline"
     >
       <Plus size={12} />New item
     </a>
   </div>
+  <!-- eslint-enable svelte/no-navigation-without-resolve -->
 {/snippet}
