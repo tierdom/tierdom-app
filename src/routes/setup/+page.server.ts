@@ -24,7 +24,8 @@ export const actions: Actions = {
       return fail(400, { error: 'Please select a setup option.' });
     }
 
-    seedPreset(preset);
+    const images = data.get('images') === '1';
+    await seedPreset(preset, images);
 
     redirect(303, '/admin/login');
   }

@@ -1,13 +1,15 @@
+import { env } from '$env/dynamic/private';
 import { db } from '$lib/server/db';
 import { page } from '$lib/server/db/schema';
 import { TAGS, CATEGORIES, PAGES } from '$lib/server/db/seed-data';
 import { seedCategories } from '$lib/server/db/seed-utils';
+import { generateSeedImages } from '$lib/server/db/seed-images';
 
 function seedPages(pages: { slug: string; title: string; content: string }[]): void {
   db.insert(page).values(pages).run();
 }
 
-export function seedPreset(preset: string): void {
+export async function seedPreset(preset: string, images = false): Promise<void> {
   switch (preset) {
     case 'empty':
       seedPages([
@@ -70,5 +72,9 @@ export function seedPreset(preset: string): void {
 
     default:
       throw new Error(`Unknown preset: ${preset}`);
+  }
+
+  if (images) {
+    await generateSeedImages(db, env.DATA_PATH!);
   }
 }

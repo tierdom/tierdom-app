@@ -6,6 +6,7 @@
   let { form }: { form: ActionData } = $props();
 
   let selected = $state('minimal');
+  let generateImages = $state(true);
 
   const presets = [
     {
@@ -67,6 +68,30 @@
           </div>
         </label>
       {/each}
+
+      {#if selected === 'demo'}
+        <fieldset class="mt-3 flex flex-col gap-2 border-t border-subtle pt-4">
+          <legend class="mb-1 text-xs font-semibold tracking-wide text-secondary uppercase"
+            >Options</legend
+          >
+          <label
+            class="grid cursor-pointer grid-cols-[1rem_1fr] gap-x-3 gap-y-1 rounded-lg border border-subtle bg-surface px-4 py-3 hover:border-accent/40"
+          >
+            <input
+              type="checkbox"
+              name="images"
+              value="1"
+              bind:checked={generateImages}
+              class="self-center accent-accent"
+            />
+            <span class="text-sm font-semibold text-primary">Generate sample images</span>
+            <p class="col-start-2 text-xs text-secondary">
+              Create a unique placeholder image for every demo item. Makes the tier lists look fully
+              populated.
+            </p>
+          </label>
+        </fieldset>
+      {/if}
 
       <div class="mt-4">
         <Button type="submit">Finalize setup...</Button>
