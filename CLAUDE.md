@@ -30,6 +30,10 @@ Use the Svelte MCP server's `list-sections` and `get-documentation` tools when w
 
 Target: **WCAG 2.1 Level AA** ([ADR-0016](docs/decisions/0016-accessibility-and-semantic-html.md)). Svelte compiler a11y warnings are enforced via `svelte-check` in the pre-commit hook — don't suppress them (`svelte-ignore a11y_*`) without strong justification. Smoke and deterministic E2E suites include axe-core scans — run them after UI-visible changes. Pages must use semantic HTML and read well as plain unstyled documents.
 
+## Running commands
+
+Prefer `npm run <script>` over `npx <tool>` whenever `package.json` has a matching script. Scripts encode project-specific flags and paths. Use `npx` only when no script covers the use case (e.g. single-file test runs, one-off tools).
+
 ## Code style
 
 - Don't use section-heading comments (e.g. `// ─── Section ───`) to delimit code within a file. If a block of code warrants its own heading, extract it to a separate module.

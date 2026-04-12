@@ -11,7 +11,7 @@
   import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
   import type { Prop } from '$lib/props';
 
-  type Category = { id: string; name: string };
+  type Category = { id: string; name: string; propKeys: string[] };
 
   let {
     mode,
@@ -40,6 +40,10 @@
   const { enhance } = loader;
 
   let dirty = $state(false);
+  // eslint-disable-next-line svelte/no-unused-svelte-ignore
+  // svelte-ignore state_referenced_locally — intentional: mutable copy of initial value
+  let selectedCategoryId = $state(initialValues.categoryId ?? '');
+  let suggestedKeys = $derived(categories.find((c) => c.id === selectedCategoryId)?.propKeys ?? []);
 
   function markDirty() {
     dirty = true;
@@ -72,6 +76,7 @@
       id="categoryId"
       name="categoryId"
       required
+      onchange={(e) => (selectedCategoryId = e.currentTarget.value)}
       class="rounded border border-subtle bg-surface px-3 py-2 text-sm text-primary focus:border-accent focus:outline-none"
     >
       {#if mode === 'create'}
@@ -101,7 +106,7 @@
     step={1}
   />
   <ImageField imageHash={initialValues.imageHash} onchange={markDirty} />
-  <PropEditor props={initialProps} onchange={() => markDirty()} />
+  <PropEditor props={initialProps} {suggestedKeys} onchange={() => markDirty()} />
   <MarkdownField label="Description" name="description" value={initialValues.description} />
 </form>
 

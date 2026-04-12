@@ -6,6 +6,7 @@
   import Button from '$lib/components/admin/Button.svelte';
   import FormField from '$lib/components/admin/FormField.svelte';
   import MarkdownField from '$lib/components/admin/MarkdownField.svelte';
+  import PropKeyEditor from '$lib/components/admin/PropKeyEditor.svelte';
   import SortableList from '$lib/components/admin/SortableList.svelte';
   import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
   import Timestamps from '$lib/components/admin/Timestamps.svelte';
@@ -90,6 +91,7 @@
     <FormField label="Name" name="name" value={data.category.name} required />
     <FormField label="Slug" name="slug" value={data.category.slug} />
     <MarkdownField label="Description" name="description" value={data.category.description} />
+    <PropKeyEditor propKeys={data.category.propKeys} onchange={markDirty} />
 
     {#if showCutoffs}
       <h2 class="mt-2 text-sm font-semibold text-secondary">Tier cutoffs</h2>

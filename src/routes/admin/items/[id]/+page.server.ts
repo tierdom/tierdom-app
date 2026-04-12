@@ -41,7 +41,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
   const returnTarget: ReturnTarget =
     url.searchParams.get('returnTo') === 'categories' ? 'categories' : 'items';
   const categories = await db
-    .select({ id: category.id, name: category.name })
+    .select({ id: category.id, name: category.name, propKeys: category.propKeys })
     .from(category)
     .orderBy(asc(category.order));
 

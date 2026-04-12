@@ -8,6 +8,7 @@ export const category = sqliteTable('category', {
   slug: text('slug').notNull().unique(),
   name: text('name').notNull(),
   description: text('description'),
+  propKeys: text('prop_keys', { mode: 'json' }).$type<string[]>().notNull().default([]),
   order: integer('order').notNull().default(0),
   // Per-category tier cutoffs — null means use the global default
   cutoffS: integer('cutoff_s'),

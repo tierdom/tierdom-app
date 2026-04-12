@@ -28,11 +28,11 @@ export const actions: Actions = {
     const parsed = parseCategoryForm(data);
     if ('error' in parsed) return fail(400, { error: parsed.error });
 
-    const { name, slug, description, cutoffs } = parsed;
+    const { name, slug, description, propKeys, cutoffs } = parsed;
 
     await db
       .update(category)
-      .set({ name, slug, description, ...cutoffs })
+      .set({ name, slug, description, propKeys, ...cutoffs })
       .where(eq(category.id, id));
 
     redirect(303, '/admin/categories');
