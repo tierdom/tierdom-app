@@ -9,9 +9,11 @@
 
   let {
     props,
+    suggestedKeys = [],
     onchange
   }: {
     props: Prop[];
+    suggestedKeys?: string[];
     onchange: (props: Prop[]) => void;
   } = $props();
 
@@ -109,6 +111,56 @@
   function isDuplicate(key: string): boolean {
     return duplicateKeys.has(key.trim().toLowerCase());
   }
+
+  let activeComboboxId = $state<string | null>(null);
+  let highlightedIndex = $state(-1);
+
+  let filteredSuggestions = $derived.by(() => {
+    if (!activeComboboxId || suggestedKeys.length === 0) return [];
+    const item = items.find((i) => i.id === activeComboboxId);
+    if (!item) return [];
+    const query = item.key.toLowerCase();
+    const usedKeys = new Set(
+      items
+        .filter((i) => i.id !== activeComboboxId)
+        .map((i) => i.key.trim().toLowerCase())
+        .filter(Boolean)
+    );
+    return suggestedKeys.filter(
+      (k) => k.toLowerCase().includes(query) && !usedKeys.has(k.toLowerCase())
+    );
+  });
+
+  function selectSuggestion(id: string, key: string) {
+    handleInput(id, 'key', key);
+    activeComboboxId = null;
+    highlightedIndex = -1;
+  }
+
+  function handleComboboxKeydown(e: KeyboardEvent, id: string) {
+    if (activeComboboxId !== id || filteredSuggestions.length === 0) return;
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      highlightedIndex = (highlightedIndex + 1) % filteredSuggestions.length;
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      highlightedIndex =
+        highlightedIndex <= 0 ? filteredSuggestions.length - 1 : highlightedIndex - 1;
+    } else if (e.key === 'Enter' && highlightedIndex >= 0) {
+      e.preventDefault();
+      selectSuggestion(id, filteredSuggestions[highlightedIndex]);
+    } else if (e.key === 'Escape') {
+      activeComboboxId = null;
+      highlightedIndex = -1;
+    }
+  }
+
+  function isNonStandard(key: string): boolean {
+    if (!key.trim() || suggestedKeys.length === 0) return false;
+    const normalized = key.trim().toLowerCase();
+    return !suggestedKeys.some((sk) => sk.toLowerCase() === normalized);
+  }
 </script>
 
 <fieldset class="flex flex-col gap-1">
@@ -122,6 +174,7 @@
           class:dragging={draggedId === item.id}
           class:drop-above={dropTargetId === item.id && dropPosition === 'above'}
           class:drop-below={dropTargetId === item.id && dropPosition === 'below'}
+          class:non-standard={isNonStandard(item.key)}
           role="listitem"
           ondragover={(e) => handleDragOver(e, item)}
           ondragleave={(e) => handleDragLeave(e, item)}
@@ -146,18 +199,68 @@
             </svg>
           </button>
 
-          <input
-            type="text"
-            placeholder="Key"
-            maxlength={MAX_KEY_LENGTH}
-            value={item.key}
-            oninput={(e) => handleInput(item.id, 'key', e.currentTarget.value)}
-            class="flex-1 rounded border bg-surface px-2 py-1.5 text-sm text-primary placeholder:text-secondary/50 focus:outline-none {isDuplicate(
-              item.key
-            )
-              ? 'border-red-500/60 focus:border-red-500'
-              : 'border-subtle focus:border-accent'}"
-          />
+          <div class="relative flex-1">
+            <input
+              type="text"
+              placeholder="Key"
+              maxlength={MAX_KEY_LENGTH}
+              value={item.key}
+              role="combobox"
+              aria-expanded={activeComboboxId === item.id && filteredSuggestions.length > 0}
+              aria-controls="propkey-listbox-{item.id}"
+              aria-activedescendant={highlightedIndex >= 0 && activeComboboxId === item.id
+                ? `propkey-option-${item.id}-${highlightedIndex}`
+                : undefined}
+              aria-autocomplete="list"
+              title={isNonStandard(item.key)
+                ? 'Custom key (not in category suggestions)'
+                : undefined}
+              oninput={(e) => {
+                handleInput(item.id, 'key', e.currentTarget.value);
+                activeComboboxId = item.id;
+                highlightedIndex = -1;
+              }}
+              onfocus={() => {
+                activeComboboxId = item.id;
+                highlightedIndex = -1;
+              }}
+              onblur={() => {
+                setTimeout(() => {
+                  if (activeComboboxId === item.id) activeComboboxId = null;
+                }, 150);
+              }}
+              onkeydown={(e) => handleComboboxKeydown(e, item.id)}
+              class="w-full rounded border bg-surface px-2 py-1.5 text-sm text-primary placeholder:text-secondary/50 focus:outline-none {isDuplicate(
+                item.key
+              )
+                ? 'border-red-500/60 focus:border-red-500'
+                : 'border-subtle focus:border-accent'}"
+            />
+            {#if activeComboboxId === item.id && filteredSuggestions.length > 0}
+              <ul
+                id="propkey-listbox-{item.id}"
+                role="listbox"
+                class="absolute top-full left-0 z-10 mt-1 max-h-40 w-full overflow-auto rounded border border-subtle bg-surface shadow-lg"
+              >
+                {#each filteredSuggestions as suggestion, i (suggestion)}
+                  <li
+                    id="propkey-option-{item.id}-{i}"
+                    role="option"
+                    aria-selected={i === highlightedIndex}
+                    class="cursor-pointer px-2 py-1.5 text-sm {i === highlightedIndex
+                      ? 'bg-accent/20 text-primary'
+                      : 'text-secondary hover:bg-subtle/30'}"
+                    onmousedown={(e) => {
+                      e.preventDefault();
+                      selectSuggestion(item.id, suggestion);
+                    }}
+                  >
+                    {suggestion}
+                  </li>
+                {/each}
+              </ul>
+            {/if}
+          </div>
           <input
             type="text"
             placeholder="Value"
@@ -209,6 +312,11 @@
 
   .prop-row.dragging {
     opacity: 0.4;
+  }
+
+  .prop-row.non-standard {
+    border-left: 2px dashed var(--c-secondary);
+    padding-left: 0.25rem;
   }
 
   .prop-row.drop-above::before {
