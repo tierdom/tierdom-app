@@ -12,7 +12,6 @@
   import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
   import { scoreToTier } from '$lib/tier';
   import TierBadge from '$lib/components/admin/TierBadge.svelte';
-  import TagPill from '$lib/components/admin/TagPill.svelte';
   import type { PageData } from './$types';
 
   let { data }: { data: PageData } = $props();
@@ -211,27 +210,17 @@
       <SortableList items={data.items} onreorder={handleReorderItems}>
         {#snippet row(item)}
           {@const tier = scoreToTier(item.score as number, cutoffs)}
-          {@const tags = item.tags as { slug: string; label: string }[]}
           <div class="flex flex-1 items-center py-2">
             <div class="w-8 shrink-0">
               <TierBadge {tier} />
             </div>
             <div class="min-w-0 flex-1 text-primary">
-              <div class="flex items-center gap-1.5">
-                <a
-                  href={resolve(`/admin/items/${item.id}?returnTo=categories`)}
-                  class="shrink-0 text-accent hover:underline"
-                >
-                  {item.name}
-                </a>
-                {#if tags.length > 0}
-                  <div class="hidden gap-1 lg:flex">
-                    {#each tags as t (t.slug)}
-                      <TagPill label={t.label} />
-                    {/each}
-                  </div>
-                {/if}
-              </div>
+              <a
+                href={resolve(`/admin/items/${item.id}?returnTo=categories`)}
+                class="text-accent hover:underline"
+              >
+                {item.name}
+              </a>
             </div>
             <div class="w-16 text-secondary">{item.score}</div>
             <div class="hidden w-24 text-xs text-secondary md:block">

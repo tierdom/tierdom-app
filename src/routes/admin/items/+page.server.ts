@@ -1,5 +1,5 @@
 import { db } from '$lib/server/db';
-import { tierListItem, category, itemTag, tag } from '$lib/server/db/schema';
+import { tierListItem, category } from '$lib/server/db/schema';
 import { eq, desc } from 'drizzle-orm';
 import { fail } from '@sveltejs/kit';
 import { deleteImage } from '$lib/server/images';
@@ -27,24 +27,7 @@ export const load: PageServerLoad = async () => {
     .innerJoin(category, eq(category.id, tierListItem.categoryId))
     .orderBy(desc(tierListItem.updatedAt));
 
-  const allTags = await db
-    .select({ itemId: itemTag.itemId, slug: tag.slug, label: tag.label })
-    .from(itemTag)
-    .innerJoin(tag, eq(tag.slug, itemTag.tagSlug));
-
-  const tagsByItemId = new Map<string, { slug: string; label: string }[]>();
-  for (const row of allTags) {
-    const existing = tagsByItemId.get(row.itemId) ?? [];
-    existing.push({ slug: row.slug, label: row.label });
-    tagsByItemId.set(row.itemId, existing);
-  }
-
-  const itemsWithTags = items.map((item) => ({
-    ...item,
-    tags: tagsByItemId.get(item.id) ?? []
-  }));
-
-  return { items: itemsWithTags };
+  return { items };
 };
 
 export const actions: Actions = {

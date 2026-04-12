@@ -6,25 +6,20 @@
   import FormField from '$lib/components/admin/FormField.svelte';
   import ImageField from '$lib/components/admin/ImageField.svelte';
   import MarkdownField from '$lib/components/admin/MarkdownField.svelte';
-  import TagPicker from '$lib/components/admin/TagPicker.svelte';
   import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
   import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
-  import { createTag } from '$lib/components/admin/create-tag';
 
   type Category = { id: string; name: string };
 
   let {
     mode,
     categories,
-    allTags,
     initialValues = {},
-    initialTags = [],
     returnTarget,
     backUrl
   }: {
     mode: 'create' | 'edit';
     categories: Category[];
-    allTags: { slug: string; label: string }[];
     initialValues?: {
       name?: string;
       slug?: string;
@@ -33,7 +28,6 @@
       categoryId?: string | null;
       imageHash?: string | null;
     };
-    initialTags?: string[];
     returnTarget: 'categories' | 'items';
     backUrl: string;
   } = $props();
@@ -42,9 +36,6 @@
   const { enhance } = loader;
 
   let dirty = $state(false);
-  // eslint-disable-next-line svelte/no-unused-svelte-ignore
-  // svelte-ignore state_referenced_locally — intentional: mutable copy of initial prop
-  let selectedTags = $state<string[]>(initialTags.slice());
 
   function markDirty() {
     dirty = true;
@@ -53,11 +44,6 @@
   function cancel() {
     if (dirty && !confirm('You have unsaved changes. Discard them?')) return;
     goto(resolve(backUrl as '/'));
-  }
-
-  function handleTagsChange(slugs: string[]) {
-    selectedTags = slugs;
-    markDirty();
   }
 </script>
 
@@ -111,13 +97,6 @@
     step={1}
   />
   <ImageField imageHash={initialValues.imageHash} onchange={markDirty} />
-
-  <TagPicker
-    {allTags}
-    selectedSlugs={selectedTags}
-    onchange={handleTagsChange}
-    oncreate={createTag}
-  />
   <MarkdownField label="Description" name="description" value={initialValues.description} />
 </form>
 

@@ -133,12 +133,6 @@ describe('parseItemForm', () => {
     expect(result).toHaveProperty('slug', 'my-slug');
   });
 
-  it('collects tag slugs', () => {
-    expect.assertions(1);
-    const result = parseItemForm(form({ ...valid, tags: ['rpg', 'action'] }));
-    expect(result).toHaveProperty('tagSlugs', ['rpg', 'action']);
-  });
-
   it('defaults returnTarget to items', () => {
     expect.assertions(1);
     const result = parseItemForm(form(valid));

@@ -32,7 +32,6 @@
     <ItemForm
       mode="create"
       categories={data.categories}
-      allTags={data.allTags}
       initialValues={{ categoryId: data.prefillCategoryId }}
       returnTarget={data.returnTarget}
       backUrl={data.backUrl}
@@ -41,7 +40,6 @@
     <ItemForm
       mode="edit"
       categories={data.categories}
-      allTags={data.allTags}
       initialValues={{
         name: data.item.name,
         slug: data.item.slug,
@@ -50,7 +48,6 @@
         categoryId: data.item.categoryId,
         imageHash: data.item.imageHash
       }}
-      initialTags={data.itemTags}
       returnTarget={data.returnTarget}
       backUrl={data.backUrl}
     />

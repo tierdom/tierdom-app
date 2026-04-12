@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1775302341260,
+      "when": 1776020908294,
       "tag": "0000_initial_schema",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1775474367566,
-      "tag": "0001_add_auth_tables",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1775485599088,
-      "tag": "0002_add_image_columns",
       "breakpoints": true
     }
   ]

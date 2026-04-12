@@ -36,7 +36,6 @@ export type ItemFormResult =
       score: number;
       categoryId: string;
       description: string | null;
-      tagSlugs: string[];
       returnTarget: ReturnTarget;
     };
 
@@ -61,7 +60,6 @@ export function parseItemForm(data: FormData): ItemFormResult {
     score,
     categoryId,
     description: data.get('description')?.toString()?.trim() || null,
-    tagSlugs: data.getAll('tags').map((s) => s.toString()),
     returnTarget: (data.get('_returnTarget')?.toString() === 'categories'
       ? 'categories'
       : 'items') as ReturnTarget

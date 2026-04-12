@@ -26,7 +26,7 @@
       value: 'demo',
       title: 'Full Demo',
       description:
-        'Fully populated with demo categories (Games, Books, Movies, etc.), tags, and 95+ ranked items.'
+        'Fully populated with demo categories (Games, Books, Movies, etc.) and 95+ ranked items.'
     }
   ];
 </script>

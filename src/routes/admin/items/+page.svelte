@@ -4,7 +4,6 @@
   import { ArrowDown, Plus, Trash2 } from 'lucide-svelte';
   import Button from '$lib/components/admin/Button.svelte';
   import TierBadge from '$lib/components/admin/TierBadge.svelte';
-  import TagPill from '$lib/components/admin/TagPill.svelte';
   import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
   import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
   import { scoreToTier } from '$lib/tier';
@@ -84,21 +83,9 @@
               <TierBadge {tier} />
             </td>
             <td class="py-2 text-primary">
-              <div class="flex items-center gap-1.5">
-                <a
-                  href={resolve(`/admin/items/${item.id}`)}
-                  class="shrink-0 text-accent hover:underline"
-                >
-                  {item.name}
-                </a>
-                {#if item.tags.length > 0}
-                  <div class="hidden gap-1 lg:flex">
-                    {#each item.tags as t (t.slug)}
-                      <TagPill label={t.label} />
-                    {/each}
-                  </div>
-                {/if}
-              </div>
+              <a href={resolve(`/admin/items/${item.id}`)} class="text-accent hover:underline">
+                {item.name}
+              </a>
             </td>
             <td class="hidden w-40 truncate py-2 text-xs text-secondary sm:table-cell">
               {item.categoryName}
