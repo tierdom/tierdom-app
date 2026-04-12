@@ -1,7 +1,7 @@
 import { env } from '$env/dynamic/private';
 import { db } from '$lib/server/db';
 import { page } from '$lib/server/db/schema';
-import { TAGS, CATEGORIES, PAGES } from '$lib/server/db/seed-data';
+import { CATEGORIES, PAGES } from '$lib/server/db/seed-data';
 import { seedCategories } from '$lib/server/db/seed-utils';
 import { generateSeedImages } from '$lib/server/db/seed-images';
 
@@ -42,32 +42,28 @@ export async function seedPreset(preset: string, images = false): Promise<void> 
             '# About\n\n**Tierdom** is a personal, self-hosted tier list application. Edit this page in the admin panel to make it your own.'
         }
       ]);
-      seedCategories(
-        db,
-        [
-          {
-            slug: 'tier-list',
-            name: 'Tier List',
-            description: 'A general-purpose tier list. Rename it, or create new ones in the admin.',
-            order: 0,
-            items: [
-              {
-                name: 'Sample Item',
-                score: 100,
-                tags: [],
-                description:
-                  'This is a **sample item** to show how tier lists work.\n\nEdit or delete it in the admin panel.'
-              }
-            ]
-          }
-        ],
-        null
-      );
+      seedCategories(db, [
+        {
+          slug: 'tier-list',
+          name: 'Tier List',
+          description: 'A general-purpose tier list. Rename it, or create new ones in the admin.',
+          order: 0,
+          items: [
+            {
+              name: 'Sample Item',
+              score: 100,
+              props: [],
+              description:
+                'This is a **sample item** to show how tier lists work.\n\nEdit or delete it in the admin panel.'
+            }
+          ]
+        }
+      ]);
       break;
 
     case 'demo':
       seedPages(PAGES);
-      seedCategories(db, CATEGORIES, TAGS);
+      seedCategories(db, CATEGORIES);
       break;
 
     default:

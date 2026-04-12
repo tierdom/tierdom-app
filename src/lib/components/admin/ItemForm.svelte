@@ -6,25 +6,23 @@
   import FormField from '$lib/components/admin/FormField.svelte';
   import ImageField from '$lib/components/admin/ImageField.svelte';
   import MarkdownField from '$lib/components/admin/MarkdownField.svelte';
-  import TagPicker from '$lib/components/admin/TagPicker.svelte';
+  import PropEditor from '$lib/components/admin/PropEditor.svelte';
   import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
   import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
-  import { createTag } from '$lib/components/admin/create-tag';
+  import type { Prop } from '$lib/props';
 
   type Category = { id: string; name: string };
 
   let {
     mode,
     categories,
-    allTags,
     initialValues = {},
-    initialTags = [],
+    initialProps = [],
     returnTarget,
     backUrl
   }: {
     mode: 'create' | 'edit';
     categories: Category[];
-    allTags: { slug: string; label: string }[];
     initialValues?: {
       name?: string;
       slug?: string;
@@ -33,7 +31,7 @@
       categoryId?: string | null;
       imageHash?: string | null;
     };
-    initialTags?: string[];
+    initialProps?: Prop[];
     returnTarget: 'categories' | 'items';
     backUrl: string;
   } = $props();
@@ -42,9 +40,6 @@
   const { enhance } = loader;
 
   let dirty = $state(false);
-  // eslint-disable-next-line svelte/no-unused-svelte-ignore
-  // svelte-ignore state_referenced_locally — intentional: mutable copy of initial prop
-  let selectedTags = $state<string[]>(initialTags.slice());
 
   function markDirty() {
     dirty = true;
@@ -53,11 +48,6 @@
   function cancel() {
     if (dirty && !confirm('You have unsaved changes. Discard them?')) return;
     goto(resolve(backUrl as '/'));
-  }
-
-  function handleTagsChange(slugs: string[]) {
-    selectedTags = slugs;
-    markDirty();
   }
 </script>
 
@@ -111,15 +101,15 @@
     step={1}
   />
   <ImageField imageHash={initialValues.imageHash} onchange={markDirty} />
-
-  <TagPicker
-    {allTags}
-    selectedSlugs={selectedTags}
-    onchange={handleTagsChange}
-    oncreate={createTag}
-  />
+  <PropEditor props={initialProps} onchange={() => markDirty()} />
   <MarkdownField label="Description" name="description" value={initialValues.description} />
 </form>
+
+{#if loader.error}
+  <p class="mt-4 rounded border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-400">
+    {loader.error}
+  </p>
+{/if}
 
 <div class="mt-4 flex flex-col gap-3 md:flex-row md:items-center">
   {#if mode === 'create'}

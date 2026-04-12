@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "32732da4-fb5a-40a5-a752-ba63c8d62e2f",
+  "id": "c0c87c9a-1725-4a1b-a3a2-fb46984f849a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "category": {
@@ -123,65 +123,6 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "item_tag": {
-      "name": "item_tag",
-      "columns": {
-        "item_id": {
-          "name": "item_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "tag_slug": {
-          "name": "tag_slug",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "item_tag_item_id_tier_list_item_id_fk": {
-          "name": "item_tag_item_id_tier_list_item_id_fk",
-          "tableFrom": "item_tag",
-          "tableTo": "tier_list_item",
-          "columnsFrom": [
-            "item_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "item_tag_tag_slug_tag_slug_fk": {
-          "name": "item_tag_tag_slug_tag_slug_fk",
-          "tableFrom": "item_tag",
-          "tableTo": "tag",
-          "columnsFrom": [
-            "tag_slug"
-          ],
-          "columnsTo": [
-            "slug"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {
-        "item_tag_item_id_tag_slug_pk": {
-          "columns": [
-            "item_id",
-            "tag_slug"
-          ],
-          "name": "item_tag_item_id_tag_slug_pk"
-        }
-      },
-      "uniqueConstraints": {},
-      "checkConstraints": {}
-    },
     "page": {
       "name": "page",
       "columns": {
@@ -229,19 +170,26 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "tag": {
-      "name": "tag",
+    "session": {
+      "name": "session",
       "columns": {
-        "slug": {
-          "name": "slug",
+        "id": {
+          "name": "id",
           "type": "text",
           "primaryKey": true,
           "notNull": true,
           "autoincrement": false
         },
-        "label": {
-          "name": "label",
+        "user_id": {
+          "name": "user_id",
           "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -253,14 +201,37 @@
           "notNull": true,
           "autoincrement": false,
           "default": "(datetime('now'))"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "text",
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "session_user_id_user_id_fk": {
+          "name": "session_user_id_user_id_fk",
+          "tableFrom": "session",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "_suppress_updated_at": {
+      "name": "_suppress_updated_at",
+      "columns": {
+        "flag": {
+          "name": "flag",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "(datetime('now'))"
+          "notNull": false,
+          "autoincrement": false
         }
       },
       "indexes": {},
@@ -322,6 +293,28 @@
           "autoincrement": false,
           "default": 0
         },
+        "image_hash": {
+          "name": "image_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "placeholder": {
+          "name": "placeholder",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "props": {
+          "name": "props",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'[]'"
+        },
         "created_at": {
           "name": "created_at",
           "type": "text",
@@ -368,18 +361,63 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "_suppress_updated_at": {
-      "name": "_suppress_updated_at",
+    "user": {
+      "name": "user",
       "columns": {
-        "flag": {
-          "name": "flag",
-          "type": "integer",
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "username": {
+          "name": "username",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "password_hash": {
+          "name": "password_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "totp_secret": {
+          "name": "totp_secret",
+          "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(datetime('now'))"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(datetime('now'))"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "user_username_unique": {
+          "name": "user_username_unique",
+          "columns": [
+            "username"
+          ],
+          "isUnique": true
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},

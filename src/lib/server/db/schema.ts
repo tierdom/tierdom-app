@@ -1,6 +1,7 @@
-import { integer, primaryKey, sqliteTable, text, unique } from 'drizzle-orm/sqlite-core';
+import { integer, sqliteTable, text, unique } from 'drizzle-orm/sqlite-core';
 import { relations, sql } from 'drizzle-orm';
 import { randomUUID } from 'node:crypto';
+import type { Prop } from '$lib/props';
 
 export const category = sqliteTable('category', {
   id: text('id').primaryKey().$defaultFn(randomUUID),
@@ -38,6 +39,7 @@ export const tierListItem = sqliteTable(
     order: integer('order').notNull().default(0),
     imageHash: text('image_hash'),
     placeholder: text('placeholder'),
+    props: text('props', { mode: 'json' }).$type<Prop[]>().notNull().default([]),
     createdAt: text('created_at')
       .notNull()
       .default(sql`(datetime('now'))`),
@@ -46,30 +48,6 @@ export const tierListItem = sqliteTable(
       .default(sql`(datetime('now'))`)
   },
   (t) => [unique('item_category_slug').on(t.categoryId, t.slug)]
-);
-
-export const tag = sqliteTable('tag', {
-  slug: text('slug').primaryKey(),
-  label: text('label').notNull(),
-  createdAt: text('created_at')
-    .notNull()
-    .default(sql`(datetime('now'))`),
-  updatedAt: text('updated_at')
-    .notNull()
-    .default(sql`(datetime('now'))`)
-});
-
-export const itemTag = sqliteTable(
-  'item_tag',
-  {
-    itemId: text('item_id')
-      .notNull()
-      .references(() => tierListItem.id, { onDelete: 'cascade' }),
-    tagSlug: text('tag_slug')
-      .notNull()
-      .references(() => tag.slug, { onDelete: 'cascade' })
-  },
-  (t) => [primaryKey({ columns: [t.itemId, t.tagSlug] })]
 );
 
 export const user = sqliteTable('user', {
@@ -120,18 +98,8 @@ export const categoryRelations = relations(category, ({ many }) => ({
   items: many(tierListItem)
 }));
 
-export const tierListItemRelations = relations(tierListItem, ({ one, many }) => ({
-  category: one(category, { fields: [tierListItem.categoryId], references: [category.id] }),
-  tags: many(itemTag)
-}));
-
-export const itemTagRelations = relations(itemTag, ({ one }) => ({
-  item: one(tierListItem, { fields: [itemTag.itemId], references: [tierListItem.id] }),
-  tag: one(tag, { fields: [itemTag.tagSlug], references: [tag.slug] })
-}));
-
-export const tagRelations = relations(tag, ({ many }) => ({
-  items: many(itemTag)
+export const tierListItemRelations = relations(tierListItem, ({ one }) => ({
+  category: one(category, { fields: [tierListItem.categoryId], references: [category.id] })
 }));
 
 export const userRelations = relations(user, ({ many }) => ({

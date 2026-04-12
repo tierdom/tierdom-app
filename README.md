@@ -44,6 +44,9 @@ High level features:
 - [x] Add significant unit test coverage where sensible ([ADR-0015](docs/decisions/0015-unit-testing-strategy.md))
 - [x] Add a few end-to-end test cases for safety ([ADR-0014](docs/decisions/0014-end-to-end-testing-strategy.md))
 - [x] Complete accessibility review + all fixes ([ADR-0016](docs/decisions/0016-accessibility-and-semantic-html.md))
+- [x] Replace "tags" with key/value ("props") setup
+- [ ] Improve "props" with category-default keys
+- [ ] Improve "props" with special-support keys
 - [ ] Option to add more static cms pages
 - [ ] Option to customize the footer
 - [ ] Import from our own export format
@@ -190,6 +193,7 @@ Architectural decisions are documented as ADRs in [`docs/decisions/`](docs/decis
 | [0014](docs/decisions/0014-end-to-end-testing-strategy.md)              | End-to-End Testing Strategy              | Accepted |
 | [0015](docs/decisions/0015-unit-testing-strategy.md)                    | Unit Testing Strategy                    | Accepted |
 | [0016](docs/decisions/0016-accessibility-and-semantic-html.md)          | Accessibility and Semantic HTML          | Accepted |
+| [0017](docs/decisions/0017-replace-tags-with-item-props.md)             | Replace Tags with Item Props             | Accepted |
 
 ## References
 

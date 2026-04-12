@@ -53,7 +53,7 @@ test.describe('category page', () => {
     await expect(page.getByText('No items in this category yet')).toBeVisible();
   });
 
-  test('item detail shows score and tags', async ({ page }) => {
+  test('item detail shows score and props', async ({ page }) => {
     await page.goto('/category/video-games');
     await page.getByText('Hollow Knight').click();
 
@@ -61,7 +61,17 @@ test.describe('category page', () => {
     await expect(dialog).toBeVisible();
     await expect(dialog.getByText('Hollow Knight')).toBeVisible();
     await expect(dialog.getByText('/ 100')).toBeVisible();
-    await expect(dialog.getByText('Indie')).toBeVisible();
+    await expect(dialog.getByText('Platform: PC')).toBeVisible();
+  });
+
+  test('book item detail shows multiple props', async ({ page }) => {
+    await page.goto('/category/books');
+    await page.getByText('Blood Meridian').click();
+
+    const dialog = page.locator('dialog[open]');
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByText('Year: 1985')).toBeVisible();
+    await expect(dialog.getByText('ISBN: 978-0679728757')).toBeVisible();
   });
 
   test('item detail closes with X button', async ({ page }) => {

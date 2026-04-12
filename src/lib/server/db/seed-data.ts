@@ -1,4 +1,6 @@
-export type SeedItem = { name: string; score: number; tags: string[]; description?: string };
+import type { Prop } from '$lib/props';
+
+export type SeedItem = { name: string; score: number; props: Prop[]; description?: string };
 
 export type SeedCategory = {
   slug: string;
@@ -8,18 +10,7 @@ export type SeedCategory = {
   items: SeedItem[];
 };
 
-export const TAGS = [
-  { slug: 'classic', label: 'Classic' },
-  { slug: 'indie', label: 'Indie' },
-  { slug: 'masterpiece', label: 'Masterpiece' },
-  { slug: 'overrated', label: 'Overrated' },
-  { slug: 'hidden-gem', label: 'Hidden Gem' },
-  { slug: 'nostalgia', label: 'Nostalgia' },
-  { slug: 'sci-fi', label: 'Sci-Fi' },
-  { slug: 'fantasy', label: 'Fantasy' },
-  { slug: 'horror', label: 'Horror' },
-  { slug: 'comedy', label: 'Comedy' }
-];
+const p = (key: string, value: string): Prop => ({ key, value });
 
 export const CATEGORIES: SeedCategory[] = [
   {
@@ -32,40 +23,40 @@ export const CATEGORIES: SeedCategory[] = [
       {
         name: 'Hollow Knight',
         score: 97,
-        tags: ['indie', 'masterpiece', 'fantasy'],
+        props: [p('Platform', 'PC')],
         description:
           'A **masterclass** in metroidvania design. The atmosphere, the music, the challenge — everything clicks.\n\nTeam Cherry created something truly special with a tiny budget.'
       },
-      { name: 'The Witcher 3', score: 94, tags: ['masterpiece', 'fantasy'] },
+      { name: 'The Witcher 3', score: 94, props: [p('Platform', 'PC')] },
       {
         name: 'Disco Elysium',
         score: 92,
-        tags: ['indie', 'masterpiece'],
+        props: [p('Platform', 'PC')],
         description:
           'An RPG where *every skill is a voice in your head*. The writing is unmatched in games.\n\nNothing else plays like this.'
       },
-      { name: 'Hades', score: 91, tags: ['indie', 'masterpiece'] },
-      { name: 'Dark Souls', score: 88, tags: ['classic', 'masterpiece'] },
-      { name: 'Celeste', score: 86, tags: ['indie', 'hidden-gem'] },
-      { name: 'Red Dead Redemption 2', score: 85, tags: ['masterpiece'] },
-      { name: 'Elden Ring', score: 83, tags: ['fantasy'] },
-      { name: 'Stardew Valley', score: 82, tags: ['indie', 'hidden-gem'] },
-      { name: 'Outer Wilds', score: 80, tags: ['indie', 'hidden-gem', 'sci-fi'] },
-      { name: 'Divinity: Original Sin 2', score: 78, tags: ['fantasy'] },
-      { name: 'Sekiro', score: 76, tags: ['classic'] },
-      { name: 'Inside', score: 74, tags: ['indie', 'horror'] },
-      { name: 'Cuphead', score: 72, tags: ['indie', 'classic'] },
-      { name: 'Monster Hunter: World', score: 70, tags: ['classic'] },
-      { name: 'Dragon Age: Origins', score: 68, tags: ['nostalgia', 'fantasy'] },
-      { name: 'Subnautica', score: 65, tags: ['indie', 'sci-fi'] },
-      { name: 'Fallout: New Vegas', score: 63, tags: ['classic', 'nostalgia'] },
-      { name: 'The Talos Principle', score: 60, tags: ['sci-fi'] },
-      { name: 'A Short Hike', score: 58, tags: ['indie'] },
-      { name: 'Genshin Impact', score: 50, tags: ['overrated'] },
-      { name: "No Man's Sky (launch)", score: 40, tags: ['overrated', 'sci-fi'] },
-      { name: 'Forspoken', score: 32, tags: ['overrated'] },
-      { name: 'Redfall', score: 20, tags: ['overrated'] },
-      { name: 'Anthem', score: 10, tags: ['overrated'] }
+      { name: 'Hades', score: 91, props: [p('Platform', 'PC')] },
+      { name: 'Dark Souls', score: 88, props: [p('Platform', 'PS3')] },
+      { name: 'Celeste', score: 86, props: [p('Platform', 'Switch')] },
+      { name: 'Red Dead Redemption 2', score: 85, props: [p('Platform', 'PS4')] },
+      { name: 'Elden Ring', score: 83, props: [p('Platform', 'PC')] },
+      { name: 'Stardew Valley', score: 82, props: [p('Platform', 'PC')] },
+      { name: 'Outer Wilds', score: 80, props: [p('Platform', 'PC')] },
+      { name: 'Divinity: Original Sin 2', score: 78, props: [p('Platform', 'PC')] },
+      { name: 'Sekiro', score: 76, props: [p('Platform', 'PC')] },
+      { name: 'Inside', score: 74, props: [p('Platform', 'PC')] },
+      { name: 'Cuphead', score: 72, props: [p('Platform', 'PC')] },
+      { name: 'Monster Hunter: World', score: 70, props: [p('Platform', 'PC')] },
+      { name: 'Dragon Age: Origins', score: 68, props: [p('Platform', 'PC')] },
+      { name: 'Subnautica', score: 65, props: [p('Platform', 'PC')] },
+      { name: 'Fallout: New Vegas', score: 63, props: [p('Platform', 'PC')] },
+      { name: 'The Talos Principle', score: 60, props: [p('Platform', 'PC')] },
+      { name: 'A Short Hike', score: 58, props: [p('Platform', 'PC')] },
+      { name: 'Genshin Impact', score: 50, props: [p('Platform', 'PC')] },
+      { name: "No Man's Sky (launch)", score: 40, props: [p('Platform', 'PS4')] },
+      { name: 'Forspoken', score: 32, props: [p('Platform', 'PS5')] },
+      { name: 'Redfall', score: 20, props: [p('Platform', 'Xbox Series X')] },
+      { name: 'Anthem', score: 10, props: [p('Platform', 'PC')] }
     ]
   },
   {
@@ -78,43 +69,87 @@ export const CATEGORIES: SeedCategory[] = [
       {
         name: 'Blood Meridian',
         score: 96,
-        tags: ['masterpiece', 'classic'],
+        props: [p('Year', '1985'), p('ISBN', '978-0679728757')],
         description:
           'McCarthy at his most **brutal and poetic**. The Judge is one of the greatest villains in all of literature.\n\nNot for the faint of heart.'
       },
-      { name: 'Infinite Jest', score: 93, tags: ['masterpiece', 'classic'] },
-      { name: 'The Road', score: 91, tags: ['masterpiece', 'horror'] },
+      { name: 'Infinite Jest', score: 93, props: [p('Year', '1996'), p('ISBN', '978-0316066525')] },
+      { name: 'The Road', score: 91, props: [p('Year', '2006'), p('ISBN', '978-0307387899')] },
       {
         name: 'Dune',
         score: 90,
-        tags: ['masterpiece', 'sci-fi'],
+        props: [p('Year', '1965'), p('ISBN', '978-0441013593')],
         description:
           'The **definitive** science fiction epic. World-building that puts most fantasy to shame.\n\nHerbert created an entire universe of politics, religion, and ecology.'
       },
-      { name: 'Piranesi', score: 88, tags: ['hidden-gem', 'fantasy'] },
-      { name: 'The Name of the Wind', score: 85, tags: ['fantasy'] },
-      { name: 'Recursion', score: 83, tags: ['sci-fi'] },
-      { name: 'A Fire Upon the Deep', score: 81, tags: ['sci-fi', 'hidden-gem'] },
-      { name: 'Thinking, Fast and Slow', score: 79, tags: ['classic'] },
-      { name: 'The Lies of Locke Lamora', score: 77, tags: ['fantasy'] },
-      { name: 'All Systems Red', score: 75, tags: ['sci-fi', 'indie'] },
-      { name: 'Flowers for Algernon', score: 73, tags: ['classic', 'sci-fi'] },
-      { name: 'The Left Hand of Darkness', score: 71, tags: ['sci-fi', 'classic'] },
-      { name: 'The Poppy War', score: 68, tags: ['fantasy'] },
-      { name: 'Ready Player One', score: 55, tags: ['sci-fi', 'overrated'] },
-      { name: 'The Martian', score: 65, tags: ['sci-fi'] },
-      { name: 'Dark Matter (Crouch)', score: 62, tags: ['sci-fi'] },
-      { name: 'Six of Crows', score: 60, tags: ['fantasy'] },
-      { name: 'Eragon', score: 48, tags: ['fantasy', 'nostalgia'] },
-      { name: 'Divergent', score: 42, tags: ['overrated'] },
-      { name: 'Twilight', score: 35, tags: ['nostalgia', 'overrated'] },
-      { name: 'The Fault in Our Stars', score: 46, tags: ['overrated'] },
-      { name: 'Halo: The Fall of Reach', score: 50, tags: ['sci-fi', 'nostalgia'] },
-      { name: 'Bobiverse 1', score: 72, tags: ['sci-fi', 'comedy'] },
+      { name: 'Piranesi', score: 88, props: [p('Year', '2020'), p('ISBN', '978-1635575941')] },
+      {
+        name: 'The Name of the Wind',
+        score: 85,
+        props: [p('Year', '2007'), p('ISBN', '978-0756404741')]
+      },
+      { name: 'Recursion', score: 83, props: [p('Year', '2019'), p('ISBN', '978-1524759780')] },
+      {
+        name: 'A Fire Upon the Deep',
+        score: 81,
+        props: [p('Year', '1992'), p('ISBN', '978-0812515282')]
+      },
+      {
+        name: 'Thinking, Fast and Slow',
+        score: 79,
+        props: [p('Year', '2011'), p('ISBN', '978-0374533557')]
+      },
+      {
+        name: 'The Lies of Locke Lamora',
+        score: 77,
+        props: [p('Year', '2006'), p('ISBN', '978-0553588941')]
+      },
+      {
+        name: 'All Systems Red',
+        score: 75,
+        props: [p('Year', '2017'), p('ISBN', '978-0765397539')]
+      },
+      {
+        name: 'Flowers for Algernon',
+        score: 73,
+        props: [p('Year', '1966'), p('ISBN', '978-0156030083')]
+      },
+      {
+        name: 'The Left Hand of Darkness',
+        score: 71,
+        props: [p('Year', '1969'), p('ISBN', '978-0441478125')]
+      },
+      { name: 'The Poppy War', score: 68, props: [p('Year', '2018'), p('ISBN', '978-0062662569')] },
+      {
+        name: 'Ready Player One',
+        score: 55,
+        props: [p('Year', '2011'), p('ISBN', '978-0307887443')]
+      },
+      { name: 'The Martian', score: 65, props: [p('Year', '2011'), p('ISBN', '978-0553418026')] },
+      {
+        name: 'Dark Matter (Crouch)',
+        score: 62,
+        props: [p('Year', '2016'), p('ISBN', '978-1101904220')]
+      },
+      { name: 'Six of Crows', score: 60, props: [p('Year', '2015'), p('ISBN', '978-1627792127')] },
+      { name: 'Eragon', score: 48, props: [p('Year', '2003'), p('ISBN', '978-0375826696')] },
+      { name: 'Divergent', score: 42, props: [p('Year', '2011'), p('ISBN', '978-0062024039')] },
+      { name: 'Twilight', score: 35, props: [p('Year', '2005'), p('ISBN', '978-0316015844')] },
+      {
+        name: 'The Fault in Our Stars',
+        score: 46,
+        props: [p('Year', '2012'), p('ISBN', '978-0525478812')]
+      },
+      {
+        name: 'Halo: The Fall of Reach',
+        score: 50,
+        props: [p('Year', '2001'), p('ISBN', '978-0765367297')]
+      },
+      { name: 'Bobiverse 1', score: 72, props: [p('Year', '2016'), p('ISBN', '978-1680680584')] },
       {
         name: 'Sword of Truth: Wizards First Rule',
         score: 28,
-        tags: ['fantasy', 'overrated']
+        props: [p('Year', '1994'), p('ISBN', '978-0812548051')]
       }
     ]
   },
@@ -128,84 +163,92 @@ export const CATEGORIES: SeedCategory[] = [
       {
         name: 'Annihilation',
         score: 95,
-        tags: ['masterpiece', 'sci-fi', 'horror'],
+        props: [p('Year', '2018'), p('Genre', 'Sci-Fi')],
         description:
           "Garland turned VanderMeer's *weird fiction* into something even stranger on screen. The Shimmer is **unforgettable**.\n\nThe bear scene alone earns it a spot in S-tier."
       },
       {
         name: '2001: A Space Odyssey',
         score: 93,
-        tags: ['masterpiece', 'classic', 'sci-fi']
+        props: [p('Year', '1968'), p('Genre', 'Sci-Fi')]
       },
-      { name: 'Stalker (1979)', score: 91, tags: ['masterpiece', 'classic', 'sci-fi'] },
-      {
-        name: 'The Thing (1982)',
-        score: 90,
-        tags: ['masterpiece', 'classic', 'horror']
-      },
+      { name: 'Stalker (1979)', score: 91, props: [p('Year', '1979'), p('Genre', 'Sci-Fi')] },
+      { name: 'The Thing (1982)', score: 90, props: [p('Year', '1982'), p('Genre', 'Horror')] },
       {
         name: 'Blade Runner 2049',
         score: 88,
-        tags: ['masterpiece', 'sci-fi'],
+        props: [p('Year', '2017'), p('Genre', 'Sci-Fi')],
         description:
           "Villeneuve proved a *Blade Runner* sequel could work. Deakins' cinematography is **breathtaking**.\n\nSlow, meditative, and visually perfect."
       },
-      { name: 'Parasite', score: 86, tags: ['masterpiece'] },
-      { name: 'Arrival', score: 84, tags: ['sci-fi', 'masterpiece'] },
-      { name: 'Mad Max: Fury Road', score: 82, tags: ['classic'] },
-      { name: 'The Witch', score: 80, tags: ['horror', 'hidden-gem'] },
-      { name: 'Midsommar', score: 78, tags: ['horror'] },
-      { name: 'Under the Skin', score: 76, tags: ['sci-fi', 'hidden-gem'] },
-      { name: 'Get Out', score: 75, tags: ['horror'] },
-      { name: 'Ex Machina', score: 87, tags: ['sci-fi'] },
-      { name: 'Whiplash', score: 85, tags: ['masterpiece'] },
-      { name: 'The Prestige', score: 83, tags: ['classic'] },
-      { name: "Pan's Labyrinth", score: 81, tags: ['fantasy', 'horror'] },
-      { name: 'Sicario', score: 79, tags: ['classic'] },
-      { name: 'There Will Be Blood', score: 89, tags: ['masterpiece', 'classic'] },
-      { name: 'No Country for Old Men', score: 88, tags: ['masterpiece', 'classic'] },
-      { name: 'The Babadook', score: 77, tags: ['horror', 'indie'] },
-      { name: 'Color Out of Space', score: 76, tags: ['horror', 'sci-fi'] },
-      { name: 'It Follows', score: 75, tags: ['horror', 'indie'] },
-      { name: 'Coherence', score: 75, tags: ['sci-fi', 'indie', 'hidden-gem'] },
+      { name: 'Parasite', score: 86, props: [p('Year', '2019'), p('Genre', 'Thriller')] },
+      { name: 'Arrival', score: 84, props: [p('Year', '2016'), p('Genre', 'Sci-Fi')] },
+      { name: 'Mad Max: Fury Road', score: 82, props: [p('Year', '2015'), p('Genre', 'Action')] },
+      { name: 'The Witch', score: 80, props: [p('Year', '2015'), p('Genre', 'Horror')] },
+      { name: 'Midsommar', score: 78, props: [p('Year', '2019'), p('Genre', 'Horror')] },
+      { name: 'Under the Skin', score: 76, props: [p('Year', '2013'), p('Genre', 'Sci-Fi')] },
+      { name: 'Get Out', score: 75, props: [p('Year', '2017'), p('Genre', 'Horror')] },
+      { name: 'Ex Machina', score: 87, props: [p('Year', '2014'), p('Genre', 'Sci-Fi')] },
+      { name: 'Whiplash', score: 85, props: [p('Year', '2014'), p('Genre', 'Drama')] },
+      { name: 'The Prestige', score: 83, props: [p('Year', '2006'), p('Genre', 'Thriller')] },
+      { name: "Pan's Labyrinth", score: 81, props: [p('Year', '2006'), p('Genre', 'Fantasy')] },
+      { name: 'Sicario', score: 79, props: [p('Year', '2015'), p('Genre', 'Thriller')] },
+      { name: 'There Will Be Blood', score: 89, props: [p('Year', '2007'), p('Genre', 'Drama')] },
+      {
+        name: 'No Country for Old Men',
+        score: 88,
+        props: [p('Year', '2007'), p('Genre', 'Thriller')]
+      },
+      { name: 'The Babadook', score: 77, props: [p('Year', '2014'), p('Genre', 'Horror')] },
+      { name: 'Color Out of Space', score: 76, props: [p('Year', '2019'), p('Genre', 'Horror')] },
+      { name: 'It Follows', score: 75, props: [p('Year', '2014'), p('Genre', 'Horror')] },
+      { name: 'Coherence', score: 75, props: [p('Year', '2013'), p('Genre', 'Sci-Fi')] },
       {
         name: 'Everything Everywhere All at Once',
         score: 74,
-        tags: ['indie']
+        props: [p('Year', '2022'), p('Genre', 'Sci-Fi')]
       },
-      { name: 'Hereditary', score: 72, tags: ['horror'] },
-      { name: 'The Lighthouse', score: 70, tags: ['horror', 'indie'] },
-      { name: 'Dune: Part One', score: 68, tags: ['sci-fi'] },
-      { name: 'Interstellar', score: 63, tags: ['sci-fi', 'overrated'] },
-      { name: 'The Northman', score: 60, tags: ['indie'] },
-      { name: 'Mandy (2018)', score: 65, tags: ['horror', 'hidden-gem'] },
-      { name: 'The Menu', score: 67, tags: ['comedy', 'horror'] },
-      { name: 'The Banshees of Inisherin', score: 71, tags: ['comedy'] },
-      { name: 'Triangle of Sadness', score: 62, tags: ['comedy'] },
-      { name: 'Nope', score: 58, tags: ['sci-fi', 'horror'] },
+      { name: 'Hereditary', score: 72, props: [p('Year', '2018'), p('Genre', 'Horror')] },
+      { name: 'The Lighthouse', score: 70, props: [p('Year', '2019'), p('Genre', 'Horror')] },
+      { name: 'Dune: Part One', score: 68, props: [p('Year', '2021'), p('Genre', 'Sci-Fi')] },
+      { name: 'Interstellar', score: 63, props: [p('Year', '2014'), p('Genre', 'Sci-Fi')] },
+      { name: 'The Northman', score: 60, props: [p('Year', '2022'), p('Genre', 'Action')] },
+      { name: 'Mandy (2018)', score: 65, props: [p('Year', '2018'), p('Genre', 'Horror')] },
+      { name: 'The Menu', score: 67, props: [p('Year', '2022'), p('Genre', 'Comedy')] },
+      {
+        name: 'The Banshees of Inisherin',
+        score: 71,
+        props: [p('Year', '2022'), p('Genre', 'Drama')]
+      },
+      { name: 'Triangle of Sadness', score: 62, props: [p('Year', '2022'), p('Genre', 'Comedy')] },
+      { name: 'Nope', score: 58, props: [p('Year', '2022'), p('Genre', 'Sci-Fi')] },
       {
         name: 'Transformers: Age of Extinction',
         score: 12,
-        tags: ['overrated']
+        props: [p('Year', '2014'), p('Genre', 'Action')]
       },
-      { name: 'Avatar (2009)', score: 45, tags: ['overrated', 'sci-fi'] },
-      { name: 'Cats (2019)', score: 5, tags: ['horror'] },
-      { name: 'Morbius', score: 18, tags: ['overrated'] },
-      { name: 'Venom (2018)', score: 38, tags: ['overrated', 'comedy'] },
-      { name: 'The Emoji Movie', score: 3, tags: ['comedy', 'overrated'] },
-      { name: 'Dragonball Evolution', score: 4, tags: ['overrated'] },
-      { name: 'Battlefield Earth', score: 2, tags: ['sci-fi', 'overrated'] },
-      { name: 'Movie 43', score: 6, tags: ['comedy', 'overrated'] },
-      { name: 'Disaster Movie', score: 1, tags: ['comedy', 'overrated'] },
-      { name: 'Epic Movie', score: 7, tags: ['comedy', 'overrated'] },
-      { name: 'The Last Airbender', score: 8, tags: ['fantasy', 'overrated'] },
-      { name: 'Birdemic', score: 3, tags: ['horror', 'comedy'] },
-      { name: 'Son of the Mask', score: 5, tags: ['comedy', 'overrated'] },
-      { name: 'Jaws: The Revenge', score: 9, tags: ['horror', 'overrated'] },
-      { name: 'Alone in the Dark (2005)', score: 6, tags: ['horror', 'overrated'] },
-      { name: 'Catwoman (2004)', score: 10, tags: ['overrated'] },
-      { name: 'Bloodshot', score: 11, tags: ['overrated', 'sci-fi'] },
-      { name: 'Left Behind (2014)', score: 4, tags: ['overrated'] }
+      { name: 'Avatar (2009)', score: 45, props: [p('Year', '2009'), p('Genre', 'Sci-Fi')] },
+      { name: 'Cats (2019)', score: 5, props: [p('Year', '2019'), p('Genre', 'Musical')] },
+      { name: 'Morbius', score: 18, props: [p('Year', '2022'), p('Genre', 'Action')] },
+      { name: 'Venom (2018)', score: 38, props: [p('Year', '2018'), p('Genre', 'Action')] },
+      { name: 'The Emoji Movie', score: 3, props: [p('Year', '2017'), p('Genre', 'Animation')] },
+      { name: 'Dragonball Evolution', score: 4, props: [p('Year', '2009'), p('Genre', 'Action')] },
+      { name: 'Battlefield Earth', score: 2, props: [p('Year', '2000'), p('Genre', 'Sci-Fi')] },
+      { name: 'Movie 43', score: 6, props: [p('Year', '2013'), p('Genre', 'Comedy')] },
+      { name: 'Disaster Movie', score: 1, props: [p('Year', '2008'), p('Genre', 'Comedy')] },
+      { name: 'Epic Movie', score: 7, props: [p('Year', '2007'), p('Genre', 'Comedy')] },
+      { name: 'The Last Airbender', score: 8, props: [p('Year', '2010'), p('Genre', 'Fantasy')] },
+      { name: 'Birdemic', score: 3, props: [p('Year', '2010'), p('Genre', 'Horror')] },
+      { name: 'Son of the Mask', score: 5, props: [p('Year', '2005'), p('Genre', 'Comedy')] },
+      { name: 'Jaws: The Revenge', score: 9, props: [p('Year', '1987'), p('Genre', 'Horror')] },
+      {
+        name: 'Alone in the Dark (2005)',
+        score: 6,
+        props: [p('Year', '2005'), p('Genre', 'Horror')]
+      },
+      { name: 'Catwoman (2004)', score: 10, props: [p('Year', '2004'), p('Genre', 'Action')] },
+      { name: 'Bloodshot', score: 11, props: [p('Year', '2020'), p('Genre', 'Action')] },
+      { name: 'Left Behind (2014)', score: 4, props: [p('Year', '2014'), p('Genre', 'Drama')] }
     ]
   },
   {
@@ -215,11 +258,11 @@ export const CATEGORIES: SeedCategory[] = [
       'A small but growing collection of **tabletop games** ranked by replayability and fun factor.\n\nOnly the ones that actually hit the table more than once.',
     order: 3,
     items: [
-      { name: 'Gloomhaven', score: 95, tags: ['masterpiece', 'fantasy'] },
-      { name: 'Spirit Island', score: 92, tags: ['indie', 'hidden-gem'] },
-      { name: 'Catan', score: 48, tags: ['classic', 'nostalgia', 'overrated'] },
-      { name: 'Pandemic', score: 42, tags: ['classic'] },
-      { name: 'Exploding Kittens', score: 25, tags: ['comedy', 'overrated'] }
+      { name: 'Gloomhaven', score: 95, props: [] },
+      { name: 'Spirit Island', score: 92, props: [] },
+      { name: 'Catan', score: 48, props: [] },
+      { name: 'Pandemic', score: 42, props: [] },
+      { name: 'Exploding Kittens', score: 25, props: [] }
     ]
   },
   {

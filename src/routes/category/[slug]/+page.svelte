@@ -105,7 +105,7 @@
       score={selectedItem.score}
       descriptionHtml={selectedItem.descriptionHtml}
       tier={selectedItem.tier}
-      tags={selectedItem.tags}
+      props={selectedItem.props}
       image={selectedItem.image ?? undefined}
     />
   </Dialog>

@@ -61,3 +61,54 @@ test('create, edit, and delete an item', async ({ page }) => {
   // Verify deletion — the item link should be gone
   await expect(main.getByRole('link', { name: unique })).not.toBeVisible();
 });
+
+test('seeded items show prop pills in items list', async ({ page }) => {
+  await page.goto('/admin/items');
+  await page.getByPlaceholder('Quick search').fill('Hollow Knight');
+  await expect(page.getByText('Platform: PC')).toBeVisible();
+});
+
+test('item edit form shows seeded props', async ({ page }) => {
+  // Find Hollow Knight's edit page
+  await page.goto('/admin/items');
+  await page.getByPlaceholder('Quick search').fill('Hollow Knight');
+  await page.getByRole('link', { name: 'Hollow Knight' }).click();
+
+  // PropEditor should show the seeded prop
+  const fieldset = page.locator('fieldset', { hasText: 'Props' });
+  await expect(fieldset.locator('input[placeholder="Key"]')).toHaveValue('Platform');
+  await expect(fieldset.locator('input[placeholder="Value"]')).toHaveValue('PC');
+});
+
+test('create item with props, verify they persist', async ({ page }) => {
+  const main = page.getByRole('main');
+  const unique = `Props-${Date.now()}`;
+
+  // Create item with a prop
+  await page.goto('/admin/items/new-item');
+  await page.locator('#categoryId').selectOption({ label: 'Board Games' });
+  await page.locator('#name').fill(unique);
+  await page.locator('#score').fill('80');
+
+  // Add a prop via the PropEditor
+  await page.getByRole('button', { name: 'Add prop' }).click();
+  const fieldset = page.locator('fieldset', { hasText: 'Props' });
+  await fieldset.locator('input[placeholder="Key"]').fill('Players');
+  await fieldset.locator('input[placeholder="Value"]').fill('2-4');
+  await page.locator('button[form="item-form"]').click();
+
+  // Navigate back to edit and verify the prop persisted
+  await page.goto('/admin/items');
+  await page.getByPlaceholder('Quick search').fill(unique);
+  await main.getByRole('link', { name: unique }).click();
+
+  const editFieldset = page.locator('fieldset', { hasText: 'Props' });
+  await expect(editFieldset.locator('input[placeholder="Key"]')).toHaveValue('Players');
+  await expect(editFieldset.locator('input[placeholder="Value"]')).toHaveValue('2-4');
+
+  // Clean up — delete item
+  page.on('dialog', (dialog) => dialog.accept());
+  await page.goto('/admin/items');
+  await page.getByPlaceholder('Quick search').fill(unique);
+  await main.getByRole('button', { name: 'delete' }).click();
+});

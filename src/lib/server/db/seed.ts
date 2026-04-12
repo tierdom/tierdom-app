@@ -2,7 +2,7 @@
  * Standalone seed script — run via `npm run db:seed`.
  *
  * Connects directly to the database (same DATA_PATH as drizzle-kit),
- * wipes existing data, and inserts demo categories, tags, and items.
+ * wipes existing data, and inserts demo categories and items.
  */
 
 import { drizzle } from 'drizzle-orm/better-sqlite3';
@@ -11,11 +11,11 @@ import { randomUUID } from 'node:crypto';
 import { join } from 'node:path';
 import { hashPassword } from '../auth/password';
 import * as schema from './schema';
-import { TAGS, CATEGORIES, PAGES } from './seed-data';
+import { CATEGORIES, PAGES } from './seed-data';
 import { seedCategories } from './seed-utils';
 import { generateSeedImages } from './seed-images';
 
-const { page, user, session, category, tierListItem, tag, itemTag } = schema;
+const { page, user, session, category, tierListItem } = schema;
 
 if (!process.env.DATA_PATH) {
   console.error('DATA_PATH is not set');
@@ -32,9 +32,7 @@ console.log('Seeding database...');
 
 // Wipe existing data in dependency order
 db.delete(session).run();
-db.delete(itemTag).run();
 db.delete(tierListItem).run();
-db.delete(tag).run();
 db.delete(category).run();
 db.delete(page).run();
 db.delete(user).run();
@@ -51,9 +49,9 @@ db.insert(user)
   .run();
 console.log(`Created dev admin user with name ${adminUsername} and password <REDACTED>`);
 
-// Insert pages and seed categories with tags and items
+// Insert pages and seed categories with items
 db.insert(page).values(PAGES).run();
-const totalItems = seedCategories(db, CATEGORIES, TAGS);
+const totalItems = seedCategories(db, CATEGORIES);
 
 // ─── Randomize timestamps ────────────────────────────────────────────────────
 // Spread created_at over the past 6 months. ~1/3 of rows get a later updated_at.
@@ -69,19 +67,16 @@ client.exec(`
   -- Assign random created_at in the past 6 months
   UPDATE category       SET created_at = datetime('now', '-' || (abs(random()) % ${SIX_MONTHS_SEC}) || ' seconds');
   UPDATE tier_list_item SET created_at = datetime('now', '-' || (abs(random()) % ${SIX_MONTHS_SEC}) || ' seconds');
-  UPDATE tag            SET created_at = datetime('now', '-' || (abs(random()) % ${SIX_MONTHS_SEC}) || ' seconds');
   UPDATE page           SET created_at = datetime('now', '-' || (abs(random()) % ${SIX_MONTHS_SEC}) || ' seconds');
 
   -- Default: updated_at = created_at (never edited)
   UPDATE category       SET updated_at = created_at;
   UPDATE tier_list_item SET updated_at = created_at;
-  UPDATE tag            SET updated_at = created_at;
   UPDATE page           SET updated_at = created_at;
 
   -- ~1/3 of rows: bump updated_at to a random point between created_at and now
   UPDATE category       SET updated_at = datetime(created_at, '+' || (abs(random()) % max(1, cast((julianday('now') - julianday(created_at)) * 86400 as integer))) || ' seconds') WHERE abs(random()) % 3 = 0;
   UPDATE tier_list_item SET updated_at = datetime(created_at, '+' || (abs(random()) % max(1, cast((julianday('now') - julianday(created_at)) * 86400 as integer))) || ' seconds') WHERE abs(random()) % 3 = 0;
-  UPDATE tag            SET updated_at = datetime(created_at, '+' || (abs(random()) % max(1, cast((julianday('now') - julianday(created_at)) * 86400 as integer))) || ' seconds') WHERE abs(random()) % 3 = 0;
   UPDATE page           SET updated_at = datetime(created_at, '+' || (abs(random()) % max(1, cast((julianday('now') - julianday(created_at)) * 86400 as integer))) || ' seconds') WHERE abs(random()) % 3 = 0;
 
   -- Re-enable triggers
@@ -96,4 +91,4 @@ if (process.env.SEED_IMAGES === '1') {
 
 client.close();
 
-console.log(`Seeded ${CATEGORIES.length} categories, ${TAGS.length} tags, ${totalItems} items.`);
+console.log(`Seeded ${CATEGORIES.length} categories, ${totalItems} items.`);

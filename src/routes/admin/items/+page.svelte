@@ -4,7 +4,6 @@
   import { ArrowDown, Plus, Trash2 } from 'lucide-svelte';
   import Button from '$lib/components/admin/Button.svelte';
   import TierBadge from '$lib/components/admin/TierBadge.svelte';
-  import TagPill from '$lib/components/admin/TagPill.svelte';
   import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
   import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
   import { scoreToTier } from '$lib/tier';
@@ -91,10 +90,12 @@
                 >
                   {item.name}
                 </a>
-                {#if item.tags.length > 0}
+                {#if item.props.length > 0}
                   <div class="hidden gap-1 lg:flex">
-                    {#each item.tags as t (t.slug)}
-                      <TagPill label={t.label} />
+                    {#each item.props as prop (prop.key)}
+                      <span class="rounded-full bg-subtle/30 px-1.5 text-[0.65rem] text-secondary"
+                        >{prop.key}: {prop.value}</span
+                      >
                     {/each}
                   </div>
                 {/if}

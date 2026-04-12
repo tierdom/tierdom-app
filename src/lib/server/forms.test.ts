@@ -133,12 +133,6 @@ describe('parseItemForm', () => {
     expect(result).toHaveProperty('slug', 'my-slug');
   });
 
-  it('collects tag slugs', () => {
-    expect.assertions(1);
-    const result = parseItemForm(form({ ...valid, tags: ['rpg', 'action'] }));
-    expect(result).toHaveProperty('tagSlugs', ['rpg', 'action']);
-  });
-
   it('defaults returnTarget to items', () => {
     expect.assertions(1);
     const result = parseItemForm(form(valid));
@@ -149,5 +143,31 @@ describe('parseItemForm', () => {
     expect.assertions(1);
     const result = parseItemForm(form({ ...valid, _returnTarget: 'categories' }));
     expect(result).toHaveProperty('returnTarget', 'categories');
+  });
+
+  it('defaults props to empty array when absent', () => {
+    expect.assertions(1);
+    const result = parseItemForm(form(valid));
+    expect(result).toHaveProperty('props', []);
+  });
+
+  it('parses valid props JSON', () => {
+    expect.assertions(1);
+    const props = JSON.stringify([{ key: 'Platform', value: 'PC' }]);
+    const result = parseItemForm(form({ ...valid, props }));
+    expect(result).toHaveProperty('props', [{ key: 'Platform', value: 'PC' }]);
+  });
+
+  it('rejects malformed props JSON', () => {
+    expect.assertions(1);
+    const result = parseItemForm(form({ ...valid, props: 'not json' }));
+    expect(result).toEqual({ error: 'Invalid props format' });
+  });
+
+  it('rejects invalid props structure', () => {
+    expect.assertions(1);
+    const props = JSON.stringify([{ key: '', value: 'v' }]);
+    const result = parseItemForm(form({ ...valid, props }));
+    expect(result).toHaveProperty('error');
   });
 });

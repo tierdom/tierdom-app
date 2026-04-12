@@ -1,8 +1,7 @@
 import { db } from '$lib/server/db';
-import { category, tag, tierListItem, itemTag } from '$lib/server/db/schema';
+import { category, tierListItem } from '$lib/server/db/schema';
 import { asc, eq } from 'drizzle-orm';
 import { error, fail, redirect } from '@sveltejs/kit';
-import { getOrCreateTag } from '$lib/server/tags';
 import { insertByScore } from '$lib/server/reorder';
 import { join } from 'node:path';
 import { env } from '$env/dynamic/private';
@@ -45,14 +44,12 @@ export const load: PageServerLoad = async ({ params, url }) => {
     .select({ id: category.id, name: category.name })
     .from(category)
     .orderBy(asc(category.order));
-  const allTags = await db.select().from(tag).orderBy(asc(tag.label));
 
   if (isNew) {
     const prefillCategoryId = url.searchParams.get('category') || null;
     return {
       mode: 'create' as const,
       categories,
-      allTags,
       prefillCategoryId,
       returnTarget,
       backUrl: prefillCategoryId
@@ -65,17 +62,10 @@ export const load: PageServerLoad = async ({ params, url }) => {
   const [item] = await db.select().from(tierListItem).where(eq(tierListItem.id, id)).limit(1);
   if (!item) error(404, 'Item not found');
 
-  const currentTags = await db
-    .select({ slug: itemTag.tagSlug })
-    .from(itemTag)
-    .where(eq(itemTag.itemId, id));
-
   return {
     mode: 'edit' as const,
     item,
     categories,
-    allTags,
-    itemTags: currentTags.map((t) => t.slug),
     returnTarget,
     backUrl: resolveReturnUrl(returnTarget, item.categoryId)
   };
@@ -87,7 +77,7 @@ export const actions: Actions = {
     const parsed = parseItemForm(data);
     if ('error' in parsed) return fail(400, { error: parsed.error });
 
-    const { name, slug, score, categoryId, description, tagSlugs, returnTarget } = parsed;
+    const { name, slug, score, categoryId, description, props, returnTarget } = parsed;
 
     let image: { imageHash: string | null; placeholder: string | null } | undefined;
     try {
@@ -105,6 +95,7 @@ export const actions: Actions = {
           name,
           description,
           score,
+          props,
           order: 0,
           ...(image && { imageHash: image.imageHash, placeholder: image.placeholder })
         })
@@ -112,12 +103,6 @@ export const actions: Actions = {
 
       const order = insertByScore(categoryId, score, name, inserted.id);
       await db.update(tierListItem).set({ order }).where(eq(tierListItem.id, inserted.id));
-
-      if (tagSlugs.length > 0) {
-        await db
-          .insert(itemTag)
-          .values(tagSlugs.map((tagSlug) => ({ itemId: inserted.id, tagSlug })));
-      }
 
       redirect(303, resolveReturnUrl(returnTarget, categoryId));
     }
@@ -141,6 +126,7 @@ export const actions: Actions = {
         slug,
         score,
         description,
+        props,
         categoryId,
         ...(image && { imageHash: image.imageHash, placeholder: image.placeholder })
       })
@@ -151,22 +137,7 @@ export const actions: Actions = {
       await db.update(tierListItem).set({ order: newOrder }).where(eq(tierListItem.id, id));
     }
 
-    // Sync tags
-    await db.delete(itemTag).where(eq(itemTag.itemId, id));
-    if (tagSlugs.length > 0) {
-      await db.insert(itemTag).values(tagSlugs.map((tagSlug) => ({ itemId: id, tagSlug })));
-    }
-
     redirect(303, resolveReturnUrl(returnTarget, categoryId));
-  },
-
-  createTag: async ({ request }) => {
-    const data = await request.formData();
-    const label = data.get('label')?.toString()?.trim();
-    if (!label) return fail(400, { error: 'Label is required' });
-
-    const newTag = await getOrCreateTag(label);
-    return { tag: newTag };
   },
 
   delete: async ({ request, params }) => {

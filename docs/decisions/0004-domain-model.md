@@ -23,8 +23,8 @@ tier list items and controls the score-to-tier mapping for that topic.
 tier assignment, so items can be re-tiered automatically when cutoffs change
 without touching every record individually.
 
-**Tag** is a minor shared entity: a slug resolves to a human-readable label and
-can be attached to any item across any category.
+**Props** are per-item key-value pairs stored as an ordered JSON array on
+`TierListItem`. They replace the earlier Tag entity (see [ADR-0017](0017-replace-tags-with-item-props.md)).
 
 **Tier** is a hardcoded enum (S → A → B → C → D → E → F). This is the community
 standard tier list vocabulary and should not be user-configurable. Each tier has
@@ -50,5 +50,5 @@ over the display sequence without relying on timestamps or score proximity.
   later would be a deliberate schema and UI change, not an accident.
 - The explicit `order` field requires the admin interface to manage ordering.
   This is intentional: order carries editorial meaning and should not be implicit.
-- Tags being shared across categories is a deliberate simplification. If
-  per-category tags are needed later, that is a schema addition, not a redesign.
+- Props are item-local key-value pairs, not shared across items. This trades
+  normalization for simplicity and category-specific metadata support.

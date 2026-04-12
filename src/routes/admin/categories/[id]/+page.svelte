@@ -12,7 +12,6 @@
   import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
   import { scoreToTier } from '$lib/tier';
   import TierBadge from '$lib/components/admin/TierBadge.svelte';
-  import TagPill from '$lib/components/admin/TagPill.svelte';
   import type { PageData } from './$types';
 
   let { data }: { data: PageData } = $props();
@@ -211,7 +210,7 @@
       <SortableList items={data.items} onreorder={handleReorderItems}>
         {#snippet row(item)}
           {@const tier = scoreToTier(item.score as number, cutoffs)}
-          {@const tags = item.tags as { slug: string; label: string }[]}
+          {@const itemProps = (item.props ?? []) as { key: string; value: string }[]}
           <div class="flex flex-1 items-center py-2">
             <div class="w-8 shrink-0">
               <TierBadge {tier} />
@@ -224,10 +223,12 @@
                 >
                   {item.name}
                 </a>
-                {#if tags.length > 0}
+                {#if itemProps.length > 0}
                   <div class="hidden gap-1 lg:flex">
-                    {#each tags as t (t.slug)}
-                      <TagPill label={t.label} />
+                    {#each itemProps as prop (prop.key)}
+                      <span class="rounded-full bg-subtle/30 px-1.5 text-[0.65rem] text-secondary"
+                        >{prop.key}: {prop.value}</span
+                      >
                     {/each}
                   </div>
                 {/if}
