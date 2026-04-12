@@ -105,6 +105,12 @@
   <MarkdownField label="Description" name="description" value={initialValues.description} />
 </form>
 
+{#if loader.error}
+  <p class="mt-4 rounded border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-400">
+    {loader.error}
+  </p>
+{/if}
+
 <div class="mt-4 flex flex-col gap-3 md:flex-row md:items-center">
   {#if mode === 'create'}
     <Button type="submit" form="item-form"><Plus size={16} />Create</Button>

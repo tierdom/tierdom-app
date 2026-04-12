@@ -3,7 +3,7 @@
   import { Plus, Trash2 } from 'lucide-svelte';
   import Button from '$lib/components/admin/Button.svelte';
   import type { Prop } from '$lib/props';
-  import { MAX_PROPS, MAX_KEY_LENGTH, MAX_VALUE_LENGTH } from '$lib/props';
+  import { MAX_PROPS, MAX_KEY_LENGTH, MAX_VALUE_LENGTH, findDuplicateKeys } from '$lib/props';
 
   type InternalProp = Prop & { id: string };
 
@@ -103,6 +103,12 @@
   }
 
   let serialized = $derived(JSON.stringify(items.map(({ key, value }) => ({ key, value }))));
+
+  let duplicateKeys = $derived(findDuplicateKeys(items));
+
+  function isDuplicate(key: string): boolean {
+    return duplicateKeys.has(key.trim().toLowerCase());
+  }
 </script>
 
 <fieldset class="flex flex-col gap-1">
@@ -146,7 +152,11 @@
             maxlength={MAX_KEY_LENGTH}
             value={item.key}
             oninput={(e) => handleInput(item.id, 'key', e.currentTarget.value)}
-            class="flex-1 rounded border border-subtle bg-surface px-2 py-1.5 text-sm text-primary placeholder:text-secondary/50 focus:border-accent focus:outline-none"
+            class="flex-1 rounded border bg-surface px-2 py-1.5 text-sm text-primary placeholder:text-secondary/50 focus:outline-none {isDuplicate(
+              item.key
+            )
+              ? 'border-red-500/60 focus:border-red-500'
+              : 'border-subtle focus:border-accent'}"
           />
           <input
             type="text"
@@ -162,6 +172,13 @@
           </Button>
         </div>
       {/each}
+    </div>
+  {/if}
+
+  {#if duplicateKeys.size > 0}
+    <div class="flex">
+      <div class="drag-handle-spacer"></div>
+      <p class="text-xs text-red-400">Duplicate keys are not allowed</p>
     </div>
   {/if}
 

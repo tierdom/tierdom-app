@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { validateProps, MAX_PROPS, MAX_KEY_LENGTH, MAX_VALUE_LENGTH } from './props';
+import {
+  validateProps,
+  findDuplicateKeys,
+  MAX_PROPS,
+  MAX_KEY_LENGTH,
+  MAX_VALUE_LENGTH
+} from './props';
 
 describe('validateProps', () => {
   it('accepts an empty array', () => {
@@ -120,5 +126,52 @@ describe('validateProps', () => {
       { key: 'Year', value: '2024' }
     ]);
     expect(Array.isArray(result)).toBe(true);
+  });
+});
+
+describe('findDuplicateKeys', () => {
+  it('returns empty set when no duplicates', () => {
+    const result = findDuplicateKeys([
+      { key: 'Platform', value: 'PC' },
+      { key: 'Year', value: '2024' }
+    ]);
+    expect(result.size).toBe(0);
+  });
+
+  it('returns empty set for empty array', () => {
+    expect(findDuplicateKeys([]).size).toBe(0);
+  });
+
+  it('detects case-insensitive duplicates', () => {
+    const result = findDuplicateKeys([
+      { key: 'Platform', value: 'PC' },
+      { key: 'platform', value: 'Switch' }
+    ]);
+    expect(result.has('platform')).toBe(true);
+    expect(result.size).toBe(1);
+  });
+
+  it('ignores empty keys', () => {
+    const result = findDuplicateKeys([
+      { key: '', value: 'a' },
+      { key: '', value: 'b' }
+    ]);
+    expect(result.size).toBe(0);
+  });
+
+  it('ignores whitespace-only keys', () => {
+    const result = findDuplicateKeys([
+      { key: '  ', value: 'a' },
+      { key: '  ', value: 'b' }
+    ]);
+    expect(result.size).toBe(0);
+  });
+
+  it('trims keys before comparing', () => {
+    const result = findDuplicateKeys([
+      { key: ' Platform ', value: 'PC' },
+      { key: 'platform', value: 'Switch' }
+    ]);
+    expect(result.has('platform')).toBe(true);
   });
 });

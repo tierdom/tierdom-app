@@ -4,6 +4,11 @@ export const MAX_PROPS = 10;
 export const MAX_KEY_LENGTH = 64;
 export const MAX_VALUE_LENGTH = 128;
 
+export function findDuplicateKeys(props: Prop[]): Set<string> {
+  const keys = props.map((p) => p.key.trim().toLowerCase()).filter(Boolean);
+  return new Set(keys.filter((k, i) => keys.indexOf(k) !== i));
+}
+
 export function validateProps(raw: unknown): Prop[] | string {
   if (!Array.isArray(raw)) return 'Props must be an array';
   if (raw.length > MAX_PROPS) return `Maximum ${MAX_PROPS} props allowed`;
