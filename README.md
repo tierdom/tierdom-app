@@ -190,7 +190,7 @@ Architectural decisions are documented as ADRs in [`docs/decisions/`](docs/decis
 | [0014](docs/decisions/0014-end-to-end-testing-strategy.md)              | End-to-End Testing Strategy              | Accepted |
 | [0015](docs/decisions/0015-unit-testing-strategy.md)                    | Unit Testing Strategy                    | Accepted |
 | [0016](docs/decisions/0016-accessibility-and-semantic-html.md)          | Accessibility and Semantic HTML          | Accepted |
-| [0017](docs/decisions/0017-replace-tags-with-item-props.md)             | Replace Tags with Item Props             | Proposed |
+| [0017](docs/decisions/0017-replace-tags-with-item-props.md)             | Replace Tags with Item Props             | Accepted |
 
 ## References
 

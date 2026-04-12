@@ -11,8 +11,9 @@ For the reasoning behind key decisions, see [ADR-0004](docs/decisions/0004-domai
   Has a slug, name, optional description, display order, and optional per-category tier cutoff overrides.
 - **TierListItem** — a rated item within a category.
   Carries a numeric score that maps to a tier, a display order, and optional Markdown description.
-- **Tag** — a shared label (keyed by slug) that can be attached to any item across categories.
-  Related to items via an **ItemTag** join table.
+- **Props** — an ordered list of key-value pairs stored as JSON on each item.
+  Used for category-specific metadata (e.g. Platform for games, Year/ISBN for books).
+  Max 10 per item, keys ≤ 64 chars, values ≤ 128 chars.
 - **Page** — a CMS-managed static page (e.g. Home, About).
   Standalone, no relationships to other entities.
 
@@ -32,10 +33,10 @@ Default cutoffs: S ≥ 90, A ≥ 75, B ≥ 60, C ≥ 45, D ≥ 30, E ≥ 15, F �
 ```mermaid
 erDiagram
     Category ||--o{ TierListItem : "has many"
-    TierListItem ||--o{ ItemTag : "has many"
-    Tag ||--o{ ItemTag : "has many"
     Page
 ```
+
+Props are stored as a JSON column on TierListItem, not as a separate entity.
 
 ## Ordering
 
