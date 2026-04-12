@@ -48,6 +48,7 @@
         categoryId: data.item.categoryId,
         imageHash: data.item.imageHash
       }}
+      initialProps={data.item.props}
       returnTarget={data.returnTarget}
       backUrl={data.backUrl}
     />

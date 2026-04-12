@@ -6,8 +6,10 @@
   import FormField from '$lib/components/admin/FormField.svelte';
   import ImageField from '$lib/components/admin/ImageField.svelte';
   import MarkdownField from '$lib/components/admin/MarkdownField.svelte';
+  import PropEditor from '$lib/components/admin/PropEditor.svelte';
   import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
   import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
+  import type { Prop } from '$lib/props';
 
   type Category = { id: string; name: string };
 
@@ -15,6 +17,7 @@
     mode,
     categories,
     initialValues = {},
+    initialProps = [],
     returnTarget,
     backUrl
   }: {
@@ -28,6 +31,7 @@
       categoryId?: string | null;
       imageHash?: string | null;
     };
+    initialProps?: Prop[];
     returnTarget: 'categories' | 'items';
     backUrl: string;
   } = $props();
@@ -97,6 +101,7 @@
     step={1}
   />
   <ImageField imageHash={initialValues.imageHash} onchange={markDirty} />
+  <PropEditor props={initialProps} onchange={() => markDirty()} />
   <MarkdownField label="Description" name="description" value={initialValues.description} />
 </form>
 

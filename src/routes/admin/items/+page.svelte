@@ -83,9 +83,23 @@
               <TierBadge {tier} />
             </td>
             <td class="py-2 text-primary">
-              <a href={resolve(`/admin/items/${item.id}`)} class="text-accent hover:underline">
-                {item.name}
-              </a>
+              <div class="flex items-center gap-1.5">
+                <a
+                  href={resolve(`/admin/items/${item.id}`)}
+                  class="shrink-0 text-accent hover:underline"
+                >
+                  {item.name}
+                </a>
+                {#if item.props.length > 0}
+                  <div class="hidden gap-1 lg:flex">
+                    {#each item.props as prop (prop.key)}
+                      <span class="rounded-full bg-subtle/30 px-1.5 text-[0.65rem] text-secondary"
+                        >{prop.key}: {prop.value}</span
+                      >
+                    {/each}
+                  </div>
+                {/if}
+              </div>
             </td>
             <td class="hidden w-40 truncate py-2 text-xs text-secondary sm:table-cell">
               {item.categoryName}

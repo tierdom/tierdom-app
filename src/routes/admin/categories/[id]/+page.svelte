@@ -210,17 +210,29 @@
       <SortableList items={data.items} onreorder={handleReorderItems}>
         {#snippet row(item)}
           {@const tier = scoreToTier(item.score as number, cutoffs)}
+          {@const itemProps = (item.props ?? []) as { key: string; value: string }[]}
           <div class="flex flex-1 items-center py-2">
             <div class="w-8 shrink-0">
               <TierBadge {tier} />
             </div>
             <div class="min-w-0 flex-1 text-primary">
-              <a
-                href={resolve(`/admin/items/${item.id}?returnTo=categories`)}
-                class="text-accent hover:underline"
-              >
-                {item.name}
-              </a>
+              <div class="flex items-center gap-1.5">
+                <a
+                  href={resolve(`/admin/items/${item.id}?returnTo=categories`)}
+                  class="shrink-0 text-accent hover:underline"
+                >
+                  {item.name}
+                </a>
+                {#if itemProps.length > 0}
+                  <div class="hidden gap-1 lg:flex">
+                    {#each itemProps as prop (prop.key)}
+                      <span class="rounded-full bg-subtle/30 px-1.5 text-[0.65rem] text-secondary"
+                        >{prop.key}: {prop.value}</span
+                      >
+                    {/each}
+                  </div>
+                {/if}
+              </div>
             </div>
             <div class="w-16 text-secondary">{item.score}</div>
             <div class="hidden w-24 text-xs text-secondary md:block">
