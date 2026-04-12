@@ -1,6 +1,7 @@
 <script lang="ts">
   import { flip } from 'svelte/animate';
-  import { Plus, X } from 'lucide-svelte';
+  import { Plus, Trash2 } from 'lucide-svelte';
+  import Button from '$lib/components/admin/Button.svelte';
   import type { Prop } from '$lib/props';
   import { MAX_PROPS, MAX_KEY_LENGTH, MAX_VALUE_LENGTH } from '$lib/props';
 
@@ -153,30 +154,23 @@
             maxlength={MAX_VALUE_LENGTH}
             value={item.value}
             oninput={(e) => handleInput(item.id, 'value', e.currentTarget.value)}
-            class="flex-[2] rounded border border-subtle bg-surface px-2 py-1.5 text-sm text-primary placeholder:text-secondary/50 focus:border-accent focus:outline-none"
+            class="flex-2 rounded border border-subtle bg-surface px-2 py-1.5 text-sm text-primary placeholder:text-secondary/50 focus:border-accent focus:outline-none"
           />
 
-          <button
-            type="button"
-            onclick={() => remove(item.id)}
-            class="shrink-0 rounded p-1 text-secondary transition-colors hover:text-red-400"
-            aria-label="Remove prop"
-          >
-            <X size={14} />
-          </button>
+          <Button variant="danger-ghost" compact type="button" onclick={() => remove(item.id)}>
+            <Trash2 size={12} />
+          </Button>
         </div>
       {/each}
     </div>
   {/if}
 
-  <button
-    type="button"
-    onclick={add}
-    disabled={items.length >= MAX_PROPS}
-    class="mt-1 inline-flex w-fit items-center gap-1 rounded px-2 py-1 text-xs text-accent transition-colors hover:text-primary disabled:opacity-40 disabled:hover:text-accent"
-  >
-    <Plus size={12} />Add prop
-  </button>
+  <div class="mt-1 flex">
+    <div class="drag-handle-spacer"></div>
+    <Button compact type="button" onclick={add} disabled={items.length >= MAX_PROPS}>
+      <Plus size={12} />Add prop
+    </Button>
+  </div>
 
   <input type="hidden" name="props" value={serialized} />
 </fieldset>
@@ -242,5 +236,11 @@
 
   .drag-handle:active {
     cursor: grabbing;
+  }
+
+  .drag-handle-spacer {
+    flex-shrink: 0;
+    width: calc(16px + 0.5rem);
+    margin-right: 0.375rem;
   }
 </style>
