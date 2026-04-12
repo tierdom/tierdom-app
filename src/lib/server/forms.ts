@@ -1,6 +1,6 @@
 import { slugify } from '$lib/server/slugify';
 import type { Tier } from '$lib/tier';
-import { type Prop, validateProps } from '$lib/props';
+import { type Prop, validateProps, validatePropKeys } from '$lib/props';
 
 type ReturnTarget = 'categories' | 'items';
 
@@ -10,6 +10,7 @@ export type CategoryFormResult =
       name: string;
       slug: string;
       description: string | null;
+      propKeys: string[];
       cutoffs: Record<`cutoff${Tier}`, number | null>;
     };
 
@@ -20,13 +21,27 @@ export function parseCategoryForm(data: FormData): CategoryFormResult {
   const slug = data.get('slug')?.toString()?.trim() || slugify(name);
   const description = data.get('description')?.toString()?.trim() || null;
 
+  let propKeys: string[] = [];
+  const propKeysRaw = data.get('propKeys')?.toString()?.trim();
+  if (propKeysRaw) {
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(propKeysRaw);
+    } catch {
+      return { error: 'Invalid prop keys format' };
+    }
+    const result = validatePropKeys(parsed);
+    if (typeof result === 'string') return { error: result };
+    propKeys = result;
+  }
+
   const cutoffs = {} as Record<`cutoff${Tier}`, number | null>;
   for (const tier of ['S', 'A', 'B', 'C', 'D', 'E', 'F'] as Tier[]) {
     const raw = data.get(`cutoff${tier}`)?.toString()?.trim();
     cutoffs[`cutoff${tier}`] = raw ? Number(raw) : null;
   }
 
-  return { name, slug, description, cutoffs };
+  return { name, slug, description, propKeys, cutoffs };
 }
 
 export type ItemFormResult =

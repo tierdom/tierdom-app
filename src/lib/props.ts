@@ -1,6 +1,7 @@
 export type Prop = { key: string; value: string };
 
 export const MAX_PROPS = 10;
+export const MAX_PROP_KEYS = 10;
 export const MAX_KEY_LENGTH = 64;
 export const MAX_VALUE_LENGTH = 128;
 
@@ -32,4 +33,26 @@ export function validateProps(raw: unknown): Prop[] | string {
   }
 
   return raw.map((e) => ({ key: (e as Prop).key.trim(), value: (e as Prop).value.trim() }));
+}
+
+export function validatePropKeys(raw: unknown): string[] | string {
+  if (!Array.isArray(raw)) return 'Prop keys must be an array';
+  if (raw.length > MAX_PROP_KEYS) return `Maximum ${MAX_PROP_KEYS} prop keys allowed`;
+
+  const seen = new Set<string>();
+  const result: string[] = [];
+
+  for (const entry of raw) {
+    if (typeof entry !== 'string') return 'Each prop key must be a string';
+    const trimmed = entry.trim();
+    if (!trimmed) return 'Prop keys must not be empty';
+    if (trimmed.length > MAX_KEY_LENGTH)
+      return `Key "${trimmed}" exceeds ${MAX_KEY_LENGTH} characters`;
+    const normalized = trimmed.toLowerCase();
+    if (seen.has(normalized)) return `Duplicate key "${trimmed}"`;
+    seen.add(normalized);
+    result.push(trimmed);
+  }
+
+  return result;
 }

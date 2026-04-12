@@ -11,7 +11,7 @@ export const actions: Actions = {
     const parsed = parseCategoryForm(data);
     if ('error' in parsed) return fail(400, { error: parsed.error });
 
-    const { name, slug, description, cutoffs } = parsed;
+    const { name, slug, description, propKeys, cutoffs } = parsed;
 
     const [maxOrder] = await db
       .select({ max: sql<number>`coalesce(max(${category.order}), -1)` })
@@ -21,6 +21,7 @@ export const actions: Actions = {
       slug,
       name,
       description,
+      propKeys,
       order: maxOrder.max + 1,
       ...cutoffs
     });

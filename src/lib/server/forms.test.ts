@@ -15,11 +15,12 @@ function form(entries: Record<string, string | string[]>): FormData {
 
 describe('parseCategoryForm', () => {
   it('parses a valid category form', () => {
-    expect.assertions(4);
+    expect.assertions(5);
     const result = parseCategoryForm(form({ name: 'Games', cutoffS: '95', cutoffA: '80' }));
     expect(result).not.toHaveProperty('error');
     if ('error' in result) return;
     expect(result.name).toBe('Games');
+    expect(result.propKeys).toEqual([]);
     expect(result.cutoffs.cutoffS).toBe(95);
     expect(result.cutoffs.cutoffA).toBe(80);
   });
@@ -67,6 +68,39 @@ describe('parseCategoryForm', () => {
     expect.assertions(1);
     const result = parseCategoryForm(form({ name: 'X' }));
     expect(result).toHaveProperty('description', null);
+  });
+
+  it('parses valid propKeys JSON', () => {
+    expect.assertions(1);
+    const propKeys = JSON.stringify(['Platform', 'Genre']);
+    const result = parseCategoryForm(form({ name: 'Games', propKeys }));
+    expect(result).toHaveProperty('propKeys', ['Platform', 'Genre']);
+  });
+
+  it('defaults propKeys to empty array when absent', () => {
+    expect.assertions(1);
+    const result = parseCategoryForm(form({ name: 'Games' }));
+    expect(result).toHaveProperty('propKeys', []);
+  });
+
+  it('rejects malformed propKeys JSON', () => {
+    expect.assertions(1);
+    const result = parseCategoryForm(form({ name: 'Games', propKeys: 'not json' }));
+    expect(result).toEqual({ error: 'Invalid prop keys format' });
+  });
+
+  it('rejects duplicate propKeys', () => {
+    expect.assertions(1);
+    const propKeys = JSON.stringify(['Platform', 'platform']);
+    const result = parseCategoryForm(form({ name: 'Games', propKeys }));
+    expect(result).toHaveProperty('error');
+  });
+
+  it('rejects empty propKey strings', () => {
+    expect.assertions(1);
+    const propKeys = JSON.stringify(['Platform', '']);
+    const result = parseCategoryForm(form({ name: 'Games', propKeys }));
+    expect(result).toHaveProperty('error');
   });
 });
 

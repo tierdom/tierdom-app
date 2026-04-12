@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import {
   validateProps,
+  validatePropKeys,
   findDuplicateKeys,
   MAX_PROPS,
+  MAX_PROP_KEYS,
   MAX_KEY_LENGTH,
   MAX_VALUE_LENGTH
 } from './props';
@@ -126,6 +128,53 @@ describe('validateProps', () => {
       { key: 'Year', value: '2024' }
     ]);
     expect(Array.isArray(result)).toBe(true);
+  });
+});
+
+describe('validatePropKeys', () => {
+  it('accepts an empty array', () => {
+    expect(validatePropKeys([])).toEqual([]);
+  });
+
+  it('accepts valid keys', () => {
+    expect(validatePropKeys(['Platform', 'Genre'])).toEqual(['Platform', 'Genre']);
+  });
+
+  it('trims keys', () => {
+    expect(validatePropKeys(['  Platform  '])).toEqual(['Platform']);
+  });
+
+  it('rejects non-array input', () => {
+    expect(validatePropKeys('nope')).toBe('Prop keys must be an array');
+    expect(validatePropKeys(null)).toBe('Prop keys must be an array');
+  });
+
+  it(`rejects more than ${MAX_PROP_KEYS} keys`, () => {
+    const tooMany = Array.from({ length: MAX_PROP_KEYS + 1 }, (_, i) => `k${i}`);
+    expect(validatePropKeys(tooMany)).toBe(`Maximum ${MAX_PROP_KEYS} prop keys allowed`);
+  });
+
+  it('rejects non-string entries', () => {
+    expect(validatePropKeys([42])).toBe('Each prop key must be a string');
+  });
+
+  it('rejects empty strings', () => {
+    expect(validatePropKeys([''])).toBe('Prop keys must not be empty');
+  });
+
+  it('rejects whitespace-only strings', () => {
+    expect(validatePropKeys(['  '])).toBe('Prop keys must not be empty');
+  });
+
+  it(`rejects key exceeding ${MAX_KEY_LENGTH} characters`, () => {
+    const longKey = 'k'.repeat(MAX_KEY_LENGTH + 1);
+    expect(validatePropKeys([longKey])).toBe(
+      `Key "${longKey}" exceeds ${MAX_KEY_LENGTH} characters`
+    );
+  });
+
+  it('rejects duplicate keys (case-insensitive)', () => {
+    expect(validatePropKeys(['Platform', 'platform'])).toBe('Duplicate key "platform"');
   });
 });
 
