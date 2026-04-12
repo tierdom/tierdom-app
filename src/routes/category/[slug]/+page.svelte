@@ -66,10 +66,12 @@
     <div class="mt-8 flex flex-col gap-1">
       {#each data.tiers as { tier, items } (tier)}
         <div class="flex overflow-hidden border-2 {tierBorderStyles[tier]}">
+          <h2 class="sr-only">{tier} Tier</h2>
           <div
             class="flex w-14 shrink-0 items-start justify-center pt-3 text-xl font-black {tierStyles[
               tier
             ]}"
+            aria-hidden="true"
           >
             {tier}
           </div>
