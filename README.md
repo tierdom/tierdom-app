@@ -187,6 +187,7 @@ Architectural decisions are documented as ADRs in [`docs/decisions/`](docs/decis
 | [0013](docs/decisions/0013-uuid-primary-keys.md)                        | UUID Primary Keys                        | Accepted |
 | [0014](docs/decisions/0014-end-to-end-testing-strategy.md)              | End-to-End Testing Strategy              | Accepted |
 | [0015](docs/decisions/0015-unit-testing-strategy.md)                    | Unit Testing Strategy                    | Accepted |
+| [0016](docs/decisions/0016-accessibility-and-semantic-html.md)          | Accessibility and Semantic HTML          | Proposed |
 
 ## References
 
