@@ -30,6 +30,11 @@ Use the Svelte MCP server's `list-sections` and `get-documentation` tools when w
 
 Target: **WCAG 2.1 Level AA** ([ADR-0016](docs/decisions/0016-accessibility-and-semantic-html.md)). Svelte compiler a11y warnings are enforced via `svelte-check` in the pre-commit hook — don't suppress them (`svelte-ignore a11y_*`) without strong justification. Smoke and deterministic E2E suites include axe-core scans — run them after UI-visible changes. Pages must use semantic HTML and read well as plain unstyled documents.
 
+## Code style
+
+- Don't use section-heading comments (e.g. `// ─── Section ───`) to delimit code within a file. If a block of code warrants its own heading, extract it to a separate module.
+- Keep SvelteKit-idiomatic imports (`$env/dynamic/private`, `$app/paths`, etc.) in app code. When code also needs to run from standalone scripts (seed, tests), isolate the SvelteKit-free logic into its own module that both the app and the script can import.
+
 ## Principles
 
 - **Self-hostable first.** Every decision should make the app easier to run on a bare VPS with a single Docker command. No external services, cloud platforms, or paid infrastructure.
