@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { pushState } from '$app/navigation';
+  import { goto, pushState } from '$app/navigation';
   import { resolve } from '$app/paths';
   import { page } from '$app/state';
   import TierListItem from '$lib/components/TierListItem.svelte';
@@ -44,7 +44,10 @@
   }
 
   function closeItem() {
-    pushState(resolve(page.url.pathname), {});
+    // Use goto (not pushState) because pushState never updates page.url
+    // (sveltejs/kit#11492). After a fresh load with ?item=slug, pushState
+    // would leave page.url.searchParams stale and the dialog would stay open.
+    goto(resolve(page.url.pathname), { noScroll: true, keepFocus: true });
   }
 </script>
 
