@@ -6,7 +6,7 @@ allowed-tools: Bash Read
 
 Run the full linting and formatting suite for this SvelteKit + TypeScript project.
 
-1. Run `npm run check` (svelte-check for TypeScript and Svelte type errors).
+1. Run `npm run check` (svelte-check for TypeScript, Svelte type errors, and Svelte a11y warnings).
 2. Run `npm run lint` (ESLint for code quality issues).
 3. Run `npm run format -- --check` (Prettier for formatting violations).
 4. Summarize all issues found grouped by type (type errors, lint errors, formatting).

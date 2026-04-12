@@ -21,8 +21,8 @@ Run tests for the Tierdom project.
 ## When to use what
 
 - **After changing pure logic (scoring, slugify, validation, etc.):** Run unit tests. They are fast and run in the pre-commit hook already.
-- **After UI-visible changes (quick check):** Run smoke tests. They work against the running dev server with any database state.
-- **Before merging / after schema changes:** Run deterministic tests. They reset the DB, seed fresh data, and verify everything against known state.
+- **After UI-visible changes (quick check):** Run smoke tests. They work against the running dev server with any database state. This includes axe-core accessibility checks.
+- **Before merging / after schema changes:** Run deterministic tests. They reset the DB, seed fresh data, and verify everything against known state. This includes axe-core accessibility checks for all public and admin pages.
 - **After creating or modifying a single feature:** Use ad-hoc verification (see below) or run the relevant individual test file.
 
 ## Ad-hoc verification via Playwright MCP

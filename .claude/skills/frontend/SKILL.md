@@ -67,6 +67,19 @@ Prefer modern browser features directly:
 - `:has()`, `:is()`, `:where()` for expressive selectors
 - `scrollbar-color` / `scrollbar-width` for custom scrollbars
 
+## Accessibility
+
+Target: **WCAG 2.1 Level AA**. Pages must read well as plain unstyled HTML.
+
+- Use semantic elements: `<nav>`, `<main>`, `<section>`, `<table>`, `<ul>`, `<dialog>`, etc.
+- Every page needs exactly one `<h1>`; headings must not skip levels
+- All form controls need a visible `<label>` or `aria-label`
+- Decorative SVGs/icons get `aria-hidden="true"`
+- Interactive custom widgets need proper ARIA roles (`combobox`, `menu`, `listbox`, etc.)
+- Color must not be the only way to convey information
+- Links inside text blocks need underlines (not just color difference)
+- Don't suppress Svelte a11y warnings (`svelte-ignore a11y_*`) without strong justification
+
 ## Code style
 
 - Alphabetise Tailwind class strings (Prettier handles this automatically)

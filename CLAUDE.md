@@ -26,6 +26,10 @@ Use **Playwright MCP** (`browser_navigate`, `browser_snapshot`, `browser_evaluat
 
 Use the Svelte MCP server's `list-sections` and `get-documentation` tools when working on Svelte/SvelteKit code. Run `svelte-autofixer` on new or modified `.svelte` files before finalising.
 
+## Accessibility
+
+Target: **WCAG 2.1 Level AA** ([ADR-0016](docs/decisions/0016-accessibility-and-semantic-html.md)). Svelte compiler a11y warnings are enforced via `svelte-check` in the pre-commit hook — don't suppress them (`svelte-ignore a11y_*`) without strong justification. Smoke and deterministic E2E suites include axe-core scans — run them after UI-visible changes. Pages must use semantic HTML and read well as plain unstyled documents.
+
 ## Principles
 
 - **Self-hostable first.** Every decision should make the app easier to run on a bare VPS with a single Docker command. No external services, cloud platforms, or paid infrastructure.
