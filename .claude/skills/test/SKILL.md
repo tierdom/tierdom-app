@@ -8,15 +8,15 @@ Run tests for the Tierdom project.
 
 ## Quick reference
 
-| What              | Command                                                                                     | Notes                                   |
-| ----------------- | ------------------------------------------------------------------------------------------- | --------------------------------------- |
-| Unit tests        | `npm run test:unit -- --run`                                                                | ~1s, no browser, no DB                  |
-| Single unit file  | `npx vitest run src/lib/server/slugify.test.ts`                                             | Run one unit test file                  |
-| E2E smoke         | `npx playwright test --project=smoke`                                                       | Requires dev server on :5173            |
-| E2E deterministic | `npm run test:e2e:reset && npx playwright test --project=det-setup --project=deterministic` | Resets DB, builds, runs against preview |
-| Single E2E file   | `npx playwright test <path> --project=<smoke\|deterministic>`                               | Run one E2E file                        |
-| All tests         | `npm test`                                                                                  | Unit + all E2E                          |
-| Show last report  | `npx playwright show-report`                                                                | Opens HTML report                       |
+| What              | Command                                                       | Notes                                   |
+| ----------------- | ------------------------------------------------------------- | --------------------------------------- |
+| Unit tests        | `npm run test:unit -- --run`                                  | ~1s, no browser, no DB                  |
+| Single unit file  | `npm run test:unit -- --run src/lib/server/slugify.test.ts`   | Run one unit test file                  |
+| E2E smoke         | `npm run test:e2e:smoke`                                      | Requires dev server on :5173            |
+| E2E deterministic | `npm run test:e2e:reset && npm run test:e2e:deterministic`    | Resets DB, builds, runs against preview |
+| Single E2E file   | `npx playwright test <path> --project=<smoke\|deterministic>` | Run one E2E file                        |
+| All tests         | `npm test`                                                    | Unit + all E2E                          |
+| Show last report  | `npx playwright show-report`                                  | Opens HTML report                       |
 
 ## When to use what
 
