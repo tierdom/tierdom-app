@@ -21,9 +21,18 @@
       open = false;
     }
   }
+
+  function handleKeydown(e: KeyboardEvent) {
+    if (e.key === 'Escape') {
+      open = false;
+    }
+  }
 </script>
 
-<svelte:window onclick={open ? handleClickOutside : undefined} />
+<svelte:window
+  onclick={open ? handleClickOutside : undefined}
+  onkeydown={open ? handleKeydown : undefined}
+/>
 
 <div class="relative" data-user-menu>
   <button
@@ -32,6 +41,7 @@
       : 'border-subtle text-secondary hover:bg-surface hover:text-primary'}"
     aria-label={user ? `Signed in as ${user.username}` : 'Sign in'}
     aria-expanded={open}
+    aria-controls="user-menu"
     onclick={() => (open = !open)}
   >
     {#if user}
@@ -42,12 +52,17 @@
   </button>
 
   {#if open}
-    <div class="absolute right-0 mt-2 w-48 rounded border border-subtle bg-elevated py-1 shadow-lg">
+    <div
+      id="user-menu"
+      role="menu"
+      class="absolute right-0 mt-2 w-48 rounded border border-subtle bg-elevated py-1 shadow-lg"
+    >
       {#if user}
         <p class="px-3 py-2 text-xs text-secondary">Signed in as {user.username}</p>
         <div class="border-t border-subtle"></div>
         <a
           href={resolve('/admin')}
+          role="menuitem"
           class="block px-3 py-2 text-sm text-secondary transition-colors hover:bg-surface hover:text-primary"
         >
           Admin
@@ -55,6 +70,7 @@
         <form method="POST" action="/admin/logout" use:enhance>
           <button
             type="submit"
+            role="menuitem"
             class="w-full cursor-pointer px-3 py-2 text-left text-sm text-secondary transition-colors hover:bg-surface hover:text-primary"
           >
             Sign out
@@ -63,6 +79,7 @@
       {:else}
         <a
           href={resolve('/admin/login')}
+          role="menuitem"
           class="block px-3 py-2 text-sm text-secondary transition-colors hover:bg-surface hover:text-primary"
         >
           Sign in

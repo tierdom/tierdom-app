@@ -97,7 +97,7 @@
 </section>
 
 {#if selectedItem}
-  <Dialog open onclose={closeItem}>
+  <Dialog open onclose={closeItem} label="{selectedItem.name} — item details">
     <ItemDetail
       name={selectedItem.name}
       score={selectedItem.score}

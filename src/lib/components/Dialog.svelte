@@ -4,10 +4,11 @@
   type Props = {
     open: boolean;
     onclose: () => void;
+    label?: string;
     children: Snippet;
   };
 
-  let { open, onclose, children }: Props = $props();
+  let { open, onclose, label, children }: Props = $props();
   let dialogEl: HTMLDialogElement | undefined = $state();
 
   $effect(() => {
@@ -30,6 +31,7 @@
 <dialog
   bind:this={dialogEl}
   class="dialog"
+  aria-label={label}
   onclick={handleClick}
   oncancel={(e) => {
     e.preventDefault();
@@ -51,6 +53,7 @@
         fill="none"
         stroke="currentColor"
         stroke-width="2"
+        aria-hidden="true"
       >
         <path d="M5 5l10 10M15 5L5 15" />
       </svg>

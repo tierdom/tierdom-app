@@ -36,7 +36,14 @@
     {label}{#if required}<span class="text-red-400"> *</span>{/if}
   </label>
   {#if multiline}
-    <textarea id={name} {name} {required} class={fieldClass} {rows}>{value ?? ''}</textarea>
+    <textarea
+      id={name}
+      {name}
+      {required}
+      class={fieldClass}
+      {rows}
+      aria-describedby={help ? `${name}-help` : undefined}>{value ?? ''}</textarea
+    >
   {:else}
     <input
       id={name}
@@ -48,9 +55,10 @@
       {max}
       {step}
       class={fieldClass}
+      aria-describedby={help ? `${name}-help` : undefined}
     />
   {/if}
   {#if help}
-    <p class="text-xs text-secondary/70">{help}</p>
+    <p id="{name}-help" class="text-xs text-secondary/70">{help}</p>
   {/if}
 </div>
