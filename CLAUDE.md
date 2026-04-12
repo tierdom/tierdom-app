@@ -38,6 +38,7 @@ Prefer `npm run <script>` over `npx <tool>` whenever `package.json` has a matchi
 
 - Don't use section-heading comments (e.g. `// ─── Section ───`) to delimit code within a file. If a block of code warrants its own heading, extract it to a separate module.
 - Keep SvelteKit-idiomatic imports (`$env/dynamic/private`, `$app/paths`, etc.) in app code. When code also needs to run from standalone scripts (seed, tests), isolate the SvelteKit-free logic into its own module that both the app and the script can import.
+- When a Svelte component grows complex, extract pure logic (filtering, validation, classification) into the nearest `.ts` module so it can be unit tested without rendering the component.
 
 ## Principles
 
