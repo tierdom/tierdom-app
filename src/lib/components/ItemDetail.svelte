@@ -1,16 +1,18 @@
 <script lang="ts">
   import Prose from '$lib/components/Prose.svelte';
   import { scoreToBarColor, tierColors } from '$lib/tier';
+  import type { Prop } from '$lib/props';
 
   type Props = {
     name: string;
     score: number;
     descriptionHtml?: string | null;
     tier: string;
+    props?: Prop[];
     image?: string | null;
   };
 
-  let { name, score, descriptionHtml, tier, image }: Props = $props();
+  let { name, score, descriptionHtml, tier, props = [], image }: Props = $props();
 
   let barColor = $derived(scoreToBarColor(score));
 </script>
@@ -33,6 +35,16 @@
   <div class="h-3 w-full overflow-hidden bg-black/30">
     <div class="h-full opacity-80" style:width="{score}%" style:background={barColor}></div>
   </div>
+
+  {#if props.length > 0}
+    <div class="flex flex-wrap gap-1.5">
+      {#each props as p (p.key)}
+        <span class="rounded-full border border-subtle px-2.5 py-0.5 text-xs text-secondary"
+          >{p.key}: {p.value}</span
+        >
+      {/each}
+    </div>
+  {/if}
 
   {#if descriptionHtml}
     <Prose html={descriptionHtml} size="sm" />

@@ -53,7 +53,7 @@ test.describe('category page', () => {
     await expect(page.getByText('No items in this category yet')).toBeVisible();
   });
 
-  test('item detail shows score', async ({ page }) => {
+  test('item detail shows score and props', async ({ page }) => {
     await page.goto('/category/video-games');
     await page.getByText('Hollow Knight').click();
 
@@ -61,6 +61,7 @@ test.describe('category page', () => {
     await expect(dialog).toBeVisible();
     await expect(dialog.getByText('Hollow Knight')).toBeVisible();
     await expect(dialog.getByText('/ 100')).toBeVisible();
+    await expect(dialog.getByText('Platform: PC')).toBeVisible();
   });
 
   test('item detail closes with X button', async ({ page }) => {
