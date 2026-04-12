@@ -21,7 +21,7 @@
         <div class="min-w-0">
           <p class="font-medium text-primary">{pg.title}</p>
           <p class="text-xs text-secondary">/{pg.slug}</p>
-          <p class="mt-1 truncate text-xs text-secondary/60">{pg.content.slice(0, 120)}…</p>
+          <p class="mt-1 truncate text-xs text-secondary">{pg.content.slice(0, 120)}…</p>
         </div>
         <span class="text-xs text-secondary">Edit &rarr;</span>
       </a>
