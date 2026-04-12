@@ -12,7 +12,7 @@ This project has purpose-built skills in `.claude/skills/` — use them instead 
 
 ## Testing
 
-Use `/test` for all testing — unit, E2E, and ad-hoc Playwright MCP verification. **Unit tests** run automatically in the pre-commit hook and cover pure logic (~1s). Run **smoke tests** after UI-visible changes (quick, any DB state). Run **deterministic tests** before merging or after schema changes (resets DB, full validation). Skip tests for config-only or docs-only work. Test infrastructure must never share data paths with the dev server — all test artifacts live in the gitignored `test-data/` directory.
+Use `/test` for all testing — unit, E2E, and ad-hoc Playwright MCP verification. **Unit tests** and **svelte-check** run automatically in the pre-commit hook (~5s). Run **smoke tests** after UI-visible changes (quick, any DB state). Run **deterministic tests** before merging or after schema changes (resets DB, full validation). Skip tests for config-only or docs-only work. Test infrastructure must never share data paths with the dev server — all test artifacts live in the gitignored `test-data/` directory.
 
 ## ADRs
 
