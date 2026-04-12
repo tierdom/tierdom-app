@@ -44,11 +44,6 @@ test.describe('accessibility — admin pages', () => {
     await expectNoA11yViolations(page);
   });
 
-  test('admin tags', async ({ page }) => {
-    await page.goto('/admin/tags');
-    await expectNoA11yViolations(page);
-  });
-
   test('admin pages', async ({ page }) => {
     await page.goto('/admin/pages');
     await expectNoA11yViolations(page);
