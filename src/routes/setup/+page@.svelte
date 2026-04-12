@@ -5,7 +5,7 @@
 
   let { form }: { form: ActionData } = $props();
 
-  let selected = $state('minimal');
+  let selected = $state('');
   let generateImages = $state(true);
   let password = $state('');
 
@@ -35,7 +35,7 @@
   <title>Setup — tierdom</title>
 </svelte:head>
 
-<div class="flex min-h-screen items-start justify-center px-4 pt-[15vh] md:pt-[20vh]">
+<div class="flex min-h-screen items-start justify-center px-4 pt-[15vh] pb-16 md:pt-[20vh]">
   <div class="w-full max-w-md">
     <h1 class="mb-2 text-center text-xl font-bold text-primary">Welcome to tierdom</h1>
     <p class="mb-8 text-center text-sm text-secondary">
@@ -70,62 +70,61 @@
         </label>
       {/each}
 
-      <fieldset class="mt-3 flex flex-col gap-3 border-t border-subtle pt-4">
-        <legend class="mb-1 text-xs font-semibold tracking-wide text-secondary uppercase"
-          >Options</legend
-        >
+      {#if selected}
+        <fieldset class="mt-3 flex flex-col gap-4 border-t border-subtle pt-4">
+          <legend class="mb-1 text-xs font-semibold tracking-wide text-secondary uppercase"
+            >Options</legend
+          >
 
-        <div class="rounded-lg border border-subtle bg-surface px-4 py-3">
-          <span class="text-sm font-semibold text-primary">Admin account</span>
-          <div class="mt-2 flex flex-col gap-2">
-            <label class="flex flex-col gap-1">
-              <span class="text-xs text-secondary">Username</span>
+          <div>
+            <span class="text-sm font-semibold text-primary">Sample images</span>
+            <label class="mt-2 grid cursor-pointer grid-cols-[1rem_1fr] gap-x-3 gap-y-0.5">
               <input
-                type="text"
-                name="username"
-                value="admin"
-                required
-                autocomplete="username"
-                class="rounded border border-subtle bg-canvas px-3 py-1.5 text-sm text-primary focus:border-accent focus:outline-none"
+                type="checkbox"
+                name="images"
+                value="1"
+                bind:checked={generateImages}
+                class="self-center accent-accent"
               />
-            </label>
-            <label class="flex flex-col gap-1">
-              <span class="text-xs text-secondary">Password</span>
-              <input
-                type="password"
-                name="password"
-                bind:value={password}
-                autocomplete="new-password"
-                class="rounded border border-subtle bg-canvas px-3 py-1.5 text-sm text-primary focus:border-accent focus:outline-none"
-              />
-              {#if !password}
-                <span class="text-xs font-medium text-amber-400"
-                  >Defaults to "admin" — only for demos, change for production</span
-                >
-              {/if}
+              <span class="text-xs text-secondary">
+                Generate a unique placeholder image for every item
+              </span>
             </label>
           </div>
-        </div>
 
-        {#if selected === 'demo'}
-          <label
-            class="grid cursor-pointer grid-cols-[1rem_1fr] gap-x-3 gap-y-1 rounded-lg border border-subtle bg-surface px-4 py-3 hover:border-accent/40"
-          >
-            <input
-              type="checkbox"
-              name="images"
-              value="1"
-              bind:checked={generateImages}
-              class="self-center accent-accent"
-            />
-            <span class="text-sm font-semibold text-primary">Generate sample images</span>
-            <p class="col-start-2 text-xs text-secondary">
-              Create a unique placeholder image for every demo item. Makes the tier lists look fully
-              populated.
-            </p>
-          </label>
-        {/if}
-      </fieldset>
+          <div>
+            <span class="text-sm font-semibold text-primary">Admin account</span>
+            <div class="mt-2 flex flex-col gap-2">
+              <label class="flex flex-col gap-1">
+                <span class="text-xs text-secondary">Username</span>
+                <input
+                  type="text"
+                  name="username"
+                  value="admin"
+                  required
+                  autocomplete="username"
+                  class="rounded border border-subtle bg-canvas px-3 py-1.5 text-sm text-primary focus:border-accent focus:outline-none"
+                />
+              </label>
+              <label class="flex flex-col gap-1">
+                <span class="text-xs text-secondary">Password</span>
+                <input
+                  type="password"
+                  name="password"
+                  bind:value={password}
+                  autocomplete="new-password"
+                  class="rounded border border-subtle bg-canvas px-3 py-1.5 text-sm text-primary focus:border-accent focus:outline-none"
+                />
+                {#if !password}
+                  <span class="text-xs font-medium text-amber-400"
+                    >Defaults to "admin" — only for demos, change for production</span
+                  >
+                {/if}
+              </label>
+            </div>
+          </div>
+        </fieldset>
+      {/if}
 
       <div class="mt-4">
         <Button type="submit">Finalize setup...</Button>
