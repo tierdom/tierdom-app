@@ -1,6 +1,6 @@
 <script lang="ts">
   import { flip } from 'svelte/animate';
-  import { Plus, Trash2 } from 'lucide-svelte';
+  import { Plus, Sparkle, Trash2 } from 'lucide-svelte';
   import Button from '$lib/components/admin/Button.svelte';
   import type { Prop } from '$lib/props';
   import {
@@ -171,7 +171,6 @@
           class:dragging={draggedId === item.id}
           class:drop-above={dropTargetId === item.id && dropPosition === 'above'}
           class:drop-below={dropTargetId === item.id && dropPosition === 'below'}
-          class:non-standard={isNonStandard(item.key)}
           role="listitem"
           ondragover={(e) => handleDragOver(e, item)}
           ondragleave={(e) => handleDragLeave(e, item)}
@@ -196,75 +195,82 @@
             </svg>
           </button>
 
-          <div class="relative flex-1">
-            <input
-              type="text"
-              placeholder="Key"
-              maxlength={MAX_KEY_LENGTH}
-              value={item.key}
-              role="combobox"
-              aria-expanded={activeComboboxId === item.id && filteredSuggestions.length > 0}
-              aria-controls="propkey-listbox-{item.id}"
-              aria-activedescendant={highlightedIndex >= 0 && activeComboboxId === item.id
-                ? `propkey-option-${item.id}-${highlightedIndex}`
-                : undefined}
-              aria-autocomplete="list"
-              title={isNonStandard(item.key)
-                ? 'Custom key (not in category suggestions)'
-                : undefined}
-              oninput={(e) => {
-                handleInput(item.id, 'key', e.currentTarget.value);
-                activeComboboxId = item.id;
-                highlightedIndex = -1;
-              }}
-              onfocus={() => {
-                activeComboboxId = item.id;
-                highlightedIndex = -1;
-              }}
-              onblur={() => {
-                setTimeout(() => {
-                  if (activeComboboxId === item.id) activeComboboxId = null;
-                }, 150);
-              }}
-              onkeydown={(e) => handleComboboxKeydown(e, item.id)}
-              class="w-full rounded border bg-surface px-2 py-1.5 text-sm text-primary placeholder:text-secondary/50 focus:outline-none {isDuplicate(
-                item.key
-              )
-                ? 'border-red-500/60 focus:border-red-500'
-                : 'border-subtle focus:border-accent'}"
-            />
-            {#if activeComboboxId === item.id && filteredSuggestions.length > 0}
-              <ul
-                id="propkey-listbox-{item.id}"
-                role="listbox"
-                class="absolute top-full left-0 z-10 mt-1 max-h-40 w-full overflow-auto rounded border border-subtle bg-surface shadow-lg"
-              >
-                {#each filteredSuggestions as suggestion, i (suggestion)}
-                  <li
-                    id="propkey-option-{item.id}-{i}"
-                    role="option"
-                    aria-selected={i === highlightedIndex}
-                    class="cursor-pointer px-2 py-1.5 text-sm {i === highlightedIndex
-                      ? 'bg-accent/20 text-primary'
-                      : 'text-secondary hover:bg-subtle/30'}"
-                    onmousedown={(e) => {
-                      e.preventDefault();
-                      selectSuggestion(item.id, suggestion);
-                    }}
-                  >
-                    {suggestion}
-                  </li>
-                {/each}
-              </ul>
+          <div class="key-cell">
+            <div class="relative min-w-0 flex-1">
+              <input
+                type="text"
+                placeholder="Key"
+                maxlength={MAX_KEY_LENGTH}
+                value={item.key}
+                role="combobox"
+                aria-expanded={activeComboboxId === item.id && filteredSuggestions.length > 0}
+                aria-controls="propkey-listbox-{item.id}"
+                aria-activedescendant={highlightedIndex >= 0 && activeComboboxId === item.id
+                  ? `propkey-option-${item.id}-${highlightedIndex}`
+                  : undefined}
+                aria-autocomplete="list"
+                oninput={(e) => {
+                  handleInput(item.id, 'key', e.currentTarget.value);
+                  activeComboboxId = item.id;
+                  highlightedIndex = -1;
+                }}
+                onfocus={() => {
+                  activeComboboxId = item.id;
+                  highlightedIndex = -1;
+                }}
+                onblur={() => {
+                  setTimeout(() => {
+                    if (activeComboboxId === item.id) activeComboboxId = null;
+                  }, 150);
+                }}
+                onkeydown={(e) => handleComboboxKeydown(e, item.id)}
+                class="w-full rounded border px-2 py-1.5 text-sm text-primary placeholder:text-secondary/50 focus:outline-none {isNonStandard(
+                  item.key
+                )
+                  ? 'bg-yellow-500/5'
+                  : 'bg-surface'} {isDuplicate(item.key)
+                  ? 'border-red-500/60 focus:border-red-500'
+                  : 'border-subtle focus:border-accent'}"
+              />
+              {#if activeComboboxId === item.id && filteredSuggestions.length > 0}
+                <ul
+                  id="propkey-listbox-{item.id}"
+                  role="listbox"
+                  class="absolute top-full left-0 z-10 mt-1 max-h-40 w-full overflow-auto rounded border border-subtle bg-surface shadow-lg"
+                >
+                  {#each filteredSuggestions as suggestion, i (suggestion)}
+                    <li
+                      id="propkey-option-{item.id}-{i}"
+                      role="option"
+                      aria-selected={i === highlightedIndex}
+                      class="cursor-pointer px-2 py-1.5 text-sm {i === highlightedIndex
+                        ? 'bg-accent/20 text-primary'
+                        : 'text-secondary hover:bg-subtle/30'}"
+                      onmousedown={(e) => {
+                        e.preventDefault();
+                        selectSuggestion(item.id, suggestion);
+                      }}
+                    >
+                      {suggestion}
+                    </li>
+                  {/each}
+                </ul>
+              {/if}
+            </div>
+            {#if isNonStandard(item.key)}
+              <span class="custom-key-icon" title="Custom key (not in category suggestions)">
+                <Sparkle size={14} aria-label="Custom key" />
+              </span>
             {/if}
           </div>
+
           <input
             type="text"
             placeholder="Value"
             maxlength={MAX_VALUE_LENGTH}
             value={item.value}
             oninput={(e) => handleInput(item.id, 'value', e.currentTarget.value)}
-            class="flex-2 rounded border border-subtle bg-surface px-2 py-1.5 text-sm text-primary placeholder:text-secondary/50 focus:border-accent focus:outline-none"
+            class="min-w-0 rounded border border-subtle bg-surface px-2 py-1.5 text-sm text-primary placeholder:text-secondary/50 focus:border-accent focus:outline-none"
           />
 
           <Button variant="danger-ghost" compact type="button" onclick={() => remove(item.id)}>
@@ -299,7 +305,8 @@
   }
 
   .prop-row {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto 1fr 1.5fr auto;
     align-items: center;
     gap: 0.375rem;
     padding: 0.25rem 0;
@@ -311,9 +318,18 @@
     opacity: 0.4;
   }
 
-  .prop-row.non-standard {
-    border-left: 2px dashed var(--c-secondary);
-    padding-left: 0.25rem;
+  .key-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    min-width: 0;
+  }
+
+  .custom-key-icon {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    color: #ca8a04;
   }
 
   .prop-row.drop-above::before {
