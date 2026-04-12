@@ -186,14 +186,15 @@
   <div class="mt-10 flex items-center gap-3">
     <h2 class="text-lg font-bold text-primary">Items ({data.items.length})</h2>
     {#if data.items.length > 1}
-      <button
-        type="button"
-        class="cursor-pointer text-xs text-secondary hover:text-primary"
-        onclick={handleSortByScore}
-      >
-        Sort by score
-      </button>
+      <Button variant="secondary" compact onclick={handleSortByScore}>Sort by score</Button>
     {/if}
+    <Button
+      variant="secondary"
+      compact
+      href={resolve(`/admin/items/new-item?category=${data.category.id}&returnTo=categories`)}
+    >
+      <Plus size={12} />New item
+    </Button>
   </div>
 
   {#if data.items.length > 0}
