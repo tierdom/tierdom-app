@@ -58,7 +58,6 @@ Known issues, bugs, and small TODO's:
 - [ ] `aria-live` regions for loading states and form feedback (a11y follow-up)
 - [ ] Improve image upload (better checks on file type and limit, UX improvements)
 - [ ] Require double-confirmation for heavy deletes (e.g. category)
-- [ ] Two database seeds with sample data should get sample images too
 - [ ] Add `eslint-plugin-better-tailwindcss` to catch deprecated Tailwind v4 classes in lint
 - [ ] Session cookies are missing `httpOnly` and `secure` flags
 - [ ] Security headers (CSP, X-Frame-Options, X-Content-Type-Options) not yet configured
