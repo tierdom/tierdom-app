@@ -7,6 +7,7 @@
 
   let selected = $state('minimal');
   let generateImages = $state(true);
+  let password = $state('');
 
   const presets = [
     {
@@ -69,11 +70,44 @@
         </label>
       {/each}
 
-      {#if selected === 'demo'}
-        <fieldset class="mt-3 flex flex-col gap-2 border-t border-subtle pt-4">
-          <legend class="mb-1 text-xs font-semibold tracking-wide text-secondary uppercase"
-            >Options</legend
-          >
+      <fieldset class="mt-3 flex flex-col gap-3 border-t border-subtle pt-4">
+        <legend class="mb-1 text-xs font-semibold tracking-wide text-secondary uppercase"
+          >Options</legend
+        >
+
+        <div class="rounded-lg border border-subtle bg-surface px-4 py-3">
+          <span class="text-sm font-semibold text-primary">Admin account</span>
+          <div class="mt-2 flex flex-col gap-2">
+            <label class="flex flex-col gap-1">
+              <span class="text-xs text-secondary">Username</span>
+              <input
+                type="text"
+                name="username"
+                value="admin"
+                required
+                autocomplete="username"
+                class="rounded border border-subtle bg-canvas px-3 py-1.5 text-sm text-primary focus:border-accent focus:outline-none"
+              />
+            </label>
+            <label class="flex flex-col gap-1">
+              <span class="text-xs text-secondary">Password</span>
+              <input
+                type="password"
+                name="password"
+                bind:value={password}
+                autocomplete="new-password"
+                class="rounded border border-subtle bg-canvas px-3 py-1.5 text-sm text-primary focus:border-accent focus:outline-none"
+              />
+              {#if !password}
+                <span class="text-xs font-medium text-amber-400"
+                  >Defaults to "admin" — only for demos, change for production</span
+                >
+              {/if}
+            </label>
+          </div>
+        </div>
+
+        {#if selected === 'demo'}
           <label
             class="grid cursor-pointer grid-cols-[1rem_1fr] gap-x-3 gap-y-1 rounded-lg border border-subtle bg-surface px-4 py-3 hover:border-accent/40"
           >
@@ -90,8 +124,8 @@
               populated.
             </p>
           </label>
-        </fieldset>
-      {/if}
+        {/if}
+      </fieldset>
 
       <div class="mt-4">
         <Button type="submit">Finalize setup...</Button>
