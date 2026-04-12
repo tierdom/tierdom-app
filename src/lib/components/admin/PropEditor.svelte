@@ -3,7 +3,14 @@
   import { Plus, Trash2 } from 'lucide-svelte';
   import Button from '$lib/components/admin/Button.svelte';
   import type { Prop } from '$lib/props';
-  import { MAX_PROPS, MAX_KEY_LENGTH, MAX_VALUE_LENGTH, findDuplicateKeys } from '$lib/props';
+  import {
+    MAX_PROPS,
+    MAX_KEY_LENGTH,
+    MAX_VALUE_LENGTH,
+    findDuplicateKeys,
+    filterSuggestions,
+    isNonStandardKey
+  } from '$lib/props';
 
   type InternalProp = Prop & { id: string };
 
@@ -116,19 +123,11 @@
   let highlightedIndex = $state(-1);
 
   let filteredSuggestions = $derived.by(() => {
-    if (!activeComboboxId || suggestedKeys.length === 0) return [];
+    if (!activeComboboxId) return [];
     const item = items.find((i) => i.id === activeComboboxId);
     if (!item) return [];
-    const query = item.key.toLowerCase();
-    const usedKeys = new Set(
-      items
-        .filter((i) => i.id !== activeComboboxId)
-        .map((i) => i.key.trim().toLowerCase())
-        .filter(Boolean)
-    );
-    return suggestedKeys.filter(
-      (k) => k.toLowerCase().includes(query) && !usedKeys.has(k.toLowerCase())
-    );
+    const otherKeys = items.filter((i) => i.id !== activeComboboxId).map((i) => i.key);
+    return filterSuggestions(suggestedKeys, item.key, otherKeys);
   });
 
   function selectSuggestion(id: string, key: string) {
@@ -157,9 +156,7 @@
   }
 
   function isNonStandard(key: string): boolean {
-    if (!key.trim() || suggestedKeys.length === 0) return false;
-    const normalized = key.trim().toLowerCase();
-    return !suggestedKeys.some((sk) => sk.toLowerCase() === normalized);
+    return isNonStandardKey(key, suggestedKeys);
   }
 </script>
 

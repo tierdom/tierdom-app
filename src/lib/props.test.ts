@@ -3,6 +3,8 @@ import {
   validateProps,
   validatePropKeys,
   findDuplicateKeys,
+  filterSuggestions,
+  isNonStandardKey,
   MAX_PROPS,
   MAX_PROP_KEYS,
   MAX_KEY_LENGTH,
@@ -222,5 +224,70 @@ describe('findDuplicateKeys', () => {
       { key: 'platform', value: 'Switch' }
     ]);
     expect(result.has('platform')).toBe(true);
+  });
+});
+
+describe('filterSuggestions', () => {
+  const keys = ['Platform', 'Genre', 'Year'];
+
+  it('returns all keys when query is empty and none are used', () => {
+    expect(filterSuggestions(keys, '', [])).toEqual(['Platform', 'Genre', 'Year']);
+  });
+
+  it('filters by substring match (case-insensitive)', () => {
+    expect(filterSuggestions(keys, 'plat', [])).toEqual(['Platform']);
+  });
+
+  it('excludes already-used keys (case-insensitive)', () => {
+    expect(filterSuggestions(keys, '', ['platform'])).toEqual(['Genre', 'Year']);
+  });
+
+  it('combines query filter and used-key exclusion', () => {
+    expect(filterSuggestions(keys, 'e', ['genre'])).toEqual(['Year']);
+  });
+
+  it('returns empty array when no suggestions match', () => {
+    expect(filterSuggestions(keys, 'zzz', [])).toEqual([]);
+  });
+
+  it('returns empty array when suggestedKeys is empty', () => {
+    expect(filterSuggestions([], 'anything', [])).toEqual([]);
+  });
+
+  it('trims used keys before comparing', () => {
+    expect(filterSuggestions(keys, '', ['  Platform  '])).toEqual(['Genre', 'Year']);
+  });
+
+  it('ignores empty used keys', () => {
+    expect(filterSuggestions(keys, '', ['', '  '])).toEqual(['Platform', 'Genre', 'Year']);
+  });
+});
+
+describe('isNonStandardKey', () => {
+  const keys = ['Platform', 'Genre'];
+
+  it('returns false for a matching key (case-insensitive)', () => {
+    expect(isNonStandardKey('Platform', keys)).toBe(false);
+    expect(isNonStandardKey('platform', keys)).toBe(false);
+    expect(isNonStandardKey('GENRE', keys)).toBe(false);
+  });
+
+  it('returns true for a non-matching key', () => {
+    expect(isNonStandardKey('Year', keys)).toBe(true);
+    expect(isNonStandardKey('Custom', keys)).toBe(true);
+  });
+
+  it('returns false for empty key', () => {
+    expect(isNonStandardKey('', keys)).toBe(false);
+    expect(isNonStandardKey('  ', keys)).toBe(false);
+  });
+
+  it('returns false when suggestedKeys is empty', () => {
+    expect(isNonStandardKey('anything', [])).toBe(false);
+  });
+
+  it('trims key before comparing', () => {
+    expect(isNonStandardKey('  Platform  ', keys)).toBe(false);
+    expect(isNonStandardKey('  Custom  ', keys)).toBe(true);
   });
 });

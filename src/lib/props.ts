@@ -35,6 +35,23 @@ export function validateProps(raw: unknown): Prop[] | string {
   return raw.map((e) => ({ key: (e as Prop).key.trim(), value: (e as Prop).value.trim() }));
 }
 
+export function filterSuggestions(
+  suggestedKeys: string[],
+  query: string,
+  usedKeys: string[]
+): string[] {
+  if (suggestedKeys.length === 0) return [];
+  const q = query.toLowerCase();
+  const used = new Set(usedKeys.map((k) => k.trim().toLowerCase()).filter(Boolean));
+  return suggestedKeys.filter((k) => k.toLowerCase().includes(q) && !used.has(k.toLowerCase()));
+}
+
+export function isNonStandardKey(key: string, suggestedKeys: string[]): boolean {
+  if (!key.trim() || suggestedKeys.length === 0) return false;
+  const normalized = key.trim().toLowerCase();
+  return !suggestedKeys.some((sk) => sk.toLowerCase() === normalized);
+}
+
 export function validatePropKeys(raw: unknown): string[] | string {
   if (!Array.isArray(raw)) return 'Prop keys must be an array';
   if (raw.length > MAX_PROP_KEYS) return `Maximum ${MAX_PROP_KEYS} prop keys allowed`;
