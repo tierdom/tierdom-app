@@ -75,7 +75,7 @@ function buildSvg(name: string): string {
     .map((line, i) => {
       const escaped = escapeXml(line);
       const y = startY + i * lineHeight;
-      return `<text x="${cx}" y="${y}" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-size="36" font-weight="900" fill="rgba(255,255,255,0.18)" transform="rotate(-12, ${cx}, ${cy})">${escaped}</text>`;
+      return `<text x="${cx}" y="${y}" text-anchor="middle" dominant-baseline="middle" font-family="serif" font-size="36" font-weight="900" fill="rgba(255,255,255,0.18)" transform="rotate(-12, ${cx}, ${cy})">${escaped}</text>`;
     })
     .join('\n');
 
