@@ -47,7 +47,7 @@
                   {/each}
                 </div>
               {:else}
-                <span class="text-secondary/50">unused</span>
+                <span class="text-secondary">unused</span>
               {/if}
             </td>
           </tr>

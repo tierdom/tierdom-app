@@ -32,10 +32,7 @@
   class="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-200 md:hidden
     {open ? 'opacity-100' : 'pointer-events-none opacity-0'}"
   onclick={onclose}
-  onkeydown={undefined}
-  role="button"
-  tabindex="-1"
-  aria-label="Close menu"
+  role="presentation"
 ></div>
 
 <aside
@@ -46,7 +43,7 @@
     <span class="text-sm font-bold tracking-widest text-accent uppercase">tierdom</span>
   </div>
 
-  <nav class="flex-1 overflow-y-auto py-2">
+  <nav aria-label="Main" class="flex-1 overflow-y-auto py-2">
     {#each categories as cat (cat.id)}
       <NavLink href={`/category/${cat.slug}`} label={cat.name} variant="mobile" onclick={onclose} />
     {/each}

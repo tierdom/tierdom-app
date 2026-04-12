@@ -49,80 +49,84 @@
   <input
     type="text"
     placeholder="Quick search by name, slug, or category…"
+    aria-label="Quick search by name, slug, or category"
     bind:value={search}
     class="mt-4 w-full rounded border border-subtle bg-surface px-3 py-2 text-sm text-primary placeholder:text-secondary/50 focus:border-accent focus:outline-none"
   />
 
   {#if filtered().length > 0}
-    <div class="mt-4 w-full text-sm">
-      <div class="flex border-b border-subtle pb-2 text-left text-xs text-secondary">
-        <div class="w-8 font-medium">Tier</div>
-        <div class="flex-1 font-medium">Name</div>
-        <div class="hidden w-40 font-medium sm:block">Category</div>
-        <div class="w-14 font-medium">Score</div>
-        <div class="hidden w-24 font-medium md:flex md:items-center md:gap-0.5">
-          Updated <ArrowDown size={10} />
-        </div>
-        <div class="w-20 text-right font-medium">Actions</div>
-      </div>
-
-      {#each filtered() as item (item.id)}
-        {@const tier = scoreToTier(item.score, {
-          S: item.cutoffS,
-          A: item.cutoffA,
-          B: item.cutoffB,
-          C: item.cutoffC,
-          D: item.cutoffD,
-          E: item.cutoffE,
-          F: item.cutoffF
-        })}
-        <div class="flex items-center border-b border-subtle/30 py-2">
-          <div class="w-8 flex-shrink-0">
-            <TierBadge {tier} />
-          </div>
-          <div class="min-w-0 flex-1 text-primary">
-            <div class="flex items-center gap-1.5">
-              <a
-                href={resolve(`/admin/items/${item.id}`)}
-                class="shrink-0 text-accent hover:underline"
+    <table class="mt-4 w-full text-sm">
+      <thead>
+        <tr class="border-b border-subtle text-left text-xs text-secondary">
+          <th scope="col" class="w-8 pb-2 font-medium">Tier</th>
+          <th scope="col" class="pb-2 font-medium">Name</th>
+          <th scope="col" class="hidden w-40 pb-2 font-medium sm:table-cell">Category</th>
+          <th scope="col" class="w-14 pb-2 font-medium">Score</th>
+          <th scope="col" class="hidden w-24 pb-2 font-medium md:table-cell">
+            <span class="inline-flex items-center gap-0.5">Updated <ArrowDown size={10} /></span>
+          </th>
+          <th scope="col" class="w-20 pb-2 text-right font-medium">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {#each filtered() as item (item.id)}
+          {@const tier = scoreToTier(item.score, {
+            S: item.cutoffS,
+            A: item.cutoffA,
+            B: item.cutoffB,
+            C: item.cutoffC,
+            D: item.cutoffD,
+            E: item.cutoffE,
+            F: item.cutoffF
+          })}
+          <tr class="border-b border-subtle/30">
+            <td class="py-2">
+              <TierBadge {tier} />
+            </td>
+            <td class="py-2 text-primary">
+              <div class="flex items-center gap-1.5">
+                <a
+                  href={resolve(`/admin/items/${item.id}`)}
+                  class="shrink-0 text-accent hover:underline"
+                >
+                  {item.name}
+                </a>
+                {#if item.tags.length > 0}
+                  <div class="hidden gap-1 lg:flex">
+                    {#each item.tags as t (t.slug)}
+                      <TagPill label={t.label} />
+                    {/each}
+                  </div>
+                {/if}
+              </div>
+            </td>
+            <td class="hidden w-40 truncate py-2 text-xs text-secondary sm:table-cell">
+              {item.categoryName}
+            </td>
+            <td class="py-2 text-secondary">{item.score}</td>
+            <td class="hidden py-2 text-xs text-secondary md:table-cell">
+              {formatRelativeDate(item.updatedAt)}
+            </td>
+            <td class="py-2 text-right">
+              <form
+                method="POST"
+                action="?/delete"
+                use:enhance
+                class="inline"
+                onsubmit={(e) => {
+                  if (!confirm(`Delete "${item.name}"?`)) e.preventDefault();
+                }}
               >
-                {item.name}
-              </a>
-              {#if item.tags.length > 0}
-                <div class="hidden gap-1 lg:flex">
-                  {#each item.tags as t (t.slug)}
-                    <TagPill label={t.label} />
-                  {/each}
-                </div>
-              {/if}
-            </div>
-          </div>
-          <div class="hidden w-40 truncate text-xs text-secondary sm:block">
-            {item.categoryName}
-          </div>
-          <div class="w-14 text-secondary">{item.score}</div>
-          <div class="hidden w-24 text-xs text-secondary md:block">
-            {formatRelativeDate(item.updatedAt)}
-          </div>
-          <div class="w-20 text-right">
-            <form
-              method="POST"
-              action="?/delete"
-              use:enhance
-              class="inline"
-              onsubmit={(e) => {
-                if (!confirm(`Delete "${item.name}"?`)) e.preventDefault();
-              }}
-            >
-              <input type="hidden" name="id" value={item.id} />
-              <Button variant="danger-ghost" compact type="submit"
-                ><Trash2 size={12} />delete</Button
-              >
-            </form>
-          </div>
-        </div>
-      {/each}
-    </div>
+                <input type="hidden" name="id" value={item.id} />
+                <Button variant="danger-ghost" compact type="submit"
+                  ><Trash2 size={12} />delete</Button
+                >
+              </form>
+            </td>
+          </tr>
+        {/each}
+      </tbody>
+    </table>
   {:else if search.trim()}
     <p class="mt-6 text-sm text-secondary">No items matching "{search}".</p>
   {:else}

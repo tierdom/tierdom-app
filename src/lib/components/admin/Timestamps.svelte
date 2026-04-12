@@ -4,6 +4,6 @@
   let { createdAt, updatedAt }: { createdAt: string; updatedAt: string } = $props();
 </script>
 
-<span class="text-xs text-secondary/60">
+<span class="text-xs text-secondary">
   updated {formatRelativeDate(updatedAt)} &middot; created {formatRelativeDate(createdAt)}
 </span>

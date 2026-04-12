@@ -94,16 +94,16 @@
 </section>
 
 {#snippet footerAllPages()}
-  <p class="text-xs text-secondary/50">All pages</p>
+  <p class="text-xs text-secondary">All pages</p>
 {/snippet}
 
 {#snippet footerAllCategories()}
-  <p class="text-xs text-secondary/50">All categories</p>
+  <p class="text-xs text-secondary">All categories</p>
 {/snippet}
 
 {#snippet footerItems()}
   <div class="flex items-center justify-between">
-    <p class="text-xs text-secondary/50">Recently updated</p>
+    <p class="text-xs text-secondary">Recently updated</p>
     <a
       href={resolve('/admin/items/new-item')}
       class="inline-flex items-center gap-1 text-xs text-accent hover:underline"

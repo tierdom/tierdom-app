@@ -21,7 +21,7 @@
 </script>
 
 <header class="fixed inset-x-0 top-0 z-50 border-b border-subtle bg-elevated/80 backdrop-blur-sm">
-  <nav class="mx-auto flex h-14 max-w-6xl items-center px-4">
+  <nav aria-label="Main" class="mx-auto flex h-14 max-w-6xl items-center px-4">
     <a href={resolve('/')} class="shrink-0 transition-opacity hover:opacity-80" aria-label="Home">
       <img src="/favicon.png" alt="" class="h-8 w-8" />
     </a>
@@ -54,7 +54,14 @@
       aria-label="Toggle menu"
       aria-expanded={menuOpen}
     >
-      <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <svg
+        class="h-6 w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+        aria-hidden="true"
+      >
         {#if menuOpen}
           <path d="M6 6l12 12M18 6L6 18" />
         {:else}

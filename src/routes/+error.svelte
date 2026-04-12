@@ -11,7 +11,10 @@
   class="flex flex-col items-center justify-center text-center"
   style="min-height: 85vh; padding-top: 6rem;"
 >
-  <p class="leading-none font-black text-accent" style="font-size: 6rem;">{page.status}</p>
+  <h1 class="sr-only">Error {page.status}</h1>
+  <p class="leading-none font-black text-accent" aria-hidden="true" style="font-size: 6rem;">
+    {page.status}
+  </p>
 
   {#if page.status === 404}
     <p class="mt-6 text-xl text-primary">This page wandered off the tier list.</p>

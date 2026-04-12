@@ -117,15 +117,25 @@
       placeholder="Search or create tags…"
       class="w-full rounded border border-subtle bg-surface px-3 py-2 text-sm text-primary placeholder:text-secondary/50 focus:border-accent focus:outline-none"
       autocomplete="off"
+      role="combobox"
+      aria-expanded={open && totalOptions > 0}
+      aria-controls="tag-picker-listbox"
+      aria-activedescendant={open && totalOptions > 0 ? `tag-option-${highlightIndex}` : undefined}
     />
 
     {#if open && totalOptions > 0}
-      <ul class="dropdown">
+      <ul id="tag-picker-listbox" role="listbox" class="dropdown">
         {#each filtered as tag, i (tag.slug)}
-          <li class:highlighted={i === highlightIndex}>
+          <li
+            id="tag-option-{i}"
+            role="option"
+            aria-selected={i === highlightIndex}
+            class:highlighted={i === highlightIndex}
+          >
             <button
               type="button"
               class="dropdown-item"
+              tabindex="-1"
               onmousedown={(e) => {
                 e.preventDefault();
                 select(tag.slug);
@@ -137,10 +147,16 @@
           </li>
         {/each}
         {#if showCreateOption}
-          <li class:highlighted={highlightIndex === filtered.length}>
+          <li
+            id="tag-option-{filtered.length}"
+            role="option"
+            aria-selected={highlightIndex === filtered.length}
+            class:highlighted={highlightIndex === filtered.length}
+          >
             <button
               type="button"
               class="dropdown-item create-item"
+              tabindex="-1"
               onmousedown={(e) => {
                 e.preventDefault();
                 create(query.trim());

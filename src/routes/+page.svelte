@@ -43,7 +43,7 @@
           {#if cat.descriptionHtml}
             <Prose html={cat.descriptionHtml} size="sm" class="mt-1 line-clamp-2 *:m-0" />
           {/if}
-          <p class="mt-3 text-xs text-secondary/60">
+          <p class="mt-3 text-xs text-secondary">
             {cat.itemCount}
             {cat.itemCount === 1 ? 'item' : 'items'} ranked
           </p>
@@ -70,7 +70,7 @@
       </div>
     {/each}
   </div>
-  <p class="mt-4 text-center text-xs text-secondary/50">
+  <p class="mt-4 text-center text-xs text-secondary">
     Inspired by the classic tier-maker ranking system (S through F).
   </p>
 </section>

@@ -43,6 +43,7 @@ High level features:
 - [x] Create and publish Docker image
 - [x] Add significant unit test coverage where sensible ([ADR-0015](docs/decisions/0015-unit-testing-strategy.md))
 - [x] Add a few end-to-end test cases for safety ([ADR-0014](docs/decisions/0014-end-to-end-testing-strategy.md))
+- [x] Complete accessibility review + all fixes ([ADR-0016](docs/decisions/0016-accessibility-and-semantic-html.md))
 - [ ] Option to add more static cms pages
 - [ ] Option to customize the footer
 - [ ] Import from our own export format
@@ -52,7 +53,9 @@ High level features:
 
 Known issues, bugs, and small TODO's:
 
-- [ ] Complete accessibility review + all fixes
+- [ ] SortableList keyboard reordering (a11y follow-up)
+- [ ] Full color contrast audit with manual verification (a11y follow-up)
+- [ ] `aria-live` regions for loading states and form feedback (a11y follow-up)
 - [ ] Improve image upload (better checks on file type and limit, UX improvements)
 - [ ] Require double-confirmation for heavy deletes (e.g. category)
 - [ ] Two database seeds with sample data should get sample images too
@@ -187,6 +190,7 @@ Architectural decisions are documented as ADRs in [`docs/decisions/`](docs/decis
 | [0013](docs/decisions/0013-uuid-primary-keys.md)                        | UUID Primary Keys                        | Accepted |
 | [0014](docs/decisions/0014-end-to-end-testing-strategy.md)              | End-to-End Testing Strategy              | Accepted |
 | [0015](docs/decisions/0015-unit-testing-strategy.md)                    | Unit Testing Strategy                    | Accepted |
+| [0016](docs/decisions/0016-accessibility-and-semantic-html.md)          | Accessibility and Semantic HTML          | Accepted |
 
 ## References
 

@@ -51,8 +51,8 @@
     <input type="hidden" name="removeImage" value="1" />
   {/if}
   <div class="flex items-start gap-3">
-    <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
+      role="presentation"
       class="relative h-24 w-24 rounded border object-cover transition-colors {dragging
         ? 'border-accent bg-accent/10'
         : hasImage
