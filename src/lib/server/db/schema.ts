@@ -1,6 +1,7 @@
 import { integer, sqliteTable, text, unique } from 'drizzle-orm/sqlite-core';
 import { relations, sql } from 'drizzle-orm';
 import { randomUUID } from 'node:crypto';
+import type { Prop } from '$lib/props';
 
 export const category = sqliteTable('category', {
   id: text('id').primaryKey().$defaultFn(randomUUID),
@@ -38,6 +39,7 @@ export const tierListItem = sqliteTable(
     order: integer('order').notNull().default(0),
     imageHash: text('image_hash'),
     placeholder: text('placeholder'),
+    props: text('props', { mode: 'json' }).$type<Prop[]>().notNull().default([]),
     createdAt: text('created_at')
       .notNull()
       .default(sql`(datetime('now'))`),

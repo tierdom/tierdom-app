@@ -52,6 +52,7 @@ export async function seedPreset(preset: string, images = false): Promise<void> 
             {
               name: 'Sample Item',
               score: 100,
+              props: [],
               description:
                 'This is a **sample item** to show how tier lists work.\n\nEdit or delete it in the admin panel.'
             }

@@ -1,5 +1,6 @@
 import { slugify } from '$lib/server/slugify';
 import type { Tier } from '$lib/tier';
+import { type Prop, validateProps } from '$lib/props';
 
 type ReturnTarget = 'categories' | 'items';
 
@@ -36,6 +37,7 @@ export type ItemFormResult =
       score: number;
       categoryId: string;
       description: string | null;
+      props: Prop[];
       returnTarget: ReturnTarget;
     };
 
@@ -54,12 +56,27 @@ export function parseItemForm(data: FormData): ItemFormResult {
     return { error: 'Category is required' };
   }
 
+  let props: Prop[] = [];
+  const propsRaw = data.get('props')?.toString()?.trim();
+  if (propsRaw) {
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(propsRaw);
+    } catch {
+      return { error: 'Invalid props format' };
+    }
+    const result = validateProps(parsed);
+    if (typeof result === 'string') return { error: result };
+    props = result;
+  }
+
   return {
     name,
     slug,
     score,
     categoryId,
     description: data.get('description')?.toString()?.trim() || null,
+    props,
     returnTarget: (data.get('_returnTarget')?.toString() === 'categories'
       ? 'categories'
       : 'items') as ReturnTarget

@@ -46,6 +46,7 @@ CREATE TABLE `tier_list_item` (
 	`order` integer DEFAULT 0 NOT NULL,
 	`image_hash` text,
 	`placeholder` text,
+	`props` text DEFAULT '[]' NOT NULL,
 	`created_at` text DEFAULT (datetime('now')) NOT NULL,
 	`updated_at` text DEFAULT (datetime('now')) NOT NULL,
 	FOREIGN KEY (`category_id`) REFERENCES `category`(`id`) ON UPDATE no action ON DELETE cascade

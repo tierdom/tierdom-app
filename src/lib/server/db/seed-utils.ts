@@ -30,7 +30,8 @@ export function seedCategories(db: DB, categories: SeedCategory[]): number {
           name: item.name,
           description: item.description ?? null,
           score: item.score,
-          order: i
+          order: i,
+          props: item.props
         })
         .run();
 

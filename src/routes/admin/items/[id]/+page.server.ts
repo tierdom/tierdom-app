@@ -77,7 +77,7 @@ export const actions: Actions = {
     const parsed = parseItemForm(data);
     if ('error' in parsed) return fail(400, { error: parsed.error });
 
-    const { name, slug, score, categoryId, description, returnTarget } = parsed;
+    const { name, slug, score, categoryId, description, props, returnTarget } = parsed;
 
     let image: { imageHash: string | null; placeholder: string | null } | undefined;
     try {
@@ -95,6 +95,7 @@ export const actions: Actions = {
           name,
           description,
           score,
+          props,
           order: 0,
           ...(image && { imageHash: image.imageHash, placeholder: image.placeholder })
         })
@@ -125,6 +126,7 @@ export const actions: Actions = {
         slug,
         score,
         description,
+        props,
         categoryId,
         ...(image && { imageHash: image.imageHash, placeholder: image.placeholder })
       })

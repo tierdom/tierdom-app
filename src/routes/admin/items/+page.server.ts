@@ -21,7 +21,8 @@ export const load: PageServerLoad = async () => {
       cutoffD: category.cutoffD,
       cutoffE: category.cutoffE,
       cutoffF: category.cutoffF,
-      updatedAt: tierListItem.updatedAt
+      updatedAt: tierListItem.updatedAt,
+      props: tierListItem.props
     })
     .from(tierListItem)
     .innerJoin(category, eq(category.id, tierListItem.categoryId))

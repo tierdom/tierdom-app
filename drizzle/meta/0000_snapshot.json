@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "b3587682-fe4d-46a4-b5b4-76d20cdcda7d",
+  "id": "c0c87c9a-1725-4a1b-a3a2-fb46984f849a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "category": {
@@ -306,6 +306,14 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
+        },
+        "props": {
+          "name": "props",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'[]'"
         },
         "created_at": {
           "name": "created_at",
