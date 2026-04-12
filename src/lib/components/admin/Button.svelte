@@ -16,6 +16,8 @@
 
   const base = 'cursor-pointer inline-flex items-center justify-center rounded';
   let size = $derived(compact ? 'gap-1 px-2 py-1 text-xs' : 'gap-1.5 px-4 py-2 text-sm');
+  let linkRest = $derived(href ? (rest as HTMLAnchorAttributes) : {});
+  let buttonRest = $derived(href ? {} : (rest as HTMLButtonAttributes));
 
   const styles: Record<Variant, string> = {
     primary: 'bg-accent font-semibold text-canvas transition-opacity hover:opacity-80',
@@ -27,11 +29,11 @@
 
 {#if href}
   <!-- eslint-disable-next-line svelte/no-navigation-without-resolve — href is typed as ResolvedPathname -->
-  <a {href} class="{base} {size} {styles[variant]}" {...rest}>
+  <a {href} class="{base} {size} {styles[variant]}" {...linkRest}>
     {@render children()}
   </a>
 {:else}
-  <button class="{base} {size} {styles[variant]}" {...rest}>
+  <button class="{base} {size} {styles[variant]}" {...buttonRest}>
     {@render children()}
   </button>
 {/if}

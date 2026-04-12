@@ -53,7 +53,6 @@ High level features:
 Known issues, bugs, and small TODO's:
 
 - [ ] Complete accessibility review + all fixes
-- [ ] Fix bug with dialog dismissal after F5 load of the page
 - [ ] Improve image upload (better checks on file type and limit, UX improvements)
 - [ ] Require double-confirmation for heavy deletes (e.g. category)
 - [ ] Two database seeds with sample data should get sample images too

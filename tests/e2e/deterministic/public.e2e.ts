@@ -74,6 +74,121 @@ test.describe('category page', () => {
     await dialog.getByRole('button', { name: 'Close' }).click();
     await expect(dialog).not.toBeVisible();
   });
+
+  test('clicking item updates URL with query param', async ({ page }) => {
+    await page.goto('/category/video-games');
+    await page.getByText('Hollow Knight').click();
+
+    const dialog = page.locator('dialog[open]');
+    await expect(dialog).toBeVisible();
+    await expect(page).toHaveURL(/\/category\/video-games\?item=hollow-knight/);
+  });
+
+  test('closing dialog restores URL without query param', async ({ page }) => {
+    await page.goto('/category/video-games');
+    await page.getByText('Hollow Knight').click();
+
+    const dialog = page.locator('dialog[open]');
+    await expect(dialog).toBeVisible();
+    await expect(page).toHaveURL(/\?item=hollow-knight/);
+
+    await dialog.getByRole('button', { name: 'Close' }).click();
+    await expect(dialog).not.toBeVisible();
+    await expect(page).toHaveURL(/\/category\/video-games$/);
+  });
+
+  test('browser back after opening item dismisses dialog', async ({ page }) => {
+    await page.goto('/category/video-games');
+    await page.getByText('Hollow Knight').click();
+
+    const dialog = page.locator('dialog[open]');
+    await expect(dialog).toBeVisible();
+
+    await page.goBack();
+    await expect(dialog).not.toBeVisible();
+    await expect(page).toHaveURL(/\/category\/video-games$/);
+  });
+
+  test('browser forward after back re-opens dialog', async ({ page }) => {
+    await page.goto('/category/video-games');
+    await page.getByText('Hollow Knight').click();
+
+    const dialog = page.locator('dialog[open]');
+    await expect(dialog).toBeVisible();
+
+    await page.goBack();
+    await expect(dialog).not.toBeVisible();
+
+    await page.goForward();
+    await expect(dialog).toBeVisible();
+    await expect(page).toHaveURL(/\?item=hollow-knight/);
+  });
+
+  test('opening different items creates separate history entries', async ({ page }) => {
+    await page.goto('/category/video-games');
+
+    // Open first item
+    await page.getByText('Hollow Knight').click();
+    const dialog = page.locator('dialog[open]');
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByText('Hollow Knight')).toBeVisible();
+
+    // Close first item
+    await dialog.getByRole('button', { name: 'Close' }).click();
+    await expect(dialog).not.toBeVisible();
+
+    // Open second item
+    await page.getByText('Hades').click();
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByText('Hades')).toBeVisible();
+    await expect(page).toHaveURL(/\?item=hades/);
+
+    // Back should go to closed state
+    await page.goBack();
+    await expect(dialog).not.toBeVisible();
+    await expect(page).toHaveURL(/\/category\/video-games$/);
+
+    // Back again should re-open Hollow Knight
+    await page.goBack();
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByText('Hollow Knight')).toBeVisible();
+  });
+
+  test('direct URL with item param opens and closes dialog', async ({ page }) => {
+    await page.goto('/category/video-games?item=hollow-knight');
+
+    const dialog = page.locator('dialog[open]');
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByText('Hollow Knight')).toBeVisible();
+
+    await dialog.getByRole('button', { name: 'Close' }).click();
+    await expect(dialog).not.toBeVisible();
+    await expect(page).toHaveURL(/\/category\/video-games$/);
+  });
+
+  test('direct URL with item param closes on backdrop click', async ({ page }) => {
+    await page.goto('/category/video-games?item=hollow-knight');
+
+    const dialog = page.locator('dialog[open]');
+    await expect(dialog).toBeVisible();
+
+    // Click in the backdrop area (viewport top-left, outside the centered dialog content)
+    await page.mouse.click(5, 5);
+    await expect(dialog).not.toBeVisible();
+  });
+
+  test('direct URL then close then back re-opens dialog', async ({ page }) => {
+    await page.goto('/category/video-games?item=hollow-knight');
+
+    const dialog = page.locator('dialog[open]');
+    await expect(dialog).toBeVisible();
+
+    await dialog.getByRole('button', { name: 'Close' }).click();
+    await expect(dialog).not.toBeVisible();
+
+    await page.goBack();
+    await expect(dialog).toBeVisible();
+  });
 });
 
 test.describe('about page', () => {

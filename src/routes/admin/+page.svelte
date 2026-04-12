@@ -19,7 +19,7 @@
 )}
   <div>
     <a
-      href={resolve(path)}
+      href={resolve(path as '/admin')}
       class="block rounded-lg border border-subtle bg-elevated px-4 py-3 transition-colors hover:border-accent/40"
     >
       <p class="text-2xl font-bold text-primary">{count}</p>
@@ -29,7 +29,7 @@
       {#each items as item (item.path)}
         <li>
           <a
-            href={resolve(item.path)}
+            href={resolve(item.path as '/admin')}
             class="flex items-center justify-between rounded border border-subtle bg-surface px-3 py-2 text-sm transition-colors hover:border-accent/40"
           >
             <span class="text-primary">{item.label}</span>

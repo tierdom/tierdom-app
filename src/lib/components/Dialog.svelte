@@ -17,6 +17,7 @@
       document.body.style.overflow = 'hidden';
     }
     return () => {
+      if (dialogEl?.open) dialogEl.close();
       document.body.style.overflow = '';
     };
   });

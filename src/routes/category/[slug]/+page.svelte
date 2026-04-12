@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { pushState } from '$app/navigation';
-  import { resolve } from '$app/paths';
+  import { goto, pushState } from '$app/navigation';
   import { page } from '$app/state';
   import TierListItem from '$lib/components/TierListItem.svelte';
   import Dialog from '$lib/components/Dialog.svelte';
@@ -40,11 +39,16 @@
   });
 
   function openItem(slug: string) {
-    pushState(resolve(`${page.url.pathname}?item=${encodeURIComponent(slug)}`), { item: slug });
+    // eslint-disable-next-line svelte/no-navigation-without-resolve -- page.url.pathname already includes the base path
+    pushState(`${page.url.pathname}?item=${encodeURIComponent(slug)}`, { item: slug });
   }
 
   function closeItem() {
-    pushState(resolve(page.url.pathname), {});
+    // Use goto (not pushState) because pushState never updates page.url
+    // (sveltejs/kit#11492). After a fresh load with ?item=slug, pushState
+    // would leave page.url.searchParams stale and the dialog would stay open.
+    // eslint-disable-next-line svelte/no-navigation-without-resolve -- page.url.pathname already includes the base path
+    goto(page.url.pathname, { noScroll: true, keepFocus: true });
   }
 </script>
 
