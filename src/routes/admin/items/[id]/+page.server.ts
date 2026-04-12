@@ -4,7 +4,10 @@ import { asc, eq } from 'drizzle-orm';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { getOrCreateTag } from '$lib/server/tags';
 import { insertByScore } from '$lib/server/reorder';
+import { join } from 'node:path';
+import { env } from '$env/dynamic/private';
 import { processUpload, deleteImage } from '$lib/server/images';
+import { generateImage } from '$lib/server/generate-image';
 import { parseItemForm } from '$lib/server/forms';
 import type { PageServerLoad, Actions } from './$types';
 
@@ -17,9 +20,15 @@ function resolveReturnUrl(target: ReturnTarget, categoryId: string): string {
 async function handleImage(data: FormData) {
   const imageFile = data.get('image') as File | null;
   const wantsRemoveImage = data.get('removeImage') === '1';
+  const wantsGenerate = data.get('generateImage') === '1';
 
   if (imageFile && imageFile.size > 0) {
     const result = await processUpload(imageFile);
+    return { imageHash: result.hash, placeholder: result.gradient } as const;
+  } else if (wantsGenerate) {
+    const name = data.get('name')?.toString()?.trim();
+    if (!name) return undefined;
+    const result = await generateImage(name, join(env.DATA_PATH!, 'images'));
     return { imageHash: result.hash, placeholder: result.gradient } as const;
   } else if (wantsRemoveImage) {
     return { imageHash: null, placeholder: null } as const;

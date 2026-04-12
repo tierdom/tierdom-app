@@ -8,14 +8,14 @@
 import { drizzle } from 'drizzle-orm/better-sqlite3';
 import Database from 'better-sqlite3';
 import { randomUUID } from 'node:crypto';
+import { join } from 'node:path';
 import { hashPassword } from '../auth/password';
 import * as schema from './schema';
 import { TAGS, CATEGORIES, PAGES } from './seed-data';
 import { seedCategories } from './seed-utils';
+import { generateSeedImages } from './seed-images';
 
 const { page, user, session, category, tierListItem, tag, itemTag } = schema;
-
-import { join } from 'node:path';
 
 if (!process.env.DATA_PATH) {
   console.error('DATA_PATH is not set');
@@ -87,6 +87,12 @@ client.exec(`
   -- Re-enable triggers
   DELETE FROM _suppress_updated_at;
 `);
+
+if (process.env.SEED_IMAGES === '1') {
+  console.log('Generating seed images...');
+  const imageCount = await generateSeedImages(db, process.env.DATA_PATH!);
+  console.log(`Generated ${imageCount} seed images.`);
+}
 
 client.close();
 
