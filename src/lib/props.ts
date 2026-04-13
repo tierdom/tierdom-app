@@ -1,4 +1,5 @@
 export type Prop = { key: string; value: string };
+export type PropKeyConfig = { key: string; iconSet?: string };
 
 export const MAX_PROPS = 10;
 export const MAX_PROP_KEYS = 10;
@@ -52,23 +53,39 @@ export function isNonStandardKey(key: string, suggestedKeys: string[]): boolean 
   return !suggestedKeys.some((sk) => sk.toLowerCase() === normalized);
 }
 
-export function validatePropKeys(raw: unknown): string[] | string {
+export function validatePropKeys(
+  raw: unknown,
+  knownIconSetSlugs?: Set<string>
+): PropKeyConfig[] | string {
   if (!Array.isArray(raw)) return 'Prop keys must be an array';
   if (raw.length > MAX_PROP_KEYS) return `Maximum ${MAX_PROP_KEYS} prop keys allowed`;
 
   const seen = new Set<string>();
-  const result: string[] = [];
+  const result: PropKeyConfig[] = [];
 
   for (const entry of raw) {
-    if (typeof entry !== 'string') return 'Each prop key must be a string';
-    const trimmed = entry.trim();
+    if (typeof entry !== 'object' || entry === null)
+      return 'Each prop key must be a { key, iconSet? } object';
+
+    const { key, iconSet } = entry as Record<string, unknown>;
+    if (typeof key !== 'string') return 'Each prop key must have a string key';
+    const trimmed = key.trim();
     if (!trimmed) return 'Prop keys must not be empty';
     if (trimmed.length > MAX_KEY_LENGTH)
       return `Key "${trimmed}" exceeds ${MAX_KEY_LENGTH} characters`;
     const normalized = trimmed.toLowerCase();
     if (seen.has(normalized)) return `Duplicate key "${trimmed}"`;
     seen.add(normalized);
-    result.push(trimmed);
+
+    const config: PropKeyConfig = { key: trimmed };
+    if (iconSet !== undefined && iconSet !== null && iconSet !== '') {
+      if (typeof iconSet !== 'string') return `Icon set for "${trimmed}" must be a string`;
+      if (knownIconSetSlugs && !knownIconSetSlugs.has(iconSet))
+        return `Unknown icon set "${iconSet}" for key "${trimmed}"`;
+      config.iconSet = iconSet;
+    }
+
+    result.push(config);
   }
 
   return result;

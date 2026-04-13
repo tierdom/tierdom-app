@@ -2,21 +2,24 @@
   import { flip } from 'svelte/animate';
   import { Plus, Trash2 } from 'lucide-svelte';
   import Button from '$lib/components/admin/Button.svelte';
-  import { MAX_PROP_KEYS, MAX_KEY_LENGTH } from '$lib/props';
+  import { MAX_PROP_KEYS, MAX_KEY_LENGTH, type PropKeyConfig } from '$lib/props';
+  import { iconSets } from '$lib/icon-sets';
 
-  type InternalKey = { id: string; key: string };
+  type InternalKey = { id: string; key: string; iconSet?: string };
 
   let {
     propKeys,
     onchange
   }: {
-    propKeys: string[];
+    propKeys: PropKeyConfig[];
     onchange: () => void;
   } = $props();
 
   // eslint-disable-next-line svelte/no-unused-svelte-ignore
   // svelte-ignore state_referenced_locally — intentional: mutable copy of initial prop
-  let items = $state<InternalKey[]>(propKeys.map((k) => ({ id: crypto.randomUUID(), key: k })));
+  let items = $state<InternalKey[]>(
+    propKeys.map((pk) => ({ id: crypto.randomUUID(), key: pk.key, iconSet: pk.iconSet }))
+  );
 
   let draggedId = $state<string | null>(null);
   let dropTargetId = $state<string | null>(null);
@@ -39,6 +42,11 @@
 
   function handleInput(id: string, value: string) {
     items = items.map((k) => (k.id === id ? { ...k, key: value } : k));
+    emit();
+  }
+
+  function handleIconSetChange(id: string, value: string) {
+    items = items.map((k) => (k.id === id ? { ...k, iconSet: value || undefined } : k));
     emit();
   }
 
@@ -100,7 +108,9 @@
     dropTargetId = null;
   }
 
-  let serialized = $derived(JSON.stringify(items.map((i) => i.key)));
+  let serialized = $derived(
+    JSON.stringify(items.map((i) => ({ key: i.key, ...(i.iconSet ? { iconSet: i.iconSet } : {}) })))
+  );
 
   let duplicateKeys = $derived.by(() => {
     const keys = items.map((i) => i.key.trim().toLowerCase()).filter(Boolean);
@@ -162,6 +172,18 @@
               ? 'border-red-500/60 focus:border-red-500'
               : 'border-subtle focus:border-accent'}"
           />
+
+          <select
+            aria-label="Icon set for {item.key || 'this key'}"
+            value={item.iconSet ?? ''}
+            onchange={(e) => handleIconSetChange(item.id, e.currentTarget.value)}
+            class="w-28 shrink-0 rounded border border-subtle bg-surface px-1.5 py-1.5 text-xs text-secondary focus:border-accent focus:outline-none"
+          >
+            <option value="">No icons</option>
+            {#each iconSets as set (set.slug)}
+              <option value={set.slug}>{set.name}</option>
+            {/each}
+          </select>
 
           <Button variant="danger-ghost" compact type="button" onclick={() => remove(item.id)}>
             <Trash2 size={12} />

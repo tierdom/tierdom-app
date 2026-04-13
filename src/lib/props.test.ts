@@ -134,16 +134,27 @@ describe('validateProps', () => {
 });
 
 describe('validatePropKeys', () => {
+  function pk(key: string, iconSet?: string): { key: string; iconSet?: string } {
+    return iconSet ? { key, iconSet } : { key };
+  }
+
   it('accepts an empty array', () => {
     expect(validatePropKeys([])).toEqual([]);
   });
 
   it('accepts valid keys', () => {
-    expect(validatePropKeys(['Platform', 'Genre'])).toEqual(['Platform', 'Genre']);
+    const result = validatePropKeys([pk('Platform'), pk('Genre')]);
+    expect(result).toEqual([{ key: 'Platform' }, { key: 'Genre' }]);
+  });
+
+  it('accepts keys with iconSet', () => {
+    const knownSets = new Set(['gaming-platforms']);
+    const result = validatePropKeys([pk('Platform', 'gaming-platforms'), pk('Genre')], knownSets);
+    expect(result).toEqual([{ key: 'Platform', iconSet: 'gaming-platforms' }, { key: 'Genre' }]);
   });
 
   it('trims keys', () => {
-    expect(validatePropKeys(['  Platform  '])).toEqual(['Platform']);
+    expect(validatePropKeys([pk('  Platform  ')])).toEqual([{ key: 'Platform' }]);
   });
 
   it('rejects non-array input', () => {
@@ -152,31 +163,58 @@ describe('validatePropKeys', () => {
   });
 
   it(`rejects more than ${MAX_PROP_KEYS} keys`, () => {
-    const tooMany = Array.from({ length: MAX_PROP_KEYS + 1 }, (_, i) => `k${i}`);
+    const tooMany = Array.from({ length: MAX_PROP_KEYS + 1 }, (_, i) => pk(`k${i}`));
     expect(validatePropKeys(tooMany)).toBe(`Maximum ${MAX_PROP_KEYS} prop keys allowed`);
   });
 
-  it('rejects non-string entries', () => {
-    expect(validatePropKeys([42])).toBe('Each prop key must be a string');
+  it('rejects non-object entries', () => {
+    expect(validatePropKeys([42])).toBe('Each prop key must be a { key, iconSet? } object');
+    expect(validatePropKeys(['Platform'])).toBe('Each prop key must be a { key, iconSet? } object');
   });
 
-  it('rejects empty strings', () => {
-    expect(validatePropKeys([''])).toBe('Prop keys must not be empty');
+  it('rejects entries without a string key', () => {
+    expect(validatePropKeys([{ key: 42 }])).toBe('Each prop key must have a string key');
   });
 
-  it('rejects whitespace-only strings', () => {
-    expect(validatePropKeys(['  '])).toBe('Prop keys must not be empty');
+  it('rejects empty key strings', () => {
+    expect(validatePropKeys([pk('')])).toBe('Prop keys must not be empty');
+  });
+
+  it('rejects whitespace-only key strings', () => {
+    expect(validatePropKeys([pk('  ')])).toBe('Prop keys must not be empty');
   });
 
   it(`rejects key exceeding ${MAX_KEY_LENGTH} characters`, () => {
     const longKey = 'k'.repeat(MAX_KEY_LENGTH + 1);
-    expect(validatePropKeys([longKey])).toBe(
+    expect(validatePropKeys([pk(longKey)])).toBe(
       `Key "${longKey}" exceeds ${MAX_KEY_LENGTH} characters`
     );
   });
 
   it('rejects duplicate keys (case-insensitive)', () => {
-    expect(validatePropKeys(['Platform', 'platform'])).toBe('Duplicate key "platform"');
+    expect(validatePropKeys([pk('Platform'), pk('platform')])).toBe('Duplicate key "platform"');
+  });
+
+  it('rejects unknown icon set slug when known sets provided', () => {
+    const knownSets = new Set(['gaming-platforms']);
+    expect(validatePropKeys([pk('Platform', 'nonexistent')], knownSets)).toBe(
+      'Unknown icon set "nonexistent" for key "Platform"'
+    );
+  });
+
+  it('allows any icon set slug when no known sets provided', () => {
+    const result = validatePropKeys([pk('Platform', 'anything')]);
+    expect(result).toEqual([{ key: 'Platform', iconSet: 'anything' }]);
+  });
+
+  it('strips empty iconSet values', () => {
+    const result = validatePropKeys([{ key: 'Platform', iconSet: '' }]);
+    expect(result).toEqual([{ key: 'Platform' }]);
+  });
+
+  it('strips null iconSet values', () => {
+    const result = validatePropKeys([{ key: 'Platform', iconSet: null }]);
+    expect(result).toEqual([{ key: 'Platform' }]);
   });
 });
 

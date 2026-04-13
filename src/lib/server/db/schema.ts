@@ -1,14 +1,14 @@
 import { integer, sqliteTable, text, unique } from 'drizzle-orm/sqlite-core';
 import { relations, sql } from 'drizzle-orm';
 import { randomUUID } from 'node:crypto';
-import type { Prop } from '$lib/props';
+import type { Prop, PropKeyConfig } from '$lib/props';
 
 export const category = sqliteTable('category', {
   id: text('id').primaryKey().$defaultFn(randomUUID),
   slug: text('slug').notNull().unique(),
   name: text('name').notNull(),
   description: text('description'),
-  propKeys: text('prop_keys', { mode: 'json' }).$type<string[]>().notNull().default([]),
+  propKeys: text('prop_keys', { mode: 'json' }).$type<PropKeyConfig[]>().notNull().default([]),
   order: integer('order').notNull().default(0),
   // Per-category tier cutoffs — null means use the global default
   cutoffS: integer('cutoff_s'),

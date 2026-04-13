@@ -1,6 +1,6 @@
 import { slugify } from '$lib/server/slugify';
 import type { Tier } from '$lib/tier';
-import { type Prop, validateProps, validatePropKeys } from '$lib/props';
+import { type Prop, type PropKeyConfig, validateProps, validatePropKeys } from '$lib/props';
 
 type ReturnTarget = 'categories' | 'items';
 
@@ -10,18 +10,21 @@ export type CategoryFormResult =
       name: string;
       slug: string;
       description: string | null;
-      propKeys: string[];
+      propKeys: PropKeyConfig[];
       cutoffs: Record<`cutoff${Tier}`, number | null>;
     };
 
-export function parseCategoryForm(data: FormData): CategoryFormResult {
+export function parseCategoryForm(
+  data: FormData,
+  knownIconSetSlugs?: Set<string>
+): CategoryFormResult {
   const name = data.get('name')?.toString()?.trim();
   if (!name) return { error: 'Name is required' };
 
   const slug = data.get('slug')?.toString()?.trim() || slugify(name);
   const description = data.get('description')?.toString()?.trim() || null;
 
-  let propKeys: string[] = [];
+  let propKeys: PropKeyConfig[] = [];
   const propKeysRaw = data.get('propKeys')?.toString()?.trim();
   if (propKeysRaw) {
     let parsed: unknown;
@@ -30,7 +33,7 @@ export function parseCategoryForm(data: FormData): CategoryFormResult {
     } catch {
       return { error: 'Invalid prop keys format' };
     }
-    const result = validatePropKeys(parsed);
+    const result = validatePropKeys(parsed, knownIconSetSlugs);
     if (typeof result === 'string') return { error: result };
     propKeys = result;
   }
