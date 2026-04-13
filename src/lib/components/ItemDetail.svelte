@@ -1,7 +1,8 @@
 <script lang="ts">
   import Prose from '$lib/components/Prose.svelte';
   import { scoreToBarColor, tierColors } from '$lib/tier';
-  import type { Prop } from '$lib/props';
+  import type { Prop, PropKeyConfig } from '$lib/props';
+  import { getIcon } from '$lib/icon-sets';
 
   type Props = {
     name: string;
@@ -9,12 +10,31 @@
     descriptionHtml?: string | null;
     tier: string;
     props?: Prop[];
+    propKeyConfigs?: PropKeyConfig[];
     image?: string | null;
   };
 
-  let { name, score, descriptionHtml, tier, props = [], image }: Props = $props();
+  let {
+    name,
+    score,
+    descriptionHtml,
+    tier,
+    props = [],
+    propKeyConfigs = [],
+    image
+  }: Props = $props();
 
   let barColor = $derived(scoreToBarColor(score));
+
+  let iconizedProps = $derived(
+    props
+      .map((p) => {
+        const config = propKeyConfigs.find((pk) => pk.key.toLowerCase() === p.key.toLowerCase());
+        const icon = config?.iconSet ? getIcon(config.iconSet, p.value) : undefined;
+        return icon ? { ...icon, label: `${p.key}: ${p.value}` } : null;
+      })
+      .filter((x): x is NonNullable<typeof x> => x !== null)
+  );
 </script>
 
 <div class="flex flex-col gap-4">
@@ -54,13 +74,18 @@
     </p>
   {/if}
 
-  {#if image}
+  {#if image || iconizedProps.length > 0}
     <div class="flex items-start gap-3">
-      <img
-        src={image}
-        alt={name}
-        class="aspect-square h-24 rounded border border-subtle object-cover"
-      />
+      {#if image}
+        <img
+          src={image}
+          alt={name}
+          class="aspect-square h-24 rounded border border-subtle object-cover"
+        />
+      {/if}
+      {#each iconizedProps as icon (icon.label)}
+        <img src={icon.src} alt={icon.alt} class="h-24 w-auto invert" />
+      {/each}
     </div>
   {/if}
 </div>

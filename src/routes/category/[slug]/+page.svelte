@@ -106,6 +106,7 @@
       descriptionHtml={selectedItem.descriptionHtml}
       tier={selectedItem.tier}
       props={selectedItem.props}
+      propKeyConfigs={data.category.propKeys}
       image={selectedItem.image ?? undefined}
     />
   </Dialog>
