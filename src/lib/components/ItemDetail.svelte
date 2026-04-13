@@ -50,10 +50,7 @@
     <Prose html={descriptionHtml} size="sm" />
   {:else}
     <p class="text-sm leading-relaxed text-secondary">
-      This is a placeholder review. The actual review content will appear here once it has been
-      written. It will contain thoughts, opinions, and a detailed assessment of this item — covering
-      what makes it stand out, where it falls short, and how it compares to similar entries in the
-      list.
+      No specific item review. Only score ({score} / 100) and tier ({tier}) given.
     </p>
   {/if}
 
