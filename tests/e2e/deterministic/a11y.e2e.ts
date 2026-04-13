@@ -1,4 +1,4 @@
-import { test } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { expectNoA11yViolations } from '../fixtures/axe';
 
 test.describe('accessibility — public pages', () => {
@@ -19,6 +19,13 @@ test.describe('accessibility — public pages', () => {
 
   test('about page', async ({ page }) => {
     await page.goto('/about');
+    await expectNoA11yViolations(page);
+  });
+
+  test('item detail dialog with icon', async ({ page }) => {
+    await page.goto('/category/video-games');
+    await page.getByText('Hollow Knight').click();
+    await expect(page.locator('dialog[open]')).toBeVisible();
     await expectNoA11yViolations(page);
   });
 

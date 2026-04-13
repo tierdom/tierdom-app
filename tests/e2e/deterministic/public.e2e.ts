@@ -64,6 +64,31 @@ test.describe('category page', () => {
     await expect(dialog.getByText('Platform: PC')).toBeVisible();
   });
 
+  test('item detail shows icon for matching prop value', async ({ page }) => {
+    await page.goto('/category/video-games');
+    await page.getByText('Hollow Knight').click();
+
+    const dialog = page.locator('dialog[open]');
+    await expect(dialog).toBeVisible();
+
+    const icon = dialog.getByRole('img', { name: 'PC' });
+    await expect(icon).toBeVisible();
+    await expect(icon).toHaveAttribute('src', /\/icons\/gaming-platforms\/pc\.svg$/);
+  });
+
+  test('item detail shows no icon for unrecognized prop value', async ({ page }) => {
+    await page.goto('/category/video-games');
+    await page.getByText('Dark Souls').click();
+
+    const dialog = page.locator('dialog[open]');
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByText('Platform: PS3')).toBeVisible();
+
+    // PS3 has no icon in the gaming-platforms set
+    const icons = dialog.locator('img[src*="/icons/gaming-platforms/"]');
+    await expect(icons).toHaveCount(0);
+  });
+
   test('book item detail shows multiple props', async ({ page }) => {
     await page.goto('/category/books');
     await page.getByText('Blood Meridian').click();
