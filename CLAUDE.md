@@ -18,6 +18,10 @@ Use `/test` for all testing — unit, E2E, and ad-hoc Playwright MCP verificatio
 
 When creating a new ADR via `/adr`, always add a row to the **Architecture Decision Records** table in `README.md`.
 
+## Epics
+
+For multi-milestone features: commit a **Proposed ADR first** before any code changes. Accept the ADR in the final milestone only after all code is verified.
+
 ## Verifying UI changes
 
 Use **Playwright MCP** (`browser_navigate`, `browser_snapshot`, `browser_evaluate`, etc.) against the dev server at `http://localhost:5173`. If the connection fails, ask the user to start the dev server. Only verify after UI-visible changes — skip for config, schema, or test-only work. When saving screenshots, always use a `.playwright-mcp/` prefix (e.g. `.playwright-mcp/my-screenshot.png`) — that directory is gitignored; bare filenames land in the project root.
