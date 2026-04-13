@@ -3,6 +3,7 @@
   import { Plus, Trash2 } from 'lucide-svelte';
   import Button from '$lib/components/admin/Button.svelte';
   import { MAX_PROP_KEYS, MAX_KEY_LENGTH, type PropKeyConfig } from '$lib/props';
+  import { iconSets } from '$lib/icon-sets';
 
   type InternalKey = { id: string; key: string; iconSet?: string };
 
@@ -41,6 +42,11 @@
 
   function handleInput(id: string, value: string) {
     items = items.map((k) => (k.id === id ? { ...k, key: value } : k));
+    emit();
+  }
+
+  function handleIconSetChange(id: string, value: string) {
+    items = items.map((k) => (k.id === id ? { ...k, iconSet: value || undefined } : k));
     emit();
   }
 
@@ -166,6 +172,18 @@
               ? 'border-red-500/60 focus:border-red-500'
               : 'border-subtle focus:border-accent'}"
           />
+
+          <select
+            aria-label="Icon set for {item.key || 'this key'}"
+            value={item.iconSet ?? ''}
+            onchange={(e) => handleIconSetChange(item.id, e.currentTarget.value)}
+            class="w-28 shrink-0 rounded border border-subtle bg-surface px-1.5 py-1.5 text-xs text-secondary focus:border-accent focus:outline-none"
+          >
+            <option value="">No icons</option>
+            {#each iconSets as set (set.slug)}
+              <option value={set.slug}>{set.name}</option>
+            {/each}
+          </select>
 
           <Button variant="danger-ghost" compact type="button" onclick={() => remove(item.id)}>
             <Trash2 size={12} />
