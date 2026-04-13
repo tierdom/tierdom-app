@@ -52,6 +52,12 @@ describe('getIcon', () => {
     expect(icon!.alt).toBe('PC');
   });
 
+  it('matches value case-insensitively', () => {
+    expect(getIcon('gaming-platforms', 'pc')).toBeDefined();
+    expect(getIcon('gaming-platforms', 'Pc')).toBeDefined();
+    expect(getIcon('gaming-platforms', 'switch')).toBeDefined();
+  });
+
   it('returns undefined for unknown value in known set', () => {
     expect(getIcon('gaming-platforms', 'Dreamcast')).toBeUndefined();
   });
