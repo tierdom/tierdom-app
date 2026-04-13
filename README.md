@@ -53,6 +53,8 @@ High level features:
 - [ ] Import from external sources (Goodreads CSV, etc.)
 - [ ] Export database to basic formats (markdown, json or yaml, etc.)
 - [ ] Soft-delete for items + trash (and recover) feature + housekeeping to clean up later
+- [ ] Build external API for automated operations
+- [ ] Create MCP to access the API of a Tierdom APP instance with AI tooling
 
 Known issues, bugs, and small TODO's:
 
