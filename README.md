@@ -55,6 +55,11 @@ High level features:
 - [ ] Soft-delete for items + trash (and recover) feature + housekeeping to clean up later
 - [ ] Build external API for automated operations
 - [ ] Create MCP to access the API of a Tierdom APP instance with AI tooling
+- [ ] Add a LICENSE file to the repository
+- [ ] Add a CODE OF CONDUCT file to the repository
+- [ ] Add a CONTRIBUTING file to the repository
+- [ ] Add a SECURITY file to the repository
+- [ ] Add CI/CD
 
 Known issues, bugs, and small TODO's:
 
