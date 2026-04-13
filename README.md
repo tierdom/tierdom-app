@@ -202,6 +202,7 @@ Architectural decisions are documented as ADRs in [`docs/decisions/`](docs/decis
 | [0016](docs/decisions/0016-accessibility-and-semantic-html.md)          | Accessibility and Semantic HTML          | Accepted |
 | [0017](docs/decisions/0017-replace-tags-with-item-props.md)             | Replace Tags with Item Props             | Accepted |
 | [0018](docs/decisions/0018-category-prop-keys.md)                       | Category Prop Keys                       | Accepted |
+| [0019](docs/decisions/0019-prop-keys-with-icon-set-support.md)          | Prop Keys with Icon Set Support          | Proposed |
 
 ## References
 
