@@ -59,7 +59,7 @@
 <section class="py-10">
   <h1 class="text-2xl font-bold text-primary">{data.category.name}</h1>
   {#if data.category.descriptionHtml}
-    <Prose html={data.category.descriptionHtml} size="sm" class="mt-2 max-w-2xl" />
+    <Prose html={data.category.descriptionHtml} size="sm" class="mt-2 max-w-none" />
   {/if}
 
   {#if allItems.length > 0}
