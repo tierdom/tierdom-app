@@ -76,16 +76,16 @@ test.describe('category page', () => {
     await expect(icon).toHaveAttribute('src', /\/icons\/gaming-platforms\/pc\.svg$/);
   });
 
-  test('item detail shows no icon for unrecognized prop value', async ({ page }) => {
-    await page.goto('/category/video-games');
-    await page.getByText('Dark Souls').click();
+  test('item detail shows no icon when category has no icon set', async ({ page }) => {
+    await page.goto('/category/books');
+    await page.getByText('Blood Meridian').click();
 
     const dialog = page.locator('dialog[open]');
     await expect(dialog).toBeVisible();
-    await expect(dialog.getByText('Platform: PS3')).toBeVisible();
+    await expect(dialog.getByText('Year: 1985')).toBeVisible();
 
-    // PS3 has no icon in the gaming-platforms set
-    const icons = dialog.locator('img[src*="/icons/gaming-platforms/"]');
+    // Books category has no icon set linked to any prop key
+    const icons = dialog.locator('img[src*="/icons/"]');
     await expect(icons).toHaveCount(0);
   });
 
