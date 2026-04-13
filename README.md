@@ -45,7 +45,7 @@ High level features:
 - [x] Add a few end-to-end test cases for safety ([ADR-0014](docs/decisions/0014-end-to-end-testing-strategy.md))
 - [x] Complete accessibility review + all fixes ([ADR-0016](docs/decisions/0016-accessibility-and-semantic-html.md))
 - [x] Replace "tags" with key/value ("props") setup
-- [ ] Improve "props" with category-default keys
+- [x] Improve "props" with category-default keys
 - [ ] Improve "props" with special-support keys
 - [ ] Option to add more static cms pages
 - [ ] Option to customize the footer
