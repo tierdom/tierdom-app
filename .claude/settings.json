@@ -3,6 +3,8 @@
   "enableAllProjectMcpServers": true,
   "permissions": {
     "allow": [
+      "Bash(npm run test:e2e:deterministic 2>&1)",
+      "Bash(npm run test:e2e:reset 2>&1)",
       "Bash(npm run test:e2e:smoke 2>&1)",
       "Bash(npm run format 2>&1)",
       "Bash(npm run format 2>&1 && npm run lint 2>&1)",
