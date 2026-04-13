@@ -35,7 +35,7 @@
   <title>Setup — tierdom</title>
 </svelte:head>
 
-<div class="flex min-h-screen items-start justify-center px-4 pt-[15vh] pb-16 md:pt-[20vh]">
+<div class="flex min-h-screen items-start justify-center px-4 pt-6 pb-16 sm:pt-[10vh]">
   <div class="w-full max-w-md">
     <h1 class="mb-2 text-center text-xl font-bold text-primary">Welcome to tierdom</h1>
     <p class="mb-8 text-center text-sm text-secondary">
