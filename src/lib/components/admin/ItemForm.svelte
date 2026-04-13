@@ -9,9 +9,9 @@
   import PropEditor from '$lib/components/admin/PropEditor.svelte';
   import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
   import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
-  import type { Prop } from '$lib/props';
+  import type { Prop, PropKeyConfig } from '$lib/props';
 
-  type Category = { id: string; name: string; propKeys: string[] };
+  type Category = { id: string; name: string; propKeys: PropKeyConfig[] };
 
   let {
     mode,
@@ -43,7 +43,9 @@
   // eslint-disable-next-line svelte/no-unused-svelte-ignore
   // svelte-ignore state_referenced_locally — intentional: mutable copy of initial value
   let selectedCategoryId = $state(initialValues.categoryId ?? '');
-  let suggestedKeys = $derived(categories.find((c) => c.id === selectedCategoryId)?.propKeys ?? []);
+  let suggestedKeys = $derived(
+    (categories.find((c) => c.id === selectedCategoryId)?.propKeys ?? []).map((pk) => pk.key)
+  );
 
   function markDirty() {
     dirty = true;

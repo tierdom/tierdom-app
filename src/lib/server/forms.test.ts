@@ -72,9 +72,16 @@ describe('parseCategoryForm', () => {
 
   it('parses valid propKeys JSON', () => {
     expect.assertions(1);
-    const propKeys = JSON.stringify(['Platform', 'Genre']);
+    const propKeys = JSON.stringify([{ key: 'Platform' }, { key: 'Genre' }]);
     const result = parseCategoryForm(form({ name: 'Games', propKeys }));
-    expect(result).toHaveProperty('propKeys', ['Platform', 'Genre']);
+    expect(result).toHaveProperty('propKeys', [{ key: 'Platform' }, { key: 'Genre' }]);
+  });
+
+  it('parses propKeys with iconSet', () => {
+    expect.assertions(1);
+    const propKeys = JSON.stringify([{ key: 'Platform', iconSet: 'gaming-platforms' }]);
+    const result = parseCategoryForm(form({ name: 'Games', propKeys }));
+    expect(result).toHaveProperty('propKeys', [{ key: 'Platform', iconSet: 'gaming-platforms' }]);
   });
 
   it('defaults propKeys to empty array when absent', () => {
@@ -91,14 +98,14 @@ describe('parseCategoryForm', () => {
 
   it('rejects duplicate propKeys', () => {
     expect.assertions(1);
-    const propKeys = JSON.stringify(['Platform', 'platform']);
+    const propKeys = JSON.stringify([{ key: 'Platform' }, { key: 'platform' }]);
     const result = parseCategoryForm(form({ name: 'Games', propKeys }));
     expect(result).toHaveProperty('error');
   });
 
   it('rejects empty propKey strings', () => {
     expect.assertions(1);
-    const propKeys = JSON.stringify(['Platform', '']);
+    const propKeys = JSON.stringify([{ key: 'Platform' }, { key: '' }]);
     const result = parseCategoryForm(form({ name: 'Games', propKeys }));
     expect(result).toHaveProperty('error');
   });

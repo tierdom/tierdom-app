@@ -2,21 +2,23 @@
   import { flip } from 'svelte/animate';
   import { Plus, Trash2 } from 'lucide-svelte';
   import Button from '$lib/components/admin/Button.svelte';
-  import { MAX_PROP_KEYS, MAX_KEY_LENGTH } from '$lib/props';
+  import { MAX_PROP_KEYS, MAX_KEY_LENGTH, type PropKeyConfig } from '$lib/props';
 
-  type InternalKey = { id: string; key: string };
+  type InternalKey = { id: string; key: string; iconSet?: string };
 
   let {
     propKeys,
     onchange
   }: {
-    propKeys: string[];
+    propKeys: PropKeyConfig[];
     onchange: () => void;
   } = $props();
 
   // eslint-disable-next-line svelte/no-unused-svelte-ignore
   // svelte-ignore state_referenced_locally — intentional: mutable copy of initial prop
-  let items = $state<InternalKey[]>(propKeys.map((k) => ({ id: crypto.randomUUID(), key: k })));
+  let items = $state<InternalKey[]>(
+    propKeys.map((pk) => ({ id: crypto.randomUUID(), key: pk.key, iconSet: pk.iconSet }))
+  );
 
   let draggedId = $state<string | null>(null);
   let dropTargetId = $state<string | null>(null);
@@ -100,7 +102,9 @@
     dropTargetId = null;
   }
 
-  let serialized = $derived(JSON.stringify(items.map((i) => i.key)));
+  let serialized = $derived(
+    JSON.stringify(items.map((i) => ({ key: i.key, ...(i.iconSet ? { iconSet: i.iconSet } : {}) })))
+  );
 
   let duplicateKeys = $derived.by(() => {
     const keys = items.map((i) => i.key.trim().toLowerCase()).filter(Boolean);
