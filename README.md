@@ -46,7 +46,7 @@ High level features:
 - [x] Complete accessibility review + all fixes ([ADR-0016](docs/decisions/0016-accessibility-and-semantic-html.md))
 - [x] Replace "tags" with key/value ("props") setup
 - [x] Improve "props" with category-default keys
-- [ ] Improve "props" with special-support keys
+- [x] Improve "props" with special-support keys ([ADR-0019](docs/decisions/0019-prop-keys-with-icon-set-support.md))
 - [ ] Option to add more static cms pages
 - [ ] Option to customize the footer
 - [ ] Import from our own export format
@@ -202,7 +202,7 @@ Architectural decisions are documented as ADRs in [`docs/decisions/`](docs/decis
 | [0016](docs/decisions/0016-accessibility-and-semantic-html.md)          | Accessibility and Semantic HTML          | Accepted |
 | [0017](docs/decisions/0017-replace-tags-with-item-props.md)             | Replace Tags with Item Props             | Accepted |
 | [0018](docs/decisions/0018-category-prop-keys.md)                       | Category Prop Keys                       | Accepted |
-| [0019](docs/decisions/0019-prop-keys-with-icon-set-support.md)          | Prop Keys with Icon Set Support          | Proposed |
+| [0019](docs/decisions/0019-prop-keys-with-icon-set-support.md)          | Prop Keys with Icon Set Support          | Accepted |
 
 ## References
 
