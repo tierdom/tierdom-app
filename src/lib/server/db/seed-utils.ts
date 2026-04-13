@@ -16,7 +16,8 @@ export function seedCategories(db: DB, categories: SeedCategory[]): number {
         slug: cat.slug,
         name: cat.name,
         description: cat.description,
-        order: cat.order
+        order: cat.order,
+        ...(cat.propKeys && { propKeys: cat.propKeys })
       })
       .returning({ id: category.id })
       .get();

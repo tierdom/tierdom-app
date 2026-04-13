@@ -1,4 +1,4 @@
-import type { Prop } from '$lib/props';
+import type { Prop, PropKeyConfig } from '$lib/props';
 
 export type SeedItem = { name: string; score: number; props: Prop[]; description?: string };
 
@@ -7,6 +7,7 @@ export type SeedCategory = {
   name: string;
   description: string;
   order: number;
+  propKeys?: PropKeyConfig[];
   items: SeedItem[];
 };
 
@@ -19,6 +20,7 @@ export const CATEGORIES: SeedCategory[] = [
     description:
       "All the games I've ever played (as far as I can remember) ranked and stuffed into tiers. **Note:** this is what the games mean to me, and sometimes they may sit in a tier that could be considered '*too high*' if they are crap but were somehow special to me.",
     order: 0,
+    propKeys: [{ key: 'Platform', iconSet: 'gaming-platforms' }],
     items: [
       {
         name: 'Hollow Knight',
@@ -65,6 +67,7 @@ export const CATEGORIES: SeedCategory[] = [
     description:
       'Fiction and non-fiction both. Sorted by how much the book actually *stuck with me* long after reading.\n\nHeavy on sci-fi and fantasy, with a few literary outliers.',
     order: 1,
+    propKeys: [{ key: 'Year' }, { key: 'ISBN' }],
     items: [
       {
         name: 'Blood Meridian',
@@ -159,6 +162,7 @@ export const CATEGORIES: SeedCategory[] = [
     description:
       'Films ranked by **lasting impression** — not box office, not hype, just how they hold up on reflection.\n\nHeavy on horror and sci-fi; blockbusters need not apply.',
     order: 2,
+    propKeys: [{ key: 'Year' }, { key: 'Genre' }],
     items: [
       {
         name: 'Annihilation',
