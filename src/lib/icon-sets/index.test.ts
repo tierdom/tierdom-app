@@ -59,7 +59,7 @@ describe('getIcon', () => {
   });
 
   it('returns undefined for unknown value in known set', () => {
-    expect(getIcon('gaming-platforms', 'Dreamcast')).toBeUndefined();
+    expect(getIcon('gaming-platforms', 'Virtual Boy')).toBeUndefined();
   });
 
   it('returns undefined for unknown set', () => {

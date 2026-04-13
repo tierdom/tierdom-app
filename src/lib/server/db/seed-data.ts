@@ -57,7 +57,7 @@ export const CATEGORIES: SeedCategory[] = [
       { name: 'Genshin Impact', score: 50, props: [p('Platform', 'PC')] },
       { name: "No Man's Sky (launch)", score: 40, props: [p('Platform', 'PS4')] },
       { name: 'Forspoken', score: 32, props: [p('Platform', 'PS5')] },
-      { name: 'Redfall', score: 20, props: [p('Platform', 'Xbox Series X')] },
+      { name: 'Redfall', score: 20, props: [p('Platform', 'Xbox Series S/X')] },
       { name: 'Anthem', score: 10, props: [p('Platform', 'PC')] }
     ]
   },
