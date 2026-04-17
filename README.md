@@ -182,27 +182,28 @@ A database with example data will be seeded.
 
 Architectural decisions are documented as ADRs in [`docs/decisions/`](docs/decisions/).
 
-| ADR                                                                     | Title                                    | Status   |
-| ----------------------------------------------------------------------- | ---------------------------------------- | -------- |
-| [0001](docs/decisions/0001-use-architecture-decision-records.md)        | Use Architecture Decision Records        | Accepted |
-| [0002](docs/decisions/0002-system-architecture.md)                      | System Architecture                      | Accepted |
-| [0003](docs/decisions/0003-tooling-and-developer-experience.md)         | Tooling and Developer Experience         | Accepted |
-| [0004](docs/decisions/0004-domain-model.md)                             | Domain Model                             | Accepted |
-| [0005](docs/decisions/0005-frontend-styling.md)                         | Frontend Styling                         | Accepted |
-| [0006](docs/decisions/0006-admin-interface.md)                          | Admin Interface                          | Accepted |
-| [0007](docs/decisions/0007-markdown-rendering.md)                       | Markdown Rendering                       | Accepted |
-| [0008](docs/decisions/0008-use-lucide-svelte-for-icons.md)              | Use lucide-svelte for Icons              | Accepted |
-| [0009](docs/decisions/0009-add-created-at-and-updated-at-timestamps.md) | Add created_at and updated_at Timestamps | Accepted |
-| [0010](docs/decisions/0010-authentication-and-authorization.md)         | Authentication and Authorization         | Accepted |
-| [0011](docs/decisions/0011-image-support.md)                            | Image Support for Tier List Items        | Accepted |
-| [0012](docs/decisions/0012-docker-packaging-and-publishing.md)          | Docker Packaging and Publishing          | Accepted |
-| [0013](docs/decisions/0013-uuid-primary-keys.md)                        | UUID Primary Keys                        | Accepted |
-| [0014](docs/decisions/0014-end-to-end-testing-strategy.md)              | End-to-End Testing Strategy              | Accepted |
-| [0015](docs/decisions/0015-unit-testing-strategy.md)                    | Unit Testing Strategy                    | Accepted |
-| [0016](docs/decisions/0016-accessibility-and-semantic-html.md)          | Accessibility and Semantic HTML          | Accepted |
-| [0017](docs/decisions/0017-replace-tags-with-item-props.md)             | Replace Tags with Item Props             | Accepted |
-| [0018](docs/decisions/0018-category-prop-keys.md)                       | Category Prop Keys                       | Accepted |
-| [0019](docs/decisions/0019-prop-keys-with-icon-set-support.md)          | Prop Keys with Icon Set Support          | Accepted |
+| ADR                                                                     | Title                                         | Status   |
+| ----------------------------------------------------------------------- | --------------------------------------------- | -------- |
+| [0001](docs/decisions/0001-use-architecture-decision-records.md)        | Use Architecture Decision Records             | Accepted |
+| [0002](docs/decisions/0002-system-architecture.md)                      | System Architecture                           | Accepted |
+| [0003](docs/decisions/0003-tooling-and-developer-experience.md)         | Tooling and Developer Experience              | Accepted |
+| [0004](docs/decisions/0004-domain-model.md)                             | Domain Model                                  | Accepted |
+| [0005](docs/decisions/0005-frontend-styling.md)                         | Frontend Styling                              | Accepted |
+| [0006](docs/decisions/0006-admin-interface.md)                          | Admin Interface                               | Accepted |
+| [0007](docs/decisions/0007-markdown-rendering.md)                       | Markdown Rendering                            | Accepted |
+| [0008](docs/decisions/0008-use-lucide-svelte-for-icons.md)              | Use lucide-svelte for Icons                   | Accepted |
+| [0009](docs/decisions/0009-add-created-at-and-updated-at-timestamps.md) | Add created_at and updated_at Timestamps      | Accepted |
+| [0010](docs/decisions/0010-authentication-and-authorization.md)         | Authentication and Authorization              | Accepted |
+| [0011](docs/decisions/0011-image-support.md)                            | Image Support for Tier List Items             | Accepted |
+| [0012](docs/decisions/0012-docker-packaging-and-publishing.md)          | Docker Packaging and Publishing               | Accepted |
+| [0013](docs/decisions/0013-uuid-primary-keys.md)                        | UUID Primary Keys                             | Accepted |
+| [0014](docs/decisions/0014-end-to-end-testing-strategy.md)              | End-to-End Testing Strategy                   | Accepted |
+| [0015](docs/decisions/0015-unit-testing-strategy.md)                    | Unit Testing Strategy                         | Accepted |
+| [0016](docs/decisions/0016-accessibility-and-semantic-html.md)          | Accessibility and Semantic HTML               | Accepted |
+| [0017](docs/decisions/0017-replace-tags-with-item-props.md)             | Replace Tags with Item Props                  | Accepted |
+| [0018](docs/decisions/0018-category-prop-keys.md)                       | Category Prop Keys                            | Accepted |
+| [0019](docs/decisions/0019-prop-keys-with-icon-set-support.md)          | Prop Keys with Icon Set Support               | Accepted |
+| [0020](docs/decisions/0020-customizable-site-content.md)                | Customizable Site Content via Generalized CMS | Proposed |
 
 ## References
 
