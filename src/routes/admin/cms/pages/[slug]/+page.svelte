@@ -21,9 +21,7 @@
 
 <section>
   <div class="flex items-center gap-3">
-    <a href={resolve('/admin/pages')} class="text-sm text-secondary hover:text-primary"
-      >&larr; Pages</a
-    >
+    <a href={resolve('/admin/cms')} class="text-sm text-secondary hover:text-primary">&larr; CMS</a>
     <h1 class="text-xl font-bold text-primary">Edit: {data.page.title}</h1>
     <Timestamps createdAt={data.page.createdAt} updatedAt={data.page.updatedAt} />
   </div>

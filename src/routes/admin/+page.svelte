@@ -56,11 +56,11 @@
 
   <div class="mt-6 grid gap-6 lg:grid-cols-3">
     {@render dashboardCard(
-      '/admin/pages',
+      '/admin/cms',
       data.counts.pages,
-      'Pages',
+      'CMS',
       data.pages.map((pg) => ({
-        path: `/admin/pages/${pg.slug}`,
+        path: `/admin/cms/pages/${pg.slug}`,
         label: pg.title,
         detail: `/${pg.slug} \u00B7 ${formatRelativeDate(pg.updatedAt)}`
       })),
@@ -94,7 +94,7 @@
 </section>
 
 {#snippet footerAllPages()}
-  <p class="text-xs text-secondary">All pages</p>
+  <p class="text-xs text-secondary">All CMS content</p>
 {/snippet}
 
 {#snippet footerAllCategories()}

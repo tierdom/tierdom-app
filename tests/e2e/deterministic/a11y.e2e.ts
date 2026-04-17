@@ -51,8 +51,8 @@ test.describe('accessibility — admin pages', () => {
     await expectNoA11yViolations(page);
   });
 
-  test('admin pages', async ({ page }) => {
-    await page.goto('/admin/pages');
+  test('admin cms', async ({ page }) => {
+    await page.goto('/admin/cms');
     await expectNoA11yViolations(page);
   });
 });

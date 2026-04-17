@@ -6,7 +6,7 @@
 </script>
 
 <svelte:head>
-  <title>Pages — Admin — tierdom</title>
+  <title>CMS — Admin — tierdom</title>
 </svelte:head>
 
 <section>
@@ -15,7 +15,7 @@
   <div class="mt-6 flex flex-col gap-2">
     {#each data.pages as pg (pg.slug)}
       <a
-        href={resolve(`/admin/pages/${pg.slug}`)}
+        href={resolve(`/admin/cms/pages/${pg.slug}`)}
         class="flex items-center justify-between rounded-lg border border-subtle bg-elevated px-5 py-4 transition-colors hover:border-accent/40"
       >
         <div class="min-w-0">

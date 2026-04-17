@@ -13,7 +13,7 @@ test('dashboard shows entity counts', async ({ page }) => {
 test('dashboard links to admin sections', async ({ page }) => {
   await page.goto('/admin');
   const main = page.getByRole('main');
-  await expect(main.locator('a[href*="/admin/pages"]').first()).toBeVisible();
+  await expect(main.locator('a[href*="/admin/cms"]').first()).toBeVisible();
   await expect(main.locator('a[href*="/admin/categories"]').first()).toBeVisible();
   await expect(main.locator('a[href*="/admin/items"]').first()).toBeVisible();
 });
