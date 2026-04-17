@@ -15,6 +15,13 @@
       "when": 1776028495955,
       "tag": "0001_add_category_prop_keys",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1776461308967,
+      "tag": "0002_add_site_setting_table",
+      "breakpoints": true
     }
   ]
 }
