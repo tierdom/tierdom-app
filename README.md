@@ -48,7 +48,7 @@ High level features:
 - [x] Improve "props" with category-default keys
 - [x] Improve "props" with special-support keys ([ADR-0019](docs/decisions/0019-prop-keys-with-icon-set-support.md))
 - [ ] Option to add more static cms pages
-- [ ] Option to customize the footer
+- [x] Option to customize the footer ([ADR-0020](docs/decisions/0020-customizable-site-content.md))
 - [ ] Import from our own export format
 - [ ] Import from external sources (Goodreads CSV, etc.)
 - [ ] Export database to basic formats (markdown, json or yaml, etc.)
@@ -203,7 +203,7 @@ Architectural decisions are documented as ADRs in [`docs/decisions/`](docs/decis
 | [0017](docs/decisions/0017-replace-tags-with-item-props.md)             | Replace Tags with Item Props                  | Accepted |
 | [0018](docs/decisions/0018-category-prop-keys.md)                       | Category Prop Keys                            | Accepted |
 | [0019](docs/decisions/0019-prop-keys-with-icon-set-support.md)          | Prop Keys with Icon Set Support               | Accepted |
-| [0020](docs/decisions/0020-customizable-site-content.md)                | Customizable Site Content via Generalized CMS | Proposed |
+| [0020](docs/decisions/0020-customizable-site-content.md)                | Customizable Site Content via Generalized CMS | Accepted |
 
 ## References
 

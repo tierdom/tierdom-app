@@ -8,6 +8,27 @@ test('pages list shows seeded pages', async ({ page }) => {
   await expect(main.getByText('About tierdom').first()).toBeVisible();
 });
 
+test('general content section lists footer block', async ({ page }) => {
+  await page.goto('/admin/cms');
+  const main = page.getByRole('main');
+  await expect(main.getByRole('heading', { name: 'General Content' })).toBeVisible();
+  await expect(main.getByRole('link', { name: /Footer/ })).toBeVisible();
+});
+
+test('edit footer and verify on public side', async ({ page }) => {
+  const main = page.getByRole('main');
+
+  await page.goto('/admin/cms');
+  await main.getByRole('link', { name: /Footer/ }).click();
+  await page.locator('#content').fill('Custom footer with **bold** E2E marker.');
+  await main.locator('button[type="submit"]').click();
+
+  await page.goto('/');
+  const footer = page.getByRole('contentinfo');
+  await expect(footer.getByText('Custom footer with')).toBeVisible();
+  await expect(footer.locator('strong', { hasText: 'bold' })).toBeVisible();
+});
+
 test('edit home page content and verify on public side', async ({ page }) => {
   const main = page.getByRole('main');
 

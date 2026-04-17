@@ -59,6 +59,6 @@
     />
   {/if}
   {#if help}
-    <p id="{name}-help" class="text-xs text-secondary/70">{help}</p>
+    <p id="{name}-help" class="text-xs text-secondary">{help}</p>
   {/if}
 </div>

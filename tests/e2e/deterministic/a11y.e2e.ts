@@ -55,4 +55,14 @@ test.describe('accessibility — admin pages', () => {
     await page.goto('/admin/cms');
     await expectNoA11yViolations(page);
   });
+
+  test('admin cms page edit', async ({ page }) => {
+    await page.goto('/admin/cms/pages/home');
+    await expectNoA11yViolations(page);
+  });
+
+  test('admin cms general footer edit', async ({ page }) => {
+    await page.goto('/admin/cms/general/footer');
+    await expectNoA11yViolations(page);
+  });
 });
