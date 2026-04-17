@@ -39,15 +39,17 @@
   <h2 class="text-xl font-bold text-primary">General Content</h2>
 
   <div class="mt-6 flex flex-col gap-2">
-    <a
-      href={resolve('/admin/cms/general/footer')}
-      class="flex items-center justify-between rounded-lg border border-subtle bg-elevated px-5 py-4 transition-colors hover:border-accent/40"
-    >
-      <div class="min-w-0">
-        <p class="font-medium text-primary">Footer</p>
-        <p class="text-xs text-secondary">Markdown shown in the site-wide footer</p>
-      </div>
-      <span class="text-xs text-secondary">Edit &rarr;</span>
-    </a>
+    {#each data.generalContent as block (block.key)}
+      <a
+        href={resolve(`/admin/cms/general/${block.key}`)}
+        class="flex items-center justify-between rounded-lg border border-subtle bg-elevated px-5 py-4 transition-colors hover:border-accent/40"
+      >
+        <div class="min-w-0">
+          <p class="font-medium text-primary">{block.title}</p>
+          <p class="text-xs text-secondary">{block.description}</p>
+        </div>
+        <span class="text-xs text-secondary">Edit &rarr;</span>
+      </a>
+    {/each}
   </div>
 </section>

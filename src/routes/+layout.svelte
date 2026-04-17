@@ -1,6 +1,7 @@
 <script lang="ts">
   import './layout.css';
   import Navbar from '$lib/components/navbar/Navbar.svelte';
+  import Prose from '$lib/components/Prose.svelte';
 
   let { children, data } = $props();
 </script>
@@ -32,24 +33,10 @@
 
 {#if data.setupComplete}
   <footer class="mt-16 border-t border-subtle py-8">
-    <div class="mx-auto max-w-6xl px-4 text-center">
-      <p class="text-sm text-secondary">
-        Tierdom - Self-hosted tier lists. A project by
-        <a
-          href="https://jeroenheijmans.nl"
-          class="text-accent/70 underline transition-colors hover:text-accent"
-          target="_blank"
-          rel="noopener noreferrer">Jeroen Heijmans</a
-        >.
-      </p>
-      <p class="mt-1 text-xs text-secondary/70">
-        <a
-          href="https://github.com/tierdom/tierdom-app"
-          class="text-secondary underline transition-colors hover:text-primary"
-          target="_blank"
-          rel="noopener noreferrer">Source on GitHub</a
-        >
-      </p>
-    </div>
+    <Prose
+      html={data.footerHtml}
+      size="sm"
+      class="mx-auto max-w-6xl px-4 text-center text-secondary"
+    />
   </footer>
 {/if}
