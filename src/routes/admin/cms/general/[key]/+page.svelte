@@ -6,12 +6,20 @@
   import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
   import Timestamps from '$lib/components/admin/Timestamps.svelte';
   import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
-  import type { PageData } from './$types';
+  import type { ActionData, PageData } from './$types';
 
-  let { data }: { data: PageData } = $props();
+  let { data, form }: { data: PageData; form: ActionData } = $props();
 
   const loader = createAdminLoader();
   const { enhance } = loader;
+
+  let currentValue = $state<string>('');
+  // Sync initial / server-rerendered value. User input keeps currentValue updated via oninput.
+  $effect(() => {
+    currentValue = form?.value ?? data.value;
+  });
+  let byteLength = $derived(new TextEncoder().encode(currentValue).length);
+  let overLimit = $derived(byteLength > data.maxBytes);
 </script>
 
 <svelte:head>
@@ -47,10 +55,27 @@
     </aside>
   {/if}
 
-  <form method="POST" action="?/update" use:enhance class="mt-6 flex flex-col gap-4">
-    <MarkdownField value={data.value} required />
+  <form
+    method="POST"
+    action="?/update"
+    use:enhance
+    class="mt-6 flex flex-col gap-4"
+    oninput={(e) => {
+      const t = e.target as HTMLElement;
+      if (t?.id === 'content') currentValue = (t as HTMLTextAreaElement).value;
+    }}
+  >
+    <MarkdownField value={form?.value ?? data.value} required />
+    <div class="flex items-center justify-between text-xs">
+      <span class:text-red-400={overLimit} class:text-secondary={!overLimit}>
+        {byteLength.toLocaleString()} / {data.maxBytes.toLocaleString()} bytes
+      </span>
+      {#if form?.error}
+        <span class="text-red-400" role="alert">{form.error}</span>
+      {/if}
+    </div>
     <div class="flex items-center gap-3">
-      <Button type="submit"><Save size={16} />Save</Button>
+      <Button type="submit" disabled={overLimit}><Save size={16} />Save</Button>
       {#if !data.usingFallback}
         <Button
           type="submit"

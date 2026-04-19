@@ -4,6 +4,22 @@ import { siteSetting } from './db/schema';
 import { renderMarkdown } from './markdown';
 
 /**
+ * Hard cap on a single site_setting value. Generous for markdown but
+ * bounded so a runaway edit can't bloat every page render.
+ */
+export const MAX_SITE_CONTENT_BYTES = 16 * 1024;
+
+export class SiteContentTooLargeError extends Error {
+  constructor(
+    readonly byteLength: number,
+    readonly maxBytes: number
+  ) {
+    super(`Content is ${byteLength} bytes, exceeds the ${maxBytes} byte limit`);
+    this.name = 'SiteContentTooLargeError';
+  }
+}
+
+/**
  * Registry of generic site-wide content blocks the admin can edit.
  * Each entry defines the admin label, a one-line description, and the
  * markdown fallback used when no row exists in `site_setting`.
@@ -46,6 +62,10 @@ export async function getSiteContentHtml(key: SiteContentKey): Promise<string> {
 }
 
 export async function setSiteContent(key: SiteContentKey, value: string): Promise<void> {
+  const byteLength = new TextEncoder().encode(value).length;
+  if (byteLength > MAX_SITE_CONTENT_BYTES) {
+    throw new SiteContentTooLargeError(byteLength, MAX_SITE_CONTENT_BYTES);
+  }
   await db
     .insert(siteSetting)
     .values({ key, value })

@@ -1,5 +1,7 @@
 import { error, fail, redirect } from '@sveltejs/kit';
 import {
+  MAX_SITE_CONTENT_BYTES,
+  SiteContentTooLargeError,
   clearSiteContent,
   getSiteContentRecord,
   isSiteContentKey,
@@ -21,6 +23,7 @@ export const load: PageServerLoad = async ({ params }) => {
     fallback: block.fallback,
     value: record.value ?? '',
     usingFallback: !record.value?.trim(),
+    maxBytes: MAX_SITE_CONTENT_BYTES,
     createdAt: record.createdAt,
     updatedAt: record.updatedAt
   };
@@ -32,9 +35,19 @@ export const actions: Actions = {
 
     const data = await request.formData();
     const value = data.get('content')?.toString() ?? '';
-    if (!value.trim()) return fail(400, { error: 'Content is required' });
+    if (!value.trim()) return fail(400, { error: 'Content is required', value });
 
-    await setSiteContent(params.key, value);
+    try {
+      await setSiteContent(params.key, value);
+    } catch (err) {
+      if (err instanceof SiteContentTooLargeError) {
+        return fail(400, {
+          error: `Content is ${err.byteLength.toLocaleString()} bytes, exceeds the ${err.maxBytes.toLocaleString()} byte limit.`,
+          value
+        });
+      }
+      throw err;
+    }
 
     redirect(303, '/admin/cms');
   },
