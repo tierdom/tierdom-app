@@ -20,6 +20,6 @@ export const actions: Actions = {
 
     await db.update(page).set({ title, content }).where(eq(page.slug, params.slug));
 
-    redirect(303, '/admin/pages');
+    redirect(303, '/admin/cms');
   }
 };

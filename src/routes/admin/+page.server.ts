@@ -1,5 +1,6 @@
 import { db } from '$lib/server/db';
-import { category, tierListItem, page } from '$lib/server/db/schema';
+import { category, tierListItem, page, siteSetting } from '$lib/server/db/schema';
+import { siteContentBlocks } from '$lib/server/site-content';
 import { count, eq, asc, desc } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';
 
@@ -38,6 +39,16 @@ export const load: PageServerLoad = async () => {
     .select({ slug: page.slug, title: page.title, updatedAt: page.updatedAt })
     .from(page);
 
+  const siteSettings = await db
+    .select({ key: siteSetting.key, updatedAt: siteSetting.updatedAt })
+    .from(siteSetting);
+  const updatedAtByKey = new Map(siteSettings.map((r) => [r.key, r.updatedAt]));
+  const siteContent = Object.entries(siteContentBlocks).map(([key, block]) => ({
+    key,
+    title: block.title,
+    updatedAt: updatedAtByKey.get(key) ?? null
+  }));
+
   return {
     counts: {
       categories: cats.count,
@@ -46,6 +57,7 @@ export const load: PageServerLoad = async () => {
     },
     categories,
     recentItems,
-    pages
+    pages,
+    siteContent
   };
 };

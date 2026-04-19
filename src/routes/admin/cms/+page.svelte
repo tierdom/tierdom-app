@@ -6,16 +6,18 @@
 </script>
 
 <svelte:head>
-  <title>Pages — Admin — tierdom</title>
+  <title>CMS — Admin — tierdom</title>
 </svelte:head>
 
+<h1 class="sr-only">CMS</h1>
+
 <section>
-  <h1 class="text-xl font-bold text-primary">Pages</h1>
+  <h2 class="text-xl font-bold text-primary">Pages</h2>
 
   <div class="mt-6 flex flex-col gap-2">
     {#each data.pages as pg (pg.slug)}
       <a
-        href={resolve(`/admin/pages/${pg.slug}`)}
+        href={resolve(`/admin/cms/pages/${pg.slug}`)}
         class="flex items-center justify-between rounded-lg border border-subtle bg-elevated px-5 py-4 transition-colors hover:border-accent/40"
       >
         <div class="min-w-0">
@@ -31,4 +33,23 @@
   {#if data.pages.length === 0}
     <p class="mt-6 text-sm text-secondary">No pages yet. Seed the database to create pages.</p>
   {/if}
+</section>
+
+<section class="mt-10">
+  <h2 class="text-xl font-bold text-primary">General Content</h2>
+
+  <div class="mt-6 flex flex-col gap-2">
+    {#each data.generalContent as block (block.key)}
+      <a
+        href={resolve(`/admin/cms/general/${block.key}`)}
+        class="flex items-center justify-between rounded-lg border border-subtle bg-elevated px-5 py-4 transition-colors hover:border-accent/40"
+      >
+        <div class="min-w-0">
+          <p class="font-medium text-primary">{block.title}</p>
+          <p class="text-xs text-secondary">{block.description}</p>
+        </div>
+        <span class="text-xs text-secondary">Edit &rarr;</span>
+      </a>
+    {/each}
+  </div>
 </section>

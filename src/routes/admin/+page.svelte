@@ -3,6 +3,7 @@
   import { formatRelativeDate } from '$lib/format-date';
   import { resolve } from '$app/paths';
   import { Plus } from 'lucide-svelte';
+  import Button from '$lib/components/admin/Button.svelte';
   import type { PageData } from './$types';
 
   let { data }: { data: PageData } = $props();
@@ -15,7 +16,7 @@
   count: number,
   title: string,
   items: DashboardItem[],
-  footer: Snippet
+  extras?: Snippet
 )}
   <div>
     <a
@@ -41,9 +42,9 @@
         <li class="px-3 py-2 text-xs text-secondary">No items yet</li>
       {/if}
     </ul>
-    <div class="mt-2 px-1">
-      {@render footer()}
-    </div>
+    {#if extras}
+      {@render extras()}
+    {/if}
   </div>
 {/snippet}
 
@@ -56,15 +57,15 @@
 
   <div class="mt-6 grid gap-6 lg:grid-cols-3">
     {@render dashboardCard(
-      '/admin/pages',
+      '/admin/cms',
       data.counts.pages,
-      'Pages',
+      'CMS',
       data.pages.map((pg) => ({
-        path: `/admin/pages/${pg.slug}`,
+        path: `/admin/cms/pages/${pg.slug}`,
         label: pg.title,
         detail: `/${pg.slug} \u00B7 ${formatRelativeDate(pg.updatedAt)}`
       })),
-      footerAllPages
+      cmsExtras
     )}
 
     {@render dashboardCard(
@@ -75,8 +76,7 @@
         path: `/admin/categories/${cat.id}`,
         label: cat.name,
         detail: `${cat.itemCount} items \u00B7 ${formatRelativeDate(cat.updatedAt)}`
-      })),
-      footerAllCategories
+      }))
     )}
 
     {@render dashboardCard(
@@ -88,27 +88,36 @@
         label: item.name,
         detail: `${item.categoryName} \u00B7 ${formatRelativeDate(item.updatedAt)}`
       })),
-      footerItems
+      itemsExtras
     )}
   </div>
 </section>
 
-{#snippet footerAllPages()}
-  <p class="text-xs text-secondary">All pages</p>
+{#snippet cmsExtras()}
+  <hr class="my-3 border-subtle" />
+  <ul class="mt-2 flex flex-col gap-1">
+    {#each data.siteContent as block (block.key)}
+      <li>
+        <a
+          href={resolve(`/admin/cms/general/${block.key}`)}
+          class="flex items-center justify-between rounded border border-subtle bg-surface px-3 py-2 text-sm transition-colors hover:border-accent/40"
+        >
+          <span class="text-primary">{block.title}</span>
+          <span class="text-xs text-secondary"
+            >/{block.key}{block.updatedAt
+              ? ` \u00B7 ${formatRelativeDate(block.updatedAt)}`
+              : ''}</span
+          >
+        </a>
+      </li>
+    {/each}
+  </ul>
 {/snippet}
 
-{#snippet footerAllCategories()}
-  <p class="text-xs text-secondary">All categories</p>
-{/snippet}
-
-{#snippet footerItems()}
-  <div class="flex items-center justify-between">
-    <p class="text-xs text-secondary">Recently updated</p>
-    <a
-      href={resolve('/admin/items/new-item')}
-      class="inline-flex items-center gap-1 text-xs text-accent hover:underline"
-    >
+{#snippet itemsExtras()}
+  <div class="mt-2 flex justify-end">
+    <Button href={resolve('/admin/items/new-item')} compact>
       <Plus size={12} />New item
-    </a>
+    </Button>
   </div>
 {/snippet}

@@ -87,6 +87,17 @@ export const page = sqliteTable('page', {
     .default(sql`(datetime('now'))`)
 });
 
+export const siteSetting = sqliteTable('site_setting', {
+  key: text('key').primaryKey(),
+  value: text('value').notNull(),
+  createdAt: text('created_at')
+    .notNull()
+    .default(sql`(datetime('now'))`),
+  updatedAt: text('updated_at')
+    .notNull()
+    .default(sql`(datetime('now'))`)
+});
+
 // Signal table: when a row is present, updated_at triggers are suppressed.
 // Used by reorder operations to avoid bumping timestamps on order-only changes.
 export const suppressUpdatedAt = sqliteTable('_suppress_updated_at', {
