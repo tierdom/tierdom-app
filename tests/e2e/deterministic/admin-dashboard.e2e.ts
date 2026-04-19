@@ -20,5 +20,9 @@ test('dashboard links to admin sections', async ({ page }) => {
 
 test('dashboard shows recent items', async ({ page }) => {
   await page.goto('/admin');
-  await expect(page.getByRole('main').getByText('Recently updated')).toBeVisible();
+  // Items card lists the five most recently updated items as links. We
+  // don't care which specific ones — just that at least one is present.
+  const main = page.getByRole('main');
+  const itemLinks = main.locator('a[href^="/admin/items/"]').filter({ hasNotText: 'New item' });
+  await expect(itemLinks.first()).toBeVisible();
 });

@@ -21,12 +21,19 @@ test('edit footer and verify on public side', async ({ page }) => {
   await page.goto('/admin/cms');
   await main.getByRole('link', { name: /Footer/ }).click();
   await page.locator('#content').fill('Custom footer with **bold** E2E marker.');
-  await main.locator('button[type="submit"]').click();
+  // Save specifically — a Reset button is also present once a row exists.
+  await main.getByRole('button', { name: 'Save' }).click();
 
   await page.goto('/');
   const footer = page.getByRole('contentinfo');
   await expect(footer.getByText('Custom footer with')).toBeVisible();
   await expect(footer.locator('strong', { hasText: 'bold' })).toBeVisible();
+
+  // Restore: clear the row so the next run (or a retry) starts clean.
+  await page.goto('/admin/cms/general/footer');
+  page.once('dialog', (d) => d.accept());
+  await main.getByRole('button', { name: 'Reset to default' }).click();
+  await expect(page).toHaveURL('/admin/cms');
 });
 
 test('edit home page content and verify on public side', async ({ page }) => {
