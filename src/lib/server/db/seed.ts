@@ -15,7 +15,7 @@ import { CATEGORIES, PAGES } from './seed-data';
 import { seedCategories } from './seed-utils';
 import { generateSeedImages } from './seed-images';
 
-const { page, user, session, category, tierListItem } = schema;
+const { page, user, session, category, tierListItem, siteSetting } = schema;
 
 if (!process.env.DATA_PATH) {
   console.error('DATA_PATH is not set');
@@ -35,6 +35,7 @@ db.delete(session).run();
 db.delete(tierListItem).run();
 db.delete(category).run();
 db.delete(page).run();
+db.delete(siteSetting).run();
 db.delete(user).run();
 
 // Insert dev admin user from env vars (defaults: admin / admin)
@@ -68,16 +69,19 @@ client.exec(`
   UPDATE category       SET created_at = datetime('now', '-' || (abs(random()) % ${SIX_MONTHS_SEC}) || ' seconds');
   UPDATE tier_list_item SET created_at = datetime('now', '-' || (abs(random()) % ${SIX_MONTHS_SEC}) || ' seconds');
   UPDATE page           SET created_at = datetime('now', '-' || (abs(random()) % ${SIX_MONTHS_SEC}) || ' seconds');
+  UPDATE site_setting   SET created_at = datetime('now', '-' || (abs(random()) % ${SIX_MONTHS_SEC}) || ' seconds');
 
   -- Default: updated_at = created_at (never edited)
   UPDATE category       SET updated_at = created_at;
   UPDATE tier_list_item SET updated_at = created_at;
   UPDATE page           SET updated_at = created_at;
+  UPDATE site_setting   SET updated_at = created_at;
 
   -- ~1/3 of rows: bump updated_at to a random point between created_at and now
   UPDATE category       SET updated_at = datetime(created_at, '+' || (abs(random()) % max(1, cast((julianday('now') - julianday(created_at)) * 86400 as integer))) || ' seconds') WHERE abs(random()) % 3 = 0;
   UPDATE tier_list_item SET updated_at = datetime(created_at, '+' || (abs(random()) % max(1, cast((julianday('now') - julianday(created_at)) * 86400 as integer))) || ' seconds') WHERE abs(random()) % 3 = 0;
   UPDATE page           SET updated_at = datetime(created_at, '+' || (abs(random()) % max(1, cast((julianday('now') - julianday(created_at)) * 86400 as integer))) || ' seconds') WHERE abs(random()) % 3 = 0;
+  UPDATE site_setting   SET updated_at = datetime(created_at, '+' || (abs(random()) % max(1, cast((julianday('now') - julianday(created_at)) * 86400 as integer))) || ' seconds') WHERE abs(random()) % 3 = 0;
 
   -- Re-enable triggers
   DELETE FROM _suppress_updated_at;
