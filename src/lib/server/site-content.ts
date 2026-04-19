@@ -51,3 +51,7 @@ export async function setSiteContent(key: SiteContentKey, value: string): Promis
     .values({ key, value })
     .onConflictDoUpdate({ target: siteSetting.key, set: { value } });
 }
+
+export async function clearSiteContent(key: SiteContentKey): Promise<void> {
+  await db.delete(siteSetting).where(eq(siteSetting.key, key));
+}
