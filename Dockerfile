@@ -5,7 +5,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
-RUN DATA_PATH=./build-data npm run build && rm -rf build-data
+RUN mkdir -p build-data && DATA_PATH=./build-data npm run build && rm -rf build-data
 
 # Stage 2: Production runtime
 FROM node:24-alpine
