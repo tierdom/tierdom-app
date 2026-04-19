@@ -1,6 +1,7 @@
 import { eq } from 'drizzle-orm';
 import { db } from './db';
 import { siteSetting } from './db/schema';
+import { createKeyedCache } from './keyed-cache';
 import { renderMarkdown } from './markdown';
 
 /**
@@ -59,17 +60,7 @@ type CachedEntry = {
  * so every mutation invalidates its key locally. Single-process app,
  * so no distributed invalidation needed.
  */
-const cache = new Map<SiteContentKey, CachedEntry>();
-
-/** Test-only reset hook. Not used by the app at runtime. */
-export function _resetSiteContentCacheForTests(): void {
-  cache.clear();
-}
-
-async function loadCached(key: SiteContentKey): Promise<CachedEntry> {
-  const hit = cache.get(key);
-  if (hit) return hit;
-
+const cache = createKeyedCache<SiteContentKey, CachedEntry>(async (key) => {
   const [row] = await db.select().from(siteSetting).where(eq(siteSetting.key, key)).limit(1);
   const record: SiteContentRecord = {
     value: row?.value ?? null,
@@ -77,17 +68,20 @@ async function loadCached(key: SiteContentKey): Promise<CachedEntry> {
     updatedAt: row?.updatedAt ?? null
   };
   const effective = record.value?.trim() ? record.value : siteContentBlocks[key].fallback;
-  const entry: CachedEntry = { record, html: renderMarkdown(effective) };
-  cache.set(key, entry);
-  return entry;
+  return { record, html: renderMarkdown(effective) };
+});
+
+/** Test-only reset hook. Not used by the app at runtime. */
+export function _resetSiteContentCacheForTests(): void {
+  cache.clear();
 }
 
 export async function getSiteContentRecord(key: SiteContentKey): Promise<SiteContentRecord> {
-  return (await loadCached(key)).record;
+  return (await cache.get(key)).record;
 }
 
 export async function getSiteContentHtml(key: SiteContentKey): Promise<string> {
-  return (await loadCached(key)).html;
+  return (await cache.get(key)).html;
 }
 
 export async function setSiteContent(key: SiteContentKey, value: string): Promise<void> {
@@ -99,10 +93,10 @@ export async function setSiteContent(key: SiteContentKey, value: string): Promis
     .insert(siteSetting)
     .values({ key, value })
     .onConflictDoUpdate({ target: siteSetting.key, set: { value } });
-  cache.delete(key);
+  cache.invalidate(key);
 }
 
 export async function clearSiteContent(key: SiteContentKey): Promise<void> {
   await db.delete(siteSetting).where(eq(siteSetting.key, key));
-  cache.delete(key);
+  cache.invalidate(key);
 }

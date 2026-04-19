@@ -1,20 +1,17 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 /**
- * Lightweight in-memory stand-in for the site_setting table.
- * Gives us a mocked drizzle-ish client with just enough surface to
- * cover site-content.ts's read/write/delete paths, plus counters to
- * assert the cache behavior (one DB read per key per process).
+ * Lightweight in-memory stand-in for the site_setting table. Just enough
+ * surface for site-content.ts's read/write/delete paths. insertCount is
+ * kept so we can assert the byte-cap guard short-circuits before writing.
  */
 type Row = { key: string; value: string; createdAt: string; updatedAt: string };
 const store = new Map<string, Row>();
-const counters = { selects: 0, inserts: 0, deletes: 0 };
+let insertCount = 0;
 
 function resetMockDb() {
   store.clear();
-  counters.selects = 0;
-  counters.inserts = 0;
-  counters.deletes = 0;
+  insertCount = 0;
 }
 
 vi.mock('$lib/server/db', () => ({
@@ -23,7 +20,6 @@ vi.mock('$lib/server/db', () => ({
       from: () => ({
         where: (predicate: { key: string }) => ({
           limit: async () => {
-            counters.selects += 1;
             const row = store.get(predicate.key);
             return row ? [row] : [];
           }
@@ -33,7 +29,7 @@ vi.mock('$lib/server/db', () => ({
     insert: () => ({
       values: (v: { key: string; value: string }) => ({
         onConflictDoUpdate: async () => {
-          counters.inserts += 1;
+          insertCount += 1;
           const prev = store.get(v.key);
           const now = new Date().toISOString();
           store.set(v.key, {
@@ -47,7 +43,6 @@ vi.mock('$lib/server/db', () => ({
     }),
     delete: () => ({
       where: async (predicate: { key: string }) => {
-        counters.deletes += 1;
         store.delete(predicate.key);
       }
     })
@@ -129,35 +124,23 @@ describe('getSiteContentHtml', () => {
   });
 });
 
-describe('cache', () => {
-  it('reads from DB only once per key', async () => {
-    expect.assertions(2);
-    await getSiteContentHtml('footer');
-    await getSiteContentHtml('footer');
-    await getSiteContentRecord('footer');
-    expect(counters.selects).toBe(1);
-    // And both accessors return consistent data
-    expect((await getSiteContentRecord('footer')).value).toBe(null);
-  });
-
-  it('invalidates on setSiteContent', async () => {
-    expect.assertions(2);
-    await getSiteContentHtml('footer'); // populate cache → fallback
+// Cache mechanism is covered in keyed-cache.test.ts. These integration
+// tests pin down the site-content wiring: writes must invalidate so the
+// next read reflects the new state (no stale served after a mutation).
+describe('read-after-write', () => {
+  it('sees the new value after setSiteContent, even when the prior read cached the fallback', async () => {
+    expect.assertions(1);
+    await getSiteContentHtml('footer'); // prime cache with the fallback
     await setSiteContent('footer', 'new value');
-    const html = await getSiteContentHtml('footer');
-    expect(html).toContain('new value');
-    expect(counters.selects).toBe(2);
+    expect(await getSiteContentHtml('footer')).toContain('new value');
   });
 
-  it('invalidates on clearSiteContent', async () => {
-    expect.assertions(2);
+  it('reverts to fallback after clearSiteContent, even when a custom value was cached', async () => {
+    expect.assertions(1);
     await setSiteContent('footer', 'custom');
-    await getSiteContentHtml('footer'); // populate cache
+    await getSiteContentHtml('footer'); // prime cache with the custom value
     await clearSiteContent('footer');
-    const html = await getSiteContentHtml('footer');
-    expect(html).toContain('Self-hosted tier lists');
-    // 2 selects total: one after first setSiteContent, one after clear
-    expect(counters.selects).toBe(2);
+    expect(await getSiteContentHtml('footer')).toContain('Self-hosted tier lists');
   });
 });
 
@@ -175,7 +158,7 @@ describe('setSiteContent', () => {
       SiteContentTooLargeError
     );
     // Didn't hit the DB because the guard fires first
-    expect(counters.inserts).toBe(0);
+    expect(insertCount).toBe(0);
     // Still readable (fallback); cache entry untouched
     const html = await getSiteContentHtml('footer');
     expect(html).toContain('Self-hosted tier lists');
