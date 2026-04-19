@@ -105,3 +105,51 @@
     outline-offset: 2px;
   }
 }
+
+/* ─── Footer prose overrides ────────────────────────────────────────────────
+   Compact typography for footer content. Keeps Prose's full markdown
+   support (tables, code, lists, …) usable in a site-wide footer without
+   dominating short default content. Applied alongside .prose.prose-sm via
+   the .footer-prose class on the Prose wrapper in +layout.svelte.
+   ────────────────────────────────────────────────────────────────────────── */
+.footer-prose {
+  font-size: 0.75rem;
+  line-height: 1.55;
+}
+.footer-prose :where(p, ul, ol, blockquote, pre, table, hr) {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.footer-prose :where(h1, h2, h3, h4, h5, h6) {
+  margin-top: 0.75rem;
+  margin-bottom: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.footer-prose :where(h1) {
+  font-size: 1rem;
+}
+.footer-prose :where(li) {
+  margin-top: 0.125rem;
+  margin-bottom: 0.125rem;
+}
+.footer-prose :where(pre, code, table) {
+  font-size: 0.7rem;
+}
+.footer-prose :where(a) {
+  color: var(--c-accent);
+  text-decoration: none;
+}
+.footer-prose :where(a:hover) {
+  text-decoration: underline;
+}
+.footer-prose :where(hr) {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.footer-prose > :first-child {
+  margin-top: 0;
+}
+.footer-prose > :last-child {
+  margin-bottom: 0;
+}

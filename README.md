@@ -63,6 +63,7 @@ High level features:
 
 Known issues, bugs, and small TODO's:
 
+- [ ] Improve markdown in Footer (lists, code block, table, etc.)
 - [ ] SortableList keyboard reordering (a11y follow-up)
 - [ ] Full color contrast audit with manual verification (a11y follow-up)
 - [ ] `aria-live` regions for loading states and form feedback (a11y follow-up)

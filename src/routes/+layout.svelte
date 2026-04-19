@@ -38,11 +38,11 @@
   </main>
 
   {#if data.setupComplete}
-    <footer class="mt-16 border-t border-subtle py-8">
+    <footer class="mt-16 border-t border-subtle py-6">
       <Prose
         html={data.footerHtml}
         size="sm"
-        class="mx-auto max-w-6xl px-4 text-center text-secondary"
+        class="footer-prose mx-auto max-w-3xl px-4 text-center text-secondary"
       />
     </footer>
   {/if}
