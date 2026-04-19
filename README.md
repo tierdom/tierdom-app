@@ -49,6 +49,7 @@ High level features:
 - [x] Improve "props" with special-support keys ([ADR-0019](docs/decisions/0019-prop-keys-with-icon-set-support.md))
 - [ ] Option to add more static cms pages
 - [x] Option to customize the footer ([ADR-0020](docs/decisions/0020-customizable-site-content.md))
+- [ ] Live rendered-markdown preview alongside the CMS editor textarea
 - [ ] Import from our own export format
 - [ ] Import from external sources (Goodreads CSV, etc.)
 - [ ] Export database to basic formats (markdown, json or yaml, etc.)
