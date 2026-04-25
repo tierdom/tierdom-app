@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed
+Accepted
 
 ## Context
 
@@ -19,22 +19,25 @@ Proposed
 
 ### ZIP packaging
 
-- Library: **`fflate`** (zero runtime deps, ~50 KB Node footprint, MIT). Per-entry `ZipPassThrough` (store) for already-compressed WebPs; `ZipDeflate` (level 6) for SQLite + JSON.
-- Rejected: `archiver` — nicer API but ~15 transitive deps (legacy `readable-stream` dual-versioning, `abort-controller` polyfill); supply-chain surface conflicts with the self-hostable / minimal-dep principle. Hand-rolled `zlib` — Node ships the building blocks but not the ZIP container; ~300 LOC of binary-format code with edge cases (UTF-8 filenames, ZIP64, DOS timestamps) is a perpetual tax for no real win.
+- Library: **`fflate@0.8.2`** (zero runtime deps, MIT). Per-entry `ZipPassThrough` (store) for WebPs; `ZipDeflate` (level 6) for SQLite + JSON.
+- Rejected: `archiver` (~15 transitive deps — supply-chain surface conflicts with self-hostable principle); hand-rolled `zlib` (Node ships deflate but not the ZIP container — perpetual tax).
+- Filename + inner folder include time, colons stripped: `tierdom-backup-YYYY-MM-DDTHH-MM-SSZ`. Entries sorted by path for deterministic output.
 - Layout (top-level dated folder avoids tar-bomb UX):
   ```
-  tierdom-backup-YYYY-MM-DD/
-    README.txt          # restore hints
-    manifest.json       # {schemaVersion, appVersion, exportedAt, contents, counts}
+  tierdom-backup-YYYY-MM-DDTHH-MM-SSZ/
+    README.txt          # always — static asset, documents all options
+    manifest.json       # always — {schemaVersion, appVersion, exportedAt, contents, counts}
     db/db.sqlite        # if SQLite selected
     data.json           # if JSON selected
     images/<hash>.webp  # if images selected
   ```
+- `README.txt` is a checked-in static asset embedded via Vite `?raw` — documents all options regardless of which were ticked, so the wizard UI and the archive can't drift apart.
 
 ### SQLite snapshot
 
-- **`VACUUM INTO`** to `os.tmpdir()`, added to archive, unlinked in `finally`.
+- **`VACUUM INTO`** via a `backupDatabaseTo` helper in `db/index.ts`. Snapshot in `os.tmpdir()` with a UUID name, unlinked in `finally` + `cancel` (idempotent).
 - Rejected: file copy (misses WAL writes), checkpoint-then-copy (race-prone).
+- Accepted trade-off: tmpdir may be on a different volume than `$DATA_PATH` in Docker — one extra copy per export. Fine at our scale.
 
 ### `data.json` schema
 
@@ -49,13 +52,19 @@ Proposed
 - SQLite checkbox notes "includes trash"; JSON checkbox warns "excludes trash".
 - Submit: native `<form method="GET">` to the streaming endpoint. No JS required.
 
-### Auth
+### Auth & input safety
 
-- `/admin/*` redirect in `src/hooks.server.ts` already gates the endpoint.
+- `/admin/*` redirect in `hooks.server.ts` already gates the endpoint. Endpoint returns `400` if all checkboxes are off.
+- Image filenames filtered through `/^[A-Za-z0-9_-]{1,128}\.webp$/` — defense-in-depth against zip-slip on extraction (a `..`-containing name would otherwise produce a dangerous entry path).
+- Symlinks in `$DATA_PATH/images/` are excluded automatically — `Dirent.isFile()` doesn't follow them.
 
 ### Builder reuse
 
-- Logic factored into `src/lib/server/export/build-export.ts` as `buildExport(opts)` so the future Backup epic can call it without HTTP.
+- Pure `buildExport(opts, ctx, db?)` in `src/lib/server/export/build-export.ts` returns `{ stream, filename, cleanup }`. No SvelteKit/HTTP imports — the future Backup epic can call it directly. Test overrides for `exportedAt` and `imagesDir` live in `ctx`.
+
+### App version
+
+- `package.json` is the single source of truth; `app-version.ts` reads it once at startup and stamps every manifest. `scripts/publish.sh` derives the Docker tag from it and refuses to publish from a dirty tree. Workflow: `npm version prerelease --preid=alpha` → `./scripts/publish.sh` → `git push --tags`.
 
 ## Consequences
 
