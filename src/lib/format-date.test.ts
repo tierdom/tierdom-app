@@ -66,4 +66,13 @@ describe('formatRelativeDate', () => {
     // Future dates produce negative diffMins, which is < 1
     expect(formatRelativeDate('2026-04-13 12:00:00')).toBe('just now');
   });
+
+  it('handles ISO strings that already end with Z without double-appending', () => {
+    expect.assertions(2);
+    // Equivalent to '2026-04-12 11:57:00' but in `Date.toISOString()` shape —
+    // soft-delete uses SQLite's datetime('now') today, but defensiveness here
+    // keeps the helper callable from anywhere that produces a UTC ISO string.
+    expect(formatRelativeDate('2026-04-12T11:57:00.000Z')).toBe('3m ago');
+    expect(formatRelativeDate('2026-04-12T11:57:00Z')).toBe('3m ago');
+  });
 });

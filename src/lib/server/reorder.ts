@@ -1,7 +1,11 @@
-import { db } from '$lib/server/db';
+import { db as defaultDb } from '$lib/server/db';
 import { sql } from 'drizzle-orm';
+import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import { tierListItem, tierListItemTable } from '$lib/server/db/schema';
+import type * as schema from '$lib/server/db/schema';
 import type { SQLiteTable, SQLiteColumn } from 'drizzle-orm/sqlite-core';
+
+type DB = BetterSQLite3Database<typeof schema>;
 
 const SUPPRESS_ON = sql`INSERT INTO _suppress_updated_at VALUES (1)`;
 const SUPPRESS_OFF = sql`DELETE FROM _suppress_updated_at`;
@@ -13,7 +17,8 @@ export function applyOrder(
   table: SQLiteTable,
   idColumn: SQLiteColumn,
   orderColumn: SQLiteColumn,
-  orderedIds: string[]
+  orderedIds: string[],
+  db: DB = defaultDb
 ): void {
   db.transaction((tx) => {
     tx.run(SUPPRESS_ON);
@@ -36,7 +41,8 @@ export function insertByScore(
   categoryId: string,
   score: number,
   name: string,
-  itemId: string
+  itemId: string,
+  db: DB = defaultDb
 ): number {
   const result = db
     .select({
@@ -72,7 +78,7 @@ export function insertByScore(
  * Sort all items in a category by score DESC, name ASC, id ASC.
  * Single atomic UPDATE using a window function.
  */
-export function sortCategoryByScore(categoryId: string): void {
+export function sortCategoryByScore(categoryId: string, db: DB = defaultDb): void {
   db.run(SUPPRESS_ON);
   db.run(
     sql`UPDATE ${tierListItemTable}

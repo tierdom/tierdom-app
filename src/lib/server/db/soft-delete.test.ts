@@ -10,7 +10,7 @@ vi.mock('$env/dynamic/private', () => ({ env: { DATA_PATH: '/tmp/test' } }));
 vi.mock('sharp', () => ({ default: vi.fn() }));
 
 import * as schema from './schema';
-import { categoryTable, tierListItemTable } from './schema';
+import { category, categoryTable, tierListItem, tierListItemTable } from './schema';
 import {
   SoftDeleteError,
   listTrashed,
@@ -412,5 +412,38 @@ describe('listTrashed', () => {
     const result = listTrashed(db);
     expect(result.categories).toEqual([]);
     expect(result.items).toEqual([]);
+  });
+});
+
+// The headline ADR-0022 guarantee: reads via the schema's view exports
+// transparently exclude soft-deleted rows. Each table+view pair is tested
+// once so a regression in the view definition (or a future column-add that
+// forgets to recreate the view) is caught here, not in production.
+describe('view-based read filter (ADR-0022)', () => {
+  it('excludes soft-deleted categories from the active view', () => {
+    expect.assertions(2);
+    const db = makeDb();
+    const liveId = seedCategory(db, 'live');
+    const trashedId = seedCategory(db, 'trashed');
+    softDeleteCategory(db, trashedId);
+
+    const all = db.select({ id: categoryTable.id }).from(categoryTable).all();
+    const active = db.select({ id: category.id }).from(category).all();
+    expect(all.map((r) => r.id).sort()).toEqual([liveId, trashedId].sort());
+    expect(active.map((r) => r.id)).toEqual([liveId]);
+  });
+
+  it('excludes soft-deleted items from the active view', () => {
+    expect.assertions(2);
+    const db = makeDb();
+    const catId = seedCategory(db, 'live');
+    const liveItem = seedItem(db, catId, 'live');
+    const trashedItem = seedItem(db, catId, 'trashed');
+    softDeleteItem(db, trashedItem);
+
+    const all = db.select({ id: tierListItemTable.id }).from(tierListItemTable).all();
+    const active = db.select({ id: tierListItem.id }).from(tierListItem).all();
+    expect(all.map((r) => r.id).sort()).toEqual([liveItem, trashedItem].sort());
+    expect(active.map((r) => r.id)).toEqual([liveItem]);
   });
 });
