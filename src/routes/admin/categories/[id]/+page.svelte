@@ -91,7 +91,7 @@
 
 <section>
   <AdminOverlay loading={loader.loading} />
-  <div class="flex items-center gap-3">
+  <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
     <a href={resolve('/admin/categories')} class="text-sm text-secondary hover:text-primary"
       >&larr; Back</a
     >
