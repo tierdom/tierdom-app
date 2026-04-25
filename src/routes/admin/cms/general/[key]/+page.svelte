@@ -83,7 +83,7 @@
         <span class="text-red-400" role="alert">{form.error}</span>
       {/if}
     </div>
-    <div class="flex items-center gap-3">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
       <Button type="submit" disabled={overLimit}><Save size={16} />Save</Button>
       {#if !data.usingFallback}
         <Button type="button" variant="danger-ghost" onclick={() => (pendingReset = true)}>
