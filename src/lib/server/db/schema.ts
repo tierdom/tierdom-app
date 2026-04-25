@@ -54,7 +54,11 @@ export const tierListItemTable = sqliteTable('tier_list_item', {
   updatedAt: text('updated_at')
     .notNull()
     .default(sql`(datetime('now'))`),
-  deletedAt: text('deleted_at')
+  deletedAt: text('deleted_at'),
+  // Set to true when an item is soft-deleted as part of a category cascade,
+  // null otherwise. Lets restoreCategory bring back exactly the items it
+  // cascaded — items the user trashed independently keep their state.
+  deletedWithCascade: integer('deleted_with_cascade', { mode: 'boolean' })
 });
 
 export const tierListItem = sqliteView('tier_list_item_active').as((qb) =>

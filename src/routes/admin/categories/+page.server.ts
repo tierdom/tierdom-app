@@ -3,6 +3,7 @@ import { category, categoryTable, tierListItem } from '$lib/server/db/schema';
 import { asc, count, eq } from 'drizzle-orm';
 import { fail } from '@sveltejs/kit';
 import { applyOrder } from '$lib/server/reorder';
+import { softDeleteCategory } from '$lib/server/db/soft-delete';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async () => {
@@ -28,7 +29,7 @@ export const actions: Actions = {
     const id = data.get('id')?.toString();
     if (!id) return fail(400, { error: 'Invalid id' });
 
-    await db.delete(categoryTable).where(eq(categoryTable.id, id));
+    softDeleteCategory(db, id);
     return { success: true };
   },
 

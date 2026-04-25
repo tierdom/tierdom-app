@@ -3,6 +3,7 @@ import { category, tierListItem, tierListItemTable } from '$lib/server/db/schema
 import { asc, eq } from 'drizzle-orm';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { insertByScore } from '$lib/server/reorder';
+import { softDeleteItem } from '$lib/server/db/soft-delete';
 import { join } from 'node:path';
 import { env } from '$env/dynamic/private';
 import { processUpload, deleteImage } from '$lib/server/images';
@@ -155,13 +156,12 @@ export const actions: Actions = {
       data.get('_returnTarget')?.toString() === 'categories' ? 'categories' : 'items';
 
     const [item] = await db
-      .select({ categoryId: tierListItem.categoryId, imageHash: tierListItem.imageHash })
+      .select({ categoryId: tierListItem.categoryId })
       .from(tierListItem)
       .where(eq(tierListItem.id, id))
       .limit(1);
 
-    if (item?.imageHash) deleteImage(item.imageHash);
-    await db.delete(tierListItemTable).where(eq(tierListItemTable.id, id));
+    softDeleteItem(db, id);
     redirect(303, resolveReturnUrl(returnTarget, item?.categoryId ?? ''));
   }
 };

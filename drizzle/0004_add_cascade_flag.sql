@@ -1,0 +1,3 @@
+ALTER TABLE `tier_list_item` ADD `deleted_with_cascade` integer;--> statement-breakpoint
+DROP VIEW `tier_list_item_active`;--> statement-breakpoint
+CREATE VIEW `tier_list_item_active` AS select "id", "category_id", "slug", "name", "description", "score", "order", "image_hash", "placeholder", "props", "created_at", "updated_at", "deleted_at", "deleted_with_cascade" from "tier_list_item" where "tier_list_item"."deleted_at" is null;

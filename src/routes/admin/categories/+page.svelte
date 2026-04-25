@@ -13,7 +13,7 @@
 
   const loader = createAdminLoader();
 
-  let pendingDelete: { id: string; name: string; slug: string } | null = $state(null);
+  let pendingDelete: { id: string; name: string } | null = $state(null);
 
   const handleReorder = loader.withLoading(async (orderedIds: string[]) => {
     const body = new FormData();
@@ -65,11 +65,10 @@
                 onclick={() =>
                   (pendingDelete = {
                     id: cat.id,
-                    name: String(cat.name),
-                    slug: String(cat.slug)
+                    name: String(cat.name)
                   })}
               >
-                <Trash2 size={12} />delete
+                <Trash2 size={12} />trash
               </Button>
             </div>
           </div>
@@ -87,12 +86,11 @@
 
 <ConfirmDialog
   open={pendingDelete !== null}
-  title="Delete category?"
+  title="Move category to Trash?"
   message={pendingDelete
-    ? `Delete "${pendingDelete.name}" and all its items? This cannot be undone.`
+    ? `Move "${pendingDelete.name}" and its items to Trash. You can restore them later.`
     : ''}
-  confirmLabel="Delete category"
-  requireTypedConfirmation={pendingDelete?.slug}
+  confirmLabel="Move to Trash"
   oncancel={() => (pendingDelete = null)}
   onconfirm={async () => {
     const target = pendingDelete;

@@ -3,7 +3,7 @@ import { category, categoryTable, tierListItem, tierListItemTable } from '$lib/s
 import { eq, asc } from 'drizzle-orm';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { applyOrder, sortCategoryByScore } from '$lib/server/reorder';
-import { deleteImage } from '$lib/server/images';
+import { softDeleteCategory, softDeleteItem } from '$lib/server/db/soft-delete';
 import { parseCategoryForm } from '$lib/server/forms';
 import type { PageServerLoad, Actions } from './$types';
 
@@ -39,18 +39,7 @@ export const actions: Actions = {
   },
 
   delete: async ({ params }) => {
-    const id = params.id;
-
-    // Clean up image files before cascade delete removes the rows
-    const items = await db
-      .select({ imageHash: tierListItem.imageHash })
-      .from(tierListItem)
-      .where(eq(tierListItem.categoryId, id));
-    for (const item of items) {
-      if (item.imageHash) deleteImage(item.imageHash);
-    }
-
-    await db.delete(categoryTable).where(eq(categoryTable.id, id));
+    softDeleteCategory(db, params.id);
     redirect(303, '/admin/categories');
   },
 
@@ -85,14 +74,7 @@ export const actions: Actions = {
     const id = data.get('id')?.toString();
     if (!id) return fail(400, { error: 'Invalid id' });
 
-    const [item] = await db
-      .select({ imageHash: tierListItem.imageHash })
-      .from(tierListItem)
-      .where(eq(tierListItem.id, id))
-      .limit(1);
-    if (item?.imageHash) deleteImage(item.imageHash);
-
-    await db.delete(tierListItemTable).where(eq(tierListItemTable.id, id));
+    softDeleteItem(db, id);
     return { success: true };
   }
 };
