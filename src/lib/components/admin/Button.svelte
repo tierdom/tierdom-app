@@ -15,7 +15,7 @@
   let { variant = 'primary', compact = false, href, children, ...rest }: Props = $props();
 
   const base =
-    'cursor-pointer inline-flex items-center justify-center rounded disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:opacity-50';
+    'cursor-pointer inline-flex items-center justify-center rounded leading-none disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:opacity-50';
   let size = $derived(compact ? 'gap-1 px-2 py-1 text-xs' : 'gap-1.5 px-4 py-2 text-sm');
   let linkRest = $derived(href ? (rest as HTMLAnchorAttributes) : {});
   let buttonRest = $derived(href ? {} : (rest as HTMLButtonAttributes));
