@@ -8,6 +8,7 @@
   import FormField from '$lib/components/admin/FormField.svelte';
   import MarkdownField from '$lib/components/admin/MarkdownField.svelte';
   import PropKeyEditor from '$lib/components/admin/PropKeyEditor.svelte';
+  import TierCutoffsInput from '$lib/components/admin/TierCutoffsInput.svelte';
   import SortableList from '$lib/components/admin/SortableList.svelte';
   import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
   import Timestamps from '$lib/components/admin/Timestamps.svelte';
@@ -118,64 +119,7 @@
         Minimum score to reach each tier. Leave empty for defaults (S=90, A=80, B=70, C=55, D=40,
         E=20, F=0).
       </p>
-      <div class="grid grid-cols-4 gap-3 sm:grid-cols-7">
-        <FormField
-          label="S"
-          name="cutoffS"
-          type="number"
-          value={data.category.cutoffS}
-          min={0}
-          max={100}
-        />
-        <FormField
-          label="A"
-          name="cutoffA"
-          type="number"
-          value={data.category.cutoffA}
-          min={0}
-          max={100}
-        />
-        <FormField
-          label="B"
-          name="cutoffB"
-          type="number"
-          value={data.category.cutoffB}
-          min={0}
-          max={100}
-        />
-        <FormField
-          label="C"
-          name="cutoffC"
-          type="number"
-          value={data.category.cutoffC}
-          min={0}
-          max={100}
-        />
-        <FormField
-          label="D"
-          name="cutoffD"
-          type="number"
-          value={data.category.cutoffD}
-          min={0}
-          max={100}
-        />
-        <FormField
-          label="E"
-          name="cutoffE"
-          type="number"
-          value={data.category.cutoffE}
-          min={0}
-          max={100}
-        />
-        <FormField
-          label="F"
-          name="cutoffF"
-          type="number"
-          value={data.category.cutoffF}
-          min={0}
-          max={100}
-        />
-      </div>
+      <TierCutoffsInput values={cutoffs} />
     {:else}
       <button
         type="button"
