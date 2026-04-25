@@ -4,6 +4,7 @@
   import Button from '$lib/components/admin/Button.svelte';
   import { MAX_PROP_KEYS, MAX_KEY_LENGTH, type PropKeyConfig } from '$lib/props';
   import { iconSets } from '$lib/icon-sets';
+  import { createPointerReorder, applyReorder } from './pointer-reorder.svelte';
 
   type InternalKey = { id: string; key: string; iconSet?: string };
 
@@ -21,13 +22,23 @@
     propKeys.map((pk) => ({ id: crypto.randomUUID(), key: pk.key, iconSet: pk.iconSet }))
   );
 
-  let draggedId = $state<string | null>(null);
-  let dropTargetId = $state<string | null>(null);
-  let dropPosition = $state<'above' | 'below'>('below');
-
   function emit() {
     onchange();
   }
+
+  let listEl: HTMLDivElement | undefined = $state();
+  $effect(() => {
+    reorder.bindList(listEl);
+  });
+
+  const reorder = createPointerReorder({
+    rowSelector: '.prop-key-row',
+    idAttr: 'data-key-id',
+    onCommit: ({ fromId, toId, position }) => {
+      items = applyReorder(items, fromId, toId, position);
+      emit();
+    }
+  });
 
   function add() {
     if (items.length >= MAX_PROP_KEYS) return;
@@ -48,64 +59,6 @@
   function handleIconSetChange(id: string, value: string) {
     items = items.map((k) => (k.id === id ? { ...k, iconSet: value || undefined } : k));
     emit();
-  }
-
-  function handleDragStart(e: DragEvent, item: InternalKey) {
-    draggedId = item.id;
-    if (e.dataTransfer) {
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/plain', item.id);
-    }
-  }
-
-  function handleDragOver(e: DragEvent, item: InternalKey) {
-    e.preventDefault();
-    if (e.dataTransfer) e.dataTransfer.dropEffect = 'move';
-    if (draggedId === null || draggedId === item.id) {
-      dropTargetId = null;
-      return;
-    }
-    const row = e.currentTarget as HTMLElement;
-    const rect = row.getBoundingClientRect();
-    dropPosition = e.clientY < rect.top + rect.height / 2 ? 'above' : 'below';
-    dropTargetId = item.id;
-  }
-
-  function handleDragLeave(e: DragEvent, item: InternalKey) {
-    const row = e.currentTarget as HTMLElement;
-    if (!row.contains(e.relatedTarget as Node) && dropTargetId === item.id) {
-      dropTargetId = null;
-    }
-  }
-
-  function handleDrop(e: DragEvent) {
-    e.preventDefault();
-    if (draggedId === null || dropTargetId === null) return;
-
-    const fromIndex = items.findIndex((i) => i.id === draggedId);
-    const toIndex = items.findIndex((i) => i.id === dropTargetId);
-    if (fromIndex === -1 || toIndex === -1) return;
-
-    const reordered = [...items];
-    const [moved] = reordered.splice(fromIndex, 1);
-    const insertAt =
-      fromIndex < toIndex
-        ? dropPosition === 'above'
-          ? toIndex - 1
-          : toIndex
-        : dropPosition === 'above'
-          ? toIndex
-          : toIndex + 1;
-    reordered.splice(insertAt, 0, moved);
-    items = reordered;
-    draggedId = null;
-    dropTargetId = null;
-    emit();
-  }
-
-  function handleDragEnd() {
-    draggedId = null;
-    dropTargetId = null;
   }
 
   let serialized = $derived(
@@ -129,26 +82,22 @@
   </p>
 
   {#if items.length > 0}
-    <div class="prop-key-list" role="list">
+    <div class="prop-key-list" role="list" bind:this={listEl}>
       {#each items as item (item.id)}
         <div
           class="prop-key-row"
-          class:dragging={draggedId === item.id}
-          class:drop-above={dropTargetId === item.id && dropPosition === 'above'}
-          class:drop-below={dropTargetId === item.id && dropPosition === 'below'}
+          data-key-id={item.id}
+          class:dragging={reorder.draggedId === item.id}
+          class:drop-above={reorder.dropTargetId === item.id && reorder.dropPosition === 'above'}
+          class:drop-below={reorder.dropTargetId === item.id && reorder.dropPosition === 'below'}
           role="listitem"
-          ondragover={(e) => handleDragOver(e, item)}
-          ondragleave={(e) => handleDragLeave(e, item)}
-          ondrop={handleDrop}
           animate:flip={{ duration: 200 }}
         >
           <button
             type="button"
             class="drag-handle"
-            draggable="true"
-            ondragstart={(e) => handleDragStart(e, item)}
-            ondragend={handleDragEnd}
             aria-label="Drag to reorder"
+            {...reorder.handlers(item.id)}
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
               <circle cx="5.5" cy="3" r="1.5" />
@@ -263,6 +212,9 @@
     background: none;
     border-radius: 0.25rem;
     transition: color 150ms ease;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .drag-handle:hover {
@@ -273,9 +225,23 @@
     cursor: grabbing;
   }
 
+  @media (pointer: coarse) {
+    .drag-handle {
+      padding: 0.625rem;
+      min-width: 44px;
+      min-height: 44px;
+    }
+  }
+
   .drag-handle-spacer {
     flex-shrink: 0;
     width: calc(16px + 0.5rem);
     margin-right: 0.375rem;
+  }
+
+  @media (pointer: coarse) {
+    .drag-handle-spacer {
+      width: 44px;
+    }
   }
 </style>

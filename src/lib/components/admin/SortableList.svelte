@@ -1,6 +1,7 @@
 <script lang="ts">
   import { flip } from 'svelte/animate';
   import type { Snippet } from 'svelte';
+  import { createPointerReorder, applyReorder } from './pointer-reorder.svelte';
 
   type Item = { id: string; [key: string]: unknown };
 
@@ -16,97 +17,38 @@
 
   let localItems = $derived([...items]);
 
-  let draggedId = $state<string | null>(null);
-  let dropTargetId = $state<string | null>(null);
-  let dropPosition = $state<'above' | 'below'>('below');
+  let listEl: HTMLDivElement | undefined = $state();
+  $effect(() => {
+    reorder.bindList(listEl);
+  });
 
-  function handleDragStart(e: DragEvent, item: Item) {
-    draggedId = item.id;
-    if (e.dataTransfer) {
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/plain', String(item.id));
+  const reorder = createPointerReorder({
+    rowSelector: '.sortable-row',
+    idAttr: 'data-sortable-id',
+    onCommit: ({ fromId, toId, position }) => {
+      const next = applyReorder(localItems, fromId, toId, position);
+      localItems = next;
+      onreorder(next.map((i) => i.id));
     }
-  }
-
-  function handleDragOver(e: DragEvent, item: Item) {
-    e.preventDefault();
-    if (e.dataTransfer) {
-      e.dataTransfer.dropEffect = 'move';
-    }
-    if (draggedId === null || draggedId === item.id) {
-      dropTargetId = null;
-      return;
-    }
-
-    const row = e.currentTarget as HTMLElement;
-    const rect = row.getBoundingClientRect();
-    const midY = rect.top + rect.height / 2;
-    dropPosition = e.clientY < midY ? 'above' : 'below';
-    dropTargetId = item.id;
-  }
-
-  function handleDragLeave(e: DragEvent, item: Item) {
-    const row = e.currentTarget as HTMLElement;
-    if (!row.contains(e.relatedTarget as Node)) {
-      if (dropTargetId === item.id) {
-        dropTargetId = null;
-      }
-    }
-  }
-
-  function handleDrop(e: DragEvent) {
-    e.preventDefault();
-    if (draggedId === null || dropTargetId === null) return;
-
-    const fromIndex = localItems.findIndex((i) => i.id === draggedId);
-    const toIndex = localItems.findIndex((i) => i.id === dropTargetId);
-    if (fromIndex === -1 || toIndex === -1) return;
-
-    const reordered = [...localItems];
-    const [moved] = reordered.splice(fromIndex, 1);
-
-    const insertAt =
-      fromIndex < toIndex
-        ? dropPosition === 'above'
-          ? toIndex - 1
-          : toIndex
-        : dropPosition === 'above'
-          ? toIndex
-          : toIndex + 1;
-    reordered.splice(insertAt, 0, moved);
-    localItems = reordered;
-
-    onreorder(reordered.map((i) => i.id));
-
-    draggedId = null;
-    dropTargetId = null;
-  }
-
-  function handleDragEnd() {
-    draggedId = null;
-    dropTargetId = null;
-  }
+  });
 </script>
 
-<div class="sortable-list" role="list">
+<div class="sortable-list" role="list" bind:this={listEl}>
   {#each localItems as item (item.id)}
     <div
       class="sortable-row"
-      class:dragging={draggedId === item.id}
-      class:drop-above={dropTargetId === item.id && dropPosition === 'above'}
-      class:drop-below={dropTargetId === item.id && dropPosition === 'below'}
+      data-sortable-id={item.id}
+      class:dragging={reorder.draggedId === item.id}
+      class:drop-above={reorder.dropTargetId === item.id && reorder.dropPosition === 'above'}
+      class:drop-below={reorder.dropTargetId === item.id && reorder.dropPosition === 'below'}
       role="listitem"
-      ondragover={(e) => handleDragOver(e, item)}
-      ondragleave={(e) => handleDragLeave(e, item)}
-      ondrop={handleDrop}
       animate:flip={{ duration: 200 }}
     >
       <button
+        type="button"
         class="drag-handle"
-        draggable="true"
-        ondragstart={(e) => handleDragStart(e, item)}
-        ondragend={handleDragEnd}
         aria-label="Drag to reorder"
+        {...reorder.handlers(item.id)}
       >
         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
           <circle cx="5.5" cy="3" r="1.5" />
@@ -175,6 +117,9 @@
     background: none;
     border-radius: 0.25rem;
     transition: color 150ms ease;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .drag-handle:hover {
@@ -183,5 +128,13 @@
 
   .drag-handle:active {
     cursor: grabbing;
+  }
+
+  @media (pointer: coarse) {
+    .drag-handle {
+      padding: 0.625rem;
+      min-width: 44px;
+      min-height: 44px;
+    }
   }
 </style>
