@@ -48,13 +48,27 @@ test('create, edit, and delete a category', async ({ page }) => {
   await page.reload();
   await expect(main.getByText('Test Category Edited').first()).toBeVisible();
 
-  // Now actually delete
+  // Now actually delete — typed-confirmation is required
   await main
     .locator('.sortable-row', { hasText: 'Test Category Edited' })
     .getByRole('button', { name: 'delete' })
     .click();
-  await expect(page.getByRole('dialog')).toBeVisible();
-  await page.getByRole('dialog').getByRole('button', { name: 'Delete category' }).click();
+  const deleteDialog = page.getByRole('dialog');
+  await expect(deleteDialog).toBeVisible();
+
+  // Confirm button must be disabled until the slug is typed correctly
+  const confirmBtn = deleteDialog.getByRole('button', { name: 'Delete category' });
+  await expect(confirmBtn).toBeDisabled();
+
+  // Wrong text keeps it disabled
+  const slugInput = deleteDialog.getByRole('textbox');
+  await slugInput.fill('not-the-slug');
+  await expect(confirmBtn).toBeDisabled();
+
+  // Slug from auto-generation on creation: "test-category"
+  await slugInput.fill('test-category');
+  await expect(confirmBtn).toBeEnabled();
+  await confirmBtn.click();
 
   // Verify deletion
   await expect(main.getByText('Test Category Edited')).not.toBeVisible();

@@ -10,6 +10,9 @@
     confirmLabel?: string;
     cancelLabel?: string;
     variant?: Variant;
+    requireTypedConfirmation?: string;
+    typedConfirmationLabel?: string;
+    typedConfirmationHint?: string;
     onconfirm: () => void;
     oncancel: () => void;
   };
@@ -21,16 +24,24 @@
     confirmLabel = 'Delete',
     cancelLabel = 'Cancel',
     variant = 'danger',
+    requireTypedConfirmation,
+    typedConfirmationLabel = 'Type to confirm',
+    typedConfirmationHint,
     onconfirm,
     oncancel
   }: Props = $props();
 
   let dialogEl: HTMLDialogElement | undefined = $state();
   let cancelEl: HTMLButtonElement | undefined = $state();
+  let typedValue = $state('');
+  const confirmEnabled = $derived(
+    !requireTypedConfirmation || typedValue.trim() === requireTypedConfirmation
+  );
 
   $effect(() => {
     if (!dialogEl) return;
     if (open && !dialogEl.open) {
+      typedValue = '';
       dialogEl.showModal();
       document.body.style.overflow = 'hidden';
       cancelEl?.focus();
@@ -43,6 +54,10 @@
 
   function handleBackdrop(e: MouseEvent) {
     if (e.target === dialogEl) oncancel();
+  }
+
+  function handleConfirm() {
+    if (confirmEnabled) onconfirm();
   }
 </script>
 
@@ -59,6 +74,27 @@
   <div class="w-[90vw] max-w-md border border-subtle bg-elevated p-5">
     <h2 id="confirm-dialog-title" class="text-base font-semibold text-primary">{title}</h2>
     <p class="mt-2 text-sm text-secondary">{message}</p>
+    {#if requireTypedConfirmation}
+      <p class="mt-3 text-xs text-secondary">
+        {#if typedConfirmationHint}
+          {typedConfirmationHint}
+        {:else}
+          Type <code class="rounded bg-subtle/30 px-1 text-primary">{requireTypedConfirmation}</code
+          >
+          to confirm.
+        {/if}
+      </p>
+      <label class="mt-2 flex flex-col gap-1">
+        <span class="sr-only">{typedConfirmationLabel}</span>
+        <input
+          type="text"
+          bind:value={typedValue}
+          autocomplete="off"
+          aria-label={typedConfirmationLabel}
+          class="rounded border border-subtle bg-surface px-3 py-2 text-sm text-primary focus:border-accent focus:outline-none"
+        />
+      </label>
+    {/if}
     <div class="mt-5 flex justify-end gap-2">
       <button
         bind:this={cancelEl}
@@ -68,7 +104,9 @@
       >
         {cancelLabel}
       </button>
-      <Button {variant} type="button" onclick={onconfirm}>{confirmLabel}</Button>
+      <Button {variant} type="button" disabled={!confirmEnabled} onclick={handleConfirm}>
+        {confirmLabel}
+      </Button>
     </div>
   </div>
 </dialog>

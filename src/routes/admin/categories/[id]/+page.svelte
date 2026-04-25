@@ -311,6 +311,7 @@
   title="Delete category?"
   message={`Delete "${data.category.name}" and all its items? This cannot be undone.`}
   confirmLabel="Delete category"
+  requireTypedConfirmation={data.category.slug}
   oncancel={() => (pendingDeleteCategory = false)}
   onconfirm={async () => {
     pendingDeleteCategory = false;
