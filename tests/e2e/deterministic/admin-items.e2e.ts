@@ -49,24 +49,24 @@ test('create, edit, and delete an item', async ({ page }) => {
   await page.locator('#score').fill('75');
   await page.locator('button[form="item-form"]').click();
 
-  // Delete from items list
+  // Move to trash from items list
   await page.goto('/admin/items');
   await page.getByPlaceholder('Quick search').fill(unique);
   await expect(main.getByRole('link', { name: unique })).toBeVisible();
 
-  // Cancel must NOT delete (regression coverage for ConfirmDialog)
-  await main.getByRole('button', { name: 'delete' }).click();
+  // Cancel must NOT trash (regression coverage for ConfirmDialog)
+  await main.getByRole('button', { name: 'trash' }).click();
   const dialog = page.getByRole('dialog');
   await expect(dialog).toBeVisible();
   await dialog.getByRole('button', { name: 'Cancel' }).click();
   await expect(dialog).not.toBeVisible();
   await expect(main.getByRole('link', { name: unique })).toBeVisible();
 
-  // With search filtered to one item, there's only one delete button
-  await main.getByRole('button', { name: 'delete' }).click();
-  await page.getByRole('dialog').getByRole('button', { name: 'Delete item' }).click();
+  // With search filtered to one item, there's only one trash button
+  await main.getByRole('button', { name: 'trash' }).click();
+  await page.getByRole('dialog').getByRole('button', { name: 'Move to Trash' }).click();
 
-  // Verify deletion — the item link should be gone
+  // Verify it disappears from the active list
   await expect(main.getByRole('link', { name: unique })).not.toBeVisible();
 });
 
@@ -114,10 +114,10 @@ test('create item with props, verify they persist', async ({ page }) => {
   await expect(editFieldset.locator('input[placeholder="Key"]')).toHaveValue('Players');
   await expect(editFieldset.locator('input[placeholder="Value"]')).toHaveValue('2-4');
 
-  // Clean up — delete item
+  // Clean up — move to trash
   await page.goto('/admin/items');
   await page.getByPlaceholder('Quick search').fill(unique);
-  await main.getByRole('button', { name: 'delete' }).click();
-  await page.getByRole('dialog').getByRole('button', { name: 'Delete item' }).click();
+  await main.getByRole('button', { name: 'trash' }).click();
+  await page.getByRole('dialog').getByRole('button', { name: 'Move to Trash' }).click();
   await expect(main.getByRole('link', { name: unique })).not.toBeVisible();
 });

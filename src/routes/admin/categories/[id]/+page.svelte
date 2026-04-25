@@ -135,7 +135,7 @@
     <Button type="submit" form="edit-category"><Save size={16} />Save</Button>
     <Button variant="secondary" type="button" onclick={cancel}><X size={16} />Cancel</Button>
     <Button variant="danger" type="button" onclick={() => (pendingDeleteCategory = true)}>
-      <Trash2 size={16} />Delete
+      <Trash2 size={16} />Move to Trash
     </Button>
   </div>
 
@@ -204,7 +204,7 @@
                 onclick={() =>
                   (pendingDeleteItem = { id: item.id as string, name: String(item.name) })}
               >
-                <Trash2 size={12} />delete
+                <Trash2 size={12} />trash
               </Button>
             </div>
           </div>
@@ -252,10 +252,9 @@
 
 <ConfirmDialog
   open={pendingDeleteCategory}
-  title="Delete category?"
-  message={`Delete "${data.category.name}" and all its items? This cannot be undone.`}
-  confirmLabel="Delete category"
-  requireTypedConfirmation={data.category.slug}
+  title="Move category to Trash?"
+  message={`Move "${data.category.name}" and its items to Trash. You can restore them later.`}
+  confirmLabel="Move to Trash"
   oncancel={() => (pendingDeleteCategory = false)}
   onconfirm={async () => {
     pendingDeleteCategory = false;
@@ -265,9 +264,11 @@
 
 <ConfirmDialog
   open={pendingDeleteItem !== null}
-  title="Delete item?"
-  message={pendingDeleteItem ? `Delete "${pendingDeleteItem.name}"?` : ''}
-  confirmLabel="Delete item"
+  title="Move item to Trash?"
+  message={pendingDeleteItem
+    ? `Move "${pendingDeleteItem.name}" to Trash. You can restore it later.`
+    : ''}
+  confirmLabel="Move to Trash"
   oncancel={() => (pendingDeleteItem = null)}
   onconfirm={async () => {
     const target = pendingDeleteItem;

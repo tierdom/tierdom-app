@@ -8,7 +8,7 @@
 import { join } from 'node:path';
 import { eq } from 'drizzle-orm';
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
-import { tierListItem } from './schema';
+import { tierListItem, tierListItemTable } from './schema';
 import { generateImage } from '../generate-image';
 import type * as schema from './schema';
 
@@ -33,9 +33,9 @@ export async function generateSeedImages(db: DB, dataPath: string): Promise<numb
   for (const item of items) {
     const { hash, gradient } = await generateImage(item.name, imagesDir);
 
-    db.update(tierListItem)
+    db.update(tierListItemTable)
       .set({ imageHash: hash, placeholder: gradient })
-      .where(eq(tierListItem.id, item.id))
+      .where(eq(tierListItemTable.id, item.id))
       .run();
 
     count++;

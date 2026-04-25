@@ -124,7 +124,7 @@
                 type="button"
                 onclick={() => (pendingDelete = { id: item.id, name: item.name })}
               >
-                <Trash2 size={12} />delete
+                <Trash2 size={12} />trash
               </Button>
             </td>
           </tr>
@@ -140,9 +140,9 @@
 
 <ConfirmDialog
   open={pendingDelete !== null}
-  title="Delete item?"
-  message={pendingDelete ? `Delete "${pendingDelete.name}"?` : ''}
-  confirmLabel="Delete item"
+  title="Move item to Trash?"
+  message={pendingDelete ? `Move "${pendingDelete.name}" to Trash. You can restore it later.` : ''}
+  confirmLabel="Move to Trash"
   oncancel={() => (pendingDelete = null)}
   onconfirm={async () => {
     const target = pendingDelete;

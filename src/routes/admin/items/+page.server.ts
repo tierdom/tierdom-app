@@ -2,7 +2,7 @@ import { db } from '$lib/server/db';
 import { tierListItem, category } from '$lib/server/db/schema';
 import { eq, desc } from 'drizzle-orm';
 import { fail } from '@sveltejs/kit';
-import { deleteImage } from '$lib/server/images';
+import { softDeleteItem } from '$lib/server/db/soft-delete';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async () => {
@@ -37,14 +37,7 @@ export const actions: Actions = {
     const id = data.get('id')?.toString();
     if (!id) return fail(400, { error: 'Invalid id' });
 
-    const [item] = await db
-      .select({ imageHash: tierListItem.imageHash })
-      .from(tierListItem)
-      .where(eq(tierListItem.id, id))
-      .limit(1);
-    if (item?.imageHash) deleteImage(item.imageHash);
-
-    await db.delete(tierListItem).where(eq(tierListItem.id, id));
+    softDeleteItem(db, id);
     return { success: true };
   }
 };

@@ -1,11 +1,15 @@
-import { integer, sqliteTable, text, unique } from 'drizzle-orm/sqlite-core';
-import { relations, sql } from 'drizzle-orm';
+import { integer, sqliteTable, sqliteView, text } from 'drizzle-orm/sqlite-core';
+import { isNull, relations, sql } from 'drizzle-orm';
 import { randomUUID } from 'node:crypto';
 import type { Prop, PropKeyConfig } from '$lib/props';
 
-export const category = sqliteTable('category', {
+// The "Table" suffix makes explicit that it is for 'write' operations, with a
+// view for 'read' operations that account for soft-deleted items.
+// See ADR-0022.
+
+export const categoryTable = sqliteTable('category', {
   id: text('id').primaryKey().$defaultFn(randomUUID),
-  slug: text('slug').notNull().unique(),
+  slug: text('slug').notNull(), // Uniqueness handled in category_active_slug index
   name: text('name').notNull(),
   description: text('description'),
   propKeys: text('prop_keys', { mode: 'json' }).$type<PropKeyConfig[]>().notNull().default([]),
@@ -23,32 +27,42 @@ export const category = sqliteTable('category', {
     .default(sql`(datetime('now'))`),
   updatedAt: text('updated_at')
     .notNull()
-    .default(sql`(datetime('now'))`)
+    .default(sql`(datetime('now'))`),
+  deletedAt: text('deleted_at')
 });
 
-export const tierListItem = sqliteTable(
-  'tier_list_item',
-  {
-    id: text('id').primaryKey().$defaultFn(randomUUID),
-    categoryId: text('category_id')
-      .notNull()
-      .references(() => category.id, { onDelete: 'cascade' }),
-    slug: text('slug').notNull(),
-    name: text('name').notNull(),
-    description: text('description'),
-    score: integer('score').notNull(),
-    order: integer('order').notNull().default(0),
-    imageHash: text('image_hash'),
-    placeholder: text('placeholder'),
-    props: text('props', { mode: 'json' }).$type<Prop[]>().notNull().default([]),
-    createdAt: text('created_at')
-      .notNull()
-      .default(sql`(datetime('now'))`),
-    updatedAt: text('updated_at')
-      .notNull()
-      .default(sql`(datetime('now'))`)
-  },
-  (t) => [unique('item_category_slug').on(t.categoryId, t.slug)]
+export const category = sqliteView('category_active').as((qb) =>
+  qb.select().from(categoryTable).where(isNull(categoryTable.deletedAt))
+);
+
+export const tierListItemTable = sqliteTable('tier_list_item', {
+  id: text('id').primaryKey().$defaultFn(randomUUID),
+  categoryId: text('category_id')
+    .notNull()
+    .references(() => categoryTable.id, { onDelete: 'cascade' }),
+  slug: text('slug').notNull(), // uniqueness handled in item_active_category_slug index
+  name: text('name').notNull(),
+  description: text('description'),
+  score: integer('score').notNull(),
+  order: integer('order').notNull().default(0),
+  imageHash: text('image_hash'),
+  placeholder: text('placeholder'),
+  props: text('props', { mode: 'json' }).$type<Prop[]>().notNull().default([]),
+  createdAt: text('created_at')
+    .notNull()
+    .default(sql`(datetime('now'))`),
+  updatedAt: text('updated_at')
+    .notNull()
+    .default(sql`(datetime('now'))`),
+  deletedAt: text('deleted_at'),
+  // Set to true when an item is soft-deleted as part of a category cascade,
+  // null otherwise. Lets restoreCategory bring back exactly the items it
+  // cascaded — items the user trashed independently keep their state.
+  deletedWithCascade: integer('deleted_with_cascade', { mode: 'boolean' })
+});
+
+export const tierListItem = sqliteView('tier_list_item_active').as((qb) =>
+  qb.select().from(tierListItemTable).where(isNull(tierListItemTable.deletedAt))
 );
 
 export const user = sqliteTable('user', {
@@ -106,12 +120,15 @@ export const suppressUpdatedAt = sqliteTable('_suppress_updated_at', {
 
 // ─── Relations ────────────────────────────────────────────────────────────────
 
-export const categoryRelations = relations(category, ({ many }) => ({
-  items: many(tierListItem)
+export const categoryRelations = relations(categoryTable, ({ many }) => ({
+  items: many(tierListItemTable)
 }));
 
-export const tierListItemRelations = relations(tierListItem, ({ one }) => ({
-  category: one(category, { fields: [tierListItem.categoryId], references: [category.id] })
+export const tierListItemRelations = relations(tierListItemTable, ({ one }) => ({
+  category: one(categoryTable, {
+    fields: [tierListItemTable.categoryId],
+    references: [categoryTable.id]
+  })
 }));
 
 export const userRelations = relations(user, ({ many }) => ({

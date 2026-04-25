@@ -141,7 +141,7 @@
   <Button variant="secondary" type="button" onclick={cancel}><X size={16} />Cancel</Button>
   {#if mode === 'edit'}
     <Button variant="danger" type="button" onclick={() => (pendingDelete = true)}>
-      <Trash2 size={16} />Delete
+      <Trash2 size={16} />Move to Trash
     </Button>
   {/if}
 </div>
@@ -161,9 +161,9 @@
 
 <ConfirmDialog
   open={pendingDelete}
-  title="Delete item?"
-  message={`Delete "${initialValues.name ?? 'this item'}"? This cannot be undone.`}
-  confirmLabel="Delete item"
+  title="Move item to Trash?"
+  message={`Move "${initialValues.name ?? 'this item'}" to Trash. You can restore it later.`}
+  confirmLabel="Move to Trash"
   oncancel={() => (pendingDelete = false)}
   onconfirm={async () => {
     pendingDelete = false;

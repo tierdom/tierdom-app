@@ -32,11 +32,11 @@ test('create, edit, and delete a category', async ({ page }) => {
   // Verify edit
   await expect(main.getByText('Test Category Edited').first()).toBeVisible();
 
-  // Cancel must NOT delete (regression: previously the browser confirm()'s
+  // Cancel must NOT trash (regression: previously the browser confirm()'s
   // Cancel still triggered the use:enhance fetch — see ADR-0021)
   await main
     .locator('.sortable-row', { hasText: 'Test Category Edited' })
-    .getByRole('button', { name: 'delete' })
+    .getByRole('button', { name: 'trash' })
     .click();
   const dialog = page.getByRole('dialog');
   await expect(dialog).toBeVisible();
@@ -48,28 +48,16 @@ test('create, edit, and delete a category', async ({ page }) => {
   await page.reload();
   await expect(main.getByText('Test Category Edited').first()).toBeVisible();
 
-  // Now actually delete — typed-confirmation is required
+  // Send to trash — soft delete, simple confirm (typed gate moved to
+  // permanent-delete in the trash page; see ADR-0022)
   await main
     .locator('.sortable-row', { hasText: 'Test Category Edited' })
-    .getByRole('button', { name: 'delete' })
+    .getByRole('button', { name: 'trash' })
     .click();
-  const deleteDialog = page.getByRole('dialog');
-  await expect(deleteDialog).toBeVisible();
+  const trashDialog = page.getByRole('dialog');
+  await expect(trashDialog).toBeVisible();
+  await trashDialog.getByRole('button', { name: 'Move to Trash' }).click();
 
-  // Confirm button must be disabled until the slug is typed correctly
-  const confirmBtn = deleteDialog.getByRole('button', { name: 'Delete category' });
-  await expect(confirmBtn).toBeDisabled();
-
-  // Wrong text keeps it disabled
-  const slugInput = deleteDialog.getByRole('textbox');
-  await slugInput.fill('not-the-slug');
-  await expect(confirmBtn).toBeDisabled();
-
-  // Slug from auto-generation on creation: "test-category"
-  await slugInput.fill('test-category');
-  await expect(confirmBtn).toBeEnabled();
-  await confirmBtn.click();
-
-  // Verify deletion
+  // Verify it disappears from the active list
   await expect(main.getByText('Test Category Edited')).not.toBeVisible();
 });

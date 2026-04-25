@@ -4,11 +4,14 @@
   import { resolve } from '$app/paths';
   import { Plus } from 'lucide-svelte';
   import Button from '$lib/components/admin/Button.svelte';
+  import AdminWarning from '$lib/components/admin/AdminWarning.svelte';
   import type { PageData } from './$types';
 
   let { data }: { data: PageData } = $props();
 
   type DashboardItem = { path: string; label: string; detail: string };
+
+  let staleTrashTotal = $derived(data.staleTrash.categories + data.staleTrash.items);
 </script>
 
 {#snippet dashboardCard(
@@ -54,6 +57,16 @@
 
 <section>
   <h1 class="text-xl font-bold text-primary">Dashboard</h1>
+
+  {#if staleTrashTotal > 0}
+    <div class="mt-4">
+      <AdminWarning href={resolve('/admin/trash')} cta="Open Trash">
+        {staleTrashTotal}
+        {staleTrashTotal === 1 ? 'item' : 'items'} have been in Trash for {data.staleTrashDays}+
+        days. Consider permanently deleting them to keep your data tidy.
+      </AdminWarning>
+    </div>
+  {/if}
 
   <div class="mt-6 grid gap-6 lg:grid-cols-3">
     {@render dashboardCard(

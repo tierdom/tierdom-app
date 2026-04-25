@@ -1,8 +1,9 @@
 import { db } from '$lib/server/db';
-import { category, tierListItem } from '$lib/server/db/schema';
+import { category, tierListItem, tierListItemTable } from '$lib/server/db/schema';
 import { asc, eq } from 'drizzle-orm';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { insertByScore } from '$lib/server/reorder';
+import { softDeleteItem } from '$lib/server/db/soft-delete';
 import { join } from 'node:path';
 import { env } from '$env/dynamic/private';
 import { processUpload, deleteImage } from '$lib/server/images';
@@ -88,7 +89,7 @@ export const actions: Actions = {
 
     if (params.id === 'new-item') {
       const [inserted] = await db
-        .insert(tierListItem)
+        .insert(tierListItemTable)
         .values({
           categoryId,
           slug,
@@ -99,10 +100,13 @@ export const actions: Actions = {
           order: 0,
           ...(image && { imageHash: image.imageHash, placeholder: image.placeholder })
         })
-        .returning({ id: tierListItem.id });
+        .returning({ id: tierListItemTable.id });
 
       const order = insertByScore(categoryId, score, name, inserted.id);
-      await db.update(tierListItem).set({ order }).where(eq(tierListItem.id, inserted.id));
+      await db
+        .update(tierListItemTable)
+        .set({ order })
+        .where(eq(tierListItemTable.id, inserted.id));
 
       redirect(303, resolveReturnUrl(returnTarget, categoryId));
     }
@@ -120,7 +124,7 @@ export const actions: Actions = {
     }
 
     await db
-      .update(tierListItem)
+      .update(tierListItemTable)
       .set({
         name,
         slug,
@@ -130,11 +134,14 @@ export const actions: Actions = {
         categoryId,
         ...(image && { imageHash: image.imageHash, placeholder: image.placeholder })
       })
-      .where(eq(tierListItem.id, id));
+      .where(eq(tierListItemTable.id, id));
 
     if (categoryId !== item.categoryId) {
       const newOrder = insertByScore(categoryId, score, name, id);
-      await db.update(tierListItem).set({ order: newOrder }).where(eq(tierListItem.id, id));
+      await db
+        .update(tierListItemTable)
+        .set({ order: newOrder })
+        .where(eq(tierListItemTable.id, id));
     }
 
     redirect(303, resolveReturnUrl(returnTarget, categoryId));
@@ -149,13 +156,12 @@ export const actions: Actions = {
       data.get('_returnTarget')?.toString() === 'categories' ? 'categories' : 'items';
 
     const [item] = await db
-      .select({ categoryId: tierListItem.categoryId, imageHash: tierListItem.imageHash })
+      .select({ categoryId: tierListItem.categoryId })
       .from(tierListItem)
       .where(eq(tierListItem.id, id))
       .limit(1);
 
-    if (item?.imageHash) deleteImage(item.imageHash);
-    await db.delete(tierListItem).where(eq(tierListItem.id, id));
+    softDeleteItem(db, id);
     redirect(303, resolveReturnUrl(returnTarget, item?.categoryId ?? ''));
   }
 };
