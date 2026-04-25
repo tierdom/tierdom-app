@@ -31,8 +31,8 @@ test('edit footer and verify on public side', async ({ page }) => {
 
   // Restore: clear the row so the next run (or a retry) starts clean.
   await page.goto('/admin/cms/general/footer');
-  page.once('dialog', (d) => d.accept());
   await main.getByRole('button', { name: 'Reset to default' }).click();
+  await page.getByRole('dialog').getByRole('button', { name: 'Reset' }).click();
   await expect(page).toHaveURL('/admin/cms');
 });
 

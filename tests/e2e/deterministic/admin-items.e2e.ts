@@ -54,9 +54,17 @@ test('create, edit, and delete an item', async ({ page }) => {
   await page.getByPlaceholder('Quick search').fill(unique);
   await expect(main.getByRole('link', { name: unique })).toBeVisible();
 
-  // With search filtered to one item, there's only one delete button
-  page.on('dialog', (dialog) => dialog.accept());
+  // Cancel must NOT delete (regression coverage for ConfirmDialog)
   await main.getByRole('button', { name: 'delete' }).click();
+  const dialog = page.getByRole('dialog');
+  await expect(dialog).toBeVisible();
+  await dialog.getByRole('button', { name: 'Cancel' }).click();
+  await expect(dialog).not.toBeVisible();
+  await expect(main.getByRole('link', { name: unique })).toBeVisible();
+
+  // With search filtered to one item, there's only one delete button
+  await main.getByRole('button', { name: 'delete' }).click();
+  await page.getByRole('dialog').getByRole('button', { name: 'Delete item' }).click();
 
   // Verify deletion — the item link should be gone
   await expect(main.getByRole('link', { name: unique })).not.toBeVisible();
@@ -107,8 +115,9 @@ test('create item with props, verify they persist', async ({ page }) => {
   await expect(editFieldset.locator('input[placeholder="Value"]')).toHaveValue('2-4');
 
   // Clean up — delete item
-  page.on('dialog', (dialog) => dialog.accept());
   await page.goto('/admin/items');
   await page.getByPlaceholder('Quick search').fill(unique);
   await main.getByRole('button', { name: 'delete' }).click();
+  await page.getByRole('dialog').getByRole('button', { name: 'Delete item' }).click();
+  await expect(main.getByRole('link', { name: unique })).not.toBeVisible();
 });

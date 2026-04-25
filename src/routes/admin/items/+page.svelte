@@ -1,8 +1,10 @@
 <script lang="ts">
   import { resolve } from '$app/paths';
+  import { invalidateAll } from '$app/navigation';
   import { formatRelativeDate } from '$lib/format-date';
   import { ArrowDown, Plus, Trash2 } from 'lucide-svelte';
   import Button from '$lib/components/admin/Button.svelte';
+  import ConfirmDialog from '$lib/components/admin/ConfirmDialog.svelte';
   import TierBadge from '$lib/components/admin/TierBadge.svelte';
   import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
   import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
@@ -12,9 +14,16 @@
   let { data }: { data: PageData } = $props();
 
   const loader = createAdminLoader();
-  const { enhance } = loader;
 
   let search = $state('');
+  let pendingDelete: { id: string; name: string } | null = $state(null);
+
+  const performDelete = loader.withLoading(async (id: string) => {
+    const body = new FormData();
+    body.set('id', id);
+    await fetch('?/delete', { method: 'POST', body });
+    await invalidateAll();
+  });
 
   let filtered = $derived(() => {
     if (!search.trim()) return data.items;
@@ -109,20 +118,14 @@
               {formatRelativeDate(item.updatedAt)}
             </td>
             <td class="py-2 text-right">
-              <form
-                method="POST"
-                action="?/delete"
-                use:enhance
-                class="inline"
-                onsubmit={(e) => {
-                  if (!confirm(`Delete "${item.name}"?`)) e.preventDefault();
-                }}
+              <Button
+                variant="danger-ghost"
+                compact
+                type="button"
+                onclick={() => (pendingDelete = { id: item.id, name: item.name })}
               >
-                <input type="hidden" name="id" value={item.id} />
-                <Button variant="danger-ghost" compact type="submit"
-                  ><Trash2 size={12} />delete</Button
-                >
-              </form>
+                <Trash2 size={12} />delete
+              </Button>
             </td>
           </tr>
         {/each}
@@ -134,3 +137,16 @@
     <p class="mt-6 text-sm text-secondary">No items yet.</p>
   {/if}
 </section>
+
+<ConfirmDialog
+  open={pendingDelete !== null}
+  title="Delete item?"
+  message={pendingDelete ? `Delete "${pendingDelete.name}"?` : ''}
+  confirmLabel="Delete item"
+  oncancel={() => (pendingDelete = null)}
+  onconfirm={async () => {
+    const target = pendingDelete;
+    pendingDelete = null;
+    if (target) await performDelete(target.id);
+  }}
+/>

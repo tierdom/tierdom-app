@@ -1,7 +1,9 @@
 <script lang="ts">
   import { resolve } from '$app/paths';
+  import { goto } from '$app/navigation';
   import { RotateCcw, Save } from 'lucide-svelte';
   import Button from '$lib/components/admin/Button.svelte';
+  import ConfirmDialog from '$lib/components/admin/ConfirmDialog.svelte';
   import MarkdownField from '$lib/components/admin/MarkdownField.svelte';
   import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
   import Timestamps from '$lib/components/admin/Timestamps.svelte';
@@ -20,6 +22,13 @@
   });
   let byteLength = $derived(new TextEncoder().encode(currentValue).length);
   let overLimit = $derived(byteLength > data.maxBytes);
+
+  let pendingReset = $state(false);
+
+  const performReset = loader.withLoading(async () => {
+    await fetch('?/reset', { method: 'POST', body: new FormData() });
+    await goto(resolve('/admin/cms'));
+  });
 </script>
 
 <svelte:head>
@@ -77,15 +86,7 @@
     <div class="flex items-center gap-3">
       <Button type="submit" disabled={overLimit}><Save size={16} />Save</Button>
       {#if !data.usingFallback}
-        <Button
-          type="submit"
-          variant="danger-ghost"
-          formaction="?/reset"
-          formnovalidate
-          onclick={(e: Event) => {
-            if (!confirm(`Reset ${data.title} to the built-in default?`)) e.preventDefault();
-          }}
-        >
+        <Button type="button" variant="danger-ghost" onclick={() => (pendingReset = true)}>
           <RotateCcw size={16} />Reset to default
         </Button>
       {/if}
@@ -94,3 +95,16 @@
 </section>
 
 <AdminOverlay loading={loader.loading} />
+
+<ConfirmDialog
+  open={pendingReset}
+  title="Reset to default?"
+  message={`Reset ${data.title} to the built-in default? Your customizations will be lost.`}
+  confirmLabel="Reset"
+  variant="danger"
+  oncancel={() => (pendingReset = false)}
+  onconfirm={async () => {
+    pendingReset = false;
+    await performReset();
+  }}
+/>
