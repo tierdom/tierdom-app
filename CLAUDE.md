@@ -23,9 +23,9 @@ When creating a new ADR via `/adr`, always add a row to the **Architecture Decis
 When entering plan mode for any non-trivial feature, follow this workflow:
 
 1. **Branch check first.** Before drafting a plan, verify the current branch is not `main`. If it is, **stop** and ask the user for a branch name (suggest one based on the work) — do nothing else until a branch exists.
-2. **Open with a Proposed ADR.** The first step of every plan is always: create an ADR via `/adr` in **Proposed** state. No code changes before this exists.
+2. **Open with a Proposed ADR** — _unless the work has no architectural surface_. The first step of most plans is to create an ADR via `/adr` in **Proposed** state, with no code changes before it exists. Skip the ADR for purely cosmetic, layout, or responsive-tweak work that doesn't introduce a new pattern, dependency, or convention — those are just code changes. When in doubt, ask the user.
 3. **Structure the plan around milestones.** Group steps into logical milestones. After each milestone the plan must explicitly **STOP and PAUSE** for user review. The user will either request tweaks, make tweaks themselves, or invoke `/commit` — immediately after the commit, continue to the next milestone.
-4. **Close with the ADR.** The final milestone of every plan is always: update the ADR to reflect decisions actually made during implementation, then change its status from **Proposed** to **Accepted**.
+4. **Close with the ADR.** When the plan opened with an ADR, the final milestone is always: update it to reflect decisions actually made during implementation, then change its status from **Proposed** to **Accepted**. Plans that legitimately skipped the ADR also skip this step.
 5. **After the final milestone**, remind the user about the `/learnings` skill (unless they want more tweaks).
 
 **Never** include merging the branch as part of a plan — merges are a separate activity.
