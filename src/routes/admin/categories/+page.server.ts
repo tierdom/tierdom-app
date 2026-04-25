@@ -1,5 +1,5 @@
 import { db } from '$lib/server/db';
-import { category, tierListItem } from '$lib/server/db/schema';
+import { category, categoryTable, tierListItem } from '$lib/server/db/schema';
 import { asc, count, eq } from 'drizzle-orm';
 import { fail } from '@sveltejs/kit';
 import { applyOrder } from '$lib/server/reorder';
@@ -28,7 +28,7 @@ export const actions: Actions = {
     const id = data.get('id')?.toString();
     if (!id) return fail(400, { error: 'Invalid id' });
 
-    await db.delete(category).where(eq(category.id, id));
+    await db.delete(categoryTable).where(eq(categoryTable.id, id));
     return { success: true };
   },
 
@@ -48,7 +48,7 @@ export const actions: Actions = {
       return fail(400, { error: 'Invalid order data' });
     }
 
-    await applyOrder(category, category.id, category.order, orderedIds);
+    await applyOrder(categoryTable, categoryTable.id, categoryTable.order, orderedIds);
     return { success: true };
   }
 };

@@ -1,5 +1,5 @@
 import { db } from '$lib/server/db';
-import { tierListItem, category } from '$lib/server/db/schema';
+import { tierListItem, tierListItemTable, category } from '$lib/server/db/schema';
 import { eq, desc } from 'drizzle-orm';
 import { fail } from '@sveltejs/kit';
 import { deleteImage } from '$lib/server/images';
@@ -44,7 +44,7 @@ export const actions: Actions = {
       .limit(1);
     if (item?.imageHash) deleteImage(item.imageHash);
 
-    await db.delete(tierListItem).where(eq(tierListItem.id, id));
+    await db.delete(tierListItemTable).where(eq(tierListItemTable.id, id));
     return { success: true };
   }
 };

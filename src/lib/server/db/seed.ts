@@ -15,7 +15,7 @@ import { CATEGORIES, PAGES } from './seed-data';
 import { seedCategories } from './seed-utils';
 import { generateSeedImages } from './seed-images';
 
-const { page, user, session, category, tierListItem, siteSetting } = schema;
+const { page, user, session, categoryTable, tierListItemTable, siteSetting } = schema;
 
 if (!process.env.DATA_PATH) {
   console.error('DATA_PATH is not set');
@@ -32,8 +32,8 @@ console.log('Seeding database...');
 
 // Wipe existing data in dependency order
 db.delete(session).run();
-db.delete(tierListItem).run();
-db.delete(category).run();
+db.delete(tierListItemTable).run();
+db.delete(categoryTable).run();
 db.delete(page).run();
 db.delete(siteSetting).run();
 db.delete(user).run();

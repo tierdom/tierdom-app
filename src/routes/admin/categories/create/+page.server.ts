@@ -1,5 +1,5 @@
 import { db } from '$lib/server/db';
-import { category } from '$lib/server/db/schema';
+import { category, categoryTable } from '$lib/server/db/schema';
 import { fail, redirect } from '@sveltejs/kit';
 import { sql } from 'drizzle-orm';
 import { parseCategoryForm } from '$lib/server/forms';
@@ -17,7 +17,7 @@ export const actions: Actions = {
       .select({ max: sql<number>`coalesce(max(${category.order}), -1)` })
       .from(category);
 
-    await db.insert(category).values({
+    await db.insert(categoryTable).values({
       slug,
       name,
       description,

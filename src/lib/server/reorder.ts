@@ -1,6 +1,6 @@
 import { db } from '$lib/server/db';
 import { sql } from 'drizzle-orm';
-import { tierListItem } from '$lib/server/db/schema';
+import { tierListItem, tierListItemTable } from '$lib/server/db/schema';
 import type { SQLiteTable, SQLiteColumn } from 'drizzle-orm/sqlite-core';
 
 const SUPPRESS_ON = sql`INSERT INTO _suppress_updated_at VALUES (1)`;
@@ -57,10 +57,10 @@ export function insertByScore(
 
   db.run(SUPPRESS_ON);
   db.run(
-    sql`UPDATE ${tierListItem}
+    sql`UPDATE ${tierListItemTable}
       SET "order" = "order" + 1
-      WHERE ${tierListItem.categoryId} = ${categoryId}
-        AND ${tierListItem.id} != ${itemId}
+      WHERE ${tierListItemTable.categoryId} = ${categoryId}
+        AND ${tierListItemTable.id} != ${itemId}
         AND "order" >= ${pos}`
   );
   db.run(SUPPRESS_OFF);
@@ -75,7 +75,7 @@ export function insertByScore(
 export function sortCategoryByScore(categoryId: string): void {
   db.run(SUPPRESS_ON);
   db.run(
-    sql`UPDATE ${tierListItem}
+    sql`UPDATE ${tierListItemTable}
       SET "order" = sub.new_order
       FROM (
         SELECT id, ROW_NUMBER() OVER (
@@ -84,7 +84,7 @@ export function sortCategoryByScore(categoryId: string): void {
         FROM ${tierListItem}
         WHERE ${tierListItem.categoryId} = ${categoryId}
       ) AS sub
-      WHERE ${tierListItem}.id = sub.id`
+      WHERE ${tierListItemTable}.id = sub.id`
   );
   db.run(SUPPRESS_OFF);
 }
