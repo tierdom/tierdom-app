@@ -209,7 +209,7 @@ Architectural decisions are documented as ADRs in [`docs/decisions/`](docs/decis
 | [0020](docs/decisions/0020-customizable-site-content.md)                | Customizable Site Content via Generalized CMS | Accepted |
 | [0021](docs/decisions/0021-admin-confirmation-dialog.md)                | Admin Confirmation Dialog                     | Accepted |
 | [0022](docs/decisions/0022-soft-delete-and-trash.md)                    | Soft Delete and Trash                         | Accepted |
-| [0023](docs/decisions/0023-export-tooling-streaming-zip.md)             | Export Tooling — Streaming ZIP Architecture   | Proposed |
+| [0023](docs/decisions/0023-export-tooling-streaming-zip.md)             | Export Tooling — Streaming ZIP (fflate)       | Proposed |
 
 ## References
 

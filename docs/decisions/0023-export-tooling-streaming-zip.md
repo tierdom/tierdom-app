@@ -1,4 +1,4 @@
-# ADR-0023: Export Tooling — Streaming ZIP Architecture
+# ADR-0023: Export Tooling — Streaming ZIP Architecture (fflate)
 
 ## Status
 
@@ -14,12 +14,13 @@ Proposed
 
 ### Generation & delivery
 
-- **Stream-on-demand.** SvelteKit `+server.ts` GET pipes `archiver` through `Readable.toWeb(...)` into `new Response(...)`. No persisted artifact.
+- **Stream-on-demand.** SvelteKit `+server.ts` GET returns `new Response(stream)` where `stream` is a `ReadableStream` fed by `fflate`'s `Zip` callback. No persisted artifact.
 - Rejected: sync-build-to-disk (defer to Backup epic), async-job-with-polling (overkill at single-admin scale), external workers (violates self-host).
 
 ### ZIP packaging
 
-- Library: **`archiver`**. WebPs `store: true`; SQLite + JSON deflate level 6.
+- Library: **`fflate`** (zero runtime deps, ~50 KB Node footprint, MIT). Per-entry `ZipPassThrough` (store) for already-compressed WebPs; `ZipDeflate` (level 6) for SQLite + JSON.
+- Rejected: `archiver` — nicer API but ~15 transitive deps (legacy `readable-stream` dual-versioning, `abort-controller` polyfill); supply-chain surface conflicts with the self-hostable / minimal-dep principle. Hand-rolled `zlib` — Node ships the building blocks but not the ZIP container; ~300 LOC of binary-format code with edge cases (UTF-8 filenames, ZIP64, DOS timestamps) is a perpetual tax for no real win.
 - Layout (top-level dated folder avoids tar-bomb UX):
   ```
   tierdom-backup-YYYY-MM-DD/
@@ -60,4 +61,4 @@ Proposed
 
 - **Positive:** No job table, no worker, no cleanup cron. Works without JS. Browser shows native download progress. Builder reusable for Backup. Versioned JSON gives importers a clean contract.
 - **Negative:** No resumable downloads — dropped connection re-runs from scratch. No in-app export history. No progress UI beyond browser-native.
-- **Neutral:** Adds `archiver` dep. Adds `backupDatabaseTo(path)` helper. Trash lives only in the SQLite snapshot, not JSON — surfaced explicitly in the wizard.
+- **Neutral:** Adds `fflate` dep (zero transitive deps). Adds `backupDatabaseTo(path)` helper. Trash lives only in the SQLite snapshot, not JSON — surfaced explicitly in the wizard. Slightly more glue code than `archiver` would need (mixed sources via per-entry `ZipDeflate` / `ZipPassThrough` streams) — one-time cost.
