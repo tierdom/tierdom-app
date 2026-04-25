@@ -207,7 +207,7 @@ Architectural decisions are documented as ADRs in [`docs/decisions/`](docs/decis
 | [0018](docs/decisions/0018-category-prop-keys.md)                       | Category Prop Keys                            | Accepted |
 | [0019](docs/decisions/0019-prop-keys-with-icon-set-support.md)          | Prop Keys with Icon Set Support               | Accepted |
 | [0020](docs/decisions/0020-customizable-site-content.md)                | Customizable Site Content via Generalized CMS | Accepted |
-| [0021](docs/decisions/0021-admin-confirmation-dialog.md)                | Admin Confirmation Dialog                     | Proposed |
+| [0021](docs/decisions/0021-admin-confirmation-dialog.md)                | Admin Confirmation Dialog                     | Accepted |
 
 ## References
 
