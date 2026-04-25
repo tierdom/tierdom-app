@@ -71,7 +71,7 @@
     oncancel();
   }}
 >
-  <div class="w-[90vw] max-w-md border border-subtle bg-elevated p-5">
+  <div class="w-[calc(100vw-2rem)] max-w-md border border-subtle bg-elevated p-5">
     <h2 id="confirm-dialog-title" class="text-base font-semibold text-primary">{title}</h2>
     <p class="mt-2 text-sm text-secondary">{message}</p>
     {#if requireTypedConfirmation}
@@ -116,9 +116,12 @@
     background: transparent;
     border: none;
     padding: 0;
-    margin: auto;
-    max-width: none;
-    max-height: none;
+    inset: 0;
+    margin: 0;
+    width: 100vw;
+    max-width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
     overflow: visible;
     opacity: 0;
     transform: scale(0.95);
@@ -130,6 +133,9 @@
   }
 
   .dialog[open] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     opacity: 1;
     transform: scale(1);
   }
