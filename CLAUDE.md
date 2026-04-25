@@ -18,9 +18,17 @@ Use `/test` for all testing — unit, E2E, and ad-hoc Playwright MCP verificatio
 
 When creating a new ADR via `/adr`, always add a row to the **Architecture Decision Records** table in `README.md`.
 
-## Epics
+## Plan mode (epics & multi-step features)
 
-For multi-milestone features: commit a **Proposed ADR first** before any code changes. Accept the ADR in the final milestone only after all code is verified.
+When entering plan mode for any non-trivial feature, follow this workflow:
+
+1. **Branch check first.** Before drafting a plan, verify the current branch is not `main`. If it is, **stop** and ask the user for a branch name (suggest one based on the work) — do nothing else until a branch exists.
+2. **Open with a Proposed ADR.** The first step of every plan is always: create an ADR via `/adr` in **Proposed** state. No code changes before this exists.
+3. **Structure the plan around milestones.** Group steps into logical milestones. After each milestone the plan must explicitly **STOP and PAUSE** for user review. The user will either request tweaks, make tweaks themselves, or invoke `/commit` — immediately after the commit, continue to the next milestone.
+4. **Close with the ADR.** The final milestone of every plan is always: update the ADR to reflect decisions actually made during implementation, then change its status from **Proposed** to **Accepted**.
+5. **After the final milestone**, remind the user about the `/learnings` skill (unless they want more tweaks).
+
+**Never** include merging the branch as part of a plan — merges are a separate activity.
 
 ## Verifying UI changes
 
