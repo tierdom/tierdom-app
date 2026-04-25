@@ -53,7 +53,7 @@ High level features:
 - [ ] Import from our own export format
 - [ ] Import from external sources (Goodreads CSV, etc.)
 - [ ] Export database to basic formats (markdown, json or yaml, etc.)
-- [ ] Soft-delete for items + trash (and recover) feature + housekeeping to clean up later
+- [x] Soft-delete for items + trash (and recover) feature ([ADR-0022](docs/decisions/0022-soft-delete-and-trash.md))
 - [ ] Build external API for automated operations
 - [ ] Create MCP to access the API of a Tierdom APP instance with AI tooling
 - [ ] Add a LICENSE file to the repository
@@ -208,7 +208,7 @@ Architectural decisions are documented as ADRs in [`docs/decisions/`](docs/decis
 | [0019](docs/decisions/0019-prop-keys-with-icon-set-support.md)          | Prop Keys with Icon Set Support               | Accepted |
 | [0020](docs/decisions/0020-customizable-site-content.md)                | Customizable Site Content via Generalized CMS | Accepted |
 | [0021](docs/decisions/0021-admin-confirmation-dialog.md)                | Admin Confirmation Dialog                     | Accepted |
-| [0022](docs/decisions/0022-soft-delete-and-trash.md)                    | Soft Delete and Trash                         | Proposed |
+| [0022](docs/decisions/0022-soft-delete-and-trash.md)                    | Soft Delete and Trash                         | Accepted |
 
 ## References
 

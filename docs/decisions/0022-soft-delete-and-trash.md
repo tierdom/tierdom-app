@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed
+Accepted
 
 ## Context
 
@@ -15,7 +15,8 @@ Proposed
 
 ### Schema
 
-- Add nullable `deleted_at TEXT` to `category` and `tier_list_item`. `NULL` = active; ISO-8601 datetime = soft-deleted at that moment. Type matches `created_at`/`updated_at` (ADR-0009).
+- Add nullable `deleted_at TEXT` to `category` and `tier_list_item`. `NULL` = active; ISO-8601 datetime = soft-deleted at that moment. Type matches `created_at`/`updated_at` (ADR-0009). Soft-delete writes `datetime('now')` via SQL so the format is identical to the existing timestamp columns.
+- Add nullable `deleted_with_cascade INTEGER` (boolean) to `tier_list_item`. Set to `1` when an item is soft-deleted as part of a category cascade, `NULL` otherwise. `restoreCategory` matches on this flag — not on `deleted_at` equality — so a same-millisecond standalone trash and cascade can never collide.
 - Replace `category_slug_unique` and `item_category_slug` with **partial unique indexes** scoped to `deleted_at IS NULL`, so a slug can be reused while the original sits in trash.
 - Existing `tier_list_item.category_id` `ON DELETE CASCADE` FK kept — still correct for permanent delete.
 
@@ -34,8 +35,9 @@ Proposed
 
 ### Cascade
 
-- Soft-delete a category: app code, single transaction, soft-deletes the category and all its currently-active items with the **same timestamp**.
-- Restore a category: restores items whose `deleted_at` equals that category's `deleted_at` only — items deleted independently keep their state.
+- Soft-delete a category: app code, single transaction. The category gets `deleted_at = datetime('now')`; each currently-active child item gets the same timestamp **and** `deleted_with_cascade = 1`.
+- Restore a category: clears `deleted_at` on the category and on items where `deleted_with_cascade = 1` (and `deleted_at IS NOT NULL`); also clears the flag. Items the user trashed independently keep their state.
+- An earlier draft used timestamp equality alone to link cascaded items to the category; a unit test caught the millisecond-collision bug, so we added the explicit flag column. Easier to reason about than disambiguating timestamps.
 - Triggers rejected: would have to coordinate with the `_suppress_updated_at` contract; app-code cascade is clearer and unit-testable.
 
 ### Permanent delete
@@ -65,6 +67,6 @@ Proposed
 
 ## Consequences
 
-- **Positive:** Mistakes are recoverable. Default read path is provably filtered (TypeScript-enforced). Slug reuse works while old record is in trash. Image storage cost stays small (cleanup only on permanent delete). Reuses existing primitives — `ConfirmDialog`, `Button`, `deleteImage()`, `admin-loader`.
-- **Negative:** Two names per entity (`category` vs `categoryTable`) — small ergonomic cost. View definitions must be hand-edited into the migration (Drizzle Kit support for views is incomplete). Trigger-cascade option not taken; if a future write path skips the helpers it could leave orphaned cascade state — mitigated by funnelling all soft-deletes through `src/lib/server/db/soft-delete.ts`. Slug-conflict-on-restore is a hand-resolved error, not a smart auto-rename.
-- **Neutral:** Schema change is additive (column + indexes + views); existing data unaffected. Sets the column up for a future cleanup job without committing to one now.
+- **Positive:** Mistakes are recoverable. Default read path is provably filtered (TypeScript-enforced _and_ asserted by unit tests against the view). Slug reuse works while the old record sits in trash. Image storage cost stays small (cleanup only on permanent delete). Reuses existing primitives — `ConfirmDialog`, `Button`, `deleteImage()`, `admin-loader`. `deleted_at` stays a clean ISO timestamp (no embedded marker), so future cleanup jobs can range-query it directly.
+- **Negative:** Two names per entity (`category` vs `categoryTable`) — small ergonomic cost. Drizzle Kit re-emits the view's column list on every schema change; that's why migration `0004_add_cascade_flag.sql` ships a `DROP VIEW` + `CREATE VIEW`. Trigger-cascade option not taken; if a future write path skips the helpers it could leave orphaned cascade state — mitigated by funnelling all soft-deletes through `src/lib/server/db/soft-delete.ts`. Slug-conflict-on-restore is a hand-resolved error, not a smart auto-rename.
+- **Neutral:** Schema change is additive (columns + indexes + views); existing data unaffected. Sets `deleted_at` up for a future cleanup job without committing to one now.
