@@ -85,6 +85,11 @@ test('cascade: trash category, items disappear from items list and category list
   await expect(main.locator('tr', { hasText: catName })).toBeVisible();
   await expect(main.locator('tr', { hasText: itemName })).toHaveCount(0);
 
+  // Public site no longer reachable for the trashed category.
+  const slug = catName.toLowerCase();
+  const res = await page.request.get(`/category/${slug}`);
+  expect(res.status()).toBe(404);
+
   // Restore the category — its cascaded item comes back too.
   await main.locator('tr', { hasText: catName }).getByRole('button', { name: 'restore' }).click();
   await page.getByRole('dialog').getByRole('button', { name: 'Restore', exact: true }).click();
@@ -137,6 +142,55 @@ test('permanent delete: typed confirmation gates, then item is gone for good', a
   await page.goto('/admin/items');
   await page.getByPlaceholder('Quick search').fill(unique);
   await expect(main.getByRole('link', { name: unique })).not.toBeVisible();
+});
+
+test('permanent delete category: typed gate, then category and items are gone', async ({
+  page
+}) => {
+  const main = page.getByRole('main');
+  const catName = `Purge-Cat-${Date.now()}`;
+  const slug = catName.toLowerCase();
+  const itemName = `${catName}-Item`;
+
+  // Create a category with an item inside.
+  await page.goto('/admin/categories/create');
+  await page.locator('#name').fill(catName);
+  await page.locator('button[form="create-category"]').click();
+
+  await page.goto('/admin/items/new-item');
+  await page.locator('#categoryId').selectOption({ label: catName });
+  await page.locator('#name').fill(itemName);
+  await page.locator('#score').fill('50');
+  await page.locator('button[form="item-form"]').click();
+
+  // Trash the category.
+  await page.goto('/admin/categories');
+  await main
+    .locator('.sortable-row', { hasText: catName })
+    .getByRole('button', { name: 'trash' })
+    .click();
+  await page.getByRole('dialog').getByRole('button', { name: 'Move to Trash' }).click();
+
+  // Permanent delete from trash with the typed gate.
+  await page.goto('/admin/trash');
+  await main
+    .locator('tr', { hasText: catName })
+    .getByRole('button', { name: 'delete forever' })
+    .click();
+  const dialog = page.getByRole('dialog');
+  const confirmBtn = dialog.getByRole('button', { name: 'Delete forever' });
+  await expect(confirmBtn).toBeDisabled();
+  await dialog.getByRole('textbox').fill(slug);
+  await expect(confirmBtn).toBeEnabled();
+  await confirmBtn.click();
+
+  // Category and its item are gone everywhere.
+  await expect(main.locator('tr', { hasText: catName })).toHaveCount(0);
+  await page.goto('/admin/categories');
+  await expect(main.locator('.sortable-row', { hasText: catName })).toHaveCount(0);
+  await page.goto('/admin/items');
+  await page.getByPlaceholder('Quick search').fill(itemName);
+  await expect(main.getByRole('link', { name: itemName })).not.toBeVisible();
 });
 
 test('slug conflict on restore surfaces an error banner', async ({ page }) => {

@@ -220,6 +220,17 @@ describe('restoreCategory', () => {
     const catId = seedCategory(db, 'games');
     expect(() => restoreCategory(db, catId)).not.toThrow();
   });
+
+  it('clears the cascade flag on items it brings back', () => {
+    expect.assertions(1);
+    const catId = seedCategory(db, 'games');
+    const itemId = seedItem(db, catId, 'a');
+    softDeleteCategory(db, catId);
+    restoreCategory(db, catId);
+
+    const row = db.select().from(tierListItemTable).where(eq(tierListItemTable.id, itemId)).get();
+    expect(row?.deletedWithCascade).toBeNull();
+  });
 });
 
 describe('restoreItem', () => {
@@ -276,6 +287,21 @@ describe('restoreItem', () => {
     expect(err).toBeInstanceOf(SoftDeleteError);
     expect((err as SoftDeleteError).code).toBe('slug_conflict');
   });
+
+  it('is a no-op when the item was never trashed', () => {
+    expect.assertions(1);
+    const catId = seedCategory(db, 'games');
+    const itemId = seedItem(db, catId, 'a');
+    expect(() => restoreItem(db, itemId)).not.toThrow();
+  });
+});
+
+describe('softDeleteItem edge cases', () => {
+  it('is a no-op for an unknown id', () => {
+    expect.assertions(1);
+    const db = makeDb();
+    expect(() => softDeleteItem(db, 'no-such-id')).not.toThrow();
+  });
 });
 
 describe('permanentlyDeleteCategory', () => {
@@ -313,6 +339,11 @@ describe('permanentlyDeleteCategory', () => {
     seedItem(db, catId, 'a');
     permanentlyDeleteCategory(db, catId, stubDelete);
     expect(images).toEqual([]);
+  });
+
+  it('is a no-op for an unknown id', () => {
+    expect.assertions(1);
+    expect(() => permanentlyDeleteCategory(db, 'no-such-id', stubDelete)).not.toThrow();
   });
 });
 
