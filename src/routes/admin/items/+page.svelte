@@ -69,11 +69,11 @@
           <th scope="col" class="w-8 pb-2 font-medium">Tier</th>
           <th scope="col" class="pb-2 font-medium">Name</th>
           <th scope="col" class="hidden w-40 pb-2 font-medium sm:table-cell">Category</th>
-          <th scope="col" class="w-14 pb-2 font-medium">Score</th>
+          <th scope="col" class="hidden w-14 pb-2 font-medium sm:table-cell">Score</th>
           <th scope="col" class="hidden w-24 pb-2 font-medium md:table-cell">
             <span class="inline-flex items-center gap-0.5">Updated <ArrowDown size={10} /></span>
           </th>
-          <th scope="col" class="w-20 pb-2 text-right font-medium">Actions</th>
+          <th scope="col" class="hidden w-20 pb-2 text-right font-medium sm:table-cell">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -113,11 +113,11 @@
             <td class="hidden w-40 truncate py-2 text-xs text-secondary sm:table-cell">
               {item.categoryName}
             </td>
-            <td class="py-2 text-secondary">{item.score}</td>
+            <td class="hidden py-2 text-secondary sm:table-cell">{item.score}</td>
             <td class="hidden py-2 text-xs text-secondary md:table-cell">
               {formatRelativeDate(item.updatedAt)}
             </td>
-            <td class="py-2 text-right">
+            <td class="hidden py-2 text-right sm:table-cell">
               <Button
                 variant="danger-ghost"
                 compact
