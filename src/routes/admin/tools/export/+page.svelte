@@ -23,6 +23,7 @@
   <form
     method="GET"
     action={resolve('/admin/tools/export/download')}
+    data-sveltekit-reload
     class="mt-6 flex flex-col gap-4"
   >
     <fieldset class="flex flex-col gap-3 rounded-lg border border-subtle bg-elevated p-5">
