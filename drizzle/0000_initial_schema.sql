@@ -3,6 +3,7 @@ CREATE TABLE `category` (
 	`slug` text NOT NULL,
 	`name` text NOT NULL,
 	`description` text,
+	`prop_keys` text DEFAULT '[]' NOT NULL,
 	`order` integer DEFAULT 0 NOT NULL,
 	`cutoff_s` integer,
 	`cutoff_a` integer,
@@ -12,10 +13,10 @@ CREATE TABLE `category` (
 	`cutoff_e` integer,
 	`cutoff_f` integer,
 	`created_at` text DEFAULT (datetime('now')) NOT NULL,
-	`updated_at` text DEFAULT (datetime('now')) NOT NULL
+	`updated_at` text DEFAULT (datetime('now')) NOT NULL,
+	`deleted_at` text
 );
 --> statement-breakpoint
-CREATE UNIQUE INDEX `category_slug_unique` ON `category` (`slug`);--> statement-breakpoint
 CREATE TABLE `page` (
 	`slug` text PRIMARY KEY NOT NULL,
 	`title` text NOT NULL,
@@ -30,6 +31,13 @@ CREATE TABLE `session` (
 	`expires_at` integer NOT NULL,
 	`created_at` text DEFAULT (datetime('now')) NOT NULL,
 	FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE cascade
+);
+--> statement-breakpoint
+CREATE TABLE `site_setting` (
+	`key` text PRIMARY KEY NOT NULL,
+	`value` text NOT NULL,
+	`created_at` text DEFAULT (datetime('now')) NOT NULL,
+	`updated_at` text DEFAULT (datetime('now')) NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE `_suppress_updated_at` (
@@ -49,10 +57,11 @@ CREATE TABLE `tier_list_item` (
 	`props` text DEFAULT '[]' NOT NULL,
 	`created_at` text DEFAULT (datetime('now')) NOT NULL,
 	`updated_at` text DEFAULT (datetime('now')) NOT NULL,
+	`deleted_at` text,
+	`deleted_with_cascade` integer,
 	FOREIGN KEY (`category_id`) REFERENCES `category`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
-CREATE UNIQUE INDEX `item_category_slug` ON `tier_list_item` (`category_id`,`slug`);--> statement-breakpoint
 CREATE TABLE `user` (
 	`id` text PRIMARY KEY NOT NULL,
 	`username` text NOT NULL,
@@ -63,6 +72,10 @@ CREATE TABLE `user` (
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `user_username_unique` ON `user` (`username`);--> statement-breakpoint
+CREATE UNIQUE INDEX `category_active_slug` ON `category` (`slug`) WHERE `deleted_at` IS NULL;--> statement-breakpoint
+CREATE UNIQUE INDEX `item_active_category_slug` ON `tier_list_item` (`category_id`, `slug`) WHERE `deleted_at` IS NULL;--> statement-breakpoint
+CREATE VIEW `category_active` AS select "id", "slug", "name", "description", "prop_keys", "order", "cutoff_s", "cutoff_a", "cutoff_b", "cutoff_c", "cutoff_d", "cutoff_e", "cutoff_f", "created_at", "updated_at", "deleted_at" from "category" where "category"."deleted_at" is null;--> statement-breakpoint
+CREATE VIEW `tier_list_item_active` AS select "id", "category_id", "slug", "name", "description", "score", "order", "image_hash", "placeholder", "props", "created_at", "updated_at", "deleted_at", "deleted_with_cascade" from "tier_list_item" where "tier_list_item"."deleted_at" is null;--> statement-breakpoint
 
 -- updated_at triggers: auto-bump on UPDATE unless _suppress_updated_at has a row
 CREATE TRIGGER category_updated_at
@@ -99,4 +112,13 @@ CREATE TRIGGER user_updated_at
     AND NOT EXISTS (SELECT 1 FROM _suppress_updated_at)
 BEGIN
   UPDATE user SET updated_at = datetime('now') WHERE id = NEW.id;
+END;
+--> statement-breakpoint
+CREATE TRIGGER site_setting_updated_at
+  AFTER UPDATE ON site_setting
+  FOR EACH ROW
+  WHEN OLD.updated_at = NEW.updated_at
+    AND NOT EXISTS (SELECT 1 FROM _suppress_updated_at)
+BEGIN
+  UPDATE site_setting SET updated_at = datetime('now') WHERE key = NEW.key;
 END;

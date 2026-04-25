@@ -5,36 +5,8 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1776021393171,
+      "when": 1777153307385,
       "tag": "0000_initial_schema",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1776028495955,
-      "tag": "0001_add_category_prop_keys",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1776461308967,
-      "tag": "0002_add_site_setting_table",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "6",
-      "when": 1777144904454,
-      "tag": "0003_add_soft_delete",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "6",
-      "when": 1777147237223,
-      "tag": "0004_add_cascade_flag",
       "breakpoints": true
     }
   ]

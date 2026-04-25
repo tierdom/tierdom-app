@@ -1,1 +1,0 @@
-ALTER TABLE `category` ADD `prop_keys` text DEFAULT '[]' NOT NULL;
