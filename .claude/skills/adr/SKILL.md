@@ -30,7 +30,11 @@ Proposed
 <What are the results of this decision — positive, negative, or neutral?>
 ```
 
-4. Fill in what you know from $ARGUMENTS. Leave placeholders for anything not specified.
+4. Fill in what you know from $ARGUMENTS. Leave placeholders for anything not specified. **Be terse.** ADRs in this project are scanned, not read end-to-end:
+   - Prefer short bullets over prose paragraphs. One bullet per fact.
+   - No rhetorical scaffolding ("Beyond the bug…", "We considered X but…" can become "Rejected: X — reason."). Cut filler.
+   - Each section earns its length: Context names the problem, Decision lists what changed, Consequences names trade-offs. Anything else is pruning fodder.
+   - Verbose first drafts get rewritten — start tight.
 5. Add or update the entry in the **Architecture Decision Records** table in `README.md` at the project root. Match the existing table format (ADR link, Title, Status columns). If updating an existing ADR, update its row; if creating a new one, append a row.
 6. Print the file path so I can open it.
 

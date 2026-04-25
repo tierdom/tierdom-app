@@ -2,7 +2,7 @@
 
 **Never** add a `Co-Authored-By` trailer or any Claude attribution to commit messages.
 
-**Never** commit on your own — always wait for the user to invoke `/commit`.
+**Never** commit on your own — always wait for the user to invoke `/commit`. This applies to **every** change, no matter how small: one-line fixes, follow-up tweaks the user just asked for, formatting, etc. The user reviews the diff and decides when to commit. Never chain `git commit` after an edit, never run it from a `&&` pipeline alongside lint/check, and never treat "trivial" or "obvious" as an exception.
 
 **Always** be brief. No filler or pleasantries.
 
