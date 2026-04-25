@@ -3,6 +3,7 @@
   import { resolve } from '$app/paths';
   import { Plus, X } from 'lucide-svelte';
   import Button from '$lib/components/admin/Button.svelte';
+  import ConfirmDialog from '$lib/components/admin/ConfirmDialog.svelte';
   import FormField from '$lib/components/admin/FormField.svelte';
   import MarkdownField from '$lib/components/admin/MarkdownField.svelte';
   import PropKeyEditor from '$lib/components/admin/PropKeyEditor.svelte';
@@ -13,13 +14,17 @@
   const { enhance } = loader;
 
   let dirty = $state(false);
+  let pendingDiscard = $state(false);
 
   function markDirty() {
     dirty = true;
   }
 
   function cancel() {
-    if (dirty && !confirm('You have unsaved changes. Discard them?')) return;
+    if (dirty) {
+      pendingDiscard = true;
+      return;
+    }
     goto(resolve('/admin/categories'));
   }
 </script>
@@ -70,3 +75,16 @@
     <Button variant="secondary" type="button" onclick={cancel}><X size={16} />Cancel</Button>
   </div>
 </section>
+
+<ConfirmDialog
+  open={pendingDiscard}
+  title="Discard unsaved changes?"
+  message="You have unsaved changes. Discard them and leave this page?"
+  confirmLabel="Discard"
+  variant="danger"
+  oncancel={() => (pendingDiscard = false)}
+  onconfirm={async () => {
+    pendingDiscard = false;
+    await goto(resolve('/admin/categories'));
+  }}
+/>

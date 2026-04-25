@@ -3,6 +3,7 @@
   import { resolve } from '$app/paths';
   import { Plus, Save, X, Trash2 } from 'lucide-svelte';
   import Button from '$lib/components/admin/Button.svelte';
+  import ConfirmDialog from '$lib/components/admin/ConfirmDialog.svelte';
   import FormField from '$lib/components/admin/FormField.svelte';
   import ImageField from '$lib/components/admin/ImageField.svelte';
   import MarkdownField from '$lib/components/admin/MarkdownField.svelte';
@@ -47,14 +48,27 @@
     (categories.find((c) => c.id === selectedCategoryId)?.propKeys ?? []).map((pk) => pk.key)
   );
 
+  let pendingDiscard = $state(false);
+  let pendingDelete = $state(false);
+
   function markDirty() {
     dirty = true;
   }
 
   function cancel() {
-    if (dirty && !confirm('You have unsaved changes. Discard them?')) return;
+    if (dirty) {
+      pendingDiscard = true;
+      return;
+    }
     goto(resolve(backUrl as '/'));
   }
+
+  const performDelete = loader.withLoading(async () => {
+    const body = new FormData();
+    body.set('_returnTarget', returnTarget);
+    await fetch('?/delete', { method: 'POST', body });
+    await goto(resolve(backUrl as '/'));
+  });
 </script>
 
 <AdminOverlay loading={loader.loading} />
@@ -126,16 +140,33 @@
   {/if}
   <Button variant="secondary" type="button" onclick={cancel}><X size={16} />Cancel</Button>
   {#if mode === 'edit'}
-    <form
-      method="POST"
-      action="?/delete"
-      use:enhance
-      onsubmit={(e) => {
-        if (!confirm('Delete this item?')) e.preventDefault();
-      }}
-    >
-      <input type="hidden" name="_returnTarget" value={returnTarget} />
-      <Button variant="danger" type="submit"><Trash2 size={16} />Delete</Button>
-    </form>
+    <Button variant="danger" type="button" onclick={() => (pendingDelete = true)}>
+      <Trash2 size={16} />Delete
+    </Button>
   {/if}
 </div>
+
+<ConfirmDialog
+  open={pendingDiscard}
+  title="Discard unsaved changes?"
+  message="You have unsaved changes. Discard them and leave this page?"
+  confirmLabel="Discard"
+  variant="danger"
+  oncancel={() => (pendingDiscard = false)}
+  onconfirm={async () => {
+    pendingDiscard = false;
+    await goto(resolve(backUrl as '/'));
+  }}
+/>
+
+<ConfirmDialog
+  open={pendingDelete}
+  title="Delete item?"
+  message={`Delete "${initialValues.name ?? 'this item'}"? This cannot be undone.`}
+  confirmLabel="Delete item"
+  oncancel={() => (pendingDelete = false)}
+  onconfirm={async () => {
+    pendingDelete = false;
+    await performDelete();
+  }}
+/>

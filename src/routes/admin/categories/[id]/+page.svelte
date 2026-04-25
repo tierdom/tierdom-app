@@ -1,9 +1,10 @@
 <script lang="ts">
   import { formatRelativeDate } from '$lib/format-date';
-  import { goto } from '$app/navigation';
+  import { goto, invalidateAll } from '$app/navigation';
   import { resolve } from '$app/paths';
   import { ArrowDown, Save, X, Trash2, Plus } from 'lucide-svelte';
   import Button from '$lib/components/admin/Button.svelte';
+  import ConfirmDialog from '$lib/components/admin/ConfirmDialog.svelte';
   import FormField from '$lib/components/admin/FormField.svelte';
   import MarkdownField from '$lib/components/admin/MarkdownField.svelte';
   import PropKeyEditor from '$lib/components/admin/PropKeyEditor.svelte';
@@ -19,6 +20,11 @@
 
   const loader = createAdminLoader();
   const { enhance } = loader;
+
+  let pendingDiscard = $state(false);
+  let pendingSort = $state(false);
+  let pendingDeleteCategory = $state(false);
+  let pendingDeleteItem: { id: string; name: string } | null = $state(null);
 
   let dirty = $state(false);
   let userWantsCutoffs = $state(false);
@@ -48,7 +54,10 @@
   }
 
   function cancel() {
-    if (dirty && !confirm('You have unsaved changes. Discard them?')) return;
+    if (dirty) {
+      pendingDiscard = true;
+      return;
+    }
     goto(resolve('/admin/categories'));
   }
 
@@ -58,11 +67,21 @@
     await fetch('?/reorderItems', { method: 'POST', body });
   });
 
-  const handleSortByScore = loader.withLoading(async () => {
-    if (!confirm('Sort all items by score (highest first)? This replaces the current order.'))
-      return;
+  const performSortByScore = loader.withLoading(async () => {
     await fetch('?/sortByScore', { method: 'POST', body: new FormData() });
     location.reload();
+  });
+
+  const performDeleteCategory = loader.withLoading(async () => {
+    await fetch('?/delete', { method: 'POST', body: new FormData() });
+    await goto(resolve('/admin/categories'));
+  });
+
+  const performDeleteItem = loader.withLoading(async (id: string) => {
+    const body = new FormData();
+    body.set('id', id);
+    await fetch('?/deleteItem', { method: 'POST', body });
+    await invalidateAll();
   });
 </script>
 
@@ -171,23 +190,16 @@
   <div class="mt-4 flex flex-col gap-3 md:flex-row md:items-center">
     <Button type="submit" form="edit-category"><Save size={16} />Save</Button>
     <Button variant="secondary" type="button" onclick={cancel}><X size={16} />Cancel</Button>
-    <form
-      id="delete-category"
-      method="POST"
-      action="?/delete"
-      use:enhance
-      onsubmit={(e) => {
-        if (!confirm('Delete this category and all its items?')) e.preventDefault();
-      }}
-    >
-      <Button variant="danger" type="submit"><Trash2 size={16} />Delete</Button>
-    </form>
+    <Button variant="danger" type="button" onclick={() => (pendingDeleteCategory = true)}>
+      <Trash2 size={16} />Delete
+    </Button>
   </div>
 
   <div class="mt-10 flex items-center gap-3">
     <h2 class="text-lg font-bold text-primary">Items ({data.items.length})</h2>
     {#if data.items.length > 1}
-      <Button variant="secondary" compact onclick={handleSortByScore}>Sort by score</Button>
+      <Button variant="secondary" compact onclick={() => (pendingSort = true)}>Sort by score</Button
+      >
     {/if}
     <Button
       variant="secondary"
@@ -241,20 +253,15 @@
               {formatRelativeDate(item.updatedAt as string)}
             </div>
             <div class="w-24 text-right">
-              <form
-                method="POST"
-                action="?/deleteItem"
-                use:enhance
-                class="inline"
-                onsubmit={(e) => {
-                  if (!confirm(`Delete "${item.name}"?`)) e.preventDefault();
-                }}
+              <Button
+                variant="danger-ghost"
+                compact
+                type="button"
+                onclick={() =>
+                  (pendingDeleteItem = { id: item.id as string, name: String(item.name) })}
               >
-                <input type="hidden" name="id" value={item.id} />
-                <Button variant="danger-ghost" compact type="submit"
-                  ><Trash2 size={12} />delete</Button
-                >
-              </form>
+                <Trash2 size={12} />delete
+              </Button>
             </div>
           </div>
         {/snippet}
@@ -272,3 +279,55 @@
     </Button>
   </div>
 </section>
+
+<ConfirmDialog
+  open={pendingDiscard}
+  title="Discard unsaved changes?"
+  message="You have unsaved changes. Discard them and leave this page?"
+  confirmLabel="Discard"
+  variant="danger"
+  oncancel={() => (pendingDiscard = false)}
+  onconfirm={async () => {
+    pendingDiscard = false;
+    await goto(resolve('/admin/categories'));
+  }}
+/>
+
+<ConfirmDialog
+  open={pendingSort}
+  title="Sort by score?"
+  message="Sort all items by score (highest first)? This replaces the current order."
+  confirmLabel="Sort"
+  variant="primary"
+  oncancel={() => (pendingSort = false)}
+  onconfirm={async () => {
+    pendingSort = false;
+    await performSortByScore();
+  }}
+/>
+
+<ConfirmDialog
+  open={pendingDeleteCategory}
+  title="Delete category?"
+  message={`Delete "${data.category.name}" and all its items? This cannot be undone.`}
+  confirmLabel="Delete category"
+  requireTypedConfirmation={data.category.slug}
+  oncancel={() => (pendingDeleteCategory = false)}
+  onconfirm={async () => {
+    pendingDeleteCategory = false;
+    await performDeleteCategory();
+  }}
+/>
+
+<ConfirmDialog
+  open={pendingDeleteItem !== null}
+  title="Delete item?"
+  message={pendingDeleteItem ? `Delete "${pendingDeleteItem.name}"?` : ''}
+  confirmLabel="Delete item"
+  oncancel={() => (pendingDeleteItem = null)}
+  onconfirm={async () => {
+    const target = pendingDeleteItem;
+    pendingDeleteItem = null;
+    if (target) await performDeleteItem(target.id);
+  }}
+/>

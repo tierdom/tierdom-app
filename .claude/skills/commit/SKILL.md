@@ -13,6 +13,8 @@ Help me create a git commit for the current changes in this SvelteKit project.
 
 Note: the user may be prompted for a GPG signing passphrase after the commit command.
 
+If this commit is the milestone checkpoint of an in-progress plan (see CLAUDE.md "Plan mode"), continue to the next milestone immediately after the commit succeeds — no need to wait for further instruction.
+
 ## Emoji types
 
 | Emoji | Type          | Use for                                         |
