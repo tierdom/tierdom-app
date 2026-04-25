@@ -65,12 +65,38 @@ tests/e2e/
 - Deterministic tests use an **isolated database** at `./test-data/db.sqlite` (configured via `.env.test`). They never touch the dev database in `./data/db.sqlite`. All test artifacts (database, images, auth state) live in the gitignored `test-data/` directory.
 - `npm run test:e2e:reset` resets only the test database, runs migrations, and seeds it (admin/admin, 5 categories, ~108 items, 10 tags, 2 pages).
 - Smoke tests run against the dev server and use whatever database is already there.
-- Unit tests use no database at all.
+- Unit tests usually use no database, but server-side code that needs one can spin up an in-memory SQLite per test — see "Unit-testing DB code" below.
 
 ## Writing tests
 
 - **Unit tests** go next to their source file (`foo.ts` → `foo.test.ts`). Test pure functions and near-pure logic. See ADR-0015 for scope decisions.
 - **Public over admin:** Public-facing pages are the product surface — prioritize their E2E test coverage. If admin breaks, it can wait for a fix; if public breaks, visitors see it immediately.
 - **Readable fixtures:** Test images and fixture files should be visually recognizable (e.g. 100×100 with "TEST IMG" label), not minimal 1×1 stubs. Playwright screenshots and recordings are reviewed by humans.
+
+## Unit-testing DB code
+
+Server-side helpers that need a real database (transactions, multi-statement logic, view behaviour) can be unit-tested against an in-memory SQLite:
+
+```ts
+import Database from 'better-sqlite3';
+import { drizzle } from 'drizzle-orm/better-sqlite3';
+import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
+import * as schema from './db/schema';
+
+vi.mock('$env/dynamic/private', () => ({ env: { DATA_PATH: '/tmp/test' } }));
+vi.mock('sharp', () => ({ default: vi.fn() }));
+
+function makeDb() {
+  const client = new Database(':memory:');
+  client.pragma('foreign_keys = ON');
+  const db = drizzle(client, { schema });
+  migrate(db, { migrationsFolder: 'drizzle' });
+  return db;
+}
+```
+
+For this to work, the helper under test must accept the `db` as a parameter rather than relying solely on the singleton from `$lib/server/db`. Match the convention from `seed-utils.ts` / `soft-delete.ts` / `reorder.ts`: take `db: DB` as the last argument, defaulting to `defaultDb` from the singleton. App code keeps calling without the arg; tests pass their own. If the function imports the singleton transitively (via `$lib/server/db`), `vi.mock('$lib/server/db', () => ({ db: {} }))` keeps the import side-effect-free.
+
+See `src/lib/server/db/soft-delete.test.ts` and `src/lib/server/reorder.test.ts` for live examples.
 
 $ARGUMENTS
