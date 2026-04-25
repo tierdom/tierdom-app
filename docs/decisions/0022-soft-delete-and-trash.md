@@ -57,9 +57,13 @@ Accepted
 - Slug conflicts on restore: block with a friendly error in `loader.error`. No auto-rename.
 - "Trash" added to admin nav after "Items (all)".
 
+### Housekeeping
+
+- Light-touch alternative to an automated cleanup job: a reusable `<AdminWarning>` banner appears on the admin dashboard and at the top of the trash page when any soft-deleted row's `deleted_at` is older than `STALE_TRASH_DAYS` (60). Counts come from `countStaleTrash()` in `soft-delete.ts`.
+- Nudge, not enforcement — the user decides when to permanently delete. Avoids a background scheduler in a single-process self-hosted app.
+
 ### Out of scope (v1)
 
-- Housekeeping / auto-purge job (column is in place; deferrable).
 - "Empty trash" bulk action.
 - Soft-delete for `page` / `site_setting` / `user`.
 - Auto-rename on slug conflict during restore.

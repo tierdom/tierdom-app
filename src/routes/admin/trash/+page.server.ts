@@ -2,6 +2,8 @@ import { db } from '$lib/server/db';
 import { fail } from '@sveltejs/kit';
 import {
   SoftDeleteError,
+  STALE_TRASH_DAYS,
+  countStaleTrash,
   listTrashed,
   permanentlyDeleteCategory,
   permanentlyDeleteItem,
@@ -11,7 +13,11 @@ import {
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async () => {
-  return listTrashed(db);
+  return {
+    ...listTrashed(db),
+    staleTrash: countStaleTrash(db),
+    staleTrashDays: STALE_TRASH_DAYS
+  };
 };
 
 function readId(data: FormData) {

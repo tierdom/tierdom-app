@@ -6,12 +6,15 @@
   import Button from '$lib/components/admin/Button.svelte';
   import ConfirmDialog from '$lib/components/admin/ConfirmDialog.svelte';
   import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
+  import AdminWarning from '$lib/components/admin/AdminWarning.svelte';
   import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
   import type { PageData } from './$types';
 
   let { data }: { data: PageData } = $props();
 
   const loader = createAdminLoader();
+
+  let staleTrashTotal = $derived(data.staleTrash.categories + data.staleTrash.items);
 
   // Trash actions are the first place we surface server-side action errors
   // (slug conflicts on restore). No toast system in the codebase yet — render
@@ -68,6 +71,16 @@
     Items and categories you moved to Trash. Restore brings them back as they were. Delete forever
     removes them and any associated images permanently.
   </p>
+
+  {#if staleTrashTotal > 0}
+    <div class="mt-4">
+      <AdminWarning>
+        {staleTrashTotal}
+        {staleTrashTotal === 1 ? 'item' : 'items'} below have been in Trash for {data.staleTrashDays}+
+        days. Consider deleting them forever to keep your data tidy.
+      </AdminWarning>
+    </div>
+  {/if}
 
   {#if actionError}
     <div

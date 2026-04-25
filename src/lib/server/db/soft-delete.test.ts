@@ -13,6 +13,7 @@ import * as schema from './schema';
 import { category, categoryTable, tierListItem, tierListItemTable } from './schema';
 import {
   SoftDeleteError,
+  countStaleTrash,
   listTrashed,
   permanentlyDeleteCategory,
   permanentlyDeleteItem,
@@ -21,6 +22,7 @@ import {
   softDeleteCategory,
   softDeleteItem
 } from './soft-delete';
+import { sql } from 'drizzle-orm';
 
 type DB = ReturnType<typeof makeDb>;
 
@@ -412,6 +414,65 @@ describe('listTrashed', () => {
     const result = listTrashed(db);
     expect(result.categories).toEqual([]);
     expect(result.items).toEqual([]);
+  });
+});
+
+describe('countStaleTrash', () => {
+  let db: DB;
+  beforeEach(() => {
+    db = makeDb();
+  });
+
+  function backdate(table: 'category' | 'tier_list_item', id: string, daysAgo: number) {
+    // Direct SQL update so we can put deleted_at arbitrarily far in the past.
+    const targetTable = table === 'category' ? categoryTable : tierListItemTable;
+    db.update(targetTable)
+      .set({ deletedAt: sql`datetime('now', ${'-' + daysAgo + ' days'})` })
+      .where(eq(targetTable.id, id))
+      .run();
+  }
+
+  it('returns zeroes when nothing is in trash', () => {
+    expect.assertions(1);
+    expect(countStaleTrash(db)).toEqual({ categories: 0, items: 0 });
+  });
+
+  it('does not flag fresh trash inside the threshold', () => {
+    expect.assertions(1);
+    const catId = seedCategory(db, 'games');
+    const itemId = seedItem(db, catId, 'a');
+    softDeleteItem(db, itemId);
+    backdate('tier_list_item', itemId, 30);
+
+    expect(countStaleTrash(db, 60)).toEqual({ categories: 0, items: 0 });
+  });
+
+  it('flags trash older than the threshold for both kinds', () => {
+    expect.assertions(1);
+    const catId = seedCategory(db, 'old');
+    const itemId = seedItem(db, catId, 'old-item');
+    const catB = seedCategory(db, 'fresh');
+    const itemB = seedItem(db, catB, 'fresh-item');
+
+    softDeleteCategory(db, catId); // cascades the item; both get the same mark
+    softDeleteItem(db, itemB);
+
+    backdate('category', catId, 90);
+    backdate('tier_list_item', itemId, 90);
+    backdate('tier_list_item', itemB, 30);
+
+    expect(countStaleTrash(db, 60)).toEqual({ categories: 1, items: 1 });
+  });
+
+  it('uses the supplied threshold (boundary)', () => {
+    expect.assertions(2);
+    const catId = seedCategory(db, 'games');
+    const itemId = seedItem(db, catId, 'a');
+    softDeleteItem(db, itemId);
+    backdate('tier_list_item', itemId, 45);
+
+    expect(countStaleTrash(db, 30)).toEqual({ categories: 0, items: 1 });
+    expect(countStaleTrash(db, 60)).toEqual({ categories: 0, items: 0 });
   });
 });
 

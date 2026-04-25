@@ -1,6 +1,7 @@
 import { db } from '$lib/server/db';
 import { category, tierListItem, page, siteSetting } from '$lib/server/db/schema';
 import { siteContentBlocks } from '$lib/server/site-content';
+import { countStaleTrash, STALE_TRASH_DAYS } from '$lib/server/db/soft-delete';
 import { count, eq, asc, desc } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';
 
@@ -58,6 +59,8 @@ export const load: PageServerLoad = async () => {
     categories,
     recentItems,
     pages,
-    siteContent
+    siteContent,
+    staleTrash: countStaleTrash(db),
+    staleTrashDays: STALE_TRASH_DAYS
   };
 };
