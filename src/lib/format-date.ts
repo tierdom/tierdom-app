@@ -3,8 +3,11 @@
  * into a human-friendly relative or absolute label.
  */
 export function formatRelativeDate(utcDateStr: string): string {
-  // SQLite datetime('now') omits the timezone — append 'Z' to parse as UTC
-  const date = new Date(utcDateStr + 'Z');
+  // SQLite datetime('now') omits the timezone — append 'Z' to parse as UTC.
+  // Other UTC ISO strings (e.g. from Date.toISOString()) already end in 'Z',
+  // so don't double-append.
+  const needsZ = !/[Zz]$/.test(utcDateStr);
+  const date = new Date(needsZ ? utcDateStr + 'Z' : utcDateStr);
   const diffMs = Date.now() - date.getTime();
   const diffMins = Math.floor(diffMs / 60_000);
 

@@ -1,10 +1,14 @@
-import { and, eq, isNotNull, isNull } from 'drizzle-orm';
+import { and, eq, isNotNull, isNull, sql } from 'drizzle-orm';
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import { categoryTable, tierListItemTable } from './schema';
 import { deleteImage as defaultDeleteImage } from '../images';
 import type * as schema from './schema';
 
 type DB = BetterSQLite3Database<typeof schema>;
+
+// Match the SQL-side timestamp format used by created_at / updated_at so the
+// shared `formatRelativeDate` helper formats it correctly.
+const NOW = sql`(datetime('now'))`;
 
 export type SoftDeleteErrorCode = 'slug_conflict' | 'parent_in_trash';
 
@@ -25,14 +29,13 @@ export class SoftDeleteError extends Error {
  * state. No-op if the category is already in trash or doesn't exist.
  */
 export function softDeleteCategory(db: DB, id: string): void {
-  const now = new Date().toISOString();
   db.transaction((tx) => {
     tx.update(categoryTable)
-      .set({ deletedAt: now })
+      .set({ deletedAt: NOW })
       .where(and(eq(categoryTable.id, id), isNull(categoryTable.deletedAt)))
       .run();
     tx.update(tierListItemTable)
-      .set({ deletedAt: now, deletedWithCascade: true })
+      .set({ deletedAt: NOW, deletedWithCascade: true })
       .where(and(eq(tierListItemTable.categoryId, id), isNull(tierListItemTable.deletedAt)))
       .run();
   });
@@ -40,9 +43,8 @@ export function softDeleteCategory(db: DB, id: string): void {
 
 /** Soft-delete a single item. No-op if already trashed or missing. */
 export function softDeleteItem(db: DB, id: string): void {
-  const now = new Date().toISOString();
   db.update(tierListItemTable)
-    .set({ deletedAt: now })
+    .set({ deletedAt: NOW })
     .where(and(eq(tierListItemTable.id, id), isNull(tierListItemTable.deletedAt)))
     .run();
 }

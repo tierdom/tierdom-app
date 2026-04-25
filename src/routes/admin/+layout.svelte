@@ -8,7 +8,8 @@
     { href: '/admin', label: 'Dashboard' },
     { href: '/admin/cms', label: 'CMS' },
     { href: '/admin/categories', label: 'Categories' },
-    { href: '/admin/items', label: 'Items (all)' }
+    { href: '/admin/items', label: 'Items (all)' },
+    { href: '/admin/trash', label: 'Trash' }
   ];
 </script>
 
