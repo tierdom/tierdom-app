@@ -160,9 +160,9 @@
         <div class="flex w-6 shrink-0 items-center justify-center"><ArrowDown size={10} /></div>
         <div class="w-8 font-medium">Tier</div>
         <div class="flex-1 font-medium">Name</div>
-        <div class="w-16 font-medium">Score</div>
+        <div class="hidden w-16 font-medium sm:block">Score</div>
         <div class="hidden w-24 font-medium md:block">Updated</div>
-        <div class="w-24 text-right font-medium">Actions</div>
+        <div class="hidden w-24 text-right font-medium sm:block">Actions</div>
       </div>
 
       <SortableList items={data.items} onreorder={handleReorderItems}>
@@ -192,11 +192,11 @@
                 {/if}
               </div>
             </div>
-            <div class="w-16 text-secondary">{item.score}</div>
+            <div class="hidden w-16 text-secondary sm:block">{item.score}</div>
             <div class="hidden w-24 text-xs text-secondary md:block">
               {formatRelativeDate(item.updatedAt as string)}
             </div>
-            <div class="w-24 text-right">
+            <div class="hidden w-24 text-right sm:block">
               <Button
                 variant="danger-ghost"
                 compact

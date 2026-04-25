@@ -115,7 +115,7 @@
             maxlength={MAX_KEY_LENGTH}
             value={item.key}
             oninput={(e) => handleInput(item.id, e.currentTarget.value)}
-            class="flex-1 rounded border bg-surface px-2 py-1.5 text-sm text-primary placeholder:text-secondary/50 focus:outline-none {isDuplicate(
+            class="key-input min-w-0 rounded border bg-surface px-2 py-1.5 text-sm text-primary placeholder:text-secondary/50 focus:outline-none {isDuplicate(
               item.key
             )
               ? 'border-red-500/60 focus:border-red-500'
@@ -126,7 +126,7 @@
             aria-label="Icon set for {item.key || 'this key'}"
             value={item.iconSet ?? ''}
             onchange={(e) => handleIconSetChange(item.id, e.currentTarget.value)}
-            class="w-28 shrink-0 rounded border border-subtle bg-surface px-1.5 py-1.5 text-xs text-secondary focus:border-accent focus:outline-none"
+            class="iconset-select min-w-0 rounded border border-subtle bg-surface px-1.5 py-1.5 text-xs text-secondary focus:border-accent focus:outline-none sm:w-28 sm:shrink-0"
           >
             <option value="">No icons</option>
             {#each iconSets as set (set.slug)}
@@ -134,9 +134,11 @@
             {/each}
           </select>
 
-          <Button variant="danger-ghost" compact type="button" onclick={() => remove(item.id)}>
-            <Trash2 size={12} />
-          </Button>
+          <span class="delete-cell">
+            <Button variant="danger-ghost" compact type="button" onclick={() => remove(item.id)}>
+              <Trash2 size={12} />
+            </Button>
+          </span>
         </div>
       {/each}
     </div>
@@ -166,12 +168,40 @@
   }
 
   .prop-key-row {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+      'handle key delete'
+      'handle iconset delete';
     align-items: center;
     gap: 0.375rem;
     padding: 0.25rem 0;
     position: relative;
     transition: opacity 150ms ease;
+  }
+
+  @media (min-width: 640px) {
+    .prop-key-row {
+      grid-template-columns: auto 1fr auto auto;
+      grid-template-areas: 'handle key iconset delete';
+    }
+  }
+
+  .prop-key-row .drag-handle {
+    grid-area: handle;
+  }
+
+  .prop-key-row .key-input {
+    grid-area: key;
+  }
+
+  .prop-key-row .iconset-select {
+    grid-area: iconset;
+  }
+
+  .prop-key-row .delete-cell {
+    grid-area: delete;
+    display: inline-flex;
   }
 
   .prop-key-row.dragging {
