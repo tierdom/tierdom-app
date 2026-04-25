@@ -42,8 +42,8 @@
       <div class="flex border-b border-subtle pb-2 text-left text-xs text-secondary">
         <div class="w-8"></div>
         <div class="flex-1 font-medium">Name</div>
-        <div class="flex-1 font-medium">Slug</div>
-        <div class="w-16 font-medium">Items</div>
+        <div class="hidden flex-1 font-medium sm:block">Slug</div>
+        <div class="hidden w-16 font-medium sm:block">Items</div>
         <div class="w-24 text-right font-medium">Actions</div>
       </div>
 
@@ -55,8 +55,8 @@
                 {cat.name}
               </a>
             </div>
-            <div class="flex-1 text-secondary">{cat.slug}</div>
-            <div class="w-16 text-secondary">{cat.itemCount}</div>
+            <div class="hidden flex-1 text-secondary sm:block">{cat.slug}</div>
+            <div class="hidden w-16 text-secondary sm:block">{cat.itemCount}</div>
             <div class="w-24 text-right">
               <Button
                 variant="danger-ghost"

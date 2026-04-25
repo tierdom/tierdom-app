@@ -36,7 +36,7 @@
 </svelte:head>
 
 <section>
-  <div class="flex items-center gap-3">
+  <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
     <a href={resolve('/admin/cms')} class="text-sm text-secondary hover:text-primary">&larr; CMS</a>
     <h1 class="text-xl font-bold text-primary">Edit: {data.title}</h1>
     {#if data.createdAt && data.updatedAt}
@@ -83,7 +83,7 @@
         <span class="text-red-400" role="alert">{form.error}</span>
       {/if}
     </div>
-    <div class="flex items-center gap-3">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
       <Button type="submit" disabled={overLimit}><Save size={16} />Save</Button>
       {#if !data.usingFallback}
         <Button type="button" variant="danger-ghost" onclick={() => (pendingReset = true)}>
