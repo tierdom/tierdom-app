@@ -270,12 +270,14 @@
             maxlength={MAX_VALUE_LENGTH}
             value={item.value}
             oninput={(e) => handleInput(item.id, 'value', e.currentTarget.value)}
-            class="min-w-0 rounded border border-subtle bg-surface px-2 py-1.5 text-sm text-primary placeholder:text-secondary/50 focus:border-accent focus:outline-none"
+            class="value-input min-w-0 rounded border border-subtle bg-surface px-2 py-1.5 text-sm text-primary placeholder:text-secondary/50 focus:border-accent focus:outline-none"
           />
 
-          <Button variant="danger-ghost" compact type="button" onclick={() => remove(item.id)}>
-            <Trash2 size={12} />
-          </Button>
+          <span class="delete-cell">
+            <Button variant="danger-ghost" compact type="button" onclick={() => remove(item.id)}>
+              <Trash2 size={12} />
+            </Button>
+          </span>
         </div>
       {/each}
     </div>
@@ -306,12 +308,39 @@
 
   .prop-row {
     display: grid;
-    grid-template-columns: auto 1fr 1.5fr auto;
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+      'handle key delete'
+      'handle value delete';
     align-items: center;
     gap: 0.375rem;
     padding: 0.25rem 0;
     position: relative;
     transition: opacity 150ms ease;
+  }
+
+  @media (min-width: 640px) {
+    .prop-row {
+      grid-template-columns: auto 1fr 1.5fr auto;
+      grid-template-areas: 'handle key value delete';
+    }
+  }
+
+  .prop-row .drag-handle {
+    grid-area: handle;
+  }
+
+  .prop-row .key-cell {
+    grid-area: key;
+  }
+
+  .prop-row .value-input {
+    grid-area: value;
+  }
+
+  .prop-row .delete-cell {
+    grid-area: delete;
+    display: inline-flex;
   }
 
   .prop-row.dragging {
