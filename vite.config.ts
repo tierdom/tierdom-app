@@ -6,6 +6,11 @@ export default defineConfig({
   plugins: [tailwindcss(), sveltekit()],
   test: {
     expect: { requireAssertions: true },
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html', 'lcov'],
+      reportsDirectory: './coverage'
+    },
     projects: [
       {
         extends: './vite.config.ts',

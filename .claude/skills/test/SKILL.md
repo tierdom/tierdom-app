@@ -11,6 +11,7 @@ Run tests for the Tierdom project.
 | What              | Command                                                       | Notes                                   |
 | ----------------- | ------------------------------------------------------------- | --------------------------------------- |
 | Unit tests        | `npm run test:unit -- --run`                                  | ~1s, no browser, no DB                  |
+| Unit + coverage   | `npm run test:unit:coverage`                                  | Ad-hoc; HTML report in `coverage/`      |
 | Single unit file  | `npm run test:unit -- --run src/lib/server/slugify.test.ts`   | Run one unit test file                  |
 | E2E smoke         | `npm run test:e2e:smoke`                                      | Requires dev server on :5173            |
 | E2E deterministic | `npm run test:e2e:reset && npm run test:e2e:deterministic`    | Resets DB, builds, runs against preview |
@@ -24,6 +25,7 @@ Run tests for the Tierdom project.
 - **After UI-visible changes (quick check):** Run smoke tests. They work against the running dev server with any database state. This includes axe-core accessibility checks.
 - **Before merging / after schema changes:** Run deterministic tests. They reset the DB, seed fresh data, and verify everything against known state. This includes axe-core accessibility checks for all public and admin pages.
 - **After creating or modifying a single feature:** Use ad-hoc verification (see below) or run the relevant individual test file.
+- **When investigating coverage gaps:** Run `npm run test:unit:coverage` ad-hoc. Reports only files exercised by the unit suite — open `coverage/index.html` to browse. Not part of pre-commit or `npm test`.
 
 ## Ad-hoc verification via Playwright MCP
 
