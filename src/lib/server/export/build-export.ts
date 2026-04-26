@@ -17,6 +17,7 @@ import {
   type ExportedItem
 } from './json-schema';
 import readmeText from './README.txt?raw';
+import { renderCategoryMarkdown } from './markdown';
 
 // Names allowed inside images/. Defense-in-depth against zip-slip on the
 // extraction side: even though `readdir` on POSIX/Windows can never return
@@ -32,6 +33,7 @@ export interface BuildExportOptions {
   includeDb: boolean;
   includeJson: boolean;
   includeImages: boolean;
+  includeMarkdown: boolean;
 }
 
 export interface BuildExportContext {
@@ -91,8 +93,18 @@ export function buildExport(
 
         const entries: { name: string; bytes: Uint8Array; deflate: boolean }[] = [];
 
-        const exportData = opts.includeJson ? collectExportData(db, ctx.appVersion, iso) : null;
+        // Markdown reuses the same category/item data as JSON, so collect it
+        // whenever either format needs it.
+        const needsCategoryData = opts.includeJson || opts.includeMarkdown;
+        const exportData = needsCategoryData ? collectExportData(db, ctx.appVersion, iso) : null;
         const imageNames = opts.includeImages ? await listImages(imagesDir) : [];
+        const markdownFiles =
+          opts.includeMarkdown && exportData
+            ? exportData.data.categories.map((c) => ({
+                name: `${c.slug}.md`,
+                content: renderCategoryMarkdown(c, { includeImages: opts.includeImages })
+              }))
+            : [];
 
         entries.push({
           name: `${folder}/README.txt`,
@@ -106,13 +118,15 @@ export function buildExport(
           exportedAt: iso,
           contents: contentsList(opts),
           counts: {
-            ...(exportData && {
-              pages: exportData.data.pages.length,
-              siteSettings: exportData.data.siteSettings.length,
-              categories: exportData.data.categories.length,
-              items: exportData.data.categories.reduce((sum, c) => sum + c.items.length, 0)
-            }),
-            ...(opts.includeImages && { images: imageNames.length })
+            ...(opts.includeJson &&
+              exportData && {
+                pages: exportData.data.pages.length,
+                siteSettings: exportData.data.siteSettings.length,
+                categories: exportData.data.categories.length,
+                items: exportData.data.categories.reduce((sum, c) => sum + c.items.length, 0)
+              }),
+            ...(opts.includeImages && { images: imageNames.length }),
+            ...(opts.includeMarkdown && { markdownFiles: markdownFiles.length })
           }
         };
         entries.push({
@@ -121,7 +135,7 @@ export function buildExport(
           deflate: true
         });
 
-        if (exportData) {
+        if (opts.includeJson && exportData) {
           entries.push({
             name: `${folder}/data.json`,
             bytes: encode(JSON.stringify(exportData, null, 2)),
@@ -152,6 +166,14 @@ export function buildExport(
             name: `${folder}/images/${name}`,
             bytes: await readFile(join(imagesDir, name)),
             deflate: false
+          });
+        }
+
+        for (const file of markdownFiles) {
+          entries.push({
+            name: `${folder}/markdown/${file.name}`,
+            bytes: encode(file.content),
+            deflate: true
           });
         }
 
@@ -190,6 +212,7 @@ function contentsList(opts: BuildExportOptions): string[] {
   if (opts.includeJson) out.push('data.json');
   if (opts.includeDb) out.push('db/db.sqlite');
   if (opts.includeImages) out.push('images/');
+  if (opts.includeMarkdown) out.push('markdown/');
   return out;
 }
 

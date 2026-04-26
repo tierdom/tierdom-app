@@ -107,7 +107,7 @@ describe('buildExport', () => {
 
   it('JSON-only export contains README, manifest, and data.json — no DB or images', async () => {
     const { stream, filename } = buildExport(
-      { includeDb: false, includeJson: true, includeImages: false },
+      { includeDb: false, includeJson: true, includeImages: false, includeMarkdown: false },
       { appVersion: APP_VERSION, exportedAt: FIXED_DATE, imagesDir },
       db
     );
@@ -144,7 +144,7 @@ describe('buildExport', () => {
 
   it('DB-only export contains a working SQLite snapshot with all rows including trash', async () => {
     const { stream } = buildExport(
-      { includeDb: true, includeJson: false, includeImages: false },
+      { includeDb: true, includeJson: false, includeImages: false, includeMarkdown: false },
       { appVersion: APP_VERSION, exportedAt: FIXED_DATE, imagesDir },
       db
     );
@@ -178,7 +178,7 @@ describe('buildExport', () => {
     await writeFile(join(imagesDir, 'ignore.txt'), 'not an image');
 
     const { stream } = buildExport(
-      { includeDb: false, includeJson: false, includeImages: true },
+      { includeDb: false, includeJson: false, includeImages: true, includeMarkdown: false },
       { appVersion: APP_VERSION, exportedAt: FIXED_DATE, imagesDir },
       db
     );
@@ -197,11 +197,11 @@ describe('buildExport', () => {
     expect(Array.from(zip[`${FOLDER}/images/bb.webp`])).toEqual([4, 5, 6]);
   });
 
-  it('all-three export bundles everything and counts match', async () => {
+  it('all-four export bundles everything and counts match', async () => {
     await writeFile(join(imagesDir, 'one.webp'), new Uint8Array([7]));
 
     const { stream } = buildExport(
-      { includeDb: true, includeJson: true, includeImages: true },
+      { includeDb: true, includeJson: true, includeImages: true, includeMarkdown: true },
       { appVersion: APP_VERSION, exportedAt: FIXED_DATE, imagesDir },
       db
     );
@@ -211,7 +211,9 @@ describe('buildExport', () => {
       `${FOLDER}/data.json`,
       `${FOLDER}/db/db.sqlite`,
       `${FOLDER}/images/one.webp`,
-      `${FOLDER}/manifest.json`
+      `${FOLDER}/manifest.json`,
+      `${FOLDER}/markdown/games.md`,
+      `${FOLDER}/markdown/movies.md`
     ]);
 
     const manifest: ExportManifest = JSON.parse(strFromU8(zip[`${FOLDER}/manifest.json`]));
@@ -220,15 +222,73 @@ describe('buildExport', () => {
       siteSettings: 1,
       categories: 2,
       items: 3,
-      images: 1
+      images: 1,
+      markdownFiles: 2
     });
     expect(manifest.contents).toEqual([
       'README.txt',
       'manifest.json',
       'data.json',
       'db/db.sqlite',
-      'images/'
+      'images/',
+      'markdown/'
     ]);
+  });
+
+  it('markdown-only export emits one .md per category with the tier-list table', async () => {
+    const { stream } = buildExport(
+      { includeDb: false, includeJson: false, includeImages: false, includeMarkdown: true },
+      { appVersion: APP_VERSION, exportedAt: FIXED_DATE, imagesDir },
+      db
+    );
+    const zip = unzip(await streamToBuffer(stream));
+    expect(entryNames(zip)).toEqual([
+      `${FOLDER}/README.txt`,
+      `${FOLDER}/manifest.json`,
+      `${FOLDER}/markdown/games.md`,
+      `${FOLDER}/markdown/movies.md`
+    ]);
+
+    const manifest: ExportManifest = JSON.parse(strFromU8(zip[`${FOLDER}/manifest.json`]));
+    expect(manifest.counts).toEqual({ markdownFiles: 2 });
+
+    const movies = strFromU8(zip[`${FOLDER}/markdown/movies.md`]);
+    expect(movies).toContain('# Movies');
+    expect(movies).toContain('| Tier | Image | Name | Score | Description |');
+    expect(movies).toContain('| S |  | Inception | 95 |');
+    expect(movies).toContain('| S |  | The Matrix | 90 |');
+    // Soft-deleted item must not leak in.
+    expect(movies).not.toContain('Trashed');
+    // Without images included, no image links.
+    expect(movies).not.toContain('../images/');
+  });
+
+  it('markdown links to ../images/ when images are also included', async () => {
+    const movies = db
+      .select({ id: categoryTable.id, slug: categoryTable.slug })
+      .from(categoryTable)
+      .all()
+      .find((c) => c.slug === 'movies')!;
+    db.insert(tierListItemTable)
+      .values({
+        categoryId: movies.id,
+        slug: 'with-image',
+        name: 'WithImage',
+        score: 80,
+        order: 5,
+        imageHash: 'abc123def456'
+      })
+      .run();
+    await writeFile(join(imagesDir, 'abc123def456.webp'), new Uint8Array([9]));
+
+    const { stream } = buildExport(
+      { includeDb: false, includeJson: false, includeImages: true, includeMarkdown: true },
+      { appVersion: APP_VERSION, exportedAt: FIXED_DATE, imagesDir },
+      db
+    );
+    const zip = unzip(await streamToBuffer(stream));
+    const moviesMd = strFromU8(zip[`${FOLDER}/markdown/movies.md`]);
+    expect(moviesMd).toContain('![WithImage](../images/abc123def456.webp)');
   });
 
   it('skips image filenames that fail the safe-name allowlist', async () => {
@@ -242,7 +302,7 @@ describe('buildExport', () => {
     await writeFile(join(imagesDir, 'evil.webp.exe'), new Uint8Array([4]));
 
     const { stream } = buildExport(
-      { includeDb: false, includeJson: false, includeImages: true },
+      { includeDb: false, includeJson: false, includeImages: true, includeMarkdown: false },
       { appVersion: APP_VERSION, exportedAt: FIXED_DATE, imagesDir },
       db
     );
@@ -258,7 +318,7 @@ describe('buildExport', () => {
 
   it('embeds the static README.txt asset verbatim', async () => {
     const { stream } = buildExport(
-      { includeDb: false, includeJson: true, includeImages: false },
+      { includeDb: false, includeJson: true, includeImages: false, includeMarkdown: false },
       { appVersion: APP_VERSION, exportedAt: FIXED_DATE, imagesDir },
       db
     );
@@ -273,7 +333,7 @@ describe('buildExport', () => {
   it('handles a missing imagesDir gracefully (no images, no error)', async () => {
     const missing = join(imagesDir, 'does-not-exist');
     const { stream } = buildExport(
-      { includeDb: false, includeJson: false, includeImages: true },
+      { includeDb: false, includeJson: false, includeImages: true, includeMarkdown: false },
       { appVersion: APP_VERSION, exportedAt: FIXED_DATE, imagesDir: missing },
       db
     );
@@ -284,7 +344,7 @@ describe('buildExport', () => {
 
   it('FK-safe ordering: every item references an exported category', async () => {
     const { stream } = buildExport(
-      { includeDb: false, includeJson: true, includeImages: false },
+      { includeDb: false, includeJson: true, includeImages: false, includeMarkdown: false },
       { appVersion: APP_VERSION, exportedAt: FIXED_DATE, imagesDir },
       db
     );
@@ -303,7 +363,7 @@ describe('buildExport', () => {
 
   it('cleanup is idempotent and safe to call after stream completes', async () => {
     const { stream, cleanup } = buildExport(
-      { includeDb: true, includeJson: false, includeImages: false },
+      { includeDb: true, includeJson: false, includeImages: false, includeMarkdown: false },
       { appVersion: APP_VERSION, exportedAt: FIXED_DATE, imagesDir },
       db
     );

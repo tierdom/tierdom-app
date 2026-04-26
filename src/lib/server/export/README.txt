@@ -66,3 +66,14 @@ these by their imageHash field.
 Restoration: copy these files into $DATA_PATH/images/ alongside the
 existing ones (filenames are content-addressed, so duplicates are safe
 to skip).
+
+markdown/
+---------
+One Markdown file per category (when "Markdown" was ticked), named
+<category-slug>.md. Each file is a tier-list table sorted S → F,
+intended for downstream use in Obsidian, LLM prompts, static site
+generators, etc.
+
+Export-only: this format is not used for re-import. Use data.json or
+db/db.sqlite if you need to restore content. When the images/ folder
+is also included, image cells link to ../images/<hash>.webp.

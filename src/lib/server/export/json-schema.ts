@@ -72,5 +72,6 @@ export interface ExportManifest {
     categories?: number;
     items?: number;
     images?: number;
+    markdownFiles?: number;
   };
 }
