@@ -1,6 +1,6 @@
 <script lang="ts">
   import { resolve } from '$app/paths';
-  import { Download, Info, TriangleAlert, RotateCcw, Check } from 'lucide-svelte';
+  import { Package, Info, TriangleAlert, RotateCcw, Check } from 'lucide-svelte';
   import Button from '$lib/components/admin/Button.svelte';
 
   let submitted = $state(false);
@@ -41,7 +41,7 @@
     <div class="mt-10 flex flex-col items-center text-center" aria-live="polite">
       <div class="mb-6 flex h-20 w-20 items-center justify-center">
         <span class="bob-icon flex h-20 w-20 items-center justify-center rounded-full bg-accent/10">
-          <Download size={32} class="text-accent" aria-hidden="true" />
+          <Package size={32} class="text-accent" aria-hidden="true" />
         </span>
       </div>
       <h2 class="text-xl font-bold text-primary">Your export is on its way</h2>
@@ -146,7 +146,7 @@
           disabled={noneSelected}
           title={noneSelected ? 'Pick at least one option to download.' : undefined}
         >
-          <Download size={16} aria-hidden="true" />
+          <Package size={16} aria-hidden="true" />
           Download ZIP
         </Button>
         {#if noneSelected}

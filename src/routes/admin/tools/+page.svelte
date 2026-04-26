@@ -21,11 +21,12 @@
       href={resolve('/admin/tools/export')}
       class="flex items-start gap-4 rounded-lg border border-subtle bg-elevated px-5 py-4 transition-colors hover:border-accent/40"
     >
-      <Download class="mt-1 h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
+      <!-- From the user perspective "Upload" icon makes more sense here. -->
+      <Upload class="mt-1 h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
       <div class="min-w-0">
         <p class="font-medium text-primary">Export</p>
         <p class="mt-1 text-xs text-secondary">
-          Download a ZIP with your database, structured content, and images.
+          Export a ZIP with your database, structured content, and images.
         </p>
       </div>
     </a>
@@ -34,7 +35,8 @@
       class="flex items-start gap-4 rounded-lg border border-subtle bg-elevated px-5 py-4 opacity-60"
       aria-disabled="true"
     >
-      <Upload class="mt-1 h-5 w-5 shrink-0 text-secondary" aria-hidden="true" />
+      <!-- From the user perspective "Download" icon makes more sense here. -->
+      <Download class="mt-1 h-5 w-5 shrink-0 text-secondary" aria-hidden="true" />
       <div class="min-w-0">
         <p class="font-medium text-primary">Import</p>
         <p class="mt-1 text-xs text-secondary">
