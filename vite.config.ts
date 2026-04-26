@@ -23,7 +23,10 @@ export default defineConfig({
         'src/app.d.ts',
         'src/lib/server/db/schema.ts',
         'src/lib/server/db/index.ts',
-        'src/lib/server/db/init.ts'
+        'src/lib/server/db/init.ts',
+        // Sharp-based image pipeline; exercised by E2E (deterministic seed
+        // images + admin upload flow), hard to unit-test meaningfully.
+        'src/lib/server/generate-image.ts'
       ]
     },
     projects: [

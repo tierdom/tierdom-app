@@ -1,4 +1,5 @@
 import { redirect, fail } from '@sveltejs/kit';
+import { db } from '$lib/server/db';
 import { isSetupComplete } from '$lib/server/setup';
 import { seedPreset } from '$lib/server/setup-seed';
 import { bootstrapAdminUser } from '$lib/server/auth/bootstrap';
@@ -8,14 +9,14 @@ import type { PageServerLoad, Actions } from './$types';
 const VALID_PRESETS = new Set(['empty', 'minimal', 'demo']);
 
 export const load: PageServerLoad = async () => {
-  if (isSetupComplete()) {
+  if (isSetupComplete(db)) {
     redirect(303, '/');
   }
 };
 
 export const actions: Actions = {
   default: async (event) => {
-    if (isSetupComplete()) {
+    if (isSetupComplete(db)) {
       redirect(303, '/');
     }
 
@@ -34,8 +35,8 @@ export const actions: Actions = {
     const password = data.get('password')?.toString() || 'admin';
 
     const images = data.get('images') === '1';
-    await seedPreset(preset, images);
-    const userId = bootstrapAdminUser(password, username);
+    await seedPreset(db, preset, images);
+    const userId = bootstrapAdminUser(db, password, username);
 
     if (userId) {
       const { token, expiresAt } = createSession(userId);

@@ -8,12 +8,13 @@ import {
   deleteSessionCookie
 } from '$lib/server/auth/session';
 import { isSetupComplete } from '$lib/server/setup';
+import { db } from '$lib/server/db';
 
 initializeApp();
 
 export const handle: Handle = async ({ event, resolve }) => {
   // Redirect to setup wizard if first-run setup has not been completed
-  if (!isSetupComplete()) {
+  if (!isSetupComplete(db)) {
     const path = event.url.pathname;
     if (
       path !== '/setup' &&
