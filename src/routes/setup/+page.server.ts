@@ -39,7 +39,7 @@ export const actions: Actions = {
     const userId = bootstrapAdminUser(db, password, username);
 
     if (userId) {
-      const { token, expiresAt } = createSession(userId);
+      const { token, expiresAt } = createSession(db, userId);
       setSessionCookie(event, token, expiresAt);
     }
 

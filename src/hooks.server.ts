@@ -34,7 +34,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 
   const token = getSessionToken(event);
   if (token && !isAssetRoute) {
-    const result = validateSession(token);
+    const result = validateSession(db, token);
     if (result.session && result.user) {
       event.locals.user = result.user;
       event.locals.session = result.session;
