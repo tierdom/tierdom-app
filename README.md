@@ -52,7 +52,7 @@ High level features:
 - [ ] Live rendered-markdown preview alongside the CMS editor textarea
 - [ ] Import from our own export format
 - [ ] Import from external sources (Goodreads CSV, etc.)
-- [ ] Export database to basic formats (markdown, json or yaml, etc.)
+- [x] Export database to basic formats (markdown, json or yaml, etc.) ([ADR-0023](docs/decisions/0023-export-tooling-streaming-zip.md))
 - [x] Soft-delete for items + trash (and recover) feature, with housekeeping warning ([ADR-0022](docs/decisions/0022-soft-delete-and-trash.md))
 - [ ] Build external API for automated operations
 - [ ] Create MCP to access the API of a Tierdom APP instance with AI tooling
