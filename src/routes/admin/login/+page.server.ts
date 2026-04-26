@@ -44,7 +44,7 @@ export const actions: Actions = {
 
     clearAttempts(ip);
 
-    const { token, expiresAt } = createSession(found.id);
+    const { token, expiresAt } = createSession(db, found.id);
     setSessionCookie(event, token, expiresAt);
 
     redirect(303, '/admin');

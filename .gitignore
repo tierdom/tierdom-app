@@ -19,6 +19,7 @@ data/*
 test-results
 playwright-report
 test-data
+coverage
 
 # Tooling
 .VSCodeCounter

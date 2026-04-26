@@ -1,18 +1,21 @@
+import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import { env } from '$env/dynamic/private';
-import { db } from '$lib/server/db';
 import { page } from '$lib/server/db/schema';
+import type * as schema from '$lib/server/db/schema';
 import { CATEGORIES, PAGES } from '$lib/server/db/seed-data';
 import { seedCategories } from '$lib/server/db/seed-utils';
 import { generateSeedImages } from '$lib/server/db/seed-images';
 
-function seedPages(pages: { slug: string; title: string; content: string }[]): void {
+type DB = BetterSQLite3Database<typeof schema>;
+
+function seedPages(db: DB, pages: { slug: string; title: string; content: string }[]): void {
   db.insert(page).values(pages).run();
 }
 
-export async function seedPreset(preset: string, images = false): Promise<void> {
+export async function seedPreset(db: DB, preset: string, images = false): Promise<void> {
   switch (preset) {
     case 'empty':
-      seedPages([
+      seedPages(db, [
         {
           slug: 'home',
           title: 'Home',
@@ -28,7 +31,7 @@ export async function seedPreset(preset: string, images = false): Promise<void> 
       break;
 
     case 'minimal':
-      seedPages([
+      seedPages(db, [
         {
           slug: 'home',
           title: 'Home',
@@ -62,7 +65,7 @@ export async function seedPreset(preset: string, images = false): Promise<void> 
       break;
 
     case 'demo':
-      seedPages(PAGES);
+      seedPages(db, PAGES);
       seedCategories(db, CATEGORIES);
       break;
 
