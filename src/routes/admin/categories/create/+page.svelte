@@ -56,7 +56,7 @@
     <MarkdownField label="Description" name="description" />
     <PropKeyEditor propKeys={[]} onchange={markDirty} />
     <h2 class="mt-2 text-sm font-semibold text-secondary">Tier cutoffs</h2>
-    <p class="text-xs text-secondary/70">
+    <p class="text-xs text-secondary">
       Minimum score to reach each tier. Leave empty for defaults (S=90, A=80, B=70, C=55, D=40,
       E=20, F=0).
     </p>

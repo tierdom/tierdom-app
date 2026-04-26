@@ -80,6 +80,16 @@ Target: **WCAG 2.1 Level AA**. Pages must read well as plain unstyled HTML.
 - Links inside text blocks need underlines (not just color difference)
 - Don't suppress Svelte a11y warnings (`svelte-ignore a11y_*`) without strong justification
 
+## Forms that target `+server.ts` endpoints
+
+When a `<form>` posts to a SvelteKit endpoint (no `+page` exists at that path — only a `+server.ts`), two subtleties bite:
+
+1. **Add `data-sveltekit-reload` to the form.** Without it, SvelteKit's client-side router intercepts same-origin GET form submissions and tries to navigate to the URL as if it were a page. It finds no `+page`, throws `SvelteKitError: Not found` in DevTools, and the only reason the request still completes is that the browser's native form submission also fires in parallel. The attribute opts the form out of the router so the browser handles it natively.
+
+2. **If you flip local UI state in `onsubmit`, defer it with `setTimeout(() => state = true, 0)`.** Svelte 5 flushes effects from event handlers eagerly enough that setting state synchronously can unmount the form before the browser dispatches the submission, cancelling the in-flight request. The macrotask defers the re-render past the browser's submission step. Don't `preventDefault()` — let the browser submit natively, then swap the UI on the next tick.
+
+This pattern shows up in download forms (the export wizard) and any other "submit form, get a file back, swap to a confirmation panel" flow.
+
 ## Code style
 
 - Alphabetise Tailwind class strings (Prettier handles this automatically)

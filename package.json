@@ -1,7 +1,7 @@
 {
   "name": "tierdom-pro",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.1.0-alpha.5",
   "type": "module",
   "scripts": {
     "dev": "vite dev",
@@ -59,6 +59,7 @@
   },
   "dependencies": {
     "better-sqlite3": "12.6.2",
+    "fflate": "0.8.2",
     "isomorphic-dompurify": "3.7.1",
     "lucide-svelte": "1.0.1",
     "marked": "17.0.5",

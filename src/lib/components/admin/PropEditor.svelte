@@ -223,8 +223,14 @@
           />
 
           <span class="delete-cell">
-            <Button variant="danger-ghost" compact type="button" onclick={() => remove(item.id)}>
-              <Trash2 size={12} />
+            <Button
+              variant="danger-ghost"
+              compact
+              type="button"
+              aria-label="Remove prop"
+              onclick={() => remove(item.id)}
+            >
+              <Trash2 size={12} aria-hidden="true" />
             </Button>
           </span>
         </div>
