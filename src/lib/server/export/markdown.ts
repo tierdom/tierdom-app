@@ -29,61 +29,77 @@ export function renderCategoryMarkdown(category: ExportedCategory): string {
     `slug: ${yamlString(category.slug)}`,
     `itemCount: ${ranked.length}`,
     '---',
-    '',
     ''
   ].join('\n');
 
-  const heading = `# ${category.name}\n`;
+  const heading = `# ${sanitizeHeadingLine(category.name)}\n`;
 
   const description = category.description?.trim()
-    ? '\n' +
-      category.description
-        .trim()
-        .split(/\r?\n/)
-        .map((line) => `> ${line}`.trimEnd())
-        .join('\n') +
-      '\n'
+    ? '\n' + category.description.replace(/\s+$/g, '') + '\n'
     : '';
 
-  // Categories with no items render as front matter + heading (+ description) only.
-  // A bare table header with placeholder rows for every tier would just be noise.
-  const tableBlock = ranked.length === 0 ? '' : '\n' + renderTable(ranked) + '\n';
-
-  return `${frontMatter}${heading}${description}${tableBlock}`;
-}
-
-function renderTable(ranked: { item: ExportedItem; tier: Tier }[]): string {
-  const headerRow = '| Tier | Name | Score | Description |';
-  const separatorRow = '|------|------|-------|-------------|';
+  // Empty category: front matter + H1 (+ blockquote) only — no tier sections.
+  if (ranked.length === 0) {
+    return `${frontMatter}\n${heading}${description}`;
+  }
 
   const byTier = new Map<Tier, ExportedItem[]>(TIERS.map((t) => [t, []]));
   for (const { item, tier } of ranked) {
     byTier.get(tier)!.push(item);
   }
 
-  const rows: string[] = [];
-  for (const tier of TIERS) {
-    const items = byTier.get(tier)!;
-    if (items.length === 0) {
-      // Sparse-tier placeholder: keep every tier row visible so the structure
-      // matches the public tier-list layout even when a tier has no entries.
-      rows.push(`| ${tier} | - | - |   |`);
-      continue;
-    }
-    for (const item of items) {
-      const imageComment = item.imageHash ? `<!-- ${item.imageHash}.webp --> ` : '';
-      const description = escapeCell(item.description ?? '');
-      rows.push(
-        `| ${tier} | ${imageComment}${escapeCell(item.name)} | ${item.score} | ${description} |`
-      );
-    }
-  }
+  const tierSections = TIERS.map((tier) => renderTier(tier, byTier.get(tier)!)).join('\n');
 
-  return [headerRow, separatorRow, ...rows].join('\n');
+  return `${frontMatter}\n${heading}${description}\n${tierSections}`;
 }
 
-function escapeCell(s: string): string {
-  return s.replace(/\r?\n/g, ' ').replace(/\|/g, '\\|').trim();
+function renderTier(tier: Tier, items: ExportedItem[]): string {
+  const heading = `## ${tier} tier\n`;
+  if (items.length === 0) {
+    return `${heading}\nNo items in this tier.\n`;
+  }
+  return heading + items.map((item) => '\n' + renderItem(item)).join('');
+}
+
+function renderItem(item: ExportedItem): string {
+  const lines: string[] = [];
+  lines.push(`### ${sanitizeHeadingLine(item.name)}`);
+
+  if (item.imageHash) {
+    lines.push('');
+    lines.push(`<!-- ${item.imageHash}.webp -->`);
+  }
+
+  // Score always renders as the first entry on the props line, so every item
+  // has at least one body line under its heading even when the user added no
+  // properties or description.
+  const propsLine = [
+    `Score: ${item.score}`,
+    ...item.props.map((p) => `${flattenLine(p.key)}: ${flattenLine(p.value)}`)
+  ].join('. ');
+  lines.push('');
+  lines.push(propsLine);
+
+  const description = item.description?.replace(/\s+$/g, '');
+  if (description) {
+    lines.push('');
+    lines.push(description);
+  }
+
+  return lines.join('\n') + '\n';
+}
+
+// Used for H1 / H3 lines so the output stays single-line and the next
+// "<!-- HASH.webp -->" stanza can't be closed early by user-supplied "-->".
+function sanitizeHeadingLine(s: string): string {
+  return flattenLine(s).replace(/-->/g, '--&gt;');
+}
+
+function flattenLine(s: string): string {
+  return s
+    .replace(/\r\n|\r|\n/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 function yamlString(s: string): string {

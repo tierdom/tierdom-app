@@ -254,14 +254,16 @@ describe('buildExport', () => {
 
     const movies = strFromU8(zip[`${FOLDER}/markdown/movies.md`]);
     expect(movies).toContain('# Movies');
-    expect(movies).toContain('| Tier | Name | Score | Description |');
-    expect(movies).toContain('| S | Inception | 95 |');
-    expect(movies).toContain('| S | The Matrix | 90 |');
+    expect(movies).toContain('## S tier');
+    expect(movies).toContain('### Inception');
+    expect(movies).toContain('Score: 95');
+    expect(movies).toContain('### The Matrix');
+    expect(movies).toContain('Score: 90');
     // Soft-deleted item must not leak in.
     expect(movies).not.toContain('Trashed');
-    // Markdown carries image hashes as HTML comments; it never references the images folder.
+    // No table layout; no images-folder reference.
     expect(movies).not.toContain('../images/');
-    expect(movies).not.toContain('| Image |');
+    expect(movies).not.toContain('| Tier |');
   });
 
   it('embeds an HTML image-hash comment before the Name cell when an item has an imageHash', async () => {
@@ -288,7 +290,7 @@ describe('buildExport', () => {
     );
     const zip = unzip(await streamToBuffer(stream));
     const moviesMd = strFromU8(zip[`${FOLDER}/markdown/movies.md`]);
-    expect(moviesMd).toContain('| A | <!-- abc123def456.webp --> WithImage | 80 |');
+    expect(moviesMd).toContain('### WithImage\n\n<!-- abc123def456.webp -->\n\nScore: 80');
   });
 
   it('skips image filenames that fail the safe-name allowlist', async () => {
