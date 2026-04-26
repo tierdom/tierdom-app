@@ -14,6 +14,7 @@ import * as schema from './schema';
 import { CATEGORIES, PAGES } from './seed-data';
 import { seedCategories } from './seed-utils';
 import { generateSeedImages } from './seed-images';
+import { randomizeSeedTimestamps } from './seed-timestamps';
 
 const { page, user, session, categoryTable, tierListItemTable, siteSetting } = schema;
 
@@ -54,44 +55,16 @@ console.log(`Created dev admin user with name ${adminUsername} and password <RED
 db.insert(page).values(PAGES).run();
 const totalItems = seedCategories(db, CATEGORIES);
 
-// ─── Randomize timestamps ────────────────────────────────────────────────────
-// Spread created_at over the past 6 months. ~1/3 of rows get a later updated_at.
-// Because the triggers use WHEN OLD.updated_at = NEW.updated_at, explicitly
-// setting updated_at in these UPDATEs bypasses the trigger automatically.
-
-const SIX_MONTHS_SEC = 6 * 30 * 24 * 60 * 60;
-
-client.exec(`
-  -- Suppress updated_at triggers during timestamp randomization
-  INSERT INTO _suppress_updated_at VALUES (1);
-
-  -- Assign random created_at in the past 6 months
-  UPDATE category       SET created_at = datetime('now', '-' || (abs(random()) % ${SIX_MONTHS_SEC}) || ' seconds');
-  UPDATE tier_list_item SET created_at = datetime('now', '-' || (abs(random()) % ${SIX_MONTHS_SEC}) || ' seconds');
-  UPDATE page           SET created_at = datetime('now', '-' || (abs(random()) % ${SIX_MONTHS_SEC}) || ' seconds');
-  UPDATE site_setting   SET created_at = datetime('now', '-' || (abs(random()) % ${SIX_MONTHS_SEC}) || ' seconds');
-
-  -- Default: updated_at = created_at (never edited)
-  UPDATE category       SET updated_at = created_at;
-  UPDATE tier_list_item SET updated_at = created_at;
-  UPDATE page           SET updated_at = created_at;
-  UPDATE site_setting   SET updated_at = created_at;
-
-  -- ~1/3 of rows: bump updated_at to a random point between created_at and now
-  UPDATE category       SET updated_at = datetime(created_at, '+' || (abs(random()) % max(1, cast((julianday('now') - julianday(created_at)) * 86400 as integer))) || ' seconds') WHERE abs(random()) % 3 = 0;
-  UPDATE tier_list_item SET updated_at = datetime(created_at, '+' || (abs(random()) % max(1, cast((julianday('now') - julianday(created_at)) * 86400 as integer))) || ' seconds') WHERE abs(random()) % 3 = 0;
-  UPDATE page           SET updated_at = datetime(created_at, '+' || (abs(random()) % max(1, cast((julianday('now') - julianday(created_at)) * 86400 as integer))) || ' seconds') WHERE abs(random()) % 3 = 0;
-  UPDATE site_setting   SET updated_at = datetime(created_at, '+' || (abs(random()) % max(1, cast((julianday('now') - julianday(created_at)) * 86400 as integer))) || ' seconds') WHERE abs(random()) % 3 = 0;
-
-  -- Re-enable triggers
-  DELETE FROM _suppress_updated_at;
-`);
-
 if (process.env.SEED_IMAGES === '1') {
   console.log('Generating seed images...');
   const imageCount = await generateSeedImages(db, process.env.DATA_PATH!);
   console.log(`Generated ${imageCount} seed images.`);
 }
+
+// Must run AFTER generateSeedImages — that pass UPDATEs every tier_list_item
+// to set imageHash/placeholder, which would otherwise re-fire the updated_at
+// trigger and stamp every row with "now".
+randomizeSeedTimestamps(db);
 
 client.close();
 

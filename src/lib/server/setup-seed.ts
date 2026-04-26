@@ -5,6 +5,7 @@ import type * as schema from '$lib/server/db/schema';
 import { CATEGORIES, PAGES } from '$lib/server/db/seed-data';
 import { seedCategories } from '$lib/server/db/seed-utils';
 import { generateSeedImages } from '$lib/server/db/seed-images';
+import { randomizeSeedTimestamps } from '$lib/server/db/seed-timestamps';
 
 type DB = BetterSQLite3Database<typeof schema>;
 
@@ -76,4 +77,9 @@ export async function seedPreset(db: DB, preset: string, images = false): Promis
   if (images) {
     await generateSeedImages(db, env.DATA_PATH!);
   }
+
+  // Must run AFTER generateSeedImages — that pass UPDATEs every tier_list_item
+  // to set imageHash/placeholder, which would otherwise re-fire the updated_at
+  // trigger and stamp every row with "now".
+  randomizeSeedTimestamps(db);
 }
