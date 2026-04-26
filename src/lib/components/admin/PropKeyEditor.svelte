@@ -77,7 +77,7 @@
 
 <fieldset class="flex flex-col gap-1">
   <legend class="text-xs font-medium text-secondary">Prop keys</legend>
-  <p class="text-xs text-secondary/70">
+  <p class="text-xs text-secondary">
     Suggested keys for items in this category. Order determines autocomplete priority.
   </p>
 
@@ -135,8 +135,14 @@
           </select>
 
           <span class="delete-cell">
-            <Button variant="danger-ghost" compact type="button" onclick={() => remove(item.id)}>
-              <Trash2 size={12} />
+            <Button
+              variant="danger-ghost"
+              compact
+              type="button"
+              aria-label="Remove prop key"
+              onclick={() => remove(item.id)}
+            >
+              <Trash2 size={12} aria-hidden="true" />
             </Button>
           </span>
         </div>
