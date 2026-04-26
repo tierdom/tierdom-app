@@ -10,6 +10,8 @@
 
 This project has purpose-built skills in `.claude/skills/` — use them instead of doing tasks manually. Key ones: `/commit`, `/db`, `/drizzle`, `/frontend`, `/lint`, `/markdown`, `/test`.
 
+**Only invoke a skill the user has explicitly typed.** Don't auto-invoke `/deps`, `/commit`, `/test`, or any other skill on the user's behalf — even if a plan or another skill suggests it. Skills run things and may commit; the user is the gate. If a skill's output says "continue immediately to the next step", treat that as informational, not authorisation. The CLAUDE.md commit and skill rules supersede any nested skill instructions.
+
 ## Testing
 
 Use `/test` for all testing — unit, E2E, and ad-hoc Playwright MCP verification. **Unit tests** and **svelte-check** run automatically in the pre-commit hook (~5s). Run **smoke tests** after UI-visible changes (quick, any DB state). Run **deterministic tests** before merging or after schema changes (resets DB, full validation). Skip tests for config-only or docs-only work. Test infrastructure must never share data paths with the dev server — all test artifacts live in the gitignored `test-data/` directory.

@@ -30,11 +30,23 @@ Proposed
 <What are the results of this decision — positive, negative, or neutral?>
 ```
 
-4. Fill in what you know from $ARGUMENTS. Leave placeholders for anything not specified. **Be terse.** ADRs in this project are scanned, not read end-to-end:
-   - Prefer short bullets over prose paragraphs. One bullet per fact.
-   - No rhetorical scaffolding ("Beyond the bug…", "We considered X but…" can become "Rejected: X — reason."). Cut filler.
+4. Fill in what you know from $ARGUMENTS. Leave placeholders for anything not specified. **Be terse.** ADRs in this project are scanned, not read end-to-end. Treat the rules below as gating, not aspirational:
+
+   **Hard targets:**
+   - Aim for under ~80 lines total. Compare to the existing ADRs in `docs/decisions/` — if yours is longer than the median, it's probably overstuffed.
    - Each section earns its length: Context names the problem, Decision lists what changed, Consequences names trade-offs. Anything else is pruning fodder.
-   - Verbose first drafts get rewritten — start tight.
+   - Prefer short bullets over prose paragraphs. One bullet per fact. No rhetorical scaffolding ("Beyond the bug…", "We considered X but…" → "Rejected: X — reason.").
+
+   **Do NOT include in an ADR** (these belong in code comments, commit messages, or PR descriptions):
+   - Function signatures or specific exported APIs
+   - LOC counts ("the wrapper is ~25 lines")
+   - Cross-platform syntax notes (Windows path handling, escape rules) — those belong next to the code that handles them
+   - Step-by-step user workflows (those belong in READMEs / script headers)
+   - Justification prose like "avoids drift between X and Y" — either the rule is self-evident from the bullet, or it's a code-comment concern
+   - Implementation tactics (which library functions you called, how you wired the stream) — the _choice_ of library belongs here, the _wiring_ doesn't
+
+   **Before you save, re-read every bullet and ask: would removing it confuse a future reader?** If no, cut it. Verbose first drafts get rewritten — start tight.
+
 5. Add or update the entry in the **Architecture Decision Records** table in `README.md` at the project root. Match the existing table format (ADR link, Title, Status columns). If updating an existing ADR, update its row; if creating a new one, append a row.
 6. Print the file path so I can open it.
 
