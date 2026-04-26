@@ -102,7 +102,7 @@ export function buildExport(
           opts.includeMarkdown && exportData
             ? exportData.data.categories.map((c) => ({
                 name: `${c.slug}.md`,
-                content: renderCategoryMarkdown(c, { includeImages: opts.includeImages })
+                content: renderCategoryMarkdown(c)
               }))
             : [];
 

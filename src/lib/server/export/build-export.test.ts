@@ -254,16 +254,17 @@ describe('buildExport', () => {
 
     const movies = strFromU8(zip[`${FOLDER}/markdown/movies.md`]);
     expect(movies).toContain('# Movies');
-    expect(movies).toContain('| Tier | Image | Name | Score | Description |');
-    expect(movies).toContain('| S |  | Inception | 95 |');
-    expect(movies).toContain('| S |  | The Matrix | 90 |');
+    expect(movies).toContain('| Tier | Name | Score | Description |');
+    expect(movies).toContain('| S | Inception | 95 |');
+    expect(movies).toContain('| S | The Matrix | 90 |');
     // Soft-deleted item must not leak in.
     expect(movies).not.toContain('Trashed');
-    // Without images included, no image links.
+    // Markdown carries image hashes as HTML comments; it never references the images folder.
     expect(movies).not.toContain('../images/');
+    expect(movies).not.toContain('| Image |');
   });
 
-  it('markdown links to ../images/ when images are also included', async () => {
+  it('embeds an HTML image-hash comment before the Name cell when an item has an imageHash', async () => {
     const movies = db
       .select({ id: categoryTable.id, slug: categoryTable.slug })
       .from(categoryTable)
@@ -279,16 +280,15 @@ describe('buildExport', () => {
         imageHash: 'abc123def456'
       })
       .run();
-    await writeFile(join(imagesDir, 'abc123def456.webp'), new Uint8Array([9]));
 
     const { stream } = buildExport(
-      { includeDb: false, includeJson: false, includeImages: true, includeMarkdown: true },
+      { includeDb: false, includeJson: false, includeImages: false, includeMarkdown: true },
       { appVersion: APP_VERSION, exportedAt: FIXED_DATE, imagesDir },
       db
     );
     const zip = unzip(await streamToBuffer(stream));
     const moviesMd = strFromU8(zip[`${FOLDER}/markdown/movies.md`]);
-    expect(moviesMd).toContain('![WithImage](../images/abc123def456.webp)');
+    expect(moviesMd).toContain('| A | <!-- abc123def456.webp --> WithImage | 80 |');
   });
 
   it('skips image filenames that fail the safe-name allowlist', async () => {

@@ -71,9 +71,13 @@ markdown/
 ---------
 One Markdown file per category (when "Markdown" was ticked), named
 <category-slug>.md. Each file is a tier-list table sorted S → F,
-intended for downstream use in Obsidian, LLM prompts, static site
-generators, etc.
+with one row per tier even when a tier is empty (placeholder dashes).
+Categories with zero items omit the table entirely.
+
+Items that have an image carry their content hash as an HTML comment
+immediately before the Name cell, e.g. "<!-- abc123.webp --> Inception".
+The images themselves live in the sibling images/ folder when that
+option is also ticked.
 
 Export-only: this format is not used for re-import. Use data.json or
-db/db.sqlite if you need to restore content. When the images/ folder
-is also included, image cells link to ../images/<hash>.webp.
+db/db.sqlite if you need to restore content.

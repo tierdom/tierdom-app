@@ -1,17 +1,9 @@
 import { scoreToTier, type Tier } from '$lib/tier';
-import type { ExportedCategory } from './json-schema';
+import type { ExportedCategory, ExportedItem } from './json-schema';
 
 const TIERS: Tier[] = ['S', 'A', 'B', 'C', 'D', 'E', 'F'];
 
-export interface RenderMarkdownOptions {
-  /** When true, the Image column links each row to `../images/<hash>.webp`. */
-  includeImages: boolean;
-}
-
-export function renderCategoryMarkdown(
-  category: ExportedCategory,
-  options: RenderMarkdownOptions
-): string {
+export function renderCategoryMarkdown(category: ExportedCategory): string {
   const cutoffs = {
     S: category.cutoffS,
     A: category.cutoffA,
@@ -37,6 +29,7 @@ export function renderCategoryMarkdown(
     `slug: ${yamlString(category.slug)}`,
     `itemCount: ${ranked.length}`,
     '---',
+    '',
     ''
   ].join('\n');
 
@@ -52,21 +45,41 @@ export function renderCategoryMarkdown(
       '\n'
     : '';
 
-  const headerRow = '| Tier | Image | Name | Score | Description |';
-  const separatorRow = '|------|-------|------|-------|-------------|';
+  // Categories with no items render as front matter + heading (+ description) only.
+  // A bare table header with placeholder rows for every tier would just be noise.
+  const tableBlock = ranked.length === 0 ? '' : '\n' + renderTable(ranked) + '\n';
 
-  const rows = ranked.map(({ item, tier }) => {
-    const image =
-      options.includeImages && item.imageHash
-        ? `![${escapeCell(item.name)}](../images/${item.imageHash}.webp)`
-        : '';
-    const descriptionCell = escapeCell(item.description ?? '');
-    return `| ${tier} | ${image} | ${escapeCell(item.name)} | ${item.score} | ${descriptionCell} |`;
-  });
+  return `${frontMatter}${heading}${description}${tableBlock}`;
+}
 
-  const table = [headerRow, separatorRow, ...rows].join('\n');
+function renderTable(ranked: { item: ExportedItem; tier: Tier }[]): string {
+  const headerRow = '| Tier | Name | Score | Description |';
+  const separatorRow = '|------|------|-------|-------------|';
 
-  return `${frontMatter}${heading}${description}\n${table}\n`;
+  const byTier = new Map<Tier, ExportedItem[]>(TIERS.map((t) => [t, []]));
+  for (const { item, tier } of ranked) {
+    byTier.get(tier)!.push(item);
+  }
+
+  const rows: string[] = [];
+  for (const tier of TIERS) {
+    const items = byTier.get(tier)!;
+    if (items.length === 0) {
+      // Sparse-tier placeholder: keep every tier row visible so the structure
+      // matches the public tier-list layout even when a tier has no entries.
+      rows.push(`| ${tier} | - | - |   |`);
+      continue;
+    }
+    for (const item of items) {
+      const imageComment = item.imageHash ? `<!-- ${item.imageHash}.webp --> ` : '';
+      const description = escapeCell(item.description ?? '');
+      rows.push(
+        `| ${tier} | ${imageComment}${escapeCell(item.name)} | ${item.score} | ${description} |`
+      );
+    }
+  }
+
+  return [headerRow, separatorRow, ...rows].join('\n');
 }
 
 function escapeCell(s: string): string {
