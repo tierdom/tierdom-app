@@ -27,7 +27,7 @@
 
 <h1 class="sr-only">Export</h1>
 
-<section class="mx-auto max-w-2xl px-4">
+<section>
   {#if submitted}
     <div class="mt-10 flex flex-col items-center text-center" aria-live="polite">
       <div class="mb-6 flex h-20 w-20 items-center justify-center">
