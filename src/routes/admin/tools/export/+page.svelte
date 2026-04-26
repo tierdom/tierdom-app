@@ -1,9 +1,18 @@
 <script lang="ts">
   import { resolve } from '$app/paths';
-  import { Download, Info, TriangleAlert, RotateCcw, Check } from 'lucide-svelte';
+  import { Package, Info, TriangleAlert, RotateCcw, Check } from 'lucide-svelte';
   import Button from '$lib/components/admin/Button.svelte';
 
   let submitted = $state(false);
+
+  // Defaults: everything except the SQLite snapshot. The common case is
+  // "give me the content + assets + Markdown" — full DB dumps are opt-in.
+  let includeDb = $state(false);
+  let includeJson = $state(true);
+  let includeImages = $state(true);
+  let includeMarkdown = $state(true);
+
+  let noneSelected = $derived(!includeDb && !includeJson && !includeImages && !includeMarkdown);
 
   function onFormSubmit() {
     // Don't preventDefault — let the browser submit natively and download.
@@ -32,7 +41,7 @@
     <div class="mt-10 flex flex-col items-center text-center" aria-live="polite">
       <div class="mb-6 flex h-20 w-20 items-center justify-center">
         <span class="bob-icon flex h-20 w-20 items-center justify-center rounded-full bg-accent/10">
-          <Download size={32} class="text-accent" aria-hidden="true" />
+          <Package size={32} class="text-accent" aria-hidden="true" />
         </span>
       </div>
       <h2 class="text-xl font-bold text-primary">Your export is on its way</h2>
@@ -72,16 +81,28 @@
         <legend class="px-2 text-sm font-medium text-primary">Include</legend>
 
         <label class="grid cursor-pointer grid-cols-[1rem_1fr] gap-x-3 gap-y-1">
-          <input type="checkbox" name="db" value="1" checked class="self-center accent-accent" />
+          <input
+            type="checkbox"
+            name="db"
+            value="1"
+            bind:checked={includeDb}
+            class="self-center accent-accent"
+          />
           <span class="text-sm font-medium text-primary">SQLite database</span>
           <span class="col-start-2 flex items-start gap-1 text-xs text-secondary">
             <Info size={12} class="mt-0.5 shrink-0 text-accent" aria-hidden="true" />
-            Full snapshot — includes soft-deleted (Trash) items.
+            Full snapshot of tier-list data — includes Trash, excludes admin users and sessions.
           </span>
         </label>
 
         <label class="grid cursor-pointer grid-cols-[1rem_1fr] gap-x-3 gap-y-1">
-          <input type="checkbox" name="json" value="1" checked class="self-center accent-accent" />
+          <input
+            type="checkbox"
+            name="json"
+            value="1"
+            bind:checked={includeJson}
+            class="self-center accent-accent"
+          />
           <span class="text-sm font-medium text-primary">JSON content</span>
           <span class="col-start-2 flex items-start gap-1 text-xs text-amber-200">
             <TriangleAlert size={12} class="mt-0.5 shrink-0 text-amber-400" aria-hidden="true" />
@@ -90,32 +111,47 @@
         </label>
 
         <label class="grid cursor-pointer grid-cols-[1rem_1fr] gap-x-3 gap-y-1">
-          <input type="checkbox" name="images" value="1" class="self-center accent-accent" />
+          <input
+            type="checkbox"
+            name="images"
+            value="1"
+            bind:checked={includeImages}
+            class="self-center accent-accent"
+          />
           <span class="text-sm font-medium text-primary">Images</span>
           <span class="col-start-2 text-xs text-secondary">
             All tier-list item images (.webp). Largest payload.
           </span>
         </label>
 
-        <label
-          class="grid cursor-not-allowed grid-cols-[1rem_1fr] gap-x-3 gap-y-1 opacity-50"
-          aria-disabled="true"
-        >
-          <input type="checkbox" disabled class="self-center accent-accent" />
-          <span class="text-sm font-medium text-primary">
-            Markdown <span class="text-xs font-normal text-accent">(coming soon)</span>
-          </span>
+        <label class="grid cursor-pointer grid-cols-[1rem_1fr] gap-x-3 gap-y-1">
+          <input
+            type="checkbox"
+            name="markdown"
+            value="1"
+            bind:checked={includeMarkdown}
+            class="self-center accent-accent"
+          />
+          <span class="text-sm font-medium text-primary">Markdown</span>
           <span class="col-start-2 text-xs text-secondary">
-            Pages and CMS content as markdown files.
+            One file per category as a Markdown tier-list table. Export-only — use JSON or SQLite to
+            re-import.
           </span>
         </label>
       </fieldset>
 
-      <div>
-        <Button type="submit">
-          <Download size={16} aria-hidden="true" />
+      <div class="flex items-center gap-3">
+        <Button
+          type="submit"
+          disabled={noneSelected}
+          title={noneSelected ? 'Pick at least one option to download.' : undefined}
+        >
+          <Package size={16} aria-hidden="true" />
           Download ZIP
         </Button>
+        {#if noneSelected}
+          <span class="text-xs text-secondary">Pick at least one option.</span>
+        {/if}
       </div>
     </form>
   {/if}

@@ -7,13 +7,14 @@ export const GET: RequestHandler = async ({ url }) => {
   const includeDb = url.searchParams.has('db');
   const includeJson = url.searchParams.has('json');
   const includeImages = url.searchParams.has('images');
+  const includeMarkdown = url.searchParams.has('markdown');
 
-  if (!includeDb && !includeJson && !includeImages) {
+  if (!includeDb && !includeJson && !includeImages && !includeMarkdown) {
     error(400, 'Pick at least one item to include in the export.');
   }
 
   const { stream, filename } = buildExport(
-    { includeDb, includeJson, includeImages },
+    { includeDb, includeJson, includeImages, includeMarkdown },
     { appVersion: APP_VERSION }
   );
 

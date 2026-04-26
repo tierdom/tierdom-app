@@ -66,3 +66,31 @@ these by their imageHash field.
 Restoration: copy these files into $DATA_PATH/images/ alongside the
 existing ones (filenames are content-addressed, so duplicates are safe
 to skip).
+
+markdown/
+---------
+One Markdown file per category (when "Markdown" was ticked), named
+<category-slug>.md. Each file uses a heading hierarchy:
+
+  # <Category>           -- H1, with the category description rendered
+                            verbatim underneath as authored markdown
+  ## <Tier> tier         -- H2 per tier S → F (every tier renders;
+                            empty ones contain "No items in this tier.")
+  ### <Item>             -- H3 per item, sorted within tier by
+                            order then id
+
+  <!-- <hash>.webp -->   -- HTML comment with the image hash, when set
+  Score: <n>. key: value. key: value
+                         -- always present; score is the first entry,
+                            user props follow in array order
+  <description>          -- the user's markdown, emitted verbatim
+
+Categories with zero items omit the tier sections entirely.
+
+Item / category names have newlines collapsed to spaces and any "-->"
+neutralized, so the heading line stays single-line and can't close
+the image-hash comment that follows.
+
+Export-only: this format is not used for re-import. Use data.json or
+db/db.sqlite if you need to restore content. Images themselves live
+in the sibling images/ folder when that option is also ticked.
