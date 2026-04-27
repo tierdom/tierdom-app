@@ -66,11 +66,11 @@
         <p class="font-medium text-primary">Coming soon</p>
         <p class="mt-1">
           This importer isn't built yet. In the meantime you can wrangle your data into the
-          <a class="text-accent hover:underline" href={resolve('/schemas/tierdom-import-v1.json')}
+          <a class="text-accent underline" href={resolve('/schemas/tierdom-import-v1.json')}
             >Tierdom JSON Schema</a
           >
           and use the
-          <a class="text-accent hover:underline" href={resolve('/admin/tools/import/json')}
+          <a class="text-accent underline" href={resolve('/admin/tools/import/json')}
             >Tierdom JSON</a
           > importer.
         </p>

@@ -11,10 +11,12 @@ import { expectNoA11yViolations } from '../fixtures/axe';
 const FIXTURE_GOOD = resolvePath('tests/fixtures/imports/tierdom-json-001-good.json');
 const FIXTURE_MALFORMED = resolvePath('tests/fixtures/imports/tierdom-json-003-malformed.json');
 
-test('import index lists all four importers and a suggest-format link', async ({ page }) => {
+test('import index groups importers into Tierdom and Third-Party sections', async ({ page }) => {
   await page.goto('/admin/tools/import');
   const main = page.getByRole('main');
-  await expect(main.getByRole('heading', { name: 'Import' })).toBeVisible();
+  await expect(main.getByRole('heading', { name: 'Import', exact: true, level: 2 })).toBeVisible();
+  await expect(main.getByRole('heading', { name: 'Tierdom Import' })).toBeVisible();
+  await expect(main.getByRole('heading', { name: 'Third-Party Import' })).toBeVisible();
 
   for (const label of ['Tierdom JSON', 'Goodreads', 'BoardGameGeek', 'IMDb']) {
     await expect(main.getByRole('link', { name: new RegExp(label) })).toBeVisible();
@@ -24,7 +26,9 @@ test('import index lists all four importers and a suggest-format link', async ({
 
 test('Tierdom JSON page is reachable', async ({ page }) => {
   await page.goto('/admin/tools/import/json');
-  await expect(page.getByRole('main').getByRole('heading', { name: 'Tierdom JSON' })).toBeVisible();
+  await expect(
+    page.getByRole('main').getByRole('heading', { name: 'Tierdom JSON', exact: true, level: 2 })
+  ).toBeVisible();
 });
 
 test('every stub page renders the coming-soon panel', async ({ page }) => {
@@ -76,7 +80,7 @@ test('uploading a malformed fixture surfaces validation errors', async ({ page }
   const main = page.getByRole('main');
   await expect(main.getByRole('heading', { name: 'Import rejected' })).toBeVisible();
   // The malformed fixture has a string score and a row missing required props.
-  await expect(main.getByText(/score/)).toBeVisible();
+  await expect(main.getByText(/score/).first()).toBeVisible();
 });
 
 test('the result page is accessible', async ({ page }) => {
