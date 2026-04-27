@@ -56,15 +56,20 @@ test('import stub page is accessible', async ({ page }) => {
   await expectNoA11yViolations(page);
 });
 
-test('uploading a good fixture lands on the result page with counts', async ({ page }) => {
+test('uploading a good fixture goes through review then result', async ({ page }) => {
   await page.goto('/admin/tools/import/json');
   await page.setInputFiles('input[type="file"]', FIXTURE_GOOD);
-  await page.getByRole('button', { name: 'Import' }).click();
+  await page.getByRole('button', { name: 'Continue' }).click();
+
+  // Review screen — defaults pre-fill use-existing matches against the seed.
+  const main = page.getByRole('main');
+  await expect(main.getByRole('heading', { name: 'Review import' })).toBeVisible();
+  await expect(main.getByText('tierdom-json-001-good.json')).toBeVisible();
+
+  await main.getByRole('button', { name: 'Continue import' }).click();
 
   // The seed DB already has "books" and "board-games" slugs, so the fixture's
-  // categories collide and skip cleanly. We're verifying the form-action +
-  // result-page wiring, not merge semantics (covered in unit tests).
-  const main = page.getByRole('main');
+  // categories fold into them and items skip on slug clash.
   await expect(main.getByRole('heading', { name: 'Import finished' })).toBeVisible();
   await expect(main.getByText('tierdom-json-001-good.json')).toBeVisible();
   await expect(main.getByText('skip mode')).toBeVisible();
@@ -72,10 +77,10 @@ test('uploading a good fixture lands on the result page with counts', async ({ p
   await expect(main.getByRole('link', { name: 'Done' })).toBeVisible();
 });
 
-test('uploading a malformed fixture surfaces validation errors', async ({ page }) => {
+test('uploading a malformed fixture skips review and shows validation errors', async ({ page }) => {
   await page.goto('/admin/tools/import/json');
   await page.setInputFiles('input[type="file"]', FIXTURE_MALFORMED);
-  await page.getByRole('button', { name: 'Import' }).click();
+  await page.getByRole('button', { name: 'Continue' }).click();
 
   const main = page.getByRole('main');
   await expect(main.getByRole('heading', { name: 'Import rejected' })).toBeVisible();
@@ -83,10 +88,32 @@ test('uploading a malformed fixture surfaces validation errors', async ({ page }
   await expect(main.getByText(/score/).first()).toBeVisible();
 });
 
+test('cancel from the review step returns to the upload form', async ({ page }) => {
+  await page.goto('/admin/tools/import/json');
+  await page.setInputFiles('input[type="file"]', FIXTURE_GOOD);
+  await page.getByRole('button', { name: 'Continue' }).click();
+
+  const main = page.getByRole('main');
+  await expect(main.getByRole('heading', { name: 'Review import' })).toBeVisible();
+  await main.getByRole('button', { name: 'Cancel' }).click();
+
+  await expect(main.getByRole('heading', { name: 'Tierdom JSON', level: 2 })).toBeVisible();
+  await expect(main.getByLabel('File')).toBeVisible();
+});
+
+test('the review page is accessible', async ({ page }) => {
+  await page.goto('/admin/tools/import/json');
+  await page.setInputFiles('input[type="file"]', FIXTURE_GOOD);
+  await page.getByRole('button', { name: 'Continue' }).click();
+  await page.getByRole('heading', { name: 'Review import' }).waitFor();
+  await expectNoA11yViolations(page);
+});
+
 test('the result page is accessible', async ({ page }) => {
   await page.goto('/admin/tools/import/json');
   await page.setInputFiles('input[type="file"]', FIXTURE_GOOD);
-  await page.getByRole('button', { name: 'Import' }).click();
+  await page.getByRole('button', { name: 'Continue' }).click();
+  await page.getByRole('button', { name: 'Continue import' }).click();
   await page.getByRole('heading', { name: 'Import finished' }).waitFor();
   await expectNoA11yViolations(page);
 });
