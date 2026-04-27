@@ -158,6 +158,30 @@
             {/if}
           </ul>
         {/if}
+
+        {#if result.details.inserted.length + result.details.updated.length + result.details.skipped.length > 0}
+          <details class="mx-auto mt-6 max-w-2xl rounded-lg border border-subtle bg-elevated">
+            <summary class="cursor-pointer px-5 py-3 text-sm text-secondary hover:text-primary">
+              Details…
+            </summary>
+            <div class="space-y-4 border-t border-subtle px-5 py-4 text-xs">
+              {#each [{ key: 'inserted', label: 'Inserted', items: result.details.inserted }, { key: 'updated', label: 'Updated', items: result.details.updated }, { key: 'skipped', label: 'Skipped', items: result.details.skipped }] as group (group.key)}
+                {#if group.items.length > 0}
+                  <div>
+                    <p class="font-medium tracking-wide text-primary uppercase">
+                      {group.label} ({group.items.length})
+                    </p>
+                    <ul class="mt-1 space-y-0.5 pl-4 text-secondary">
+                      {#each group.items as path, i (i)}
+                        <li class="font-mono">{path}</li>
+                      {/each}
+                    </ul>
+                  </div>
+                {/if}
+              {/each}
+            </div>
+          </details>
+        {/if}
       {/if}
 
       <div class="mt-8 flex flex-wrap items-center justify-center gap-3">

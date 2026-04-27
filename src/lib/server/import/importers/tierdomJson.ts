@@ -83,10 +83,13 @@ export async function runTierdomJsonImport(
           .get();
         if (!parentExists) {
           result.skipped.items += category.items.length;
+          for (const item of category.items) {
+            result.details.skipped.push(`categories/${category.slug}/items/${item.slug}`);
+          }
           continue;
         }
         for (const item of category.items) {
-          applyItem(tx, item, category.id, opts.strategy, result);
+          applyItem(tx, item, category, opts.strategy, result);
         }
       }
     });
@@ -114,6 +117,7 @@ export async function runTierdomJsonImport(
 }
 
 function applyPage(tx: Tx, pageData: ExportedPage, strategy: MergeStrategy, result: ImportResult) {
+  const path = `pages/${pageData.slug}`;
   const existing = tx
     .select({ slug: page.slug })
     .from(page)
@@ -121,6 +125,7 @@ function applyPage(tx: Tx, pageData: ExportedPage, strategy: MergeStrategy, resu
     .get();
   if (existing && strategy === 'skip') {
     result.skipped.pages++;
+    result.details.skipped.push(path);
     return;
   }
   const values = {
@@ -133,9 +138,11 @@ function applyPage(tx: Tx, pageData: ExportedPage, strategy: MergeStrategy, resu
   if (existing) {
     tx.update(page).set(values).where(eq(page.slug, pageData.slug)).run();
     result.updated.pages++;
+    result.details.updated.push(path);
   } else {
     tx.insert(page).values(values).run();
     result.inserted.pages++;
+    result.details.inserted.push(path);
   }
 }
 
@@ -145,6 +152,7 @@ function applySetting(
   strategy: MergeStrategy,
   result: ImportResult
 ) {
+  const path = `siteSettings/${setting.key}`;
   const existing = tx
     .select({ key: siteSetting.key })
     .from(siteSetting)
@@ -152,6 +160,7 @@ function applySetting(
     .get();
   if (existing && strategy === 'skip') {
     result.skipped.siteSettings++;
+    result.details.skipped.push(path);
     return;
   }
   const values = {
@@ -163,9 +172,11 @@ function applySetting(
   if (existing) {
     tx.update(siteSetting).set(values).where(eq(siteSetting.key, setting.key)).run();
     result.updated.siteSettings++;
+    result.details.updated.push(path);
   } else {
     tx.insert(siteSetting).values(values).run();
     result.inserted.siteSettings++;
+    result.details.inserted.push(path);
   }
 }
 
@@ -175,6 +186,7 @@ function applyCategory(
   strategy: MergeStrategy,
   result: ImportResult
 ) {
+  const path = `categories/${category.slug}`;
   const existing = tx
     .select({ id: categoryTable.id })
     .from(categoryTable)
@@ -182,6 +194,7 @@ function applyCategory(
     .get();
   if (existing && strategy === 'skip') {
     result.skipped.categories++;
+    result.details.skipped.push(path);
     return;
   }
   if (!existing) {
@@ -193,9 +206,11 @@ function applyCategory(
     if (slugClash) {
       if (strategy === 'skip') {
         result.skipped.categories++;
+        result.details.skipped.push(path);
         return;
       }
       result.skipped.categories++;
+      result.details.skipped.push(path);
       result.errors.push(
         `Category "${category.slug}" (${category.id}): slug already used by another category (${slugClash.id}); upsert keys on UUID, not slug.`
       );
@@ -224,19 +239,23 @@ function applyCategory(
   if (existing) {
     tx.update(categoryTable).set(values).where(eq(categoryTable.id, category.id)).run();
     result.updated.categories++;
+    result.details.updated.push(path);
   } else {
     tx.insert(categoryTable).values(values).run();
     result.inserted.categories++;
+    result.details.inserted.push(path);
   }
 }
 
 function applyItem(
   tx: Tx,
   item: ExportedItem,
-  categoryId: string,
+  category: ExportedCategory,
   strategy: MergeStrategy,
   result: ImportResult
 ) {
+  const path = `categories/${category.slug}/items/${item.slug}`;
+  const categoryId = category.id;
   const existing = tx
     .select({ id: tierListItemTable.id })
     .from(tierListItemTable)
@@ -244,6 +263,7 @@ function applyItem(
     .get();
   if (existing && strategy === 'skip') {
     result.skipped.items++;
+    result.details.skipped.push(path);
     return;
   }
   if (!existing) {
@@ -261,9 +281,11 @@ function applyItem(
     if (slugClash) {
       if (strategy === 'skip') {
         result.skipped.items++;
+        result.details.skipped.push(path);
         return;
       }
       result.skipped.items++;
+      result.details.skipped.push(path);
       result.errors.push(
         `Item "${item.slug}" (${item.id}): slug already used by another item (${slugClash.id}) in this category; upsert keys on UUID, not slug.`
       );
@@ -289,8 +311,10 @@ function applyItem(
   if (existing) {
     tx.update(tierListItemTable).set(values).where(eq(tierListItemTable.id, item.id)).run();
     result.updated.items++;
+    result.details.updated.push(path);
   } else {
     tx.insert(tierListItemTable).values(values).run();
     result.inserted.items++;
+    result.details.inserted.push(path);
   }
 }
