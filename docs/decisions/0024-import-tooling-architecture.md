@@ -2,50 +2,34 @@
 
 ## Status
 
-Proposed
+Accepted
 
 ## Context
 
-- Roadmap calls for importing our own export format and external sources (Goodreads, BoardGameGeek, IMDb, ...).
+- Roadmap: import our own export format and external sources (Goodreads, BoardGameGeek, IMDb, ...).
 - Pairs with ADR-0023 (export). Same self-host constraints — single process, no workers, no external services.
-- Want a layout where adding a new source is a small, isolated change.
 
 ## Decision
 
-### Architecture
-
-- Importers live under `src/lib/server/import/importers/`. A flat array in `src/lib/server/import/registry.ts` is the registry.
-- Adding a source = one file + one registry entry.
-- Rejected: plugin/DI architecture (overkill for in-process self-hosted app).
-
-### Sources in this round
-
-- **Available:** JSON round-trip of our own export.
-- **Stubs (coming-soon pages):** Goodreads, BoardGameGeek, IMDb, plus a generic "your format" entry pointing at the published schema.
-
-### Schema & validation
-
-- `src/lib/server/import/schema-v1.json` (served at `/schemas/tierdom-import-v1.json`) is the canonical published spec — single source of truth.
-- AJV validates against it directly.
-- Rejected: Zod (would make published schema a generated artifact); hand-rolled validator (drift risk).
-
-### Uploads
-
-- 10 MB cap, parsed in memory. No temp files, no housekeeping job.
-- Larger imports deferred to a future feature branch.
-- No image imports in this round.
-
-### Merge strategy
-
-- Per-import choice on the upload form: `skip` existing UUIDs (default) or `upsert`.
-- Applied within a single Drizzle transaction; partial failures roll back.
+- **Registry of importers** in `src/lib/server/import/`. Adding a source = one file + one registry entry. Rejected: plugin/DI (overkill).
+- **Tierdom JSON importer is restore-shaped, not merge-shaped.** Identity is UUID; conflicts on slug are skipped, never silently merged. The "I have a Books category and want to bulk-add items from another source" flow is a follow-up that should land per-source as target-aware importers (Goodreads/BGG/IMDb), not by extending Tierdom JSON.
+- **Canonical published JSON Schema** at `/schemas/tierdom-import-v1.json` is the single source of truth for the format. AJV validates against it directly. Rejected: Zod (would make the published schema a generated artifact); hand-rolled (drift risk).
+- **Uploads in memory, capped at 10 MB.** No temp files, no housekeeping job. Larger imports are a future feature branch.
+- **Per-import merge strategy** (`skip` default, `upsert`) chosen on the form. Applied within a single Drizzle transaction.
+- **Stubs ship alongside the working source.** Goodreads, BoardGameGeek, IMDb render coming-soon pages. A "Suggest a new format" card on the index invites issues for anything not listed.
+- **No image imports** in this round.
 
 ## Consequences
 
-- **Positive:** New sources are isolated additions. Published JSON Schema lets external users wrangle arbitrary data into our format. No cleanup cron.
-- **Negative:** 10 MB ceiling; bigger libraries need future work. `upsert` is destructive — surfaced explicitly in the form.
-- **Neutral:** Adds AJV runtime dep. Stub pages ship before their importers exist.
+- **Positive:** Adding a source is a small, isolated change. The published schema lets external users target our format directly.
+- **Negative:** 10 MB ceiling. `upsert` is destructive (surfaced explicitly in the form). The merge use case is not solved — needs the per-source target-aware importers.
+- **Neutral:** Adds AJV runtime dep. Stub pages exist before their importers do.
 
 ## Coverage
 
-Baseline at proposal: **98.56% stmts / 95.03% branches / 99.12% funcs / 98.59% lines**. Expectation: hold or improve. New code under `src/lib/server/import/**` ships with coverage ≥ 95% across the board.
+|                      | Statements | Branches | Functions | Lines  |
+| -------------------- | ---------- | -------- | --------- | ------ |
+| Baseline at proposal | 98.56%     | 95.03%   | 99.12%    | 98.59% |
+| After implementation | 98.54%     | 93.33%   | 98.44%    | 98.71% |
+
+The branch dip is concentrated in defensive `Error`/null-coalescing fallbacks in the importer; statements and lines are flat. Acceptable.
