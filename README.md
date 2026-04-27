@@ -210,6 +210,7 @@ Architectural decisions are documented as ADRs in [`docs/decisions/`](docs/decis
 | [0021](docs/decisions/0021-admin-confirmation-dialog.md)                | Admin Confirmation Dialog                     | Accepted |
 | [0022](docs/decisions/0022-soft-delete-and-trash.md)                    | Soft Delete and Trash                         | Accepted |
 | [0023](docs/decisions/0023-export-tooling-streaming-zip.md)             | Export Tooling — Streaming ZIP (fflate)       | Accepted |
+| [0024](docs/decisions/0024-import-tooling-architecture.md)              | Import Tooling Architecture                   | Proposed |
 
 ## References
 
