@@ -152,6 +152,25 @@ describe('tierdomJson importer', () => {
       expect(readdirSync(IMPORTS_DIR)).toEqual([]);
     });
 
+    it('does not import imageHash even when the file carries one', async () => {
+      // tierdom-json-001-good.json includes items with non-null imageHash
+      // (e.g. "3103f130db64"). Those reference image files that only exist on
+      // the exporter — importing the hash would leave the item pointing at a
+      // missing file. See ADR-0024 ("No image imports").
+      const plan = await planFixture('tierdom-json-001-good.json');
+      await commitTierdomJsonImport(
+        plan.planId,
+        defaultMappings(plan),
+        'skip',
+        db as unknown as ImporterDb
+      );
+      const items = db.select().from(tierListItemTable).all();
+      expect(items.length).toBeGreaterThan(0);
+      for (const item of items) {
+        expect(item.imageHash).toBeNull();
+      }
+    });
+
     it('use-existing routes items into the chosen target category', async () => {
       db.insert(categoryTable)
         .values({ id: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', slug: 'books', name: 'My Books' })

@@ -220,6 +220,10 @@ function applyItem(
     return;
   }
 
+  // imageHash deliberately not copied: it references an image file in the
+  // exporter's data dir, which doesn't exist on this server. Importing it
+  // would leave the item pointing at a missing image. See ADR-0024
+  // ("No image imports").
   const values = {
     categoryId: targetCategoryId,
     slug: item.slug,
@@ -227,7 +231,6 @@ function applyItem(
     description: item.description,
     score: item.score,
     order: item.order,
-    imageHash: item.imageHash,
     placeholder: item.placeholder,
     props: item.props
   };
