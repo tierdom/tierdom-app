@@ -76,6 +76,14 @@ export function _resetSiteContentCacheForTests(): void {
   cache.clear();
 }
 
+/**
+ * Drop every cached site-content entry. Call after a bulk write (e.g. an
+ * import) that bypasses setSiteContent/clearSiteContent.
+ */
+export function invalidateAllSiteContent(): void {
+  cache.clear();
+}
+
 export async function getSiteContentRecord(key: SiteContentKey): Promise<SiteContentRecord> {
   return (await cache.get(key)).record;
 }

@@ -1,6 +1,6 @@
 import { error, fail } from '@sveltejs/kit';
 import { getImporter } from '$lib/server/import/registry';
-import { MAX_JSON_BYTES } from '$lib/server/import/importers/json';
+import { MAX_JSON_BYTES } from '$lib/server/import/importers/tierdomJson';
 import type { MergeStrategy } from '$lib/server/import/types';
 import type { Actions, PageServerLoad } from './$types';
 

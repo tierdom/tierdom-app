@@ -8,23 +8,23 @@
         "slug": "about",
         "title": "About — Updated",
         "content": "# About\n\nUpdated by overlap fixture.",
-        "createdAt": "2025-11-02 03:11:13",
-        "updatedAt": "2026-04-27 11:30:00"
+        "createdAt": "2025-11-02T03:11:13Z",
+        "updatedAt": "2026-04-27T11:30:00Z"
       },
       {
         "slug": "home",
         "title": "Home — Updated",
         "content": "# Welcome\n\nUpdated by overlap fixture.",
-        "createdAt": "2026-02-14 09:47:48",
-        "updatedAt": "2026-04-27 11:30:00"
+        "createdAt": "2026-02-14T09:47:48Z",
+        "updatedAt": "2026-04-27T11:30:00Z"
       }
     ],
     "siteSettings": [
       {
         "key": "footer",
         "value": "Footer overwritten by overlap fixture.",
-        "createdAt": "2026-04-27 10:46:01",
-        "updatedAt": "2026-04-27 11:30:00"
+        "createdAt": "2026-04-27T10:46:01Z",
+        "updatedAt": "2026-04-27T11:30:00Z"
       }
     ],
     "categories": [
@@ -45,8 +45,8 @@
           { "key": "ISBN" },
           { "key": "Language" }
         ],
-        "createdAt": "2026-04-27 10:35:42",
-        "updatedAt": "2026-04-27 11:30:00",
+        "createdAt": "2026-04-27T10:35:42Z",
+        "updatedAt": "2026-04-27T11:30:00Z",
         "items": [
           {
             "id": "cfabdd74-64a7-49c6-80d2-c09a2981d231",
@@ -61,8 +61,8 @@
               { "key": "ISBN", "value": "978-0-06-124189-5" },
               { "key": "Author(s)", "value": "Robert B. Cialdini" }
             ],
-            "createdAt": "2026-04-27 10:41:02",
-            "updatedAt": "2026-04-27 11:30:00"
+            "createdAt": "2026-04-27T10:41:02Z",
+            "updatedAt": "2026-04-27T11:30:00Z"
           }
         ]
       },
@@ -80,8 +80,8 @@
         "cutoffE": 10,
         "cutoffF": 0,
         "propKeys": [],
-        "createdAt": "2026-04-27 10:37:05",
-        "updatedAt": "2026-04-27 11:30:00",
+        "createdAt": "2026-04-27T10:37:05Z",
+        "updatedAt": "2026-04-27T11:30:00Z",
         "items": [
           {
             "id": "d931493b-ae7a-4bb3-a67c-2f00e73d90f1",
@@ -93,8 +93,8 @@
             "imageHash": null,
             "placeholder": null,
             "props": [],
-            "createdAt": "2026-04-27 10:45:05",
-            "updatedAt": "2026-04-27 11:30:00"
+            "createdAt": "2026-04-27T10:45:05Z",
+            "updatedAt": "2026-04-27T11:30:00Z"
           },
           {
             "id": "3d274e8b-b03b-4fd3-ae1f-e0161511032b",
@@ -106,8 +106,8 @@
             "imageHash": null,
             "placeholder": null,
             "props": [],
-            "createdAt": "2026-04-27 10:44:10",
-            "updatedAt": "2026-04-27 11:30:00"
+            "createdAt": "2026-04-27T10:44:10Z",
+            "updatedAt": "2026-04-27T11:30:00Z"
           },
           {
             "id": "5305d366-fb18-49c2-b6e0-2184b1b21074",
@@ -119,8 +119,8 @@
             "imageHash": null,
             "placeholder": null,
             "props": [],
-            "createdAt": "2026-04-27 10:43:50",
-            "updatedAt": "2026-04-27 11:30:00"
+            "createdAt": "2026-04-27T10:43:50Z",
+            "updatedAt": "2026-04-27T11:30:00Z"
           }
         ]
       }

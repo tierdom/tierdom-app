@@ -3,8 +3,30 @@
   "appVersion": "0.1.0-alpha.5",
   "exportedAt": "2026-04-27T10:52:39.243Z",
   "data": {
-    "pages": [],
-    "siteSettings": [],
+    "pages": [
+      {
+        "slug": "about",
+        "title": "About",
+        "content": "# About\n\nEmpty about page for demo.",
+        "createdAt": "2025-11-02T03:11:13Z",
+        "updatedAt": "2026-04-27T10:45:38Z"
+      },
+      {
+        "slug": "home",
+        "title": "Home",
+        "content": "# Welcome\n\nHome page.",
+        "createdAt": "2026-02-14T09:47:48Z",
+        "updatedAt": "2026-04-27T10:45:24Z"
+      }
+    ],
+    "siteSettings": [
+      {
+        "key": "footer",
+        "value": "Custom footer to test **import** and **export** features.",
+        "createdAt": "2026-04-27T10:46:01Z",
+        "updatedAt": "2026-04-27T10:46:01Z"
+      }
+    ],
     "categories": [
       {
         "id": "3f710286-e2bd-45a1-962b-510828192863",

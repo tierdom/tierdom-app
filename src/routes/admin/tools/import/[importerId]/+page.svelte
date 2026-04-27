@@ -1,11 +1,16 @@
 <script lang="ts">
   import { resolve } from '$app/paths';
+  import { enhance } from '$app/forms';
   import {
     ArrowLeft,
     ExternalLink,
     Construction,
     CheckCircle2,
-    AlertTriangle
+    AlertTriangle,
+    Loader2,
+    RotateCcw,
+    Check,
+    Upload
   } from 'lucide-svelte';
   import Button from '$lib/components/admin/Button.svelte';
   import type { ActionData, PageData } from './$types';
@@ -14,7 +19,15 @@
   const importer = $derived(data.importer);
   const result = $derived(form && 'result' in form ? form.result : null);
   const failureMessage = $derived(form && 'message' in form ? form.message : null);
+  const filename = $derived(form && 'filename' in form ? form.filename : null);
+  const strategyUsed = $derived(form && 'strategy' in form ? form.strategy : null);
   const maxMb = $derived(Math.round(data.maxBytes / (1024 * 1024)));
+
+  type Phase = 'form' | 'submitting' | 'result';
+  // Default phase tracks whether the action produced a payload; the override
+  // lets the user (or the in-flight submission) move to a different phase.
+  let phaseOverride = $state<Phase | null>(null);
+  const phase = $derived<Phase>(phaseOverride ?? (form ? 'result' : 'form'));
 
   function totalCount(group: {
     categories: number;
@@ -23,6 +36,10 @@
     siteSettings: number;
   }) {
     return group.categories + group.items + group.pages + group.siteSettings;
+  }
+
+  function importAgain() {
+    phaseOverride = 'form';
   }
 </script>
 
@@ -33,17 +50,16 @@
 <h1 class="sr-only">{importer.label} import</h1>
 
 <section>
-  <a
-    href={resolve('/admin/tools/import')}
-    class="inline-flex items-center gap-1 text-xs text-secondary hover:text-primary"
-  >
-    <ArrowLeft class="h-3 w-3" aria-hidden="true" /> All importers
-  </a>
-
-  <h2 class="mt-2 text-xl font-bold text-primary">{importer.label}</h2>
-  <p class="mt-1 text-sm text-secondary">{importer.description}</p>
-
   {#if importer.status === 'stub'}
+    <a
+      href={resolve('/admin/tools/import')}
+      class="inline-flex items-center gap-1 text-xs text-secondary hover:text-primary"
+    >
+      <ArrowLeft class="h-3 w-3" aria-hidden="true" /> All importers
+    </a>
+    <h2 class="mt-2 text-xl font-bold text-primary">{importer.label}</h2>
+    <p class="mt-1 text-sm text-secondary">{importer.description}</p>
+
     <div class="mt-6 flex items-start gap-4 rounded-lg border border-subtle bg-elevated px-5 py-4">
       <Construction class="mt-1 h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
       <div class="min-w-0 text-sm text-secondary">
@@ -74,52 +90,66 @@
         {/if}
       </div>
     </div>
-  {:else}
-    {#if failureMessage}
-      <div
-        class="mt-6 flex items-start gap-3 rounded-lg border border-subtle bg-elevated px-5 py-4 text-sm"
-        role="alert"
-      >
-        <AlertTriangle class="mt-0.5 h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
-        <p class="text-primary">{failureMessage}</p>
-      </div>
-    {/if}
-
-    {#if result}
-      {@const errorCount = result.errors.length}
-      <div class="mt-6 rounded-lg border border-subtle bg-elevated px-5 py-4 text-sm" role="status">
-        <p class="flex items-center gap-2 font-medium text-primary">
+  {:else if phase === 'submitting'}
+    <div class="mt-10 flex flex-col items-center text-center" aria-live="polite">
+      <Loader2 class="h-10 w-10 animate-spin text-accent" aria-hidden="true" />
+      <h2 class="mt-4 text-xl font-bold text-primary">Importing…</h2>
+      <p class="mt-2 max-w-md text-sm text-secondary">Validating and writing to the database.</p>
+    </div>
+  {:else if phase === 'result'}
+    <div aria-live="polite">
+      {#if failureMessage}
+        <div
+          class="flex items-start gap-3 rounded-lg border border-subtle bg-elevated px-5 py-4 text-sm"
+          role="alert"
+        >
+          <AlertTriangle class="mt-0.5 h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
+          <p class="text-primary">{failureMessage}</p>
+        </div>
+      {:else if result}
+        {@const errorCount = result.errors.length}
+        <div class="flex flex-col items-center text-center">
           {#if errorCount === 0}
-            <CheckCircle2 class="h-5 w-5 text-accent" aria-hidden="true" />
-            Import finished
+            <CheckCircle2 class="h-10 w-10 text-accent" aria-hidden="true" />
+            <h2 class="mt-3 text-xl font-bold text-primary">Import finished</h2>
           {:else}
-            <AlertTriangle class="h-5 w-5 text-accent" aria-hidden="true" />
-            Import rejected
+            <AlertTriangle class="h-10 w-10 text-accent" aria-hidden="true" />
+            <h2 class="mt-3 text-xl font-bold text-primary">Import rejected</h2>
           {/if}
-        </p>
+          {#if filename}
+            <p class="mt-1 text-xs text-secondary">
+              {filename}{strategyUsed ? ` — ${strategyUsed} mode` : ''}
+            </p>
+          {/if}
+        </div>
+
         {#if errorCount === 0}
-          <dl class="mt-3 grid grid-cols-3 gap-3 text-xs text-secondary">
-            <div>
+          <dl
+            class="mx-auto mt-6 grid max-w-md grid-cols-3 gap-3 text-center text-xs text-secondary"
+          >
+            <div class="rounded-lg border border-subtle bg-elevated px-3 py-3">
               <dt class="tracking-wide uppercase">Inserted</dt>
               <dd class="mt-1 text-base font-bold text-primary">{totalCount(result.inserted)}</dd>
             </div>
-            <div>
+            <div class="rounded-lg border border-subtle bg-elevated px-3 py-3">
               <dt class="tracking-wide uppercase">Updated</dt>
               <dd class="mt-1 text-base font-bold text-primary">{totalCount(result.updated)}</dd>
             </div>
-            <div>
+            <div class="rounded-lg border border-subtle bg-elevated px-3 py-3">
               <dt class="tracking-wide uppercase">Skipped</dt>
               <dd class="mt-1 text-base font-bold text-primary">{totalCount(result.skipped)}</dd>
             </div>
           </dl>
-          <p class="mt-3 text-xs text-secondary">
+          <p class="mt-3 text-center text-xs text-secondary">
             Categories {result.inserted.categories + result.updated.categories} / items {result
               .inserted.items + result.updated.items} / pages {result.inserted.pages +
               result.updated.pages} / settings {result.inserted.siteSettings +
               result.updated.siteSettings}.
           </p>
         {:else}
-          <ul class="mt-3 list-disc space-y-1 pl-5 text-xs text-secondary">
+          <ul
+            class="mx-auto mt-6 max-w-2xl list-disc space-y-1 rounded-lg border border-subtle bg-elevated px-8 py-4 pl-12 text-xs text-secondary"
+          >
             {#each result.errors.slice(0, 20) as err, i (i)}
               <li class="font-mono">{err}</li>
             {/each}
@@ -128,12 +158,39 @@
             {/if}
           </ul>
         {/if}
+      {/if}
+
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <Button variant="secondary" type="button" onclick={importAgain}>
+          <RotateCcw size={14} aria-hidden="true" />
+          Import again
+        </Button>
+        <Button href={resolve('/admin/tools/import')}>
+          <Check size={14} aria-hidden="true" />
+          Done
+        </Button>
       </div>
-    {/if}
+    </div>
+  {:else}
+    <a
+      href={resolve('/admin/tools/import')}
+      class="inline-flex items-center gap-1 text-xs text-secondary hover:text-primary"
+    >
+      <ArrowLeft class="h-3 w-3" aria-hidden="true" /> All importers
+    </a>
+    <h2 class="mt-2 text-xl font-bold text-primary">{importer.label}</h2>
+    <p class="mt-1 text-sm text-secondary">{importer.description}</p>
 
     <form
       method="POST"
       enctype="multipart/form-data"
+      use:enhance={() => {
+        phaseOverride = 'submitting';
+        return async ({ update }) => {
+          await update({ reset: false });
+          phaseOverride = 'result';
+        };
+      }}
       class="mt-6 space-y-4 rounded-lg border border-subtle bg-elevated px-5 py-4"
     >
       <div>
@@ -167,7 +224,10 @@
         </label>
       </fieldset>
 
-      <Button type="submit" variant="primary">Import</Button>
+      <Button type="submit" variant="primary">
+        <Upload size={14} aria-hidden="true" />
+        Import
+      </Button>
     </form>
   {/if}
 </section>
