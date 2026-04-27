@@ -1,17 +1,32 @@
-export type MergeStrategy = 'skip' | 'upsert';
+export type MergeStrategy = 'skip' | 'overwrite';
 
 export type ImporterStatus = 'available' | 'stub';
 
+export interface ProposedCategory {
+  fileSlug: string;
+  fileName: string;
+  itemCount: number;
+  matchedExistingId: string | null;
+  matchedExistingName: string | null;
+}
+
+export interface ImportPlan {
+  planId: string;
+  categories: ProposedCategory[];
+  errors: string[];
+}
+
+export type CategoryMapping =
+  | { fileSlug: string; action: 'use-existing'; targetId: string }
+  | { fileSlug: string; action: 'create-new'; slug: string; name: string };
+
 export interface ImportResult {
-  inserted: { categories: number; items: number; pages: number; siteSettings: number };
-  updated: { categories: number; items: number; pages: number; siteSettings: number };
-  skipped: { categories: number; items: number; pages: number; siteSettings: number };
+  inserted: { categories: number; items: number };
+  updated: { categories: number; items: number };
+  skipped: { categories: number; items: number };
   /**
-   * Human-readable paths for each row touched, grouped by action. Paths use
-   * a slug-based convention so the importer's user can tell what landed
-   * where without inspecting UUIDs. Examples:
-   *   `pages/about`, `siteSettings/footer`,
-   *   `categories/books`, `categories/books/items/influence-the-…`
+   * Human-readable slug-based paths for each row touched, grouped by action.
+   * Example: `categories/books/items/influence-…`.
    */
   details: {
     inserted: string[];
@@ -27,7 +42,12 @@ export interface Importer {
   description: string;
   status: ImporterStatus;
   accept?: string;
-  run?: (file: File, opts: { strategy: MergeStrategy }) => Promise<ImportResult>;
+  plan?: (file: File) => Promise<ImportPlan>;
+  commit?: (
+    planId: string,
+    mappings: CategoryMapping[],
+    strategy: MergeStrategy
+  ) => Promise<ImportResult>;
   stubInfo?: {
     sampleNeeded: boolean;
     issueUrl: string;
@@ -44,10 +64,14 @@ export interface ImporterSummary {
 
 export function emptyResult(): ImportResult {
   return {
-    inserted: { categories: 0, items: 0, pages: 0, siteSettings: 0 },
-    updated: { categories: 0, items: 0, pages: 0, siteSettings: 0 },
-    skipped: { categories: 0, items: 0, pages: 0, siteSettings: 0 },
+    inserted: { categories: 0, items: 0 },
+    updated: { categories: 0, items: 0 },
+    skipped: { categories: 0, items: 0 },
     details: { inserted: [], updated: [], skipped: [] },
     errors: []
   };
+}
+
+export function emptyPlan(planId: string, errors: string[] = []): ImportPlan {
+  return { planId, categories: [], errors };
 }

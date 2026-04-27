@@ -29,13 +29,8 @@
   let phaseOverride = $state<Phase | null>(null);
   const phase = $derived<Phase>(phaseOverride ?? (form ? 'result' : 'form'));
 
-  function totalCount(group: {
-    categories: number;
-    items: number;
-    pages: number;
-    siteSettings: number;
-  }) {
-    return group.categories + group.items + group.pages + group.siteSettings;
+  function totalCount(group: { categories: number; items: number }) {
+    return group.categories + group.items;
   }
 
   function importAgain() {
@@ -142,9 +137,7 @@
           </dl>
           <p class="mt-3 text-center text-xs text-secondary">
             Categories {result.inserted.categories + result.updated.categories} / items {result
-              .inserted.items + result.updated.items} / pages {result.inserted.pages +
-              result.updated.pages} / settings {result.inserted.siteSettings +
-              result.updated.siteSettings}.
+              .inserted.items + result.updated.items}.
           </p>
         {:else}
           <ul
@@ -235,15 +228,15 @@
         <label class="flex items-start gap-2 text-sm text-secondary">
           <input type="radio" name="strategy" value="skip" checked class="mt-0.5" />
           <span>
-            <span class="font-medium text-primary">Skip</span> — leave existing rows alone; only insert
-            new UUIDs.
+            <span class="font-medium text-primary">Skip</span> — leave existing items alone; only insert
+            items whose slugs aren't already taken.
           </span>
         </label>
         <label class="flex items-start gap-2 text-sm text-secondary">
-          <input type="radio" name="strategy" value="upsert" class="mt-0.5" />
+          <input type="radio" name="strategy" value="overwrite" class="mt-0.5" />
           <span>
-            <span class="font-medium text-primary">Upsert</span> — overwrite existing rows with the imported
-            data. Destructive.
+            <span class="font-medium text-primary">Overwrite</span> — replace existing items that share
+            a slug. Destructive.
           </span>
         </label>
       </fieldset>
