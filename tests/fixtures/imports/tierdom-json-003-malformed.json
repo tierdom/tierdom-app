@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "appVersion": "0.1.0-alpha.5",
+  "exportedAt": "2026-04-27T10:52:39.243Z",
+  "data": {
+    "pages": [
+      {
+        "slug": "about",
+        "title": "About",
+        "content": "# About\n\nEmpty about page for demo.",
+        "createdAt": "2025-11-02 03:11:13",
+        "updatedAt": "2026-04-27 10:45:38"
+      },
+      {
+        "slug": "home",
+        "title": "Home",
+        "content": "# Welcome\n\nHome page.",
+        "createdAt": "2026-02-14 09:47:48",
+        "updatedAt": "2026-04-27 10:45:24"
+      }
+    ],
+    "siteSettings": [
+      {
+        "key": "footer",
+        "value": "Custom footer to test **import** and **export** features.",
+        "createdAt": "2026-04-27 10:46:01",
+        "updatedAt": "2026-04-27 10:46:01"
+      }
+    ],
+    "categories": [
+      {
+        "id": "3f710286-e2bd-45a1-962b-510828192863",
+        "slug": "books",
+        "name": "Books",
+        "description": "Demo **category**.",
+        "order": 0,
+        "cutoffS": null,
+        "cutoffA": null,
+        "cutoffB": null,
+        "cutoffC": null,
+        "cutoffD": null,
+        "cutoffE": null,
+        "cutoffF": null,
+        "propKeys": [
+          {
+            "key": "ISBN"
+          }
+        ],
+        "createdAt": "2026-04-27 10:35:42",
+        "updatedAt": "2026-04-27 10:38:14",
+        "items": [
+          {
+            "id": "cfabdd74-64a7-49c6-80d2-c09a2981d231",
+            "slug": "malformed-item",
+            "name": "Malformed Item",
+            "description": "Has a score as a string not an integer.",
+            "score": "100",
+            "order": 0,
+            "imageHash": "3103f130db64",
+            "placeholder": "linear-gradient(135deg, #3b4d22, #314725, #253c1e)",
+            "props": [],
+            "createdAt": "2026-04-27 10:41:02",
+            "updatedAt": "2026-04-27 10:41:02"
+          }
+        ]
+      },
+      {
+        "id": "aa1ceecc-9d73-4d89-9eb9-515cc509ccb3",
+        "slug": "board-games",
+        "name": "Board Games",
+        "description": "Sample category with *custom* tier cutoffs. <!-- and a sample html comment in the markdown -->",
+        "order": 1,
+        "cutoffS": 85,
+        "cutoffA": 70,
+        "cutoffB": 65,
+        "cutoffC": 50,
+        "cutoffD": 35,
+        "cutoffE": 10,
+        "cutoffF": 0,
+        "propKeys": [],
+        "createdAt": "2026-04-27 10:37:05",
+        "updatedAt": "2026-04-27 10:43:20",
+        "items": [
+          {
+            "name": "Malformed item"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -31,20 +31,19 @@
       </div>
     </a>
 
-    <div
-      class="flex items-start gap-4 rounded-lg border border-subtle bg-elevated px-5 py-4 opacity-60"
-      aria-disabled="true"
+    <a
+      href={resolve('/admin/tools/import')}
+      class="flex items-start gap-4 rounded-lg border border-subtle bg-elevated px-5 py-4 transition-colors hover:border-accent/40"
     >
       <!-- From the user perspective "Download" icon makes more sense here. -->
-      <Download class="mt-1 h-5 w-5 shrink-0 text-secondary" aria-hidden="true" />
+      <Download class="mt-1 h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
       <div class="min-w-0">
         <p class="font-medium text-primary">Import</p>
         <p class="mt-1 text-xs text-secondary">
-          Restore content from a previous export. <span class="text-accent"
-            >Under construction.</span
-          >
+          Bring data into Tierdom from an export, Goodreads, BoardGameGeek, IMDb, or your own
+          format.
         </p>
       </div>
-    </div>
+    </a>
   </div>
 </section>

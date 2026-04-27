@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "appVersion": "0.1.0-alpha.5",
+  "exportedAt": "2026-04-27T10:52:39.243Z",
+  "data": {
+    "pages": [
+      {
+        "slug": "about",
+        "title": "About",
+        "content": "# About\n\nEmpty about page for demo.",
+        "createdAt": "2025-11-02T03:11:13Z",
+        "updatedAt": "2026-04-27T10:45:38Z"
+      },
+      {
+        "slug": "home",
+        "title": "Home",
+        "content": "# Welcome\n\nHome page.",
+        "createdAt": "2026-02-14T09:47:48Z",
+        "updatedAt": "2026-04-27T10:45:24Z"
+      }
+    ],
+    "siteSettings": [
+      {
+        "key": "footer",
+        "value": "Custom footer to test **import** and **export** features.",
+        "createdAt": "2026-04-27T10:46:01Z",
+        "updatedAt": "2026-04-27T10:46:01Z"
+      }
+    ],
+    "categories": [
+      {
+        "id": "3f710286-e2bd-45a1-962b-510828192863",
+        "slug": "books",
+        "name": "Books",
+        "description": "Demo **category**.\n\n> With markdown _sample_ data.\n\nA [link to example.org](https://example.org) in this paragraph.",
+        "order": 0,
+        "cutoffS": null,
+        "cutoffA": null,
+        "cutoffB": null,
+        "cutoffC": null,
+        "cutoffD": null,
+        "cutoffE": null,
+        "cutoffF": null,
+        "propKeys": [
+          {
+            "key": "ISBN"
+          },
+          {
+            "key": "Language"
+          },
+          {
+            "key": "Author(s)"
+          }
+        ],
+        "createdAt": "2026-04-27T10:35:42Z",
+        "updatedAt": "2026-04-27T10:38:14Z",
+        "items": [
+          {
+            "id": "cfabdd74-64a7-49c6-80d2-c09a2981d231",
+            "slug": "influence-the-psychology-of-persuasion",
+            "name": "Influence: The Psychology of Persuasion",
+            "description": "Absolutely **great** book.\r\n\r\nRecommend reading this soon. Keeping this review short.",
+            "score": 100,
+            "order": 0,
+            "imageHash": "3103f130db64",
+            "placeholder": "linear-gradient(135deg, #3b4d22, #314725, #253c1e)",
+            "props": [
+              {
+                "key": "ISBN",
+                "value": "978-0-06-124189-5"
+              },
+              {
+                "key": "Language",
+                "value": "EN"
+              },
+              {
+                "key": "Author(s)",
+                "value": "Robert B. Cialdini"
+              },
+              {
+                "key": "Type",
+                "value": "Non-fiction"
+              }
+            ],
+            "createdAt": "2026-04-27T10:41:02Z",
+            "updatedAt": "2026-04-27T10:41:02Z"
+          }
+        ]
+      },
+      {
+        "id": "aa1ceecc-9d73-4d89-9eb9-515cc509ccb3",
+        "slug": "board-games",
+        "name": "Board Games",
+        "description": "Sample category with *custom* tier cutoffs. <!-- and a sample html comment in the markdown -->",
+        "order": 1,
+        "cutoffS": 85,
+        "cutoffA": 70,
+        "cutoffB": 65,
+        "cutoffC": 50,
+        "cutoffD": 35,
+        "cutoffE": 10,
+        "cutoffF": 0,
+        "propKeys": [],
+        "createdAt": "2026-04-27T10:37:05Z",
+        "updatedAt": "2026-04-27T10:43:20Z",
+        "items": [
+          {
+            "id": "d931493b-ae7a-4bb3-a67c-2f00e73d90f1",
+            "slug": "chess",
+            "name": "Chess",
+            "description": "Would be 100/100 if you could have fun with very different ELO's.",
+            "score": 95,
+            "order": 0,
+            "imageHash": "d8e696212269",
+            "placeholder": "linear-gradient(135deg, #a7a7a6, #cfcfcb, #a0a09f)",
+            "props": [],
+            "createdAt": "2026-04-27T10:45:05Z",
+            "updatedAt": "2026-04-27T10:51:49Z"
+          },
+          {
+            "id": "3d274e8b-b03b-4fd3-ae1f-e0161511032b",
+            "slug": "risk",
+            "name": "Risk",
+            "description": null,
+            "score": 50,
+            "order": 1,
+            "imageHash": null,
+            "placeholder": null,
+            "props": [],
+            "createdAt": "2026-04-27T10:44:10Z",
+            "updatedAt": "2026-04-27T10:44:10Z"
+          },
+          {
+            "id": "5305d366-fb18-49c2-b6e0-2184b1b21074",
+            "slug": "monopoly",
+            "name": "Monopoly",
+            "description": "Low score that demonstrates custom Tier Cutoffs.",
+            "score": 15,
+            "order": 2,
+            "imageHash": null,
+            "placeholder": null,
+            "props": [],
+            "createdAt": "2026-04-27T10:43:50Z",
+            "updatedAt": "2026-04-27T10:43:50Z"
+          }
+        ]
+      }
+    ]
+  }
+}

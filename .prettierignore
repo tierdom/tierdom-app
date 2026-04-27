@@ -9,5 +9,9 @@ bun.lockb
 /static/
 /drizzle/
 
+# Hand-curated import fixtures: keep author's exact bytes (the malformed file
+# would otherwise lose its intentional violations to formatting).
+/tests/fixtures/imports/
+
 # Claude Code local settings (machine-specific, not committed)
 .claude/settings.local.json

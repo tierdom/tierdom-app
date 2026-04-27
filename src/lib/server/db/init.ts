@@ -4,6 +4,7 @@ import { env } from '$env/dynamic/private';
 import { bootstrapAdminUser } from '$lib/server/auth/bootstrap';
 import { isSetupComplete } from '$lib/server/setup';
 import { ensureImageDir } from '$lib/server/images';
+import { sweepImportTemp } from '$lib/server/import/temp-storage';
 
 let initialized = false;
 
@@ -21,4 +22,5 @@ export function initializeApp(): void {
   }
 
   ensureImageDir();
+  sweepImportTemp();
 }

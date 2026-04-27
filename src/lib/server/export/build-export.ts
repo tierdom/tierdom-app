@@ -229,6 +229,16 @@ async function listImages(dir: string): Promise<string[]> {
   }
 }
 
+// SQLite's `datetime('now')` produces UTC timestamps in `YYYY-MM-DD HH:MM:SS`,
+// which is RFC 3339 close-but-not-quite. The export schema declares
+// `format: "date-time"` (strict ISO 8601 / RFC 3339), so we normalise on the
+// way out. Strings that already carry `T` and `Z`/offset are passed through.
+function toIsoDateTime(value: string): string {
+  if (value.includes('T') && /(?:Z|[+-]\d\d:?\d\d)$/.test(value)) return value;
+  const withT = value.includes('T') ? value : value.replace(' ', 'T');
+  return /(?:Z|[+-]\d\d:?\d\d)$/.test(withT) ? withT : `${withT}Z`;
+}
+
 function collectExportData(db: DB, appVersion: string, exportedAt: string): ExportData {
   // Active views (ADR-0022) — soft-deleted rows are excluded from the JSON.
   const pages = db
@@ -240,8 +250,8 @@ function collectExportData(db: DB, appVersion: string, exportedAt: string): Expo
       slug: p.slug,
       title: p.title,
       content: p.content,
-      createdAt: p.createdAt,
-      updatedAt: p.updatedAt
+      createdAt: toIsoDateTime(p.createdAt),
+      updatedAt: toIsoDateTime(p.updatedAt)
     }));
 
   const siteSettings = db
@@ -252,8 +262,8 @@ function collectExportData(db: DB, appVersion: string, exportedAt: string): Expo
     .map((s) => ({
       key: s.key,
       value: s.value,
-      createdAt: s.createdAt,
-      updatedAt: s.updatedAt
+      createdAt: toIsoDateTime(s.createdAt),
+      updatedAt: toIsoDateTime(s.updatedAt)
     }));
 
   const categoryRows = db
@@ -280,8 +290,8 @@ function collectExportData(db: DB, appVersion: string, exportedAt: string): Expo
       imageHash: i.imageHash,
       placeholder: i.placeholder,
       props: i.props,
-      createdAt: i.createdAt,
-      updatedAt: i.updatedAt
+      createdAt: toIsoDateTime(i.createdAt),
+      updatedAt: toIsoDateTime(i.updatedAt)
     });
     itemsByCategoryId.set(i.categoryId, list);
   }
@@ -300,8 +310,8 @@ function collectExportData(db: DB, appVersion: string, exportedAt: string): Expo
     cutoffE: c.cutoffE,
     cutoffF: c.cutoffF,
     propKeys: c.propKeys,
-    createdAt: c.createdAt,
-    updatedAt: c.updatedAt,
+    createdAt: toIsoDateTime(c.createdAt),
+    updatedAt: toIsoDateTime(c.updatedAt),
     items: itemsByCategoryId.get(c.id) ?? []
   }));
 

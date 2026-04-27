@@ -50,7 +50,7 @@ High level features:
 - [ ] Option to add more static cms pages
 - [x] Option to customize the footer ([ADR-0020](docs/decisions/0020-customizable-site-content.md))
 - [ ] Live rendered-markdown preview alongside the CMS editor textarea
-- [ ] Import from our own export format
+- [x] Import from our own export format
 - [ ] Import from external sources (Goodreads CSV, etc.)
 - [x] Export database to basic formats (markdown, json or yaml, etc.) ([ADR-0023](docs/decisions/0023-export-tooling-streaming-zip.md))
 - [x] Soft-delete for items + trash (and recover) feature, with housekeeping warning ([ADR-0022](docs/decisions/0022-soft-delete-and-trash.md))
@@ -210,6 +210,7 @@ Architectural decisions are documented as ADRs in [`docs/decisions/`](docs/decis
 | [0021](docs/decisions/0021-admin-confirmation-dialog.md)                | Admin Confirmation Dialog                     | Accepted |
 | [0022](docs/decisions/0022-soft-delete-and-trash.md)                    | Soft Delete and Trash                         | Accepted |
 | [0023](docs/decisions/0023-export-tooling-streaming-zip.md)             | Export Tooling — Streaming ZIP (fflate)       | Accepted |
+| [0024](docs/decisions/0024-import-tooling-architecture.md)              | Import Tooling Architecture                   | Accepted |
 
 ## References
 

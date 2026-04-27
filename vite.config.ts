@@ -30,7 +30,10 @@ export default defineConfig({
         'src/lib/server/db/seed-images.ts',
         // CLI entrypoint, not a module; run via `npm run db:seed` and
         // exercised by `test:e2e:reset`.
-        'src/lib/server/db/seed.ts'
+        'src/lib/server/db/seed.ts',
+        // Type-only module — emits no runtime code, so the v8 provider
+        // reports it as 0/0/0/0 and drags the average down.
+        'src/lib/components/admin/import/phase.ts'
       ]
     },
     projects: [

@@ -10,26 +10,23 @@
 
 This project has purpose-built skills in `.claude/skills/` — use them instead of doing tasks manually. Key ones: `/commit`, `/db`, `/drizzle`, `/frontend`, `/lint`, `/markdown`, `/test`.
 
-**Only invoke a skill the user has explicitly typed.** Don't auto-invoke `/deps`, `/commit`, `/test`, or any other skill on the user's behalf — even if a plan or another skill suggests it. Skills run things and may commit; the user is the gate. If a skill's output says "continue immediately to the next step", treat that as informational, not authorisation. The CLAUDE.md commit and skill rules supersede any nested skill instructions.
+**Only `/commit` requires explicit user invocation.** Other skills (`/adr`, `/deps`, `/drizzle`, `/test`, `/lint`, etc.) follow normal harness approval and may be invoked as part of a plan or milestone when they're the right tool. Prefer skills over running their underlying commands manually. If a skill's output says "continue immediately to the next step", treat that as informational, not authorisation to commit.
 
 ## Testing
 
 Use `/test` for all testing — unit, E2E, and ad-hoc Playwright MCP verification. **Unit tests** and **svelte-check** run automatically in the pre-commit hook (~5s). Run **smoke tests** after UI-visible changes (quick, any DB state). Run **deterministic tests** before merging or after schema changes (resets DB, full validation). Skip tests for config-only or docs-only work. Test infrastructure must never share data paths with the dev server — all test artifacts live in the gitignored `test-data/` directory.
-
-## ADRs
-
-When creating a new ADR via `/adr`, always add a row to the **Architecture Decision Records** table in `README.md`.
 
 ## Plan mode (epics & multi-step features)
 
 When entering plan mode for any non-trivial feature, follow this workflow:
 
 1. **Branch check first.** Before drafting a plan, verify the current branch is not `main`. If it is, **stop** and ask the user for a branch name (suggest one based on the work) — do nothing else until a branch exists.
-2. **Open with a Proposed ADR** — _unless the work has no architectural surface_. Run `npm run test:unit:coverage` first and capture the aggregate coverage percentages (statements/branches/funcs/lines) plus the per-file numbers for any file the plan will touch. Create the ADR via `/adr` in **Proposed** state, with no code changes before it exists. Keep the ADR **terse**: the decision, the alternatives considered in one line each, the consequences, and a one-line note on whether the captured coverage percentages should hold or shift after implementation (and why). Aim for an ADR that fits on a single screen — no narrative, no preamble, no recap of the problem the reader already knows. Skip the ADR for purely cosmetic, layout, or responsive-tweak work that doesn't introduce a new pattern, dependency, or convention — those are just code changes. When in doubt, ask the user.
+2. **Open with a Proposed ADR** — _unless the work has no architectural surface_ (cosmetic / layout / responsive-tweak work without a new pattern, dependency, or convention is just code changes; when in doubt, ask). Run `npm run test:unit:coverage` first and capture the aggregate + per-file percentages for any file the plan will touch — the ADR's coverage note states whether they should hold or shift after implementation. Create the ADR via `/adr` (which enforces terseness) in **Proposed** state, with no code changes before it exists.
 3. **Structure the plan around milestones.** Group steps into logical milestones. After each milestone the plan must explicitly **STOP and PAUSE** for user review. The user will either request tweaks, make tweaks themselves, or invoke `/commit` — immediately after the commit, continue to the next milestone. Each milestone must leave the build green: the pre-commit hook runs lint + svelte-check + unit tests on every commit, so if M_n only compiles once M_n+1 lands (e.g. a schema rename whose call sites are updated in the next step), bundle them into one milestone instead.
-4. **Coverage check before closing.** Just before the ADR-close milestone, re-run `npm run test:unit:coverage` and compare against the percentages captured in step 2. If any number dropped (or fell short of the expectation noted in the ADR), pause and decide with the user: write the missing tests, add a deliberate exclude to `vite.config.ts` with a reason, or document the gap in the ADR. Don't proceed to step 5 until coverage is at an acceptable level.
-5. **Close with the ADR.** When the plan opened with an ADR, the final milestone is always: update it to reflect decisions actually made during implementation (including any coverage shift from step 4), then change its status from **Proposed** to **Accepted**. Plans that legitimately skipped the ADR also skip this step.
-6. **After the final milestone**, remind the user about the `/learnings` skill (unless they want more tweaks).
+4. **Branch audit before closing.** Before the coverage check, do a self-driven review of the branch for loose ends: stale comments / READMEs / fixtures referring to renamed files or dropped concepts; defensive code without tests; abandoned scaffolding from earlier milestones; behaviour the user asked for that ended up only partially wired (UI without server, server without UI, etc.); features that should be covered by tests but aren't. Surface findings as a short list and let the user pick what to fix before closing.
+5. **Coverage check before closing.** Re-run `npm run test:unit:coverage` and compare against the percentages captured in step 2. If any number dropped (or fell short of the expectation noted in the ADR), pause and decide with the user: write the missing tests, add a deliberate exclude to `vite.config.ts` with a reason, or document the gap in the ADR. Don't proceed to step 6 until coverage is at an acceptable level.
+6. **Close with the ADR.** When the plan opened with an ADR, the final milestone is always: update it to reflect decisions actually made during implementation (including any coverage shift from step 5), then change its status from **Proposed** to **Accepted**. Plans that legitimately skipped the ADR also skip this step.
+7. **After the final milestone**, remind the user about the `/learnings` skill (unless they want more tweaks).
 
 **Never** include merging the branch as part of a plan — merges are a separate activity.
 
