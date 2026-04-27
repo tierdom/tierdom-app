@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import {
   existsSync,
+  lstatSync,
   mkdirSync,
   readFileSync,
   readdirSync,
@@ -11,8 +12,13 @@ import {
 import { join, resolve, sep } from 'node:path';
 import { env } from '$env/dynamic/private';
 
-const TTL_MS = 30 * 60 * 1000;
+const TTL_MS = 2 * 60 * 60 * 1000;
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+// Sweep refuses to touch anything that doesn't match the exact filenames we
+// write. Defence in depth against stray files in the temp dir (editor swap
+// files, .gitkeep, leftover from another process) — see security note in
+// sweepImportTemp.
+const TEMP_FILE_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.json$/;
 
 function getTempDir(): string {
   return join(env.DATA_PATH!, 'tmp', 'imports');
@@ -63,14 +69,34 @@ export function deleteImportTemp(planId: string): void {
   rmSync(path, { force: true });
 }
 
+/**
+ * Delete temp files older than the TTL.
+ *
+ * Hardening:
+ * - Only operates inside `${DATA_PATH}/tmp/imports/`. `readdirSync` returns
+ *   basenames only, so no path traversal is possible from the listing.
+ * - Filenames must match the exact `<uuid>.json` shape we write — anything
+ *   else (`.gitkeep`, editor swap files, manually dropped files) is left
+ *   alone.
+ * - `lstatSync` is used (not `statSync`) so symlinks are detected and
+ *   skipped without dereferencing — even if an attacker with write access
+ *   to the temp dir created one pointing elsewhere.
+ * - `rmSync` is non-recursive: directories that somehow ended up in the
+ *   temp dir cannot be removed.
+ *
+ * Any error inside the loop is swallowed: a file vanishing between
+ * readdir/stat/rm in a parallel sweep is expected, not an emergency.
+ */
 export function sweepImportTemp(): void {
   const dir = getTempDir();
   if (!existsSync(dir)) return;
   const cutoff = Date.now() - TTL_MS;
   for (const name of readdirSync(dir)) {
+    if (!TEMP_FILE_RE.test(name)) continue;
     const path = join(dir, name);
     try {
-      const stat = statSync(path);
+      const stat = lstatSync(path);
+      if (!stat.isFile()) continue;
       if (stat.mtimeMs < cutoff) {
         rmSync(path, { force: true });
       }

@@ -3,7 +3,12 @@ import { and, eq, isNull } from 'drizzle-orm';
 import { db as defaultDb } from '$lib/server/db';
 import { categoryTable, tierListItemTable } from '$lib/server/db/schema';
 import { MAX_JSON_BYTES, formatAjvErrors, validateExport } from '../validate';
-import { deleteImportTemp, readImportTemp, writeImportTemp } from '../temp-storage';
+import {
+  deleteImportTemp,
+  readImportTemp,
+  sweepImportTemp,
+  writeImportTemp
+} from '../temp-storage';
 import type { ExportData, ExportedCategory, ExportedItem } from '$lib/server/export/json-schema';
 import type {
   CategoryMapping,
@@ -30,6 +35,10 @@ export const tierdomJsonImporter: Importer = {
 };
 
 export async function planTierdomJsonImport(file: File, conn: DB = defaultDb): Promise<ImportPlan> {
+  // Opportunistic sweep: clears stale temp files from abandoned imports
+  // (admin uploaded then navigated away without Cancel) on the natural cadence
+  // of fresh import attempts. Cheap — readdir + stat over a tiny dir.
+  sweepImportTemp();
   if (file.size > MAX_JSON_BYTES) {
     return emptyPlan('', [`File is ${file.size} bytes; maximum is ${MAX_JSON_BYTES}.`]);
   }

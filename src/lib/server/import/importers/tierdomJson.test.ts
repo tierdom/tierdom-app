@@ -3,7 +3,7 @@ import Database from 'better-sqlite3';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import { and, eq, isNull } from 'drizzle-orm';
-import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const { TMP_ROOT } = vi.hoisted(() => ({
@@ -391,12 +391,79 @@ describe('tierdomJson importer', () => {
       );
       expect(result.errors[0]).toMatch(/Invalid plan id/);
     });
+
+    it('rejects a temp file whose contents are not parseable JSON', async () => {
+      // Place a corrupt file directly under a valid <uuid>.json name. This
+      // simulates someone (or something) tampering with the temp file between
+      // plan and commit — the importer must not blow up.
+      mkdirSync(IMPORTS_DIR, { recursive: true });
+      const planId = '00000000-0000-4000-8000-000000000000';
+      writeFileSync(join(IMPORTS_DIR, `${planId}.json`), '{not valid json');
+      const result = await commitTierdomJsonImport(planId, [], 'skip', db as unknown as ImporterDb);
+      expect(result.errors[0]).toMatch(/^Invalid JSON in stored plan/);
+    });
+
+    it('rejects a temp file whose contents do not match the schema', async () => {
+      mkdirSync(IMPORTS_DIR, { recursive: true });
+      const planId = '00000000-0000-4000-8000-000000000001';
+      // Valid JSON but not an export — AJV must reject it on commit.
+      writeFileSync(join(IMPORTS_DIR, `${planId}.json`), JSON.stringify({ hello: 'world' }));
+      const result = await commitTierdomJsonImport(planId, [], 'skip', db as unknown as ImporterDb);
+      expect(result.errors.length).toBeGreaterThan(0);
+      // AJV errors carry instance paths, not the "Invalid JSON" prefix.
+      expect(result.errors.every((e) => !e.startsWith('Invalid JSON'))).toBe(true);
+    });
+
+    it('catches a transaction throw and returns it as a Database error', async () => {
+      // Plan first against a real DB so the temp file lands; then commit with
+      // a stub that throws on .transaction(). The outer try/catch in commit
+      // must convert the throw into an error string.
+      const plan = await planTierdomJsonImport(
+        fileFromFixture('tierdom-json-001-good.json'),
+        db as unknown as ImporterDb
+      );
+      const brokenDb = {
+        transaction: () => {
+          throw new Error('connection lost');
+        }
+      };
+      const result = await commitTierdomJsonImport(
+        plan.planId,
+        [{ fileSlug: 'books', action: 'skip' }],
+        'skip',
+        brokenDb as unknown as ImporterDb
+      );
+      expect(result.errors[0]).toMatch(/^Database error: connection lost/);
+    });
   });
 
   describe('importer registration', () => {
     it('exposes plan and commit on the registered importer', () => {
       expect(typeof tierdomJsonImporter.plan).toBe('function');
       expect(typeof tierdomJsonImporter.commit).toBe('function');
+    });
+
+    it('plan() on the registered importer short-circuits cleanly on bad input', async () => {
+      // Routes through tierdomJsonImporter.plan(file) — exercises the thunk
+      // that wraps planTierdomJsonImport. Oversized file returns errors
+      // before the importer touches the (mocked-as-{}) default DB.
+      const tooBig = new File(['x'.repeat(11 * 1024 * 1024)], 'huge.json', {
+        type: 'application/json'
+      });
+      const plan = await tierdomJsonImporter.plan!(tooBig);
+      expect(plan.errors[0]).toMatch(/maximum is/);
+    });
+
+    it('commit() on the registered importer short-circuits cleanly on a missing plan', async () => {
+      // Routes through tierdomJsonImporter.commit(...) — exercises the thunk.
+      // An unknown planId fails fast in readImportTemp, before the default DB
+      // is ever consulted.
+      const result = await tierdomJsonImporter.commit!(
+        '00000000-0000-4000-8000-deadbeefdead',
+        [],
+        'skip'
+      );
+      expect(result.errors[0]).toMatch(/not found or expired/);
     });
   });
 });
