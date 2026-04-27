@@ -1,10 +1,29 @@
 <script lang="ts">
   import { resolve } from '$app/paths';
-  import { ArrowLeft, ExternalLink, Construction } from 'lucide-svelte';
-  import type { PageData } from './$types';
+  import {
+    ArrowLeft,
+    ExternalLink,
+    Construction,
+    CheckCircle2,
+    AlertTriangle
+  } from 'lucide-svelte';
+  import Button from '$lib/components/admin/Button.svelte';
+  import type { ActionData, PageData } from './$types';
 
-  let { data }: { data: PageData } = $props();
+  let { data, form }: { data: PageData; form: ActionData } = $props();
   const importer = $derived(data.importer);
+  const result = $derived(form && 'result' in form ? form.result : null);
+  const failureMessage = $derived(form && 'message' in form ? form.message : null);
+  const maxMb = $derived(Math.round(data.maxBytes / (1024 * 1024)));
+
+  function totalCount(group: {
+    categories: number;
+    items: number;
+    pages: number;
+    siteSettings: number;
+  }) {
+    return group.categories + group.items + group.pages + group.siteSettings;
+  }
 </script>
 
 <svelte:head>
@@ -56,9 +75,99 @@
       </div>
     </div>
   {:else}
-    <p class="mt-6 text-sm text-secondary">
-      Upload form lands in the next milestone. The plumbing is in place; this page will host the
-      form.
-    </p>
+    {#if failureMessage}
+      <div
+        class="mt-6 flex items-start gap-3 rounded-lg border border-subtle bg-elevated px-5 py-4 text-sm"
+        role="alert"
+      >
+        <AlertTriangle class="mt-0.5 h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
+        <p class="text-primary">{failureMessage}</p>
+      </div>
+    {/if}
+
+    {#if result}
+      {@const errorCount = result.errors.length}
+      <div class="mt-6 rounded-lg border border-subtle bg-elevated px-5 py-4 text-sm" role="status">
+        <p class="flex items-center gap-2 font-medium text-primary">
+          {#if errorCount === 0}
+            <CheckCircle2 class="h-5 w-5 text-accent" aria-hidden="true" />
+            Import finished
+          {:else}
+            <AlertTriangle class="h-5 w-5 text-accent" aria-hidden="true" />
+            Import rejected
+          {/if}
+        </p>
+        {#if errorCount === 0}
+          <dl class="mt-3 grid grid-cols-3 gap-3 text-xs text-secondary">
+            <div>
+              <dt class="tracking-wide uppercase">Inserted</dt>
+              <dd class="mt-1 text-base font-bold text-primary">{totalCount(result.inserted)}</dd>
+            </div>
+            <div>
+              <dt class="tracking-wide uppercase">Updated</dt>
+              <dd class="mt-1 text-base font-bold text-primary">{totalCount(result.updated)}</dd>
+            </div>
+            <div>
+              <dt class="tracking-wide uppercase">Skipped</dt>
+              <dd class="mt-1 text-base font-bold text-primary">{totalCount(result.skipped)}</dd>
+            </div>
+          </dl>
+          <p class="mt-3 text-xs text-secondary">
+            Categories {result.inserted.categories + result.updated.categories} / items {result
+              .inserted.items + result.updated.items} / pages {result.inserted.pages +
+              result.updated.pages} / settings {result.inserted.siteSettings +
+              result.updated.siteSettings}.
+          </p>
+        {:else}
+          <ul class="mt-3 list-disc space-y-1 pl-5 text-xs text-secondary">
+            {#each result.errors.slice(0, 20) as err, i (i)}
+              <li class="font-mono">{err}</li>
+            {/each}
+            {#if errorCount > 20}
+              <li>… {errorCount - 20} more</li>
+            {/if}
+          </ul>
+        {/if}
+      </div>
+    {/if}
+
+    <form
+      method="POST"
+      enctype="multipart/form-data"
+      class="mt-6 space-y-4 rounded-lg border border-subtle bg-elevated px-5 py-4"
+    >
+      <div>
+        <label for="import-file" class="block text-sm font-medium text-primary">File</label>
+        <input
+          id="import-file"
+          name="file"
+          type="file"
+          accept={importer.accept}
+          required
+          class="mt-2 block w-full text-sm text-secondary file:mr-3 file:rounded-md file:border file:border-subtle file:bg-canvas file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-primary hover:file:border-accent/40"
+        />
+        <p class="mt-1 text-xs text-secondary">Maximum {maxMb} MB.</p>
+      </div>
+
+      <fieldset class="space-y-2">
+        <legend class="text-sm font-medium text-primary">Conflict strategy</legend>
+        <label class="flex items-start gap-2 text-sm text-secondary">
+          <input type="radio" name="strategy" value="skip" checked class="mt-0.5" />
+          <span>
+            <span class="font-medium text-primary">Skip</span> — leave existing rows alone; only insert
+            new UUIDs.
+          </span>
+        </label>
+        <label class="flex items-start gap-2 text-sm text-secondary">
+          <input type="radio" name="strategy" value="upsert" class="mt-0.5" />
+          <span>
+            <span class="font-medium text-primary">Upsert</span> — overwrite existing rows with the imported
+            data. Destructive.
+          </span>
+        </label>
+      </fieldset>
+
+      <Button type="submit" variant="primary">Import</Button>
+    </form>
   {/if}
 </section>
