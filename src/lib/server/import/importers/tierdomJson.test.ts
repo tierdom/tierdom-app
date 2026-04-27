@@ -299,6 +299,46 @@ describe('tierdomJson importer', () => {
       expect(result.errors.some((e) => /no longer exists/.test(e))).toBe(true);
     });
 
+    it('skip mapping skips the category and all its items, no error', async () => {
+      const plan = await planFixture('tierdom-json-001-good.json');
+      const mappings: CategoryMapping[] = plan.categories.map((c) => ({
+        fileSlug: c.fileSlug,
+        action: 'skip'
+      }));
+      const result = await commitTierdomJsonImport(
+        plan.planId,
+        mappings,
+        'skip',
+        db as unknown as ImporterDb
+      );
+      expect(result.errors).toEqual([]);
+      expect(result.skipped.categories).toBe(2);
+      expect(result.skipped.items).toBe(4);
+      expect(result.inserted.categories).toBe(0);
+      expect(result.inserted.items).toBe(0);
+      expect(db.select().from(categoryTable).all()).toEqual([]);
+    });
+
+    it('mixed skip + create-new only writes the kept category', async () => {
+      const plan = await planFixture('tierdom-json-001-good.json');
+      const mappings: CategoryMapping[] = plan.categories.map((c) =>
+        c.fileSlug === 'books'
+          ? { fileSlug: 'books', action: 'skip' }
+          : { fileSlug: c.fileSlug, action: 'create-new', slug: c.fileSlug, name: c.fileName }
+      );
+      const result = await commitTierdomJsonImport(
+        plan.planId,
+        mappings,
+        'skip',
+        db as unknown as ImporterDb
+      );
+      expect(result.errors).toEqual([]);
+      expect(result.inserted.categories).toBe(1);
+      expect(result.skipped.categories).toBe(1);
+      const slugs = db.select({ slug: categoryTable.slug }).from(categoryTable).all();
+      expect(slugs.map((s) => s.slug)).toEqual(['board-games']);
+    });
+
     it('records a per-category error when a mapping is missing', async () => {
       const plan = await planFixture('tierdom-json-001-good.json');
       const mappings: CategoryMapping[] = []; // intentionally empty

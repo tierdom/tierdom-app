@@ -18,7 +18,8 @@ export interface ImportPlan {
 
 export type CategoryMapping =
   | { fileSlug: string; action: 'use-existing'; targetId: string }
-  | { fileSlug: string; action: 'create-new'; slug: string; name: string };
+  | { fileSlug: string; action: 'create-new'; slug: string; name: string }
+  | { fileSlug: string; action: 'skip' };
 
 export interface ImportResult {
   inserted: { categories: number; items: number };

@@ -1,4 +1,7 @@
 import { error, fail } from '@sveltejs/kit';
+import { asc, isNull } from 'drizzle-orm';
+import { db } from '$lib/server/db';
+import { categoryTable } from '$lib/server/db/schema';
 import { getImporter } from '$lib/server/import/registry';
 import { MAX_JSON_BYTES } from '$lib/server/import/validate';
 import { deleteImportTemp } from '$lib/server/import/temp-storage';
@@ -11,9 +14,19 @@ export const load: PageServerLoad = ({ params }) => {
     error(404, `No importer with id "${params.importerId}".`);
   }
   const { id, label, description, status, accept, stubInfo } = importer;
+  const existingCategories =
+    importer.status === 'available'
+      ? db
+          .select({ id: categoryTable.id, slug: categoryTable.slug, name: categoryTable.name })
+          .from(categoryTable)
+          .where(isNull(categoryTable.deletedAt))
+          .orderBy(asc(categoryTable.slug))
+          .all()
+      : [];
   return {
     importer: { id, label, description, status, accept, stubInfo },
-    maxBytes: MAX_JSON_BYTES
+    maxBytes: MAX_JSON_BYTES,
+    existingCategories
   };
 };
 
@@ -85,6 +98,9 @@ export const actions: Actions = {
     }
 
     const mappings: CategoryMapping[] = fileSlugs.map((fileSlug, i) => {
+      if (actions[i] === 'skip') {
+        return { fileSlug, action: 'skip' };
+      }
       if (actions[i] === 'use-existing') {
         return { fileSlug, action: 'use-existing', targetId: targetIds[i] };
       }

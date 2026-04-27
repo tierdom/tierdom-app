@@ -101,9 +101,12 @@ export async function commitTierdomJsonImport(
     conn.transaction((tx) => {
       for (const category of data.data.categories) {
         const mapping = mappingBySlug.get(category.slug);
-        if (!mapping) {
-          result.errors.push(`No mapping provided for category "${category.slug}".`);
+        if (!mapping || mapping.action === 'skip') {
+          if (!mapping) {
+            result.errors.push(`No mapping provided for category "${category.slug}".`);
+          }
           result.skipped.categories++;
+          result.details.skipped.push(`categories/${category.slug}`);
           for (const item of category.items) {
             result.skipped.items++;
             result.details.skipped.push(`categories/${category.slug}/items/${item.slug}`);
@@ -131,7 +134,7 @@ export async function commitTierdomJsonImport(
 function applyCategoryMapping(
   tx: Tx,
   category: ExportedCategory,
-  mapping: CategoryMapping,
+  mapping: Exclude<CategoryMapping, { action: 'skip' }>,
   result: ImportResult
 ): string | null {
   if (mapping.action === 'use-existing') {
