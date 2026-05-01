@@ -52,6 +52,10 @@ Both are the common production paths — direct plain-HTTP access is primarily f
   Caddy automatically provisions a Let's Encrypt certificate and serves HTTPS on port 443.
   The user maps `-p 443:443 -p 80:80` instead of `-p 3000:3000`.
 
+### Deployment file layout
+
+`Caddyfile` and `docker-entrypoint.sh` live in `deploy/` at the repo root, copied into the image by the Dockerfile. The `deploy/` folder keeps deployment-only artefacts out of the project root.
+
 ### Multi-stage Dockerfile
 
 - **Build stage:** `node:24-alpine`, `npm ci`, `npm run build`.

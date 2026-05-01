@@ -24,8 +24,8 @@ See the [README](README.md#tech-stack) for the canonical list.
 ## Day-to-day commands
 
 See `package.json` `scripts` for all the convenient commands you can run with `npm run ...`.
-The Husky pre-commit hook runs lint + type-check + unit tests automatically.
-The pre-push hook runs the smoke E2E suite.
+Before opening a PR, run `npm run verify` — it chains lint, type-check, unit tests, and coverage thresholds.
+The Husky pre-commit hook already runs lint + type-check + unit tests on every commit.
 
 ## AI usage policy
 
