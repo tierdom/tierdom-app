@@ -45,7 +45,7 @@
       action: c.matchedExistingId ? 'use-existing' : 'create-new',
       existingId: c.matchedExistingId ?? existingCategories[0]?.id ?? '',
       newSlug: c.fileSlug,
-      newName: c.fileName
+      newName: c.fileName,
     }));
     strategy = 'skip';
   });
@@ -73,6 +73,7 @@
 <form
   method="POST"
   action="?/commit"
+  data-strategy={strategy}
   use:enhance={({ action }) => {
     const isCancel = action.search === '?/cancel';
     setPhase(isCancel ? 'form' : 'committing');

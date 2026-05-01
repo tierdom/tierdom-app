@@ -28,6 +28,7 @@ set -euo pipefail
 IMAGE="tierdom/tierdom-app"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+cd "$REPO_ROOT"
 
 # --- Helpers ---
 die()     { echo "Error: $*" >&2; exit 1; }

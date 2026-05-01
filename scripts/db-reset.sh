@@ -4,6 +4,9 @@
 #
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR/.."
+
 printf "This will delete the local database. Continue? [y/N] "
 read -r answer
 case "$answer" in

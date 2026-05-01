@@ -10,6 +10,12 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'html', 'lcov'],
       reportsDirectory: './coverage',
+      thresholds: {
+        statements: 98,
+        branches: 93,
+        functions: 98,
+        lines: 98,
+      },
       // Anything in `src/**/*.ts` outside the exclude list is expected to
       // have unit tests. New 0% files in the report = a conscious decision
       // to make: write tests, or add the file here with a reason.
@@ -33,8 +39,8 @@ export default defineConfig({
         'src/lib/server/db/seed.ts',
         // Type-only module — emits no runtime code, so the v8 provider
         // reports it as 0/0/0/0 and drags the average down.
-        'src/lib/components/admin/import/phase.ts'
-      ]
+        'src/lib/components/admin/import/phase.ts',
+      ],
     },
     projects: [
       {
@@ -43,9 +49,9 @@ export default defineConfig({
           name: 'server',
           environment: 'node',
           include: ['src/**/*.{test,spec}.{js,ts}'],
-          exclude: ['src/**/*.svelte.{test,spec}.{js,ts}']
-        }
-      }
-    ]
-  }
+          exclude: ['src/**/*.svelte.{test,spec}.{js,ts}'],
+        },
+      },
+    ],
+  },
 });
