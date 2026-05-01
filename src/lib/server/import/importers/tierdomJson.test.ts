@@ -200,7 +200,7 @@ describe('tierdomJson importer', () => {
         .where(and(eq(categoryTable.slug, 'books'), isNull(categoryTable.deletedAt)))
         .all();
       expect(books).toHaveLength(1);
-      expect(books[0].name).toBe('My Books');
+      expect(books[0]!.name).toBe('My Books');
     });
 
     it('skip leaves an existing item slug in the target category alone', async () => {

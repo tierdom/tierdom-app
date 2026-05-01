@@ -58,9 +58,9 @@ describe('createSession', () => {
     const { token } = createSession(db, 'u1');
     const rows = db.select().from(session).all();
     expect(rows).toHaveLength(1);
-    expect(rows[0].id).toBe(hashToken(token));
-    expect(rows[0].id).not.toBe(token);
-    expect(rows[0].userId).toBe('u1');
+    expect(rows[0]!.id).toBe(hashToken(token));
+    expect(rows[0]!.id).not.toBe(token);
+    expect(rows[0]!.userId).toBe('u1');
   });
 });
 

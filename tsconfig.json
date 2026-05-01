@@ -13,6 +13,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitOverride": true,
+    "noUncheckedIndexedAccess": true,
     "moduleResolution": "bundler"
   }
   // Path aliases are handled by https://svelte.dev/docs/kit/configuration#alias

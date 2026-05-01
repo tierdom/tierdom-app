@@ -47,11 +47,10 @@ export function validateSession(db: DB, token: string): SessionValidationResult 
     .limit(1)
     .all();
 
-  if (rows.length === 0) {
+  const row = rows[0];
+  if (!row) {
     return { session: null, user: null };
   }
-
-  const row = rows[0];
 
   if (row.expiresAt < Date.now()) {
     db.delete(session).where(eq(session.id, id)).run();

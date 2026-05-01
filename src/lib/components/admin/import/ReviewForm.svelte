@@ -124,7 +124,7 @@
               type="radio"
               name={`action-${i}`}
               value="skip"
-              bind:group={edits[i].action}
+              bind:group={edit.action}
               class="mt-0.5"
             />
             <span>
@@ -138,7 +138,7 @@
                 type="radio"
                 name={`action-${i}`}
                 value="use-existing"
-                bind:group={edits[i].action}
+                bind:group={edit.action}
                 class="mt-0.5"
               />
               <span>
@@ -157,7 +157,7 @@
               type="radio"
               name={`action-${i}`}
               value="create-new"
-              bind:group={edits[i].action}
+              bind:group={edit.action}
               class="mt-0.5"
             />
             <span>
@@ -178,7 +178,7 @@
               />
             {:else if edit.action === 'use-existing'}
               <select
-                bind:value={edits[i].existingId}
+                bind:value={edit.existingId}
                 class="mt-1 block w-full rounded-md border border-subtle bg-canvas px-2 py-1.5 text-sm text-primary"
               >
                 {#each existingCategories as cat (cat.id)}
@@ -187,7 +187,7 @@
               </select>
             {:else}
               <input
-                bind:value={edits[i].newSlug}
+                bind:value={edit.newSlug}
                 class="mt-1 block w-full rounded-md border border-subtle bg-canvas px-2 py-1.5 text-sm text-primary"
               />
             {/if}
@@ -208,7 +208,7 @@
               />
             {:else}
               <input
-                bind:value={edits[i].newName}
+                bind:value={edit.newName}
                 class="mt-1 block w-full rounded-md border border-subtle bg-canvas px-2 py-1.5 text-sm text-primary"
               />
             {/if}

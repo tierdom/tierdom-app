@@ -59,7 +59,11 @@ export function insertByScore(
         )`,
     )
     .all();
-  const pos = result[0].pos;
+  const row = result[0];
+  /* v8 ignore start */
+  if (!row) throw new Error('reorder: count query returned no row');
+  /* v8 ignore stop */
+  const pos = row.pos;
 
   db.run(SUPPRESS_ON);
   db.run(

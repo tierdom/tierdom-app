@@ -102,6 +102,8 @@ export const actions: Actions = {
         })
         .returning({ id: tierListItemTable.id });
 
+      if (!inserted) throw new Error('insert returned no row');
+
       const order = insertByScore(categoryId, score, name, inserted.id);
       await db
         .update(tierListItemTable)
@@ -118,6 +120,8 @@ export const actions: Actions = {
       .from(tierListItem)
       .where(eq(tierListItem.id, id))
       .limit(1);
+
+    if (!item) return fail(404, { error: 'Item not found' });
 
     if (image && item.imageHash && item.imageHash !== image.imageHash) {
       deleteImage(item.imageHash);

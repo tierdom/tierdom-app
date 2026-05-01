@@ -97,14 +97,16 @@ export const actions: Actions = {
       return fail(400, { message: 'Malformed mapping form data.' });
     }
 
-    const mappings: CategoryMapping[] = fileSlugs.map((fileSlug, i) => {
-      if (actions[i] === 'skip') {
+    const mappings: CategoryMapping[] = fileSlugs.map((fileSlug, i): CategoryMapping => {
+      // Length parity is enforced above, so all parallel reads are safe.
+      const action = actions[i]!;
+      if (action === 'skip') {
         return { fileSlug, action: 'skip' };
       }
-      if (actions[i] === 'use-existing') {
-        return { fileSlug, action: 'use-existing', targetId: targetIds[i] };
+      if (action === 'use-existing') {
+        return { fileSlug, action: 'use-existing', targetId: targetIds[i]! };
       }
-      return { fileSlug, action: 'create-new', slug: newSlugs[i], name: newNames[i] };
+      return { fileSlug, action: 'create-new', slug: newSlugs[i]!, name: newNames[i]! };
     });
 
     const result = await importer.commit!(planId, mappings, strategy);

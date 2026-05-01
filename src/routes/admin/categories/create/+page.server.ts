@@ -22,7 +22,7 @@ export const actions: Actions = {
       name,
       description,
       propKeys,
-      order: maxOrder.max + 1,
+      order: (maxOrder?.max ?? -1) + 1,
       ...cutoffs,
     });
 

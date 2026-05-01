@@ -6,9 +6,9 @@ import { count, eq, asc, desc } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
-  const [cats] = await db.select({ count: count() }).from(category);
-  const [items] = await db.select({ count: count() }).from(tierListItem);
-  const [pgs] = await db.select({ count: count() }).from(page);
+  const [catCount] = await db.select({ count: count() }).from(category);
+  const [itemCount] = await db.select({ count: count() }).from(tierListItem);
+  const [pageCount] = await db.select({ count: count() }).from(page);
 
   const categories = await db
     .select({
@@ -52,9 +52,9 @@ export const load: PageServerLoad = async () => {
 
   return {
     counts: {
-      categories: cats.count,
-      items: items.count,
-      pages: pgs.count,
+      categories: catCount?.count ?? 0,
+      items: itemCount?.count ?? 0,
+      pages: pageCount?.count ?? 0,
     },
     categories,
     recentItems,

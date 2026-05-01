@@ -22,8 +22,7 @@ export function seedCategories(db: DB, categories: SeedCategory[]): number {
       .returning({ id: categoryTable.id })
       .get();
 
-    for (let i = 0; i < cat.items.length; i++) {
-      const item = cat.items[i];
+    for (const [i, item] of cat.items.entries()) {
       db.insert(tierListItemTable)
         .values({
           categoryId: inserted.id,

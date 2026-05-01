@@ -28,22 +28,22 @@ describe('bootstrapAdminUser', () => {
     const id = bootstrapAdminUser(db, 'secret', 'alice');
     expect(id).not.toBeNull();
     const [row] = db.select().from(user).all();
-    expect(row.id).toBe(id);
-    expect(row.username).toBe('alice');
-    expect(row.passwordHash).not.toBe('secret');
-    expect(verifyPassword('secret', row.passwordHash)).toBe(true);
+    expect(row!.id).toBe(id);
+    expect(row!.username).toBe('alice');
+    expect(row!.passwordHash).not.toBe('secret');
+    expect(verifyPassword('secret', row!.passwordHash)).toBe(true);
   });
 
   it('defaults the username to "admin" when omitted', () => {
     bootstrapAdminUser(db, 'secret');
     const [row] = db.select().from(user).all();
-    expect(row.username).toBe('admin');
+    expect(row!.username).toBe('admin');
   });
 
   it('lowercases the stored username', () => {
     bootstrapAdminUser(db, 'secret', 'AdminUser');
     const [row] = db.select().from(user).all();
-    expect(row.username).toBe('adminuser');
+    expect(row!.username).toBe('adminuser');
   });
 
   it('returns null and skips creation when a user already exists', () => {
@@ -52,6 +52,6 @@ describe('bootstrapAdminUser', () => {
     expect(second).toBeNull();
     const rows = db.select().from(user).all();
     expect(rows).toHaveLength(1);
-    expect(rows[0].username).toBe('first');
+    expect(rows[0]!.username).toBe('first');
   });
 });

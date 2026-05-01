@@ -35,7 +35,7 @@ describe('sortCategoryByScore', () => {
       .values({ slug: 'games', name: 'Games', order: 0 })
       .returning({ id: categoryTable.id })
       .all();
-    catId = cat.id;
+    catId = cat!.id;
   });
 
   function seed(name: string, score: number) {
@@ -44,7 +44,7 @@ describe('sortCategoryByScore', () => {
       .values({ categoryId: catId, slug: name.toLowerCase(), name, score, order: 999 })
       .returning({ id: tierListItemTable.id })
       .all();
-    return row.id;
+    return row!.id;
   }
 
   it('renumbers active items by score DESC, name ASC starting at 0', () => {
@@ -110,7 +110,7 @@ describe('applyOrder', () => {
       .values({ slug: 'games', name: 'Games', order: 0 })
       .returning({ id: categoryTable.id })
       .all();
-    catId = cat.id;
+    catId = cat!.id;
   });
 
   function seed(name: string) {
@@ -119,7 +119,7 @@ describe('applyOrder', () => {
       .values({ categoryId: catId, slug: name.toLowerCase(), name, score: 0, order: 999 })
       .returning({ id: tierListItemTable.id })
       .all();
-    return row.id;
+    return row!.id;
   }
 
   it('writes the position of each id as its new order', () => {
@@ -165,7 +165,7 @@ describe('insertByScore', () => {
       .values({ slug: 'games', name: 'Games', order: 0 })
       .returning({ id: categoryTable.id })
       .all();
-    catId = cat.id;
+    catId = cat!.id;
   });
 
   function seed(name: string, score: number, order: number) {
@@ -174,7 +174,7 @@ describe('insertByScore', () => {
       .values({ categoryId: catId, slug: name.toLowerCase(), name, score, order })
       .returning({ id: tierListItemTable.id })
       .all();
-    return row.id;
+    return row!.id;
   }
 
   it('returns 0 for the highest score in an empty-besides-self category', () => {

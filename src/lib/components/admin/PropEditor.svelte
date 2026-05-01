@@ -101,7 +101,8 @@
         highlightedIndex <= 0 ? filteredSuggestions.length - 1 : highlightedIndex - 1;
     } else if (e.key === 'Enter' && highlightedIndex >= 0) {
       e.preventDefault();
-      selectSuggestion(id, filteredSuggestions[highlightedIndex]);
+      const suggestion = filteredSuggestions[highlightedIndex];
+      if (suggestion !== undefined) selectSuggestion(id, suggestion);
     } else if (e.key === 'Escape') {
       activeComboboxId = null;
       highlightedIndex = -1;

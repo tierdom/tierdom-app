@@ -59,16 +59,16 @@ function seedFixtures(db: DB) {
 
   db.insert(tierListItemTable)
     .values([
-      { categoryId: catA.id, slug: 'inception', name: 'Inception', score: 95, order: 0 },
-      { categoryId: catA.id, slug: 'matrix', name: 'The Matrix', score: 90, order: 1 },
-      { categoryId: catB.id, slug: 'hades', name: 'Hades', score: 92, order: 0 },
+      { categoryId: catA!.id, slug: 'inception', name: 'Inception', score: 95, order: 0 },
+      { categoryId: catA!.id, slug: 'matrix', name: 'The Matrix', score: 90, order: 1 },
+      { categoryId: catB!.id, slug: 'hades', name: 'Hades', score: 92, order: 0 },
     ])
     .run();
 
   // One soft-deleted row that must NOT appear in JSON but MUST appear in the SQLite snapshot.
   db.insert(tierListItemTable)
     .values({
-      categoryId: catA.id,
+      categoryId: catA!.id,
       slug: 'trashed',
       name: 'Trashed',
       score: 50,
@@ -120,7 +120,7 @@ describe('buildExport', () => {
       `${FOLDER}/manifest.json`,
     ]);
 
-    const manifest: ExportManifest = JSON.parse(strFromU8(zip[`${FOLDER}/manifest.json`]));
+    const manifest: ExportManifest = JSON.parse(strFromU8(zip[`${FOLDER}/manifest.json`]!));
     expect(manifest.schemaVersion).toBe(EXPORT_SCHEMA_VERSION);
     expect(manifest.appVersion).toBe(APP_VERSION);
     expect(manifest.exportedAt).toBe(FIXED_DATE.toISOString());
@@ -132,7 +132,7 @@ describe('buildExport', () => {
       items: 3, // soft-deleted row excluded
     });
 
-    const data: ExportData = JSON.parse(strFromU8(zip[`${FOLDER}/data.json`]));
+    const data: ExportData = JSON.parse(strFromU8(zip[`${FOLDER}/data.json`]!));
     expect(data.schemaVersion).toBe(EXPORT_SCHEMA_VERSION);
     expect(data.data.pages.map((p) => p.slug)).toEqual(['about', 'home']);
     expect(data.data.siteSettings.map((s) => s.key)).toEqual(['footer']);
@@ -156,7 +156,7 @@ describe('buildExport', () => {
     ]);
 
     // Open the snapshot and verify it carries the trashed row too.
-    const snapshotBytes = zip[`${FOLDER}/db/db.sqlite`];
+    const snapshotBytes = zip[`${FOLDER}/db/db.sqlite`]!;
     const snapshotPath = join(imagesDir, 'snapshot.sqlite'); // reuse temp dir
     await writeFile(snapshotPath, snapshotBytes);
     const opened = new Database(snapshotPath, { readonly: true });
@@ -190,11 +190,11 @@ describe('buildExport', () => {
       `${FOLDER}/manifest.json`,
     ]);
 
-    const manifest: ExportManifest = JSON.parse(strFromU8(zip[`${FOLDER}/manifest.json`]));
+    const manifest: ExportManifest = JSON.parse(strFromU8(zip[`${FOLDER}/manifest.json`]!));
     expect(manifest.counts.images).toBe(2);
 
-    expect(Array.from(zip[`${FOLDER}/images/aa.webp`])).toEqual([1, 2, 3]);
-    expect(Array.from(zip[`${FOLDER}/images/bb.webp`])).toEqual([4, 5, 6]);
+    expect(Array.from(zip[`${FOLDER}/images/aa.webp`]!)).toEqual([1, 2, 3]);
+    expect(Array.from(zip[`${FOLDER}/images/bb.webp`]!)).toEqual([4, 5, 6]);
   });
 
   it('all-four export bundles everything and counts match', async () => {
@@ -216,7 +216,7 @@ describe('buildExport', () => {
       `${FOLDER}/markdown/movies.md`,
     ]);
 
-    const manifest: ExportManifest = JSON.parse(strFromU8(zip[`${FOLDER}/manifest.json`]));
+    const manifest: ExportManifest = JSON.parse(strFromU8(zip[`${FOLDER}/manifest.json`]!));
     expect(manifest.counts).toEqual({
       pages: 2,
       siteSettings: 1,
@@ -249,10 +249,10 @@ describe('buildExport', () => {
       `${FOLDER}/markdown/movies.md`,
     ]);
 
-    const manifest: ExportManifest = JSON.parse(strFromU8(zip[`${FOLDER}/manifest.json`]));
+    const manifest: ExportManifest = JSON.parse(strFromU8(zip[`${FOLDER}/manifest.json`]!));
     expect(manifest.counts).toEqual({ markdownFiles: 2 });
 
-    const movies = strFromU8(zip[`${FOLDER}/markdown/movies.md`]);
+    const movies = strFromU8(zip[`${FOLDER}/markdown/movies.md`]!);
     expect(movies).toContain('# Movies');
     expect(movies).toContain('## S tier');
     expect(movies).toContain('### Inception');
@@ -289,7 +289,7 @@ describe('buildExport', () => {
       db,
     );
     const zip = unzip(await streamToBuffer(stream));
-    const moviesMd = strFromU8(zip[`${FOLDER}/markdown/movies.md`]);
+    const moviesMd = strFromU8(zip[`${FOLDER}/markdown/movies.md`]!);
     expect(moviesMd).toContain('### WithImage\n\n<!-- abc123def456.webp -->\n\nScore: 80');
   });
 
@@ -314,7 +314,7 @@ describe('buildExport', () => {
       `${FOLDER}/images/abc123def456.webp`,
       `${FOLDER}/manifest.json`,
     ]);
-    const manifest: ExportManifest = JSON.parse(strFromU8(zip[`${FOLDER}/manifest.json`]));
+    const manifest: ExportManifest = JSON.parse(strFromU8(zip[`${FOLDER}/manifest.json`]!));
     expect(manifest.counts.images).toBe(1);
   });
 
@@ -325,7 +325,7 @@ describe('buildExport', () => {
       db,
     );
     const zip = unzip(await streamToBuffer(stream));
-    const readme = strFromU8(zip[`${FOLDER}/README.txt`]);
+    const readme = strFromU8(zip[`${FOLDER}/README.txt`]!);
     // Spot-check a few stable strings rather than coupling to the full text.
     expect(readme).toContain('Tierdom export');
     expect(readme).toContain('manifest.json');
@@ -340,7 +340,7 @@ describe('buildExport', () => {
       db,
     );
     const zip = unzip(await streamToBuffer(stream));
-    const manifest: ExportManifest = JSON.parse(strFromU8(zip[`${FOLDER}/manifest.json`]));
+    const manifest: ExportManifest = JSON.parse(strFromU8(zip[`${FOLDER}/manifest.json`]!));
     expect(manifest.counts.images).toBe(0);
   });
 
@@ -351,7 +351,7 @@ describe('buildExport', () => {
       db,
     );
     const zip = unzip(await streamToBuffer(stream));
-    const data: ExportData = JSON.parse(strFromU8(zip[`${FOLDER}/data.json`]));
+    const data: ExportData = JSON.parse(strFromU8(zip[`${FOLDER}/data.json`]!));
     const categoryIds = new Set(data.data.categories.map((c) => c.id));
     for (const c of data.data.categories) {
       for (const i of c.items) {

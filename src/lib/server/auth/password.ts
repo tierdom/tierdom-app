@@ -18,6 +18,9 @@ export function hashPassword(password: string): string {
 
 export function verifyPassword(password: string, stored: string): boolean {
   const [saltHex, hashHex] = stored.split('$');
+  if (!saltHex || !hashHex) {
+    throw new Error('Stored password is malformed (expected "salt$hash")');
+  }
   const salt = Buffer.from(saltHex, 'hex');
   const storedHash = Buffer.from(hashHex, 'hex');
   const candidateHash = scryptSync(password, salt, KEY_LENGTH, {

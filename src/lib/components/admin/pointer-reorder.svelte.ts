@@ -101,6 +101,7 @@ export function applyReorder<T extends { id: string }>(
   if (fromIndex === -1 || toIndex === -1) return items;
   const reordered = [...items];
   const [moved] = reordered.splice(fromIndex, 1);
+  if (!moved) return items;
   const insertAt =
     fromIndex < toIndex
       ? position === 'above'

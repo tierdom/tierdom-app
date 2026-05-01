@@ -83,7 +83,7 @@ describe('schema-v1.json', () => {
     }
     const itemRequired = schema.$defs.Item.required as string[];
     for (const key of itemRequired) {
-      expect(sampleExport.data.categories[0].items[0]).toHaveProperty(key);
+      expect(sampleExport.data.categories[0]!.items[0]).toHaveProperty(key);
     }
     const pageRequired = schema.$defs.Page.required as string[];
     for (const key of pageRequired) {

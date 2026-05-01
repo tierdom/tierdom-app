@@ -40,7 +40,7 @@ function seedCategory(db: DB, slug: string, name = slug) {
     .values({ slug, name, order: 0 })
     .returning({ id: categoryTable.id })
     .all();
-  return row.id;
+  return row!.id;
 }
 
 function seedItem(
@@ -61,7 +61,7 @@ function seedItem(
     })
     .returning({ id: tierListItemTable.id })
     .all();
-  return row.id;
+  return row!.id;
 }
 
 describe('softDeleteCategory', () => {

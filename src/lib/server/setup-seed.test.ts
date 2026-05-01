@@ -60,10 +60,10 @@ describe('seedPreset', () => {
     expect(db.select().from(page).all()).toHaveLength(2);
     const cats = db.select().from(categoryTable).all();
     expect(cats).toHaveLength(1);
-    expect(cats[0].slug).toBe('tier-list');
+    expect(cats[0]!.slug).toBe('tier-list');
     const items = db.select().from(tierListItemTable).all();
     expect(items).toHaveLength(1);
-    expect(items[0].name).toBe('Sample Item');
+    expect(items[0]!.name).toBe('Sample Item');
   });
 
   it('"demo" seeds the full content set', async () => {

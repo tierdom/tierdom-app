@@ -40,7 +40,7 @@ describe('validateExport', () => {
     const data = loadFixture('tierdom-json-001-good.json') as {
       data: { categories: { id: string }[] };
     };
-    data.data.categories[0].id = 'not-a-uuid';
+    data.data.categories[0]!.id = 'not-a-uuid';
     expect(validateExport(data)).toBe(false);
     expect(formatAjvErrors().some((e) => /uuid/i.test(e) || /format/i.test(e))).toBe(true);
   });
@@ -49,7 +49,7 @@ describe('validateExport', () => {
     const data = loadFixture('tierdom-json-001-good.json') as {
       data: { categories: { createdAt: string }[] };
     };
-    data.data.categories[0].createdAt = '2026-01-01 00:00:00'; // missing T + Z
+    data.data.categories[0]!.createdAt = '2026-01-01 00:00:00'; // missing T + Z
     expect(validateExport(data)).toBe(false);
     expect(formatAjvErrors().some((e) => /date-time/i.test(e) || /format/i.test(e))).toBe(true);
   });
@@ -73,7 +73,7 @@ describe('formatAjvErrors', () => {
     validateExport(null);
     const errors = formatAjvErrors();
     expect(errors.length).toBeGreaterThan(0);
-    expect(errors[0].startsWith('/ ')).toBe(true);
+    expect(errors[0]!.startsWith('/ ')).toBe(true);
   });
 
   it('falls back to "invalid" when an AJV error has no message', () => {
