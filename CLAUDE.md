@@ -38,6 +38,8 @@ Target: **WCAG 2.1 Level AA** ([ADR-0016](docs/decisions/0016-accessibility-and-
 
 Prefer `npm run <script>` over `npx <tool>` whenever `package.json` has a matching script. Use `npx` only when no script covers the use case.
 
+For noisy command output (verify, coverage, full type-checks), redirect to a file under `.tmp/` (gitignored) and `Read` the relevant section — don't pipe to `| tail -N` (each variation triggers a permission prompt and produces sprawl). Example: `npm run verify > .tmp/verify.log 2>&1` then `Read` with offset.
+
 ## Code style
 
 - No section-heading comments (`// ─── Section ───`). Extract a separate module if a heading is warranted.
