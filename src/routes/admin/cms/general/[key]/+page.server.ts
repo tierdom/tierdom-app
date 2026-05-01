@@ -6,7 +6,7 @@ import {
   getSiteContentRecord,
   isSiteContentKey,
   setSiteContent,
-  siteContentBlocks
+  siteContentBlocks,
 } from '$lib/server/site-content';
 import type { PageServerLoad, Actions } from './$types';
 
@@ -25,7 +25,7 @@ export const load: PageServerLoad = async ({ params }) => {
     usingFallback: !record.value?.trim(),
     maxBytes: MAX_SITE_CONTENT_BYTES,
     createdAt: record.createdAt,
-    updatedAt: record.updatedAt
+    updatedAt: record.updatedAt,
   };
 };
 
@@ -43,7 +43,7 @@ export const actions: Actions = {
       if (err instanceof SiteContentTooLargeError) {
         return fail(400, {
           error: `Content is ${err.byteLength.toLocaleString()} bytes, exceeds the ${err.maxBytes.toLocaleString()} byte limit.`,
-          value
+          value,
         });
       }
       throw err;
@@ -58,5 +58,5 @@ export const actions: Actions = {
     await clearSiteContent(params.key);
 
     redirect(303, '/admin/cms');
-  }
+  },
 };

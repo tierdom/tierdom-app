@@ -27,7 +27,7 @@ export const CATEGORIES: SeedCategory[] = [
         score: 97,
         props: [p('Platform', 'PC')],
         description:
-          'A **masterclass** in metroidvania design. The atmosphere, the music, the challenge — everything clicks.\n\nTeam Cherry created something truly special with a tiny budget.'
+          'A **masterclass** in metroidvania design. The atmosphere, the music, the challenge — everything clicks.\n\nTeam Cherry created something truly special with a tiny budget.',
       },
       { name: 'The Witcher 3', score: 94, props: [p('Platform', 'PC')] },
       {
@@ -35,7 +35,7 @@ export const CATEGORIES: SeedCategory[] = [
         score: 92,
         props: [p('Platform', 'PC')],
         description:
-          'An RPG where *every skill is a voice in your head*. The writing is unmatched in games.\n\nNothing else plays like this.'
+          'An RPG where *every skill is a voice in your head*. The writing is unmatched in games.\n\nNothing else plays like this.',
       },
       { name: 'Hades', score: 91, props: [p('Platform', 'PC')] },
       { name: 'Dark Souls', score: 88, props: [p('Platform', 'PS3')] },
@@ -58,8 +58,8 @@ export const CATEGORIES: SeedCategory[] = [
       { name: "No Man's Sky (launch)", score: 40, props: [p('Platform', 'PS4')] },
       { name: 'Forspoken', score: 32, props: [p('Platform', 'PS5')] },
       { name: 'Redfall', score: 20, props: [p('Platform', 'Xbox Series S/X')] },
-      { name: 'Anthem', score: 10, props: [p('Platform', 'PC')] }
-    ]
+      { name: 'Anthem', score: 10, props: [p('Platform', 'PC')] },
+    ],
   },
   {
     slug: 'books',
@@ -74,7 +74,7 @@ export const CATEGORIES: SeedCategory[] = [
         score: 96,
         props: [p('Year', '1985'), p('ISBN', '978-0679728757')],
         description:
-          'McCarthy at his most **brutal and poetic**. The Judge is one of the greatest villains in all of literature.\n\nNot for the faint of heart.'
+          'McCarthy at his most **brutal and poetic**. The Judge is one of the greatest villains in all of literature.\n\nNot for the faint of heart.',
       },
       { name: 'Infinite Jest', score: 93, props: [p('Year', '1996'), p('ISBN', '978-0316066525')] },
       { name: 'The Road', score: 91, props: [p('Year', '2006'), p('ISBN', '978-0307387899')] },
@@ -83,56 +83,56 @@ export const CATEGORIES: SeedCategory[] = [
         score: 90,
         props: [p('Year', '1965'), p('ISBN', '978-0441013593')],
         description:
-          'The **definitive** science fiction epic. World-building that puts most fantasy to shame.\n\nHerbert created an entire universe of politics, religion, and ecology.'
+          'The **definitive** science fiction epic. World-building that puts most fantasy to shame.\n\nHerbert created an entire universe of politics, religion, and ecology.',
       },
       { name: 'Piranesi', score: 88, props: [p('Year', '2020'), p('ISBN', '978-1635575941')] },
       {
         name: 'The Name of the Wind',
         score: 85,
-        props: [p('Year', '2007'), p('ISBN', '978-0756404741')]
+        props: [p('Year', '2007'), p('ISBN', '978-0756404741')],
       },
       { name: 'Recursion', score: 83, props: [p('Year', '2019'), p('ISBN', '978-1524759780')] },
       {
         name: 'A Fire Upon the Deep',
         score: 81,
-        props: [p('Year', '1992'), p('ISBN', '978-0812515282')]
+        props: [p('Year', '1992'), p('ISBN', '978-0812515282')],
       },
       {
         name: 'Thinking, Fast and Slow',
         score: 79,
-        props: [p('Year', '2011'), p('ISBN', '978-0374533557')]
+        props: [p('Year', '2011'), p('ISBN', '978-0374533557')],
       },
       {
         name: 'The Lies of Locke Lamora',
         score: 77,
-        props: [p('Year', '2006'), p('ISBN', '978-0553588941')]
+        props: [p('Year', '2006'), p('ISBN', '978-0553588941')],
       },
       {
         name: 'All Systems Red',
         score: 75,
-        props: [p('Year', '2017'), p('ISBN', '978-0765397539')]
+        props: [p('Year', '2017'), p('ISBN', '978-0765397539')],
       },
       {
         name: 'Flowers for Algernon',
         score: 73,
-        props: [p('Year', '1966'), p('ISBN', '978-0156030083')]
+        props: [p('Year', '1966'), p('ISBN', '978-0156030083')],
       },
       {
         name: 'The Left Hand of Darkness',
         score: 71,
-        props: [p('Year', '1969'), p('ISBN', '978-0441478125')]
+        props: [p('Year', '1969'), p('ISBN', '978-0441478125')],
       },
       { name: 'The Poppy War', score: 68, props: [p('Year', '2018'), p('ISBN', '978-0062662569')] },
       {
         name: 'Ready Player One',
         score: 55,
-        props: [p('Year', '2011'), p('ISBN', '978-0307887443')]
+        props: [p('Year', '2011'), p('ISBN', '978-0307887443')],
       },
       { name: 'The Martian', score: 65, props: [p('Year', '2011'), p('ISBN', '978-0553418026')] },
       {
         name: 'Dark Matter (Crouch)',
         score: 62,
-        props: [p('Year', '2016'), p('ISBN', '978-1101904220')]
+        props: [p('Year', '2016'), p('ISBN', '978-1101904220')],
       },
       { name: 'Six of Crows', score: 60, props: [p('Year', '2015'), p('ISBN', '978-1627792127')] },
       { name: 'Eragon', score: 48, props: [p('Year', '2003'), p('ISBN', '978-0375826696')] },
@@ -141,20 +141,20 @@ export const CATEGORIES: SeedCategory[] = [
       {
         name: 'The Fault in Our Stars',
         score: 46,
-        props: [p('Year', '2012'), p('ISBN', '978-0525478812')]
+        props: [p('Year', '2012'), p('ISBN', '978-0525478812')],
       },
       {
         name: 'Halo: The Fall of Reach',
         score: 50,
-        props: [p('Year', '2001'), p('ISBN', '978-0765367297')]
+        props: [p('Year', '2001'), p('ISBN', '978-0765367297')],
       },
       { name: 'Bobiverse 1', score: 72, props: [p('Year', '2016'), p('ISBN', '978-1680680584')] },
       {
         name: 'Sword of Truth: Wizards First Rule',
         score: 28,
-        props: [p('Year', '1994'), p('ISBN', '978-0812548051')]
-      }
-    ]
+        props: [p('Year', '1994'), p('ISBN', '978-0812548051')],
+      },
+    ],
   },
   {
     slug: 'movies',
@@ -169,12 +169,12 @@ export const CATEGORIES: SeedCategory[] = [
         score: 95,
         props: [p('Year', '2018'), p('Genre', 'Sci-Fi')],
         description:
-          "Garland turned VanderMeer's *weird fiction* into something even stranger on screen. The Shimmer is **unforgettable**.\n\nThe bear scene alone earns it a spot in S-tier."
+          "Garland turned VanderMeer's *weird fiction* into something even stranger on screen. The Shimmer is **unforgettable**.\n\nThe bear scene alone earns it a spot in S-tier.",
       },
       {
         name: '2001: A Space Odyssey',
         score: 93,
-        props: [p('Year', '1968'), p('Genre', 'Sci-Fi')]
+        props: [p('Year', '1968'), p('Genre', 'Sci-Fi')],
       },
       { name: 'Stalker (1979)', score: 91, props: [p('Year', '1979'), p('Genre', 'Sci-Fi')] },
       { name: 'The Thing (1982)', score: 90, props: [p('Year', '1982'), p('Genre', 'Horror')] },
@@ -183,7 +183,7 @@ export const CATEGORIES: SeedCategory[] = [
         score: 88,
         props: [p('Year', '2017'), p('Genre', 'Sci-Fi')],
         description:
-          "Villeneuve proved a *Blade Runner* sequel could work. Deakins' cinematography is **breathtaking**.\n\nSlow, meditative, and visually perfect."
+          "Villeneuve proved a *Blade Runner* sequel could work. Deakins' cinematography is **breathtaking**.\n\nSlow, meditative, and visually perfect.",
       },
       { name: 'Parasite', score: 86, props: [p('Year', '2019'), p('Genre', 'Thriller')] },
       { name: 'Arrival', score: 84, props: [p('Year', '2016'), p('Genre', 'Sci-Fi')] },
@@ -201,7 +201,7 @@ export const CATEGORIES: SeedCategory[] = [
       {
         name: 'No Country for Old Men',
         score: 88,
-        props: [p('Year', '2007'), p('Genre', 'Thriller')]
+        props: [p('Year', '2007'), p('Genre', 'Thriller')],
       },
       { name: 'The Babadook', score: 77, props: [p('Year', '2014'), p('Genre', 'Horror')] },
       { name: 'Color Out of Space', score: 76, props: [p('Year', '2019'), p('Genre', 'Horror')] },
@@ -210,7 +210,7 @@ export const CATEGORIES: SeedCategory[] = [
       {
         name: 'Everything Everywhere All at Once',
         score: 74,
-        props: [p('Year', '2022'), p('Genre', 'Sci-Fi')]
+        props: [p('Year', '2022'), p('Genre', 'Sci-Fi')],
       },
       { name: 'Hereditary', score: 72, props: [p('Year', '2018'), p('Genre', 'Horror')] },
       { name: 'The Lighthouse', score: 70, props: [p('Year', '2019'), p('Genre', 'Horror')] },
@@ -222,14 +222,14 @@ export const CATEGORIES: SeedCategory[] = [
       {
         name: 'The Banshees of Inisherin',
         score: 71,
-        props: [p('Year', '2022'), p('Genre', 'Drama')]
+        props: [p('Year', '2022'), p('Genre', 'Drama')],
       },
       { name: 'Triangle of Sadness', score: 62, props: [p('Year', '2022'), p('Genre', 'Comedy')] },
       { name: 'Nope', score: 58, props: [p('Year', '2022'), p('Genre', 'Sci-Fi')] },
       {
         name: 'Transformers: Age of Extinction',
         score: 12,
-        props: [p('Year', '2014'), p('Genre', 'Action')]
+        props: [p('Year', '2014'), p('Genre', 'Action')],
       },
       { name: 'Avatar (2009)', score: 45, props: [p('Year', '2009'), p('Genre', 'Sci-Fi')] },
       { name: 'Cats (2019)', score: 5, props: [p('Year', '2019'), p('Genre', 'Musical')] },
@@ -248,12 +248,12 @@ export const CATEGORIES: SeedCategory[] = [
       {
         name: 'Alone in the Dark (2005)',
         score: 6,
-        props: [p('Year', '2005'), p('Genre', 'Horror')]
+        props: [p('Year', '2005'), p('Genre', 'Horror')],
       },
       { name: 'Catwoman (2004)', score: 10, props: [p('Year', '2004'), p('Genre', 'Action')] },
       { name: 'Bloodshot', score: 11, props: [p('Year', '2020'), p('Genre', 'Action')] },
-      { name: 'Left Behind (2014)', score: 4, props: [p('Year', '2014'), p('Genre', 'Drama')] }
-    ]
+      { name: 'Left Behind (2014)', score: 4, props: [p('Year', '2014'), p('Genre', 'Drama')] },
+    ],
   },
   {
     slug: 'board-games',
@@ -266,16 +266,16 @@ export const CATEGORIES: SeedCategory[] = [
       { name: 'Spirit Island', score: 92, props: [] },
       { name: 'Catan', score: 48, props: [] },
       { name: 'Pandemic', score: 42, props: [] },
-      { name: 'Exploding Kittens', score: 25, props: [] }
-    ]
+      { name: 'Exploding Kittens', score: 25, props: [] },
+    ],
   },
   {
     slug: 'recipes',
     name: 'Recipes',
     description: 'Recipes I have tried, ranked by taste and effort. *Coming soon.*',
     order: 4,
-    items: []
-  }
+    items: [],
+  },
 ];
 
 export const PAGES = [
@@ -284,7 +284,7 @@ export const PAGES = [
     title: 'Home',
     content: `# My personal **Tierdom**
 
-My personal list of lists: how I rank all sorts of things, along with small reviews. Divided into _tiers_. Have a look around!`
+My personal list of lists: how I rank all sorts of things, along with small reviews. Divided into _tiers_. Have a look around!`,
   },
   {
     slug: 'about',
@@ -311,6 +311,6 @@ It's a way to rank items in a list. Items in the same "Tier" ("rank") are normal
 
 ## Open source
 
-The source code is publicly available on [GitHub](https://github.com/tierdom/tierdom-app).`
-  }
+The source code is publicly available on [GitHub](https://github.com/tierdom/tierdom-app).`,
+  },
 ];

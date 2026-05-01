@@ -13,7 +13,7 @@ export const load: PageServerLoad = async () => {
       slug: category.slug,
       name: category.name,
       order: category.order,
-      itemCount: count(tierListItem.id)
+      itemCount: count(tierListItem.id),
     })
     .from(category)
     .leftJoin(tierListItem, eq(tierListItem.categoryId, category.id))
@@ -51,5 +51,5 @@ export const actions: Actions = {
 
     await applyOrder(categoryTable, categoryTable.id, categoryTable.order, orderedIds);
     return { success: true };
-  }
+  },
 };

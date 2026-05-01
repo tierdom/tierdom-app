@@ -17,7 +17,7 @@ vi.mock('$lib/server/db', async () => {
     backupDatabaseTo: (targetPath: string, conn: { run: (q: unknown) => void }) => {
       const escaped = targetPath.replace(/'/g, "''");
       conn.run(real.sql.raw(`VACUUM INTO '${escaped}'`));
-    }
+    },
   };
 });
 
@@ -40,7 +40,7 @@ function seedFixtures(db: DB) {
   db.insert(page)
     .values([
       { slug: 'about', title: 'About', content: '# About' },
-      { slug: 'home', title: 'Home', content: '# Home' }
+      { slug: 'home', title: 'Home', content: '# Home' },
     ])
     .run();
 
@@ -61,7 +61,7 @@ function seedFixtures(db: DB) {
     .values([
       { categoryId: catA.id, slug: 'inception', name: 'Inception', score: 95, order: 0 },
       { categoryId: catA.id, slug: 'matrix', name: 'The Matrix', score: 90, order: 1 },
-      { categoryId: catB.id, slug: 'hades', name: 'Hades', score: 92, order: 0 }
+      { categoryId: catB.id, slug: 'hades', name: 'Hades', score: 92, order: 0 },
     ])
     .run();
 
@@ -73,7 +73,7 @@ function seedFixtures(db: DB) {
       name: 'Trashed',
       score: 50,
       order: 99,
-      deletedAt: '2026-01-01T00:00:00.000Z'
+      deletedAt: '2026-01-01T00:00:00.000Z',
     })
     .run();
 }
@@ -109,7 +109,7 @@ describe('buildExport', () => {
     const { stream, filename } = buildExport(
       { includeDb: false, includeJson: true, includeImages: false, includeMarkdown: false },
       { appVersion: APP_VERSION, exportedAt: FIXED_DATE, imagesDir },
-      db
+      db,
     );
     expect(filename).toBe(`tierdom-backup-${STAMP}.zip`);
 
@@ -117,7 +117,7 @@ describe('buildExport', () => {
     expect(entryNames(zip)).toEqual([
       `${FOLDER}/README.txt`,
       `${FOLDER}/data.json`,
-      `${FOLDER}/manifest.json`
+      `${FOLDER}/manifest.json`,
     ]);
 
     const manifest: ExportManifest = JSON.parse(strFromU8(zip[`${FOLDER}/manifest.json`]));
@@ -129,7 +129,7 @@ describe('buildExport', () => {
       pages: 2,
       siteSettings: 1,
       categories: 2,
-      items: 3 // soft-deleted row excluded
+      items: 3, // soft-deleted row excluded
     });
 
     const data: ExportData = JSON.parse(strFromU8(zip[`${FOLDER}/data.json`]));
@@ -146,13 +146,13 @@ describe('buildExport', () => {
     const { stream } = buildExport(
       { includeDb: true, includeJson: false, includeImages: false, includeMarkdown: false },
       { appVersion: APP_VERSION, exportedAt: FIXED_DATE, imagesDir },
-      db
+      db,
     );
     const zip = unzip(await streamToBuffer(stream));
     expect(entryNames(zip)).toEqual([
       `${FOLDER}/README.txt`,
       `${FOLDER}/db/db.sqlite`,
-      `${FOLDER}/manifest.json`
+      `${FOLDER}/manifest.json`,
     ]);
 
     // Open the snapshot and verify it carries the trashed row too.
@@ -180,14 +180,14 @@ describe('buildExport', () => {
     const { stream } = buildExport(
       { includeDb: false, includeJson: false, includeImages: true, includeMarkdown: false },
       { appVersion: APP_VERSION, exportedAt: FIXED_DATE, imagesDir },
-      db
+      db,
     );
     const zip = unzip(await streamToBuffer(stream));
     expect(entryNames(zip)).toEqual([
       `${FOLDER}/README.txt`,
       `${FOLDER}/images/aa.webp`,
       `${FOLDER}/images/bb.webp`,
-      `${FOLDER}/manifest.json`
+      `${FOLDER}/manifest.json`,
     ]);
 
     const manifest: ExportManifest = JSON.parse(strFromU8(zip[`${FOLDER}/manifest.json`]));
@@ -203,7 +203,7 @@ describe('buildExport', () => {
     const { stream } = buildExport(
       { includeDb: true, includeJson: true, includeImages: true, includeMarkdown: true },
       { appVersion: APP_VERSION, exportedAt: FIXED_DATE, imagesDir },
-      db
+      db,
     );
     const zip = unzip(await streamToBuffer(stream));
     expect(entryNames(zip)).toEqual([
@@ -213,7 +213,7 @@ describe('buildExport', () => {
       `${FOLDER}/images/one.webp`,
       `${FOLDER}/manifest.json`,
       `${FOLDER}/markdown/games.md`,
-      `${FOLDER}/markdown/movies.md`
+      `${FOLDER}/markdown/movies.md`,
     ]);
 
     const manifest: ExportManifest = JSON.parse(strFromU8(zip[`${FOLDER}/manifest.json`]));
@@ -223,7 +223,7 @@ describe('buildExport', () => {
       categories: 2,
       items: 3,
       images: 1,
-      markdownFiles: 2
+      markdownFiles: 2,
     });
     expect(manifest.contents).toEqual([
       'README.txt',
@@ -231,7 +231,7 @@ describe('buildExport', () => {
       'data.json',
       'db/db.sqlite',
       'images/',
-      'markdown/'
+      'markdown/',
     ]);
   });
 
@@ -239,14 +239,14 @@ describe('buildExport', () => {
     const { stream } = buildExport(
       { includeDb: false, includeJson: false, includeImages: false, includeMarkdown: true },
       { appVersion: APP_VERSION, exportedAt: FIXED_DATE, imagesDir },
-      db
+      db,
     );
     const zip = unzip(await streamToBuffer(stream));
     expect(entryNames(zip)).toEqual([
       `${FOLDER}/README.txt`,
       `${FOLDER}/manifest.json`,
       `${FOLDER}/markdown/games.md`,
-      `${FOLDER}/markdown/movies.md`
+      `${FOLDER}/markdown/movies.md`,
     ]);
 
     const manifest: ExportManifest = JSON.parse(strFromU8(zip[`${FOLDER}/manifest.json`]));
@@ -279,14 +279,14 @@ describe('buildExport', () => {
         name: 'WithImage',
         score: 80,
         order: 5,
-        imageHash: 'abc123def456'
+        imageHash: 'abc123def456',
       })
       .run();
 
     const { stream } = buildExport(
       { includeDb: false, includeJson: false, includeImages: false, includeMarkdown: true },
       { appVersion: APP_VERSION, exportedAt: FIXED_DATE, imagesDir },
-      db
+      db,
     );
     const zip = unzip(await streamToBuffer(stream));
     const moviesMd = strFromU8(zip[`${FOLDER}/markdown/movies.md`]);
@@ -306,13 +306,13 @@ describe('buildExport', () => {
     const { stream } = buildExport(
       { includeDb: false, includeJson: false, includeImages: true, includeMarkdown: false },
       { appVersion: APP_VERSION, exportedAt: FIXED_DATE, imagesDir },
-      db
+      db,
     );
     const zip = unzip(await streamToBuffer(stream));
     expect(entryNames(zip)).toEqual([
       `${FOLDER}/README.txt`,
       `${FOLDER}/images/abc123def456.webp`,
-      `${FOLDER}/manifest.json`
+      `${FOLDER}/manifest.json`,
     ]);
     const manifest: ExportManifest = JSON.parse(strFromU8(zip[`${FOLDER}/manifest.json`]));
     expect(manifest.counts.images).toBe(1);
@@ -322,7 +322,7 @@ describe('buildExport', () => {
     const { stream } = buildExport(
       { includeDb: false, includeJson: true, includeImages: false, includeMarkdown: false },
       { appVersion: APP_VERSION, exportedAt: FIXED_DATE, imagesDir },
-      db
+      db,
     );
     const zip = unzip(await streamToBuffer(stream));
     const readme = strFromU8(zip[`${FOLDER}/README.txt`]);
@@ -337,7 +337,7 @@ describe('buildExport', () => {
     const { stream } = buildExport(
       { includeDb: false, includeJson: false, includeImages: true, includeMarkdown: false },
       { appVersion: APP_VERSION, exportedAt: FIXED_DATE, imagesDir: missing },
-      db
+      db,
     );
     const zip = unzip(await streamToBuffer(stream));
     const manifest: ExportManifest = JSON.parse(strFromU8(zip[`${FOLDER}/manifest.json`]));
@@ -348,7 +348,7 @@ describe('buildExport', () => {
     const { stream } = buildExport(
       { includeDb: false, includeJson: true, includeImages: false, includeMarkdown: false },
       { appVersion: APP_VERSION, exportedAt: FIXED_DATE, imagesDir },
-      db
+      db,
     );
     const zip = unzip(await streamToBuffer(stream));
     const data: ExportData = JSON.parse(strFromU8(zip[`${FOLDER}/data.json`]));
@@ -367,7 +367,7 @@ describe('buildExport', () => {
     const { stream, cleanup } = buildExport(
       { includeDb: true, includeJson: false, includeImages: false, includeMarkdown: false },
       { appVersion: APP_VERSION, exportedAt: FIXED_DATE, imagesDir },
-      db
+      db,
     );
     await streamToBuffer(stream);
     await expect(cleanup()).resolves.toBeUndefined();

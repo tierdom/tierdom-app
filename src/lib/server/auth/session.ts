@@ -39,7 +39,7 @@ export function validateSession(db: DB, token: string): SessionValidationResult 
       sessionId: session.id,
       expiresAt: session.expiresAt,
       userId: user.id,
-      username: user.username
+      username: user.username,
     })
     .from(session)
     .innerJoin(user, eq(session.userId, user.id))
@@ -67,7 +67,7 @@ export function validateSession(db: DB, token: string): SessionValidationResult 
 
   return {
     session: { id: row.sessionId, expiresAt: row.expiresAt },
-    user: { id: row.userId, username: row.username }
+    user: { id: row.userId, username: row.username },
   };
 }
 

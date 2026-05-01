@@ -11,6 +11,6 @@ export const load: PageServerLoad = async () => {
   if (!aboutPage) error(404, 'Page not found');
 
   return {
-    page: { ...aboutPage, contentHtml: renderMarkdown(aboutPage.content) }
+    page: { ...aboutPage, contentHtml: renderMarkdown(aboutPage.content) },
   };
 };

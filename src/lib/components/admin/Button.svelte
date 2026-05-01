@@ -24,7 +24,7 @@
     primary: 'bg-accent font-semibold text-canvas transition-opacity hover:opacity-80',
     danger: 'bg-red-600 font-semibold text-white transition-opacity hover:opacity-80',
     'danger-ghost': 'text-red-400 hover:bg-red-400/10',
-    secondary: 'border border-subtle text-secondary transition-colors hover:text-primary'
+    secondary: 'border border-subtle text-secondary transition-colors hover:text-primary',
   };
 </script>
 

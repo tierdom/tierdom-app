@@ -28,14 +28,14 @@
     typedConfirmationLabel = 'Type to confirm',
     typedConfirmationHint,
     onconfirm,
-    oncancel
+    oncancel,
   }: Props = $props();
 
   let dialogEl: HTMLDialogElement | undefined = $state();
   let cancelEl: HTMLButtonElement | undefined = $state();
   let typedValue = $state('');
   const confirmEnabled = $derived(
-    !requireTypedConfirmation || typedValue.trim() === requireTypedConfirmation
+    !requireTypedConfirmation || typedValue.trim() === requireTypedConfirmation,
   );
 
   $effect(() => {

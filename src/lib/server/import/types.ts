@@ -47,7 +47,7 @@ export interface Importer {
   commit?: (
     planId: string,
     mappings: CategoryMapping[],
-    strategy: MergeStrategy
+    strategy: MergeStrategy,
   ) => Promise<ImportResult>;
   stubInfo?: {
     sampleNeeded: boolean;
@@ -69,7 +69,7 @@ export function emptyResult(): ImportResult {
     updated: { categories: 0, items: 0 },
     skipped: { categories: 0, items: 0 },
     details: { inserted: [], updated: [], skipped: [] },
-    errors: []
+    errors: [],
   };
 }
 

@@ -17,7 +17,7 @@ describe('scoreToTier', () => {
     [20, 'E'],
     [19, 'F'],
     [0, 'F'],
-    [-1, 'F']
+    [-1, 'F'],
   ] as const)('scoreToTier(%d) → %s', (score, expected) => {
     expect.assertions(1);
     expect(scoreToTier(score)).toBe(expected);
@@ -41,7 +41,7 @@ describe('scoreToBarColor', () => {
     [25, 30],
     [50, 60],
     [75, 90],
-    [100, 120]
+    [100, 120],
   ])('scoreToBarColor(%d) → hue %d', (score, expectedHue) => {
     expect.assertions(1);
     expect(scoreToBarColor(score)).toBe(`hsl(${expectedHue}, 70%, 45%)`);

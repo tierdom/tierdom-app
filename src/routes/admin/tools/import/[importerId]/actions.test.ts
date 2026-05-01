@@ -6,14 +6,14 @@ import { describe, expect, it, vi, beforeEach } from 'vitest';
 vi.mock('$env/dynamic/private', () => ({ env: { DATA_PATH: '/tmp/test' } }));
 vi.mock('$lib/server/db', () => ({ db: {} }));
 vi.mock('$lib/server/db/schema', () => ({
-  categoryTable: { id: 'id', slug: 'slug', name: 'name', deletedAt: 'deletedAt' }
+  categoryTable: { id: 'id', slug: 'slug', name: 'name', deletedAt: 'deletedAt' },
 }));
 vi.mock('$lib/server/import/registry', () => ({ getImporter: () => undefined }));
 vi.mock('$lib/server/import/validate', () => ({ MAX_JSON_BYTES: 0 }));
 
 const { deleteSpy } = vi.hoisted(() => ({ deleteSpy: vi.fn() }));
 vi.mock('$lib/server/import/temp-storage', () => ({
-  deleteImportTemp: (id: string) => deleteSpy(id)
+  deleteImportTemp: (id: string) => deleteSpy(id),
 }));
 
 import { actions } from './+page.server';

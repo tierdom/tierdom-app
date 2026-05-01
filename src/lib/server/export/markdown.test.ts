@@ -15,13 +15,13 @@ function makeItem(overrides: Partial<ExportedItem> = {}): ExportedItem {
     props: [],
     createdAt: '2026-01-01T00:00:00.000Z',
     updatedAt: '2026-01-01T00:00:00.000Z',
-    ...overrides
+    ...overrides,
   };
 }
 
 function makeCategory(
   items: ExportedItem[],
-  overrides: Partial<ExportedCategory> = {}
+  overrides: Partial<ExportedCategory> = {},
 ): ExportedCategory {
   return {
     id: 'cat-id',
@@ -40,7 +40,7 @@ function makeCategory(
     createdAt: '2026-01-01T00:00:00.000Z',
     updatedAt: '2026-01-01T00:00:00.000Z',
     items,
-    ...overrides
+    ...overrides,
   };
 }
 
@@ -48,8 +48,8 @@ describe('renderCategoryMarkdown', () => {
   it('emits front matter, blank line, heading, description and tier sections', () => {
     const md = renderCategoryMarkdown(
       makeCategory([makeItem({ id: 'a', name: 'Inception', score: 95 })], {
-        description: 'Top picks.\nUpdated quarterly.'
-      })
+        description: 'Top picks.\nUpdated quarterly.',
+      }),
     );
 
     expect(md).toContain('---\ntitle: "Movies"\nslug: "movies"\nitemCount: 1\n---\n\n# Movies');
@@ -69,7 +69,7 @@ describe('renderCategoryMarkdown', () => {
       '',
       '```',
       'code',
-      '```'
+      '```',
     ].join('\n');
     const md = renderCategoryMarkdown(makeCategory([], { description }));
     expect(md).toContain(description);
@@ -85,11 +85,11 @@ describe('renderCategoryMarkdown', () => {
           imageHash: 'abc123def456',
           props: [
             { key: 'developer', value: 'Supergiant' },
-            { key: 'year', value: '2020' }
+            { key: 'year', value: '2020' },
           ],
-          description: 'A roguelike with **incredible** writing.\n\nThe combat is tight.'
-        })
-      ])
+          description: 'A roguelike with **incredible** writing.\n\nThe combat is tight.',
+        }),
+      ]),
     );
 
     expect(md).toContain(
@@ -102,14 +102,14 @@ describe('renderCategoryMarkdown', () => {
         '',
         'A roguelike with **incredible** writing.',
         '',
-        'The combat is tight.'
-      ].join('\n')
+        'The combat is tight.',
+      ].join('\n'),
     );
   });
 
   it('omits the image-comment line when imageHash is null but always emits the score line', () => {
     const md = renderCategoryMarkdown(
-      makeCategory([makeItem({ name: 'No image', score: 50, description: 'Plain.' })])
+      makeCategory([makeItem({ name: 'No image', score: 50, description: 'Plain.' })]),
     );
     expect(md).not.toContain('<!--');
     expect(md).toContain('### No image\n\nScore: 50\n\nPlain.\n');
@@ -117,7 +117,7 @@ describe('renderCategoryMarkdown', () => {
 
   it('emits the score line alone when there are no other props', () => {
     const md = renderCategoryMarkdown(
-      makeCategory([makeItem({ name: 'Bare', score: 50, imageHash: 'h', description: 'desc' })])
+      makeCategory([makeItem({ name: 'Bare', score: 50, imageHash: 'h', description: 'desc' })]),
     );
     expect(md).toContain('### Bare\n\n<!-- h.webp -->\n\nScore: 50\n\ndesc\n');
   });
@@ -126,8 +126,8 @@ describe('renderCategoryMarkdown', () => {
     const md = renderCategoryMarkdown(
       makeCategory([
         makeItem({ name: 'A', score: 95, description: null }),
-        makeItem({ id: 'b', name: 'B', score: 88, description: '   ' })
-      ])
+        makeItem({ id: 'b', name: 'B', score: 88, description: '   ' }),
+      ]),
     );
     expect(md).toContain('### A\n\nScore: 95\n');
     expect(md).toContain('### B\n\nScore: 88\n');
@@ -146,11 +146,11 @@ describe('renderCategoryMarkdown', () => {
       '',
       '| col | col |',
       '|-----|-----|',
-      '| a   | b   |'
+      '| a   | b   |',
     ].join('\n');
 
     const md = renderCategoryMarkdown(
-      makeCategory([makeItem({ name: 'Rich', score: 95, description })])
+      makeCategory([makeItem({ name: 'Rich', score: 95, description })]),
     );
 
     expect(md).toContain(description);
@@ -158,7 +158,7 @@ describe('renderCategoryMarkdown', () => {
 
   it('renders all seven tier sections; empty tiers contain a placeholder paragraph', () => {
     const md = renderCategoryMarkdown(
-      makeCategory([makeItem({ id: 'a', name: 'Top', score: 95 })])
+      makeCategory([makeItem({ id: 'a', name: 'Top', score: 95 })]),
     );
     expect(md).toContain('## S tier\n\n### Top\n');
     for (const tier of ['A', 'B', 'C', 'D', 'E', 'F']) {
@@ -180,8 +180,8 @@ describe('renderCategoryMarkdown', () => {
         makeItem({ id: '3', name: 'F-thing', score: 5 }),
         makeItem({ id: '2', name: 'S-second', score: 95, order: 1 }),
         makeItem({ id: '1', name: 'S-first', score: 95, order: 0 }),
-        makeItem({ id: '4', name: 'A-thing', score: 85 })
-      ])
+        makeItem({ id: '4', name: 'A-thing', score: 85 }),
+      ]),
     );
 
     const headings = md.match(/^### .+$/gm) ?? [];
@@ -197,22 +197,22 @@ describe('renderCategoryMarkdown', () => {
         cutoffC: 20,
         cutoffD: 10,
         cutoffE: 5,
-        cutoffF: 0
-      })
+        cutoffF: 0,
+      }),
     );
     expect(md).toContain('## S tier\n\n### Mid\n\nScore: 60');
   });
 
   it('flattens newlines and CRs in item names so the H3 stays single-line', () => {
     const md = renderCategoryMarkdown(
-      makeCategory([makeItem({ name: 'Line one\nLine two\r\nLine three\rLine four', score: 95 })])
+      makeCategory([makeItem({ name: 'Line one\nLine two\r\nLine three\rLine four', score: 95 })]),
     );
     expect(md).toContain('### Line one Line two Line three Line four\n');
   });
 
   it('neutralizes "-->" inside item names so the image comment cannot be closed early', () => {
     const md = renderCategoryMarkdown(
-      makeCategory([makeItem({ name: 'Sneaky --> <script>', score: 95, imageHash: 'h' })])
+      makeCategory([makeItem({ name: 'Sneaky --> <script>', score: 95, imageHash: 'h' })]),
     );
     expect(md).toContain('### Sneaky --&gt; <script>\n');
     expect(md).toContain('<!-- h.webp -->');
@@ -226,9 +226,9 @@ describe('renderCategoryMarkdown', () => {
         makeItem({
           name: 'P',
           score: 95,
-          props: [{ key: 'note', value: 'line one\nline two' }]
-        })
-      ])
+          props: [{ key: 'note', value: 'line one\nline two' }],
+        }),
+      ]),
     );
     expect(md).toContain('Score: 95. note: line one line two');
   });

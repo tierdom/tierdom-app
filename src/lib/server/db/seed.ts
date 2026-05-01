@@ -46,7 +46,7 @@ db.insert(user)
   .values({
     id: randomUUID(),
     username: adminUsername,
-    passwordHash: hashPassword(adminPassword)
+    passwordHash: hashPassword(adminPassword),
   })
   .run();
 console.log(`Created dev admin user with name ${adminUsername} and password <REDACTED>`);

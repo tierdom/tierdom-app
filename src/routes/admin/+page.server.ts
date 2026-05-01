@@ -15,7 +15,7 @@ export const load: PageServerLoad = async () => {
       id: category.id,
       name: category.name,
       itemCount: count(tierListItem.id),
-      updatedAt: category.updatedAt
+      updatedAt: category.updatedAt,
     })
     .from(category)
     .leftJoin(tierListItem, eq(tierListItem.categoryId, category.id))
@@ -29,7 +29,7 @@ export const load: PageServerLoad = async () => {
       score: tierListItem.score,
       categoryId: tierListItem.categoryId,
       categoryName: category.name,
-      updatedAt: tierListItem.updatedAt
+      updatedAt: tierListItem.updatedAt,
     })
     .from(tierListItem)
     .innerJoin(category, eq(category.id, tierListItem.categoryId))
@@ -47,20 +47,20 @@ export const load: PageServerLoad = async () => {
   const siteContent = Object.entries(siteContentBlocks).map(([key, block]) => ({
     key,
     title: block.title,
-    updatedAt: updatedAtByKey.get(key) ?? null
+    updatedAt: updatedAtByKey.get(key) ?? null,
   }));
 
   return {
     counts: {
       categories: cats.count,
       items: items.count,
-      pages: pgs.count
+      pages: pgs.count,
     },
     categories,
     recentItems,
     pages,
     siteContent,
     staleTrash: countStaleTrash(db),
-    staleTrashDays: STALE_TRASH_DAYS
+    staleTrashDays: STALE_TRASH_DAYS,
   };
 };

@@ -21,7 +21,7 @@
     tier,
     props = [],
     propKeyConfigs = [],
-    image
+    image,
   }: Props = $props();
 
   let barColor = $derived(scoreToBarColor(score));
@@ -33,7 +33,7 @@
         const icon = config?.iconSet ? getIcon(config.iconSet, p.value) : undefined;
         return icon ? { ...icon, label: `${p.key}: ${p.value}` } : null;
       })
-      .filter((x): x is NonNullable<typeof x> => x !== null)
+      .filter((x): x is NonNullable<typeof x> => x !== null),
   );
 </script>
 

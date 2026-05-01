@@ -14,7 +14,7 @@ import {
   type ExportData,
   type ExportManifest,
   type ExportedCategory,
-  type ExportedItem
+  type ExportedItem,
 } from './json-schema';
 import readmeText from './README.txt?raw';
 import { renderCategoryMarkdown } from './markdown';
@@ -54,7 +54,7 @@ export interface ExportArtifact {
 export function buildExport(
   opts: BuildExportOptions,
   ctx: BuildExportContext,
-  db: DB = defaultDb
+  db: DB = defaultDb,
 ): ExportArtifact {
   const exportedAt = ctx.exportedAt ?? new Date();
   const iso = exportedAt.toISOString();
@@ -102,14 +102,14 @@ export function buildExport(
           opts.includeMarkdown && exportData
             ? exportData.data.categories.map((c) => ({
                 name: `${c.slug}.md`,
-                content: renderCategoryMarkdown(c)
+                content: renderCategoryMarkdown(c),
               }))
             : [];
 
         entries.push({
           name: `${folder}/README.txt`,
           bytes: encode(readmeText),
-          deflate: true
+          deflate: true,
         });
 
         const manifest: ExportManifest = {
@@ -123,23 +123,23 @@ export function buildExport(
                 pages: exportData.data.pages.length,
                 siteSettings: exportData.data.siteSettings.length,
                 categories: exportData.data.categories.length,
-                items: exportData.data.categories.reduce((sum, c) => sum + c.items.length, 0)
+                items: exportData.data.categories.reduce((sum, c) => sum + c.items.length, 0),
               }),
             ...(opts.includeImages && { images: imageNames.length }),
-            ...(opts.includeMarkdown && { markdownFiles: markdownFiles.length })
-          }
+            ...(opts.includeMarkdown && { markdownFiles: markdownFiles.length }),
+          },
         };
         entries.push({
           name: `${folder}/manifest.json`,
           bytes: encode(JSON.stringify(manifest, null, 2)),
-          deflate: true
+          deflate: true,
         });
 
         if (opts.includeJson && exportData) {
           entries.push({
             name: `${folder}/data.json`,
             bytes: encode(JSON.stringify(exportData, null, 2)),
-            deflate: true
+            deflate: true,
           });
         }
 
@@ -157,7 +157,7 @@ export function buildExport(
           entries.push({
             name: `${folder}/db/db.sqlite`,
             bytes: await readFile(snapshotPath),
-            deflate: true
+            deflate: true,
           });
         }
 
@@ -165,7 +165,7 @@ export function buildExport(
           entries.push({
             name: `${folder}/images/${name}`,
             bytes: await readFile(join(imagesDir, name)),
-            deflate: false
+            deflate: false,
           });
         }
 
@@ -173,7 +173,7 @@ export function buildExport(
           entries.push({
             name: `${folder}/markdown/${file.name}`,
             bytes: encode(file.content),
-            deflate: true
+            deflate: true,
           });
         }
 
@@ -197,7 +197,7 @@ export function buildExport(
     },
     async cancel() {
       await cleanup();
-    }
+    },
   });
 
   return { stream, filename, cleanup };
@@ -251,7 +251,7 @@ function collectExportData(db: DB, appVersion: string, exportedAt: string): Expo
       title: p.title,
       content: p.content,
       createdAt: toIsoDateTime(p.createdAt),
-      updatedAt: toIsoDateTime(p.updatedAt)
+      updatedAt: toIsoDateTime(p.updatedAt),
     }));
 
   const siteSettings = db
@@ -263,7 +263,7 @@ function collectExportData(db: DB, appVersion: string, exportedAt: string): Expo
       key: s.key,
       value: s.value,
       createdAt: toIsoDateTime(s.createdAt),
-      updatedAt: toIsoDateTime(s.updatedAt)
+      updatedAt: toIsoDateTime(s.updatedAt),
     }));
 
   const categoryRows = db
@@ -291,7 +291,7 @@ function collectExportData(db: DB, appVersion: string, exportedAt: string): Expo
       placeholder: i.placeholder,
       props: i.props,
       createdAt: toIsoDateTime(i.createdAt),
-      updatedAt: toIsoDateTime(i.updatedAt)
+      updatedAt: toIsoDateTime(i.updatedAt),
     });
     itemsByCategoryId.set(i.categoryId, list);
   }
@@ -312,14 +312,14 @@ function collectExportData(db: DB, appVersion: string, exportedAt: string): Expo
     propKeys: c.propKeys,
     createdAt: toIsoDateTime(c.createdAt),
     updatedAt: toIsoDateTime(c.updatedAt),
-    items: itemsByCategoryId.get(c.id) ?? []
+    items: itemsByCategoryId.get(c.id) ?? [],
   }));
 
   return {
     schemaVersion: EXPORT_SCHEMA_VERSION,
     appVersion,
     exportedAt,
-    data: { pages, siteSettings, categories }
+    data: { pages, siteSettings, categories },
   };
 }
 

@@ -55,7 +55,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
       returnTarget,
       backUrl: prefillCategoryId
         ? resolveReturnUrl(returnTarget, prefillCategoryId)
-        : '/admin/items'
+        : '/admin/items',
     };
   }
 
@@ -68,7 +68,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
     item,
     categories,
     returnTarget,
-    backUrl: resolveReturnUrl(returnTarget, item.categoryId)
+    backUrl: resolveReturnUrl(returnTarget, item.categoryId),
   };
 };
 
@@ -98,7 +98,7 @@ export const actions: Actions = {
           score,
           props,
           order: 0,
-          ...(image && { imageHash: image.imageHash, placeholder: image.placeholder })
+          ...(image && { imageHash: image.imageHash, placeholder: image.placeholder }),
         })
         .returning({ id: tierListItemTable.id });
 
@@ -132,7 +132,7 @@ export const actions: Actions = {
         description,
         props,
         categoryId,
-        ...(image && { imageHash: image.imageHash, placeholder: image.placeholder })
+        ...(image && { imageHash: image.imageHash, placeholder: image.placeholder }),
       })
       .where(eq(tierListItemTable.id, id));
 
@@ -163,5 +163,5 @@ export const actions: Actions = {
 
     softDeleteItem(db, id);
     redirect(303, resolveReturnUrl(returnTarget, item?.categoryId ?? ''));
-  }
+  },
 };

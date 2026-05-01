@@ -48,5 +48,5 @@ export const actions: Actions = {
     setSessionCookie(event, token, expiresAt);
 
     redirect(303, '/admin');
-  }
+  },
 };

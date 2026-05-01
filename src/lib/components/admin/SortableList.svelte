@@ -8,7 +8,7 @@
   let {
     items,
     onreorder,
-    row
+    row,
   }: {
     items: Item[];
     onreorder: (orderedIds: string[]) => void;
@@ -29,7 +29,7 @@
       const next = applyReorder(localItems, fromId, toId, position);
       localItems = next;
       onreorder(next.map((i) => i.id));
-    }
+    },
   });
 </script>
 

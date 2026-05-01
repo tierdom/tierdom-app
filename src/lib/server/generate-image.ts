@@ -105,7 +105,7 @@ async function extractGradient(source: Buffer): Promise<string> {
  */
 export async function generateImage(
   name: string,
-  imagesDir: string
+  imagesDir: string,
 ): Promise<{ hash: string; gradient: string }> {
   const svg = Buffer.from(buildSvg(name));
 

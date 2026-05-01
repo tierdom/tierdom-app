@@ -7,7 +7,7 @@ import {
   readdirSync,
   rmSync,
   statSync,
-  writeFileSync
+  writeFileSync,
 } from 'node:fs';
 import { join, resolve, sep } from 'node:path';
 import { env } from '$env/dynamic/private';

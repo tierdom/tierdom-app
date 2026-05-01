@@ -17,7 +17,7 @@ export function seedCategories(db: DB, categories: SeedCategory[]): number {
         name: cat.name,
         description: cat.description,
         order: cat.order,
-        ...(cat.propKeys && { propKeys: cat.propKeys })
+        ...(cat.propKeys && { propKeys: cat.propKeys }),
       })
       .returning({ id: categoryTable.id })
       .get();
@@ -32,7 +32,7 @@ export function seedCategories(db: DB, categories: SeedCategory[]): number {
           description: item.description ?? null,
           score: item.score,
           order: i,
-          props: item.props
+          props: item.props,
         })
         .run();
 

@@ -10,7 +10,7 @@
     json: FileJson,
     goodreads: BookOpen,
     bgg: Dice5,
-    imdb: Film
+    imdb: Film,
   };
 
   function iconFor(importer: ImporterSummary) {

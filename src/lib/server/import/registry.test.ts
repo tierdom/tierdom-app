@@ -17,7 +17,7 @@ describe('import registry', () => {
     for (const importer of importers) {
       if (importer.status !== 'stub') continue;
       expect(importer.stubInfo?.issueUrl).toMatch(
-        /^https:\/\/github\.com\/tierdom\/tierdom-app\/issues\?q=/
+        /^https:\/\/github\.com\/tierdom\/tierdom-app\/issues\?q=/,
       );
     }
   });

@@ -13,7 +13,7 @@ export const MAX_SITE_CONTENT_BYTES = 16 * 1024;
 export class SiteContentTooLargeError extends Error {
   constructor(
     readonly byteLength: number,
-    readonly maxBytes: number
+    readonly maxBytes: number,
   ) {
     super(`Content is ${byteLength} bytes, exceeds the ${maxBytes} byte limit`);
     this.name = 'SiteContentTooLargeError';
@@ -32,8 +32,8 @@ export const siteContentBlocks = {
     description: 'Markdown shown in the site-wide footer',
     fallback: `Tierdom — Self-hosted tier lists. A project by [Jeroen Heijmans](https://jeroenheijmans.nl).
 
-[Source on GitHub](https://github.com/tierdom/tierdom-app)`
-  }
+[Source on GitHub](https://github.com/tierdom/tierdom-app)`,
+  },
 } as const satisfies Record<string, { title: string; description: string; fallback: string }>;
 
 export type SiteContentKey = keyof typeof siteContentBlocks;
@@ -65,7 +65,7 @@ const cache = createKeyedCache<SiteContentKey, CachedEntry>(async (key) => {
   const record: SiteContentRecord = {
     value: row?.value ?? null,
     createdAt: row?.createdAt ?? null,
-    updatedAt: row?.updatedAt ?? null
+    updatedAt: row?.updatedAt ?? null,
   };
   const effective = record.value?.trim() ? record.value : siteContentBlocks[key].fallback;
   return { record, html: renderMarkdown(effective) };

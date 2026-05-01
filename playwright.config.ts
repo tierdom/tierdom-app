@@ -11,7 +11,7 @@ export default defineConfig({
 
   use: {
     trace: 'on-first-retry',
-    screenshot: 'only-on-failure'
+    screenshot: 'only-on-failure',
   },
 
   projects: [
@@ -21,8 +21,8 @@ export default defineConfig({
       testDir: 'tests/e2e/smoke',
       use: {
         ...devices['Desktop Chrome'],
-        baseURL: 'http://localhost:5173'
-      }
+        baseURL: 'http://localhost:5173',
+      },
     },
 
     // Deterministic: login once, save session
@@ -32,8 +32,8 @@ export default defineConfig({
       testMatch: 'auth-setup.e2e.ts',
       use: {
         ...devices['Desktop Chrome'],
-        baseURL: 'http://localhost:4173'
-      }
+        baseURL: 'http://localhost:4173',
+      },
     },
 
     // Deterministic: all tests with saved auth
@@ -45,9 +45,9 @@ export default defineConfig({
       use: {
         ...devices['Desktop Chrome'],
         baseURL: 'http://localhost:4173',
-        storageState: 'test-data/auth/admin.json'
-      }
-    }
+        storageState: 'test-data/auth/admin.json',
+      },
+    },
   ],
 
   webServer: {
@@ -55,6 +55,6 @@ export default defineConfig({
     port: 4173,
     reuseExistingServer: true,
     timeout: 60_000,
-    env: { DATA_PATH: './test-data', ADMIN_PASSWORD: 'admin' }
-  }
+    env: { DATA_PATH: './test-data', ADMIN_PASSWORD: 'admin' },
+  },
 });

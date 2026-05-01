@@ -24,14 +24,14 @@ export function randomizeSeedTimestamps(db: DB): void {
     for (const t of TABLES) {
       db.run(
         sql.raw(
-          `UPDATE ${t} SET created_at = datetime('now', '-' || (abs(random()) % ${SIX_MONTHS_SEC - FLOOR_SEC} + ${FLOOR_SEC}) || ' seconds')`
-        )
+          `UPDATE ${t} SET created_at = datetime('now', '-' || (abs(random()) % ${SIX_MONTHS_SEC - FLOOR_SEC} + ${FLOOR_SEC}) || ' seconds')`,
+        ),
       );
       db.run(sql.raw(`UPDATE ${t} SET updated_at = created_at`));
       db.run(
         sql.raw(
-          `UPDATE ${t} SET updated_at = datetime(created_at, '+' || (abs(random()) % max(1, cast((julianday('now', '-${FLOOR_SEC} seconds') - julianday(created_at)) * 86400 as integer))) || ' seconds') WHERE abs(random()) % 3 = 0`
-        )
+          `UPDATE ${t} SET updated_at = datetime(created_at, '+' || (abs(random()) % max(1, cast((julianday('now', '-${FLOOR_SEC} seconds') - julianday(created_at)) * 86400 as integer))) || ' seconds') WHERE abs(random()) % 3 = 0`,
+        ),
       );
     }
   } finally {

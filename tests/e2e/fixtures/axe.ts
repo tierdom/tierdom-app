@@ -15,10 +15,10 @@ export async function expectNoA11yViolations(page: Page) {
     id: v.id,
     impact: v.impact,
     description: v.description,
-    nodes: v.nodes.map((n) => n.html).slice(0, 3)
+    nodes: v.nodes.map((n) => n.html).slice(0, 3),
   }));
 
   expect(violations, `Accessibility violations:\n${JSON.stringify(violations, null, 2)}`).toEqual(
-    []
+    [],
   );
 }

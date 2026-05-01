@@ -8,7 +8,7 @@ export const load: PageServerLoad = async () => {
   const generalContent = Object.entries(siteContentBlocks).map(([key, block]) => ({
     key,
     title: block.title,
-    description: block.description
+    description: block.description,
   }));
   return { pages, generalContent };
 };

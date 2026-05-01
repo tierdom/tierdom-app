@@ -7,6 +7,6 @@ export const imdbImporter: Importer = {
   status: 'stub',
   stubInfo: {
     sampleNeeded: true,
-    issueUrl: 'https://github.com/tierdom/tierdom-app/issues?q=is%3Aissue%20IMDb'
-  }
+    issueUrl: 'https://github.com/tierdom/tierdom-app/issues?q=is%3Aissue%20IMDb',
+  },
 };

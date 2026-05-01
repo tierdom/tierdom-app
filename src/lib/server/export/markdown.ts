@@ -11,7 +11,7 @@ export function renderCategoryMarkdown(category: ExportedCategory): string {
     C: category.cutoffC,
     D: category.cutoffD,
     E: category.cutoffE,
-    F: category.cutoffF
+    F: category.cutoffF,
   };
 
   const ranked = category.items
@@ -29,7 +29,7 @@ export function renderCategoryMarkdown(category: ExportedCategory): string {
     `slug: ${yamlString(category.slug)}`,
     `itemCount: ${ranked.length}`,
     '---',
-    ''
+    '',
   ].join('\n');
 
   const heading = `# ${sanitizeHeadingLine(category.name)}\n`;
@@ -75,7 +75,7 @@ function renderItem(item: ExportedItem): string {
   // properties or description.
   const propsLine = [
     `Score: ${item.score}`,
-    ...item.props.map((p) => `${flattenLine(p.key)}: ${flattenLine(p.value)}`)
+    ...item.props.map((p) => `${flattenLine(p.key)}: ${flattenLine(p.value)}`),
   ].join('. ');
   lines.push('');
   lines.push(propsLine);

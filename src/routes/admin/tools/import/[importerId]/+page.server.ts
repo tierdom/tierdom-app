@@ -26,7 +26,7 @@ export const load: PageServerLoad = ({ params }) => {
   return {
     importer: { id, label, description, status, accept, stubInfo },
     maxBytes: MAX_JSON_BYTES,
-    existingCategories
+    existingCategories,
   };
 };
 
@@ -49,7 +49,7 @@ export const actions: Actions = {
     }
     if (file.size > MAX_JSON_BYTES) {
       return fail(413, {
-        message: `File is too large (${file.size} bytes). Maximum is ${MAX_JSON_BYTES} bytes.`
+        message: `File is too large (${file.size} bytes). Maximum is ${MAX_JSON_BYTES} bytes.`,
       });
     }
 
@@ -63,10 +63,10 @@ export const actions: Actions = {
           updated: { categories: 0, items: 0 },
           skipped: { categories: 0, items: 0 },
           details: { inserted: [], updated: [], skipped: [] },
-          errors: plan.errors
+          errors: plan.errors,
         },
         strategy: 'skip' as MergeStrategy,
-        filename: file.name
+        filename: file.name,
       };
     }
 
@@ -122,5 +122,5 @@ export const actions: Actions = {
       }
     }
     return { cancelled: true };
-  }
+  },
 };

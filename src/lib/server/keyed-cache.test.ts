@@ -73,7 +73,7 @@ describe('createKeyedCache', () => {
         new Promise<number>((r) => {
           calls++;
           resolve = r;
-        })
+        }),
     );
 
     const p1 = cache.get('a');

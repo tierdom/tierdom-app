@@ -23,9 +23,9 @@ export const actions: Actions = {
       description,
       propKeys,
       order: maxOrder.max + 1,
-      ...cutoffs
+      ...cutoffs,
     });
 
     redirect(303, '/admin/categories');
-  }
+  },
 };

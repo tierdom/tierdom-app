@@ -32,7 +32,7 @@
       (item) =>
         item.name.toLowerCase().includes(q) ||
         item.slug.toLowerCase().includes(q) ||
-        item.categoryName.toLowerCase().includes(q)
+        item.categoryName.toLowerCase().includes(q),
     );
   });
 </script>
@@ -85,7 +85,7 @@
             C: item.cutoffC,
             D: item.cutoffD,
             E: item.cutoffE,
-            F: item.cutoffF
+            F: item.cutoffF,
           })}
           <tr class="border-b border-subtle/30">
             <td class="py-2">

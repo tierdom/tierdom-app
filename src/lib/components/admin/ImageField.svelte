@@ -3,7 +3,7 @@
 
   let {
     imageHash = null,
-    onchange
+    onchange,
   }: {
     imageHash?: string | null;
     onchange?: () => void;

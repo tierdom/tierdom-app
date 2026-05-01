@@ -64,7 +64,7 @@ describe('sortCategoryByScore', () => {
     expect(rows).toEqual([
       { name: 'Alpha', order: 0 },
       { name: 'Bravo', order: 1 },
-      { name: 'Charlie', order: 2 }
+      { name: 'Charlie', order: 2 },
     ]);
   });
 
@@ -95,7 +95,7 @@ describe('sortCategoryByScore', () => {
     expect(trashedRow?.order).toBe(999);
     expect(active).toEqual([
       { name: 'Alpha', order: 0 },
-      { name: 'Bravo', order: 1 }
+      { name: 'Bravo', order: 1 },
     ]);
   });
 });

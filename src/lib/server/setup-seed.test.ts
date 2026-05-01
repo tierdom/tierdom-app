@@ -16,7 +16,7 @@ const generateSeedImagesMock =
 generateSeedImagesMock.mockImplementation(async () => 0);
 vi.mock('$lib/server/db/seed-images', () => ({
   generateSeedImages: (db: BetterSQLite3Database<typeof schema>, dataPath: string) =>
-    generateSeedImagesMock(db, dataPath)
+    generateSeedImagesMock(db, dataPath),
 }));
 
 import * as schema from './db/schema';

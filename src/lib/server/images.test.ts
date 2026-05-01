@@ -5,7 +5,7 @@ import sharp from 'sharp';
 
 // Hoisted so the path is computed before vi.mock's factory references it.
 const { TMP_ROOT } = vi.hoisted(() => ({
-  TMP_ROOT: `/tmp/tierdom-images-test-${process.pid}-${Date.now()}`
+  TMP_ROOT: `/tmp/tierdom-images-test-${process.pid}-${Date.now()}`,
 }));
 
 vi.mock('$env/dynamic/private', () => ({ env: { DATA_PATH: TMP_ROOT } }));
@@ -18,7 +18,7 @@ import {
   processUpload,
   readImage,
   rgbToHex,
-  validateUpload
+  validateUpload,
 } from './images';
 
 const IMAGES_DIR = join(TMP_ROOT, 'images');
@@ -37,7 +37,7 @@ beforeEach(() => {
 
 async function makePngBuffer(r: number, g: number, b: number, size = 16): Promise<Buffer> {
   return sharp({
-    create: { width: size, height: size, channels: 3, background: { r, g, b } }
+    create: { width: size, height: size, channels: 3, background: { r, g, b } },
   })
     .png()
     .toBuffer();
@@ -50,7 +50,7 @@ describe('rgbToHex', () => {
     [255, 0, 0, '#ff0000'],
     [0, 255, 0, '#00ff00'],
     [0, 0, 255, '#0000ff'],
-    [18, 52, 86, '#123456']
+    [18, 52, 86, '#123456'],
   ])('rgbToHex(%d, %d, %d) → %s', (r, g, b, expected) => {
     expect(rgbToHex(r, g, b)).toBe(expected);
   });
@@ -134,7 +134,7 @@ describe('extractGradient', () => {
     const buf = await makePngBuffer(255, 0, 0);
     const gradient = await extractGradient(buf);
     expect(gradient).toMatch(
-      /^linear-gradient\(135deg, #[0-9a-f]{6}, #[0-9a-f]{6}, #[0-9a-f]{6}\)$/
+      /^linear-gradient\(135deg, #[0-9a-f]{6}, #[0-9a-f]{6}, #[0-9a-f]{6}\)$/,
     );
   });
 
@@ -189,7 +189,7 @@ describe('processUpload', () => {
 
   it('rejects oversized files before touching sharp', async () => {
     const tooBig = new File([new Uint8Array(2 * 1024 * 1024)], 'big.png', {
-      type: 'image/png'
+      type: 'image/png',
     });
     await expect(processUpload(tooBig)).rejects.toThrow('File too large');
   });

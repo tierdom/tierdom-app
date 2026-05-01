@@ -13,16 +13,16 @@ const sampleExport: ExportData = {
         title: 'About',
         content: '# About',
         createdAt: '2026-04-27T00:00:00.000Z',
-        updatedAt: '2026-04-27T00:00:00.000Z'
-      }
+        updatedAt: '2026-04-27T00:00:00.000Z',
+      },
     ],
     siteSettings: [
       {
         key: 'footer',
         value: 'My footer',
         createdAt: '2026-04-27T00:00:00.000Z',
-        updatedAt: '2026-04-27T00:00:00.000Z'
-      }
+        updatedAt: '2026-04-27T00:00:00.000Z',
+      },
     ],
     categories: [
       {
@@ -53,12 +53,12 @@ const sampleExport: ExportData = {
             placeholder: null,
             props: [{ key: 'Year', value: '2010' }],
             createdAt: '2026-04-27T00:00:00.000Z',
-            updatedAt: '2026-04-27T00:00:00.000Z'
-          }
-        ]
-      }
-    ]
-  }
+            updatedAt: '2026-04-27T00:00:00.000Z',
+          },
+        ],
+      },
+    ],
+  },
 };
 
 describe('schema-v1.json', () => {

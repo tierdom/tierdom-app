@@ -14,7 +14,7 @@ renderer.link = function (token) {
 marked.setOptions({
   breaks: true,
   gfm: true,
-  renderer
+  renderer,
 });
 
 export function renderMarkdown(text: string | null | undefined): string {

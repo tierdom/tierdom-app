@@ -20,7 +20,7 @@ export const GET: RequestHandler = ({ params }) => {
     headers: {
       'Content-Type': 'image/webp',
       'Cache-Control': 'public, max-age=31536000, immutable',
-      ETag: `"${hash}"`
-    }
+      ETag: `"${hash}"`,
+    },
   });
 };

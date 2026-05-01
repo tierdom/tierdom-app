@@ -12,7 +12,7 @@
   let { href, label, onclick, variant = 'desktop' }: Props = $props();
 
   let active = $derived(
-    href === '/' ? page.url.pathname === '/' : page.url.pathname.startsWith(href)
+    href === '/' ? page.url.pathname === '/' : page.url.pathname.startsWith(href),
   );
 </script>
 

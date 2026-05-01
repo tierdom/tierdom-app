@@ -14,20 +14,20 @@
       value: 'empty',
       title: 'Empty',
       description:
-        'Blank Home and About pages. No categories or items. Start completely from scratch.'
+        'Blank Home and About pages. No categories or items. Start completely from scratch.',
     },
     {
       value: 'minimal',
       title: 'Minimal',
       description:
-        'Simple Home and About pages, one sample category with a single item. A quick starting point.'
+        'Simple Home and About pages, one sample category with a single item. A quick starting point.',
     },
     {
       value: 'demo',
       title: 'Full Demo',
       description:
-        'Fully populated with demo categories (Games, Books, Movies, etc.) and 95+ ranked items.'
-    }
+        'Fully populated with demo categories (Games, Books, Movies, etc.) and 95+ ranked items.',
+    },
   ];
 </script>
 

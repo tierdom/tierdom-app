@@ -11,5 +11,5 @@ export const actions: Actions = {
     }
     deleteSessionCookie(event);
     redirect(303, '/admin/login');
-  }
+  },
 };

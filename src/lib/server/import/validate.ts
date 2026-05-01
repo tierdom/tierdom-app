@@ -10,7 +10,7 @@ export const validateExport: ValidateFunction<ExportData> = ajv.compile<ExportDa
 
 export function formatAjvErrors(): string[] {
   return (validateExport.errors ?? []).map(
-    (e) => `${e.instancePath || '/'} ${e.message ?? 'invalid'}`
+    (e) => `${e.instancePath || '/'} ${e.message ?? 'invalid'}`,
   );
 }
 

@@ -82,7 +82,7 @@ describe('formatAjvErrors', () => {
     validateExport(null);
     const original = validateExport.errors;
     validateExport.errors = [
-      { keyword: 'x', instancePath: '/foo', schemaPath: '#', params: {} }
+      { keyword: 'x', instancePath: '/foo', schemaPath: '#', params: {} },
     ] as unknown as typeof validateExport.errors;
     try {
       expect(formatAjvErrors()).toEqual(['/foo invalid']);

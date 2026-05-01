@@ -9,7 +9,7 @@ const ALLOWED_MIME_TYPES = new Set([
   'image/png',
   'image/webp',
   'image/gif',
-  'image/avif'
+  'image/avif',
 ]);
 const MAX_FILE_SIZE = 1024 * 1024; // 1 MB
 const IMAGE_SIZE = 250;

@@ -9,7 +9,7 @@
     MAX_VALUE_LENGTH,
     findDuplicateKeys,
     filterSuggestions,
-    isNonStandardKey
+    isNonStandardKey,
   } from '$lib/props';
   import { createPointerReorder, applyReorder } from './pointer-reorder.svelte';
 
@@ -18,7 +18,7 @@
   let {
     props,
     suggestedKeys = [],
-    onchange
+    onchange,
   }: {
     props: Prop[];
     suggestedKeys?: string[];
@@ -45,7 +45,7 @@
     onCommit: ({ fromId, toId, position }) => {
       items = applyReorder(items, fromId, toId, position);
       emit();
-    }
+    },
   });
 
   function add() {
@@ -174,7 +174,7 @@
                 }}
                 onkeydown={(e) => handleComboboxKeydown(e, item.id)}
                 class="w-full rounded border px-2 py-1.5 text-sm text-primary placeholder:text-secondary/50 focus:outline-none {isNonStandard(
-                  item.key
+                  item.key,
                 )
                   ? 'bg-yellow-500/5'
                   : 'bg-surface'} {isDuplicate(item.key)

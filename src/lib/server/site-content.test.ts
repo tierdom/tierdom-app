@@ -22,9 +22,9 @@ vi.mock('$lib/server/db', () => ({
           limit: async () => {
             const row = store.get(predicate.key);
             return row ? [row] : [];
-          }
-        })
-      })
+          },
+        }),
+      }),
     }),
     insert: () => ({
       values: (v: { key: string; value: string }) => ({
@@ -36,28 +36,28 @@ vi.mock('$lib/server/db', () => ({
             key: v.key,
             value: v.value,
             createdAt: prev?.createdAt ?? now,
-            updatedAt: now
+            updatedAt: now,
           });
-        }
-      })
+        },
+      }),
     }),
     delete: () => ({
       where: async (predicate: { key: string }) => {
         store.delete(predicate.key);
-      }
-    })
-  }
+      },
+    }),
+  },
 }));
 
 // drizzle's eq(column, value) returns a predicate; our mock `where` reads
 // `.key` off whatever's passed, so we forward the column's name alongside
 // the value.
 vi.mock('$lib/server/db/schema', () => ({
-  siteSetting: { key: { name: 'key' } }
+  siteSetting: { key: { name: 'key' } },
 }));
 
 vi.mock('drizzle-orm', () => ({
-  eq: (_col: unknown, value: string) => ({ key: value })
+  eq: (_col: unknown, value: string) => ({ key: value }),
 }));
 
 import {
@@ -69,7 +69,7 @@ import {
   getSiteContentRecord,
   isSiteContentKey,
   setSiteContent,
-  siteContentBlocks
+  siteContentBlocks,
 } from './site-content';
 
 beforeEach(() => {
@@ -104,7 +104,7 @@ describe('getSiteContentHtml', () => {
       key: 'footer',
       value: '   \n  ',
       createdAt: 't',
-      updatedAt: 't'
+      updatedAt: 't',
     });
     const html = await getSiteContentHtml('footer');
     expect(html).toContain('Self-hosted tier lists');
@@ -116,7 +116,7 @@ describe('getSiteContentHtml', () => {
       key: 'footer',
       value: '**Custom** footer',
       createdAt: 't',
-      updatedAt: 't'
+      updatedAt: 't',
     });
     const html = await getSiteContentHtml('footer');
     expect(html).toContain('<strong>Custom</strong>');
@@ -155,7 +155,7 @@ describe('setSiteContent', () => {
     expect.assertions(3);
     const oversized = 'x'.repeat(MAX_SITE_CONTENT_BYTES + 1);
     await expect(setSiteContent('footer', oversized)).rejects.toBeInstanceOf(
-      SiteContentTooLargeError
+      SiteContentTooLargeError,
     );
     // Didn't hit the DB because the guard fires first
     expect(insertCount).toBe(0);

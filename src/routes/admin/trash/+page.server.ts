@@ -8,7 +8,7 @@ import {
   permanentlyDeleteCategory,
   permanentlyDeleteItem,
   restoreCategory,
-  restoreItem
+  restoreItem,
 } from '$lib/server/db/soft-delete';
 import type { PageServerLoad, Actions } from './$types';
 
@@ -16,7 +16,7 @@ export const load: PageServerLoad = async () => {
   return {
     ...listTrashed(db),
     staleTrash: countStaleTrash(db),
-    staleTrashDays: STALE_TRASH_DAYS
+    staleTrashDays: STALE_TRASH_DAYS,
   };
 };
 
@@ -62,5 +62,5 @@ export const actions: Actions = {
     if (!id) return fail(400, { error: 'Invalid id' });
     permanentlyDeleteItem(db, id);
     return { success: true };
-  }
+  },
 };

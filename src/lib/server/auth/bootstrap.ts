@@ -17,7 +17,7 @@ export function bootstrapAdminUser(db: DB, password: string, username?: string):
     .values({
       id,
       username: username.toLowerCase(),
-      passwordHash: hashPassword(password)
+      passwordHash: hashPassword(password),
     })
     .run();
 

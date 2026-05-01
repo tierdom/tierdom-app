@@ -39,6 +39,6 @@ export function createAdminLoader() {
       return error;
     },
     enhance,
-    withLoading
+    withLoading,
   };
 }

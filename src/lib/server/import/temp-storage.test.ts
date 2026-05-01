@@ -6,12 +6,12 @@ import {
   rmSync,
   symlinkSync,
   utimesSync,
-  writeFileSync
+  writeFileSync,
 } from 'node:fs';
 import { join } from 'node:path';
 
 const { TMP_ROOT } = vi.hoisted(() => ({
-  TMP_ROOT: `/tmp/tierdom-import-temp-test-${process.pid}-${Date.now()}`
+  TMP_ROOT: `/tmp/tierdom-import-temp-test-${process.pid}-${Date.now()}`,
 }));
 
 vi.mock('$env/dynamic/private', () => ({ env: { DATA_PATH: TMP_ROOT } }));
@@ -44,7 +44,7 @@ describe('temp-storage', () => {
     '00000000-0000-0000-0000-00000000000', // too short
     '00000000/0000/0000/0000/000000000000', // slashes instead of dashes
     '',
-    'not-a-uuid'
+    'not-a-uuid',
   ])('rejects malicious or malformed plan id %j', (id) => {
     expect(() => readImportTemp(id)).toThrow(/Invalid plan id/);
     expect(() => deleteImportTemp(id)).toThrow(/Invalid plan id/);

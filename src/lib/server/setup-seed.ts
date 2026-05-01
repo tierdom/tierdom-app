@@ -21,13 +21,13 @@ export async function seedPreset(db: DB, preset: string, images = false): Promis
           slug: 'home',
           title: 'Home',
           content:
-            '# Welcome\n\nThis is your new Tierdom instance. Head to [the admin](/admin) to start building your tier lists.'
+            '# Welcome\n\nThis is your new Tierdom instance. Head to [the admin](/admin) to start building your tier lists.',
         },
         {
           slug: 'about',
           title: 'About',
-          content: '# About\n\nThis page can be edited in the admin panel.'
-        }
+          content: '# About\n\nThis page can be edited in the admin panel.',
+        },
       ]);
       break;
 
@@ -37,14 +37,14 @@ export async function seedPreset(db: DB, preset: string, images = false): Promis
           slug: 'home',
           title: 'Home',
           content:
-            '# Welcome to **Tierdom**\n\nA personal, self-hosted collection of tier-ranked lists.'
+            '# Welcome to **Tierdom**\n\nA personal, self-hosted collection of tier-ranked lists.',
         },
         {
           slug: 'about',
           title: 'About',
           content:
-            '# About\n\n**Tierdom** is a personal, self-hosted tier list application. Edit this page in the admin panel to make it your own.'
-        }
+            '# About\n\n**Tierdom** is a personal, self-hosted tier list application. Edit this page in the admin panel to make it your own.',
+        },
       ]);
       seedCategories(db, [
         {
@@ -58,10 +58,10 @@ export async function seedPreset(db: DB, preset: string, images = false): Promis
               score: 100,
               props: [],
               description:
-                'This is a **sample item** to show how tier lists work.\n\nEdit or delete it in the admin panel.'
-            }
-          ]
-        }
+                'This is a **sample item** to show how tier lists work.\n\nEdit or delete it in the admin panel.',
+            },
+          ],
+        },
       ]);
       break;
 

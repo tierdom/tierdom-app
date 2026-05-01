@@ -36,6 +36,6 @@ export const gamingPlatforms: IconSet = {
     Xbox: { src: `${base}/xbox.svg`, alt: 'Xbox' },
     'Xbox 360': { src: `${base}/xbox-360.svg`, alt: 'Xbox 360' },
     'Xbox One': { src: `${base}/xbox-one.svg`, alt: 'Xbox One' },
-    'Xbox Series S/X': { src: `${base}/xbox-series-sx.svg`, alt: 'Xbox Series S/X' }
-  }
+    'Xbox Series S/X': { src: `${base}/xbox-series-sx.svg`, alt: 'Xbox Series S/X' },
+  },
 };
