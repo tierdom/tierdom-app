@@ -7,7 +7,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync
 import { join } from 'node:path';
 
 const { TMP_ROOT } = vi.hoisted(() => ({
-  TMP_ROOT: `/tmp/tierdom-import-test-${process.pid}-${Date.now()}`
+  TMP_ROOT: `/tmp/tierdom-import-test-${process.pid}-${Date.now()}`,
 }));
 
 vi.mock('$env/dynamic/private', () => ({ env: { DATA_PATH: TMP_ROOT } }));
@@ -52,7 +52,7 @@ describe('tierdomJson importer', () => {
     it('returns proposed categories with no matches against an empty DB', async () => {
       const plan = await planTierdomJsonImport(
         fileFromFixture('tierdom-json-001-good.json'),
-        db as unknown as ImporterDb
+        db as unknown as ImporterDb,
       );
       expect(plan.errors).toEqual([]);
       expect(plan.planId).toMatch(/^[0-9a-f-]{36}$/);
@@ -71,7 +71,7 @@ describe('tierdomJson importer', () => {
         .run();
       const plan = await planTierdomJsonImport(
         fileFromFixture('tierdom-json-001-good.json'),
-        db as unknown as ImporterDb
+        db as unknown as ImporterDb,
       );
       const books = plan.categories.find((c) => c.fileSlug === 'books');
       expect(books?.matchedExistingId).toBe('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa');
@@ -84,12 +84,12 @@ describe('tierdomJson importer', () => {
           id: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
           slug: 'books',
           name: 'Trashed Books',
-          deletedAt: '2026-01-01T00:00:00Z'
+          deletedAt: '2026-01-01T00:00:00Z',
         })
         .run();
       const plan = await planTierdomJsonImport(
         fileFromFixture('tierdom-json-001-good.json'),
-        db as unknown as ImporterDb
+        db as unknown as ImporterDb,
       );
       const books = plan.categories.find((c) => c.fileSlug === 'books');
       expect(books?.matchedExistingId).toBeNull();
@@ -98,7 +98,7 @@ describe('tierdomJson importer', () => {
     it('rejects malformed fixtures with AJV errors and writes nothing to temp', async () => {
       const plan = await planTierdomJsonImport(
         fileFromFixture('tierdom-json-003-malformed.json'),
-        db as unknown as ImporterDb
+        db as unknown as ImporterDb,
       );
       expect(plan.errors.length).toBeGreaterThan(0);
       expect(plan.errors.some((e) => e.includes('score'))).toBe(true);
@@ -115,7 +115,7 @@ describe('tierdomJson importer', () => {
 
     it('rejects files larger than the cap without parsing', async () => {
       const tooBig = new File(['x'.repeat(11 * 1024 * 1024)], 'huge.json', {
-        type: 'application/json'
+        type: 'application/json',
       });
       const plan = await planTierdomJsonImport(tooBig, db as unknown as ImporterDb);
       expect(plan.errors).toHaveLength(1);
@@ -132,7 +132,7 @@ describe('tierdomJson importer', () => {
       return plan.categories.map((c) =>
         c.matchedExistingId
           ? { fileSlug: c.fileSlug, action: 'use-existing', targetId: c.matchedExistingId }
-          : { fileSlug: c.fileSlug, action: 'create-new', slug: c.fileSlug, name: c.fileName }
+          : { fileSlug: c.fileSlug, action: 'create-new', slug: c.fileSlug, name: c.fileName },
       );
     }
 
@@ -142,7 +142,7 @@ describe('tierdomJson importer', () => {
         plan.planId,
         defaultMappings(plan),
         'skip',
-        db as unknown as ImporterDb
+        db as unknown as ImporterDb,
       );
       expect(result.errors).toEqual([]);
       expect(result.inserted.categories).toBe(2);
@@ -162,7 +162,7 @@ describe('tierdomJson importer', () => {
         plan.planId,
         defaultMappings(plan),
         'skip',
-        db as unknown as ImporterDb
+        db as unknown as ImporterDb,
       );
       const items = db.select().from(tierListItemTable).all();
       expect(items.length).toBeGreaterThan(0);
@@ -180,7 +180,7 @@ describe('tierdomJson importer', () => {
         plan.planId,
         defaultMappings(plan),
         'skip',
-        db as unknown as ImporterDb
+        db as unknown as ImporterDb,
       );
       expect(result.errors).toEqual([]);
       expect(result.inserted.categories).toBe(1); // board-games only
@@ -200,7 +200,7 @@ describe('tierdomJson importer', () => {
         .where(and(eq(categoryTable.slug, 'books'), isNull(categoryTable.deletedAt)))
         .all();
       expect(books).toHaveLength(1);
-      expect(books[0].name).toBe('My Books');
+      expect(books[0]!.name).toBe('My Books');
     });
 
     it('skip leaves an existing item slug in the target category alone', async () => {
@@ -213,7 +213,7 @@ describe('tierdomJson importer', () => {
           categoryId: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
           slug: 'influence-the-psychology-of-persuasion',
           name: 'Pre-existing',
-          score: 50
+          score: 50,
         })
         .run();
       const plan = await planFixture('tierdom-json-001-good.json');
@@ -221,7 +221,7 @@ describe('tierdomJson importer', () => {
         plan.planId,
         defaultMappings(plan),
         'skip',
-        db as unknown as ImporterDb
+        db as unknown as ImporterDb,
       );
       expect(result.skipped.items).toBe(1);
       const item = db
@@ -242,7 +242,7 @@ describe('tierdomJson importer', () => {
           categoryId: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
           slug: 'influence-the-psychology-of-persuasion',
           name: 'Pre-existing',
-          score: 50
+          score: 50,
         })
         .run();
       const plan = await planFixture('tierdom-json-001-good.json');
@@ -250,7 +250,7 @@ describe('tierdomJson importer', () => {
         plan.planId,
         defaultMappings(plan),
         'overwrite',
-        db as unknown as ImporterDb
+        db as unknown as ImporterDb,
       );
       expect(result.updated.items).toBe(1);
       const item = db
@@ -268,13 +268,13 @@ describe('tierdomJson importer', () => {
         fileSlug: c.fileSlug,
         action: 'create-new',
         slug: `imported-${c.fileSlug}`,
-        name: `Imported ${c.fileName}`
+        name: `Imported ${c.fileName}`,
       }));
       const result = await commitTierdomJsonImport(
         plan.planId,
         mappings,
         'skip',
-        db as unknown as ImporterDb
+        db as unknown as ImporterDb,
       );
       expect(result.errors).toEqual([]);
       const slugs = db.select({ slug: categoryTable.slug }).from(categoryTable).all();
@@ -291,13 +291,13 @@ describe('tierdomJson importer', () => {
       const mappings: CategoryMapping[] = plan.categories.map((c) =>
         c.fileSlug === 'books'
           ? { fileSlug: 'books', action: 'create-new', slug: 'books', name: c.fileName }
-          : { fileSlug: c.fileSlug, action: 'create-new', slug: c.fileSlug, name: c.fileName }
+          : { fileSlug: c.fileSlug, action: 'create-new', slug: c.fileSlug, name: c.fileName },
       );
       const result = await commitTierdomJsonImport(
         plan.planId,
         mappings,
         'skip',
-        db as unknown as ImporterDb
+        db as unknown as ImporterDb,
       );
       expect(result.errors.some((e) => /slug already in use/.test(e))).toBe(true);
     });
@@ -307,13 +307,13 @@ describe('tierdomJson importer', () => {
       const mappings: CategoryMapping[] = plan.categories.map((c) => ({
         fileSlug: c.fileSlug,
         action: 'use-existing',
-        targetId: '00000000-0000-4000-8000-000000000000'
+        targetId: '00000000-0000-4000-8000-000000000000',
       }));
       const result = await commitTierdomJsonImport(
         plan.planId,
         mappings,
         'skip',
-        db as unknown as ImporterDb
+        db as unknown as ImporterDb,
       );
       expect(result.errors.some((e) => /no longer exists/.test(e))).toBe(true);
     });
@@ -322,13 +322,13 @@ describe('tierdomJson importer', () => {
       const plan = await planFixture('tierdom-json-001-good.json');
       const mappings: CategoryMapping[] = plan.categories.map((c) => ({
         fileSlug: c.fileSlug,
-        action: 'skip'
+        action: 'skip',
       }));
       const result = await commitTierdomJsonImport(
         plan.planId,
         mappings,
         'skip',
-        db as unknown as ImporterDb
+        db as unknown as ImporterDb,
       );
       expect(result.errors).toEqual([]);
       expect(result.skipped.categories).toBe(2);
@@ -343,13 +343,13 @@ describe('tierdomJson importer', () => {
       const mappings: CategoryMapping[] = plan.categories.map((c) =>
         c.fileSlug === 'books'
           ? { fileSlug: 'books', action: 'skip' }
-          : { fileSlug: c.fileSlug, action: 'create-new', slug: c.fileSlug, name: c.fileName }
+          : { fileSlug: c.fileSlug, action: 'create-new', slug: c.fileSlug, name: c.fileName },
       );
       const result = await commitTierdomJsonImport(
         plan.planId,
         mappings,
         'skip',
-        db as unknown as ImporterDb
+        db as unknown as ImporterDb,
       );
       expect(result.errors).toEqual([]);
       expect(result.inserted.categories).toBe(1);
@@ -365,7 +365,7 @@ describe('tierdomJson importer', () => {
         plan.planId,
         mappings,
         'skip',
-        db as unknown as ImporterDb
+        db as unknown as ImporterDb,
       );
       expect(result.errors.some((e) => /No mapping provided/.test(e))).toBe(true);
       expect(result.skipped.categories).toBe(2);
@@ -377,7 +377,7 @@ describe('tierdomJson importer', () => {
         '00000000-0000-4000-8000-000000000000',
         [],
         'skip',
-        db as unknown as ImporterDb
+        db as unknown as ImporterDb,
       );
       expect(result.errors[0]).toMatch(/not found or expired/);
     });
@@ -387,7 +387,7 @@ describe('tierdomJson importer', () => {
         '../../etc/passwd',
         [],
         'skip',
-        db as unknown as ImporterDb
+        db as unknown as ImporterDb,
       );
       expect(result.errors[0]).toMatch(/Invalid plan id/);
     });
@@ -420,18 +420,18 @@ describe('tierdomJson importer', () => {
       // must convert the throw into an error string.
       const plan = await planTierdomJsonImport(
         fileFromFixture('tierdom-json-001-good.json'),
-        db as unknown as ImporterDb
+        db as unknown as ImporterDb,
       );
       const brokenDb = {
         transaction: () => {
           throw new Error('connection lost');
-        }
+        },
       };
       const result = await commitTierdomJsonImport(
         plan.planId,
         [{ fileSlug: 'books', action: 'skip' }],
         'skip',
-        brokenDb as unknown as ImporterDb
+        brokenDb as unknown as ImporterDb,
       );
       expect(result.errors[0]).toMatch(/^Database error: connection lost/);
     });
@@ -448,7 +448,7 @@ describe('tierdomJson importer', () => {
       // that wraps planTierdomJsonImport. Oversized file returns errors
       // before the importer touches the (mocked-as-{}) default DB.
       const tooBig = new File(['x'.repeat(11 * 1024 * 1024)], 'huge.json', {
-        type: 'application/json'
+        type: 'application/json',
       });
       const plan = await tierdomJsonImporter.plan!(tooBig);
       expect(plan.errors[0]).toMatch(/maximum is/);
@@ -461,7 +461,7 @@ describe('tierdomJson importer', () => {
       const result = await tierdomJsonImporter.commit!(
         '00000000-0000-4000-8000-deadbeefdead',
         [],
-        'skip'
+        'skip',
       );
       expect(result.errors[0]).toMatch(/not found or expired/);
     });

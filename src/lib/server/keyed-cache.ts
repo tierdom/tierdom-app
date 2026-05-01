@@ -41,6 +41,6 @@ export function createKeyedCache<K, V>(loader: (key: K) => Promise<V>): KeyedCac
 
     clear() {
       map.clear();
-    }
+    },
   };
 }

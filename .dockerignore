@@ -16,5 +16,4 @@
 !tsconfig.json
 
 # Docker runtime files
-!Caddyfile
-!docker-entrypoint.sh
+!deploy/

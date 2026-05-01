@@ -28,11 +28,11 @@ export const categoryTable = sqliteTable('category', {
   updatedAt: text('updated_at')
     .notNull()
     .default(sql`(datetime('now'))`),
-  deletedAt: text('deleted_at')
+  deletedAt: text('deleted_at'),
 });
 
 export const category = sqliteView('category_active').as((qb) =>
-  qb.select().from(categoryTable).where(isNull(categoryTable.deletedAt))
+  qb.select().from(categoryTable).where(isNull(categoryTable.deletedAt)),
 );
 
 export const tierListItemTable = sqliteTable('tier_list_item', {
@@ -58,11 +58,11 @@ export const tierListItemTable = sqliteTable('tier_list_item', {
   // Set to true when an item is soft-deleted as part of a category cascade,
   // null otherwise. Lets restoreCategory bring back exactly the items it
   // cascaded — items the user trashed independently keep their state.
-  deletedWithCascade: integer('deleted_with_cascade', { mode: 'boolean' })
+  deletedWithCascade: integer('deleted_with_cascade', { mode: 'boolean' }),
 });
 
 export const tierListItem = sqliteView('tier_list_item_active').as((qb) =>
-  qb.select().from(tierListItemTable).where(isNull(tierListItemTable.deletedAt))
+  qb.select().from(tierListItemTable).where(isNull(tierListItemTable.deletedAt)),
 );
 
 export const user = sqliteTable('user', {
@@ -75,7 +75,7 @@ export const user = sqliteTable('user', {
     .default(sql`(datetime('now'))`),
   updatedAt: text('updated_at')
     .notNull()
-    .default(sql`(datetime('now'))`)
+    .default(sql`(datetime('now'))`),
 });
 
 export const session = sqliteTable('session', {
@@ -86,7 +86,7 @@ export const session = sqliteTable('session', {
   expiresAt: integer('expires_at').notNull(),
   createdAt: text('created_at')
     .notNull()
-    .default(sql`(datetime('now'))`)
+    .default(sql`(datetime('now'))`),
 });
 
 export const page = sqliteTable('page', {
@@ -98,7 +98,7 @@ export const page = sqliteTable('page', {
     .default(sql`(datetime('now'))`),
   updatedAt: text('updated_at')
     .notNull()
-    .default(sql`(datetime('now'))`)
+    .default(sql`(datetime('now'))`),
 });
 
 export const siteSetting = sqliteTable('site_setting', {
@@ -109,32 +109,32 @@ export const siteSetting = sqliteTable('site_setting', {
     .default(sql`(datetime('now'))`),
   updatedAt: text('updated_at')
     .notNull()
-    .default(sql`(datetime('now'))`)
+    .default(sql`(datetime('now'))`),
 });
 
 // Signal table: when a row is present, updated_at triggers are suppressed.
 // Used by reorder operations to avoid bumping timestamps on order-only changes.
 export const suppressUpdatedAt = sqliteTable('_suppress_updated_at', {
-  flag: integer('flag')
+  flag: integer('flag'),
 });
 
 // ─── Relations ────────────────────────────────────────────────────────────────
 
 export const categoryRelations = relations(categoryTable, ({ many }) => ({
-  items: many(tierListItemTable)
+  items: many(tierListItemTable),
 }));
 
 export const tierListItemRelations = relations(tierListItemTable, ({ one }) => ({
   category: one(categoryTable, {
     fields: [tierListItemTable.categoryId],
-    references: [categoryTable.id]
-  })
+    references: [categoryTable.id],
+  }),
 }));
 
 export const userRelations = relations(user, ({ many }) => ({
-  sessions: many(session)
+  sessions: many(session),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
-  user: one(user, { fields: [session.userId], references: [user.id] })
+  user: one(user, { fields: [session.userId], references: [user.id] }),
 }));

@@ -1,9 +1,9 @@
 # Domain Model
 
-> **Source of truth:** the Drizzle schema in [`src/lib/server/db/schema.ts`](src/lib/server/db/schema.ts) and the tier logic in [`src/lib/tier.ts`](src/lib/tier.ts).
+> **Source of truth:** the Drizzle schema in [`src/lib/server/db/schema.ts`](../src/lib/server/db/schema.ts) and the tier logic in [`src/lib/tier.ts`](../src/lib/tier.ts).
 > If this document conflicts with those files, the code wins.
 
-For the reasoning behind key decisions, see [ADR-0004](docs/decisions/0004-domain-model.md).
+For the reasoning behind key decisions, see [ADR-0004](decisions/0004-domain-model.md).
 
 ## Entities
 

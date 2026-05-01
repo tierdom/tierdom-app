@@ -10,7 +10,7 @@
     { href: '/admin/categories', label: 'Categories' },
     { href: '/admin/items', label: 'Items (all)' },
     { href: '/admin/trash', label: 'Trash' },
-    { href: '/admin/tools', label: 'Tools' }
+    { href: '/admin/tools', label: 'Tools' },
   ];
 </script>
 

@@ -15,8 +15,8 @@ const iconSetMap = new Map(iconSets.map((s) => [s.slug, s]));
 const iconLookupMap = new Map(
   iconSets.map((s) => [
     s.slug,
-    new Map(Object.entries(s.icons).map(([k, v]) => [k.toLowerCase(), v]))
-  ])
+    new Map(Object.entries(s.icons).map(([k, v]) => [k.toLowerCase(), v])),
+  ]),
 );
 
 export function getIconSetBySlug(slug: string): IconSet | undefined {

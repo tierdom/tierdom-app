@@ -76,5 +76,5 @@ export const actions: Actions = {
 
     softDeleteItem(db, id);
     return { success: true };
-  }
+  },
 };

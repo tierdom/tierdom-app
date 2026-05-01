@@ -26,7 +26,7 @@ function seedUser(db: DB, id = 'u1', username = 'admin'): void {
 describe('hashToken', () => {
   it('returns the SHA-256 hex digest', () => {
     expect(hashToken('test')).toBe(
-      '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08'
+      '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
     );
   });
 
@@ -58,9 +58,9 @@ describe('createSession', () => {
     const { token } = createSession(db, 'u1');
     const rows = db.select().from(session).all();
     expect(rows).toHaveLength(1);
-    expect(rows[0].id).toBe(hashToken(token));
-    expect(rows[0].id).not.toBe(token);
-    expect(rows[0].userId).toBe('u1');
+    expect(rows[0]!.id).toBe(hashToken(token));
+    expect(rows[0]!.id).not.toBe(token);
+    expect(rows[0]!.userId).toBe('u1');
   });
 });
 

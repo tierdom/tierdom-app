@@ -8,5 +8,5 @@ export default defineConfig({
   dialect: 'sqlite',
   dbCredentials: { url: join(process.env.DATA_PATH, 'db.sqlite') },
   verbose: true,
-  strict: true
+  strict: true,
 });

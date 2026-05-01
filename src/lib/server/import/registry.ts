@@ -8,7 +8,7 @@ export const importers: Importer[] = [
   tierdomJsonImporter,
   goodreadsImporter,
   bggImporter,
-  imdbImporter
+  imdbImporter,
 ];
 
 export function getImporter(id: string): Importer | undefined {
@@ -21,6 +21,6 @@ export function getImporterSummaries(): ImporterSummary[] {
     label,
     description,
     status,
-    stubInfo
+    stubInfo,
   }));
 }

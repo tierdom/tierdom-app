@@ -20,7 +20,7 @@ import {
   restoreCategory,
   restoreItem,
   softDeleteCategory,
-  softDeleteItem
+  softDeleteItem,
 } from './soft-delete';
 import { sql } from 'drizzle-orm';
 
@@ -40,14 +40,14 @@ function seedCategory(db: DB, slug: string, name = slug) {
     .values({ slug, name, order: 0 })
     .returning({ id: categoryTable.id })
     .all();
-  return row.id;
+  return row!.id;
 }
 
 function seedItem(
   db: DB,
   categoryId: string,
   slug: string,
-  opts: { score?: number; imageHash?: string } = {}
+  opts: { score?: number; imageHash?: string } = {},
 ) {
   const [row] = db
     .insert(tierListItemTable)
@@ -57,11 +57,11 @@ function seedItem(
       name: slug,
       score: opts.score ?? 50,
       order: 0,
-      imageHash: opts.imageHash ?? null
+      imageHash: opts.imageHash ?? null,
     })
     .returning({ id: tierListItemTable.id })
     .all();
-  return row.id;
+  return row!.id;
 }
 
 describe('softDeleteCategory', () => {
@@ -327,11 +327,11 @@ describe('permanentlyDeleteCategory', () => {
 
     expect(images.sort()).toEqual(['live123', 'trashed456']);
     expect(db.select().from(categoryTable).where(eq(categoryTable.id, catId)).all()).toHaveLength(
-      0
+      0,
     );
     // FK CASCADE drops items.
     expect(
-      db.select().from(tierListItemTable).where(eq(tierListItemTable.id, liveId)).all()
+      db.select().from(tierListItemTable).where(eq(tierListItemTable.id, liveId)).all(),
     ).toHaveLength(0);
   });
 
@@ -365,7 +365,7 @@ describe('permanentlyDeleteItem', () => {
 
     expect(seen).toEqual(['abc']);
     expect(
-      db.select().from(tierListItemTable).where(eq(tierListItemTable.id, itemId)).all()
+      db.select().from(tierListItemTable).where(eq(tierListItemTable.id, itemId)).all(),
     ).toHaveLength(0);
   });
 

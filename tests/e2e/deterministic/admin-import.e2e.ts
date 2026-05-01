@@ -27,7 +27,7 @@ test('import index groups importers into Tierdom and Third-Party sections', asyn
 test('Tierdom JSON page is reachable', async ({ page }) => {
   await page.goto('/admin/tools/import/json');
   await expect(
-    page.getByRole('main').getByRole('heading', { name: 'Tierdom JSON', exact: true, level: 2 })
+    page.getByRole('main').getByRole('heading', { name: 'Tierdom JSON', exact: true, level: 2 }),
   ).toBeVisible();
 });
 

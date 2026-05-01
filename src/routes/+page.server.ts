@@ -11,7 +11,7 @@ export const load: PageServerLoad = async () => {
       slug: category.slug,
       name: category.name,
       description: category.description,
-      itemCount: count(tierListItem.id)
+      itemCount: count(tierListItem.id),
     })
     .from(category)
     .leftJoin(tierListItem, eq(tierListItem.categoryId, category.id))
@@ -20,13 +20,13 @@ export const load: PageServerLoad = async () => {
 
   const categoriesWithHtml = categories.map((cat) => ({
     ...cat,
-    descriptionHtml: renderMarkdown(cat.description)
+    descriptionHtml: renderMarkdown(cat.description),
   }));
 
   const [homePage] = await db.select().from(page).where(eq(page.slug, 'home')).limit(1);
 
   return {
     categoriesWithCounts: categoriesWithHtml,
-    page: homePage ? { ...homePage, contentHtml: renderMarkdown(homePage.content) } : null
+    page: homePage ? { ...homePage, contentHtml: renderMarkdown(homePage.content) } : null,
   };
 };

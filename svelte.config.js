@@ -11,9 +11,9 @@ const config = {
       const isExternalLibrary = pathSegments.includes('node_modules');
 
       return isExternalLibrary ? undefined : true;
-    }
+    },
   },
-  kit: { adapter: adapter({ bodyParser: { maxSize: 1024 * 1024 } }) }
+  kit: { adapter: adapter({ bodyParser: { maxSize: 1024 * 1024 } }) },
 };
 
 export default config;

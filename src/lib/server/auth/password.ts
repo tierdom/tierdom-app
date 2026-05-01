@@ -11,19 +11,22 @@ export function hashPassword(password: string): string {
   const hash = scryptSync(password, salt, KEY_LENGTH, {
     N: SCRYPT_N,
     r: SCRYPT_R,
-    p: SCRYPT_P
+    p: SCRYPT_P,
   });
   return `${salt.toString('hex')}$${hash.toString('hex')}`;
 }
 
 export function verifyPassword(password: string, stored: string): boolean {
   const [saltHex, hashHex] = stored.split('$');
+  if (!saltHex || !hashHex) {
+    throw new Error('Stored password is malformed (expected "salt$hash")');
+  }
   const salt = Buffer.from(saltHex, 'hex');
   const storedHash = Buffer.from(hashHex, 'hex');
   const candidateHash = scryptSync(password, salt, KEY_LENGTH, {
     N: SCRYPT_N,
     r: SCRYPT_R,
-    p: SCRYPT_P
+    p: SCRYPT_P,
   });
   return timingSafeEqual(storedHash, candidateHash);
 }

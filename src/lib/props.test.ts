@@ -8,7 +8,7 @@ import {
   MAX_PROPS,
   MAX_PROP_KEYS,
   MAX_KEY_LENGTH,
-  MAX_VALUE_LENGTH
+  MAX_VALUE_LENGTH,
 } from './props';
 
 describe('validateProps', () => {
@@ -19,11 +19,11 @@ describe('validateProps', () => {
   it('accepts valid props', () => {
     const result = validateProps([
       { key: 'Platform', value: 'PC' },
-      { key: 'Year', value: '2024' }
+      { key: 'Year', value: '2024' },
     ]);
     expect(result).toEqual([
       { key: 'Platform', value: 'PC' },
-      { key: 'Year', value: '2024' }
+      { key: 'Year', value: '2024' },
     ]);
   });
 
@@ -42,7 +42,7 @@ describe('validateProps', () => {
   it(`rejects more than ${MAX_PROPS} props`, () => {
     const tooMany = Array.from({ length: MAX_PROPS + 1 }, (_, i) => ({
       key: `k${i}`,
-      value: `v${i}`
+      value: `v${i}`,
     }));
     expect(validateProps(tooMany)).toBe(`Maximum ${MAX_PROPS} props allowed`);
   });
@@ -50,7 +50,7 @@ describe('validateProps', () => {
   it(`accepts exactly ${MAX_PROPS} props`, () => {
     const exact = Array.from({ length: MAX_PROPS }, (_, i) => ({
       key: `k${i}`,
-      value: `v${i}`
+      value: `v${i}`,
     }));
     const result = validateProps(exact);
     expect(Array.isArray(result)).toBe(true);
@@ -81,7 +81,7 @@ describe('validateProps', () => {
 
   it('rejects whitespace-only value', () => {
     expect(validateProps([{ key: 'k', value: '   ' }])).toBe(
-      'Each prop must have a non-empty value'
+      'Each prop must have a non-empty value',
     );
   });
 
@@ -92,7 +92,7 @@ describe('validateProps', () => {
   it(`rejects key exceeding ${MAX_KEY_LENGTH} characters`, () => {
     const longKey = 'k'.repeat(MAX_KEY_LENGTH + 1);
     expect(validateProps([{ key: longKey, value: 'v' }])).toBe(
-      `Key "${longKey}" exceeds ${MAX_KEY_LENGTH} characters`
+      `Key "${longKey}" exceeds ${MAX_KEY_LENGTH} characters`,
     );
   });
 
@@ -105,7 +105,7 @@ describe('validateProps', () => {
   it(`rejects value exceeding ${MAX_VALUE_LENGTH} characters`, () => {
     const longValue = 'v'.repeat(MAX_VALUE_LENGTH + 1);
     expect(validateProps([{ key: 'k', value: longValue }])).toBe(
-      `Value for "k" exceeds ${MAX_VALUE_LENGTH} characters`
+      `Value for "k" exceeds ${MAX_VALUE_LENGTH} characters`,
     );
   });
 
@@ -119,15 +119,15 @@ describe('validateProps', () => {
     expect(
       validateProps([
         { key: 'Platform', value: 'PC' },
-        { key: 'platform', value: 'Switch' }
-      ])
+        { key: 'platform', value: 'Switch' },
+      ]),
     ).toBe('Duplicate key "platform"');
   });
 
   it('allows different keys', () => {
     const result = validateProps([
       { key: 'Platform', value: 'PC' },
-      { key: 'Year', value: '2024' }
+      { key: 'Year', value: '2024' },
     ]);
     expect(Array.isArray(result)).toBe(true);
   });
@@ -187,7 +187,7 @@ describe('validatePropKeys', () => {
   it(`rejects key exceeding ${MAX_KEY_LENGTH} characters`, () => {
     const longKey = 'k'.repeat(MAX_KEY_LENGTH + 1);
     expect(validatePropKeys([pk(longKey)])).toBe(
-      `Key "${longKey}" exceeds ${MAX_KEY_LENGTH} characters`
+      `Key "${longKey}" exceeds ${MAX_KEY_LENGTH} characters`,
     );
   });
 
@@ -198,7 +198,7 @@ describe('validatePropKeys', () => {
   it('rejects unknown icon set slug when known sets provided', () => {
     const knownSets = new Set(['gaming-platforms']);
     expect(validatePropKeys([pk('Platform', 'nonexistent')], knownSets)).toBe(
-      'Unknown icon set "nonexistent" for key "Platform"'
+      'Unknown icon set "nonexistent" for key "Platform"',
     );
   });
 
@@ -222,7 +222,7 @@ describe('findDuplicateKeys', () => {
   it('returns empty set when no duplicates', () => {
     const result = findDuplicateKeys([
       { key: 'Platform', value: 'PC' },
-      { key: 'Year', value: '2024' }
+      { key: 'Year', value: '2024' },
     ]);
     expect(result.size).toBe(0);
   });
@@ -234,7 +234,7 @@ describe('findDuplicateKeys', () => {
   it('detects case-insensitive duplicates', () => {
     const result = findDuplicateKeys([
       { key: 'Platform', value: 'PC' },
-      { key: 'platform', value: 'Switch' }
+      { key: 'platform', value: 'Switch' },
     ]);
     expect(result.has('platform')).toBe(true);
     expect(result.size).toBe(1);
@@ -243,7 +243,7 @@ describe('findDuplicateKeys', () => {
   it('ignores empty keys', () => {
     const result = findDuplicateKeys([
       { key: '', value: 'a' },
-      { key: '', value: 'b' }
+      { key: '', value: 'b' },
     ]);
     expect(result.size).toBe(0);
   });
@@ -251,7 +251,7 @@ describe('findDuplicateKeys', () => {
   it('ignores whitespace-only keys', () => {
     const result = findDuplicateKeys([
       { key: '  ', value: 'a' },
-      { key: '  ', value: 'b' }
+      { key: '  ', value: 'b' },
     ]);
     expect(result.size).toBe(0);
   });
@@ -259,7 +259,7 @@ describe('findDuplicateKeys', () => {
   it('trims keys before comparing', () => {
     const result = findDuplicateKeys([
       { key: ' Platform ', value: 'PC' },
-      { key: 'platform', value: 'Switch' }
+      { key: 'platform', value: 'Switch' },
     ]);
     expect(result.has('platform')).toBe(true);
   });

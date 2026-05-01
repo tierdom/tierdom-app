@@ -18,7 +18,7 @@ export function applyOrder(
   idColumn: SQLiteColumn,
   orderColumn: SQLiteColumn,
   orderedIds: string[],
-  db: DB = defaultDb
+  db: DB = defaultDb,
 ): void {
   db.transaction((tx) => {
     tx.run(SUPPRESS_ON);
@@ -42,11 +42,11 @@ export function insertByScore(
   score: number,
   name: string,
   itemId: string,
-  db: DB = defaultDb
+  db: DB = defaultDb,
 ): number {
   const result = db
     .select({
-      pos: sql<number>`count(*)`
+      pos: sql<number>`count(*)`,
     })
     .from(tierListItem)
     .where(
@@ -56,10 +56,14 @@ export function insertByScore(
           ${tierListItem.score} > ${score}
           OR (${tierListItem.score} = ${score} AND ${tierListItem.name} < ${name})
           OR (${tierListItem.score} = ${score} AND ${tierListItem.name} = ${name} AND ${tierListItem.id} < ${itemId})
-        )`
+        )`,
     )
     .all();
-  const pos = result[0].pos;
+  const row = result[0];
+  /* v8 ignore start */
+  if (!row) throw new Error('reorder: count query returned no row');
+  /* v8 ignore stop */
+  const pos = row.pos;
 
   db.run(SUPPRESS_ON);
   db.run(
@@ -67,7 +71,7 @@ export function insertByScore(
       SET "order" = "order" + 1
       WHERE ${tierListItemTable.categoryId} = ${categoryId}
         AND ${tierListItemTable.id} != ${itemId}
-        AND "order" >= ${pos}`
+        AND "order" >= ${pos}`,
   );
   db.run(SUPPRESS_OFF);
 
@@ -90,7 +94,7 @@ export function sortCategoryByScore(categoryId: string, db: DB = defaultDb): voi
         FROM ${tierListItem}
         WHERE ${tierListItem.categoryId} = ${categoryId}
       ) AS sub
-      WHERE ${tierListItemTable}.id = sub.id`
+      WHERE ${tierListItemTable}.id = sub.id`,
   );
   db.run(SUPPRESS_OFF);
 }

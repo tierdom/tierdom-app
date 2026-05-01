@@ -10,6 +10,9 @@ type DB = BetterSQLite3Database<typeof schema>;
 export function bootstrapAdminUser(db: DB, password: string, username?: string): string | null {
   username = username || 'admin';
   const [result] = db.select({ count: count() }).from(user).all();
+  /* v8 ignore start */
+  if (!result) throw new Error('count query unexpectedly returned no row');
+  /* v8 ignore stop */
   if (result.count > 0) return null;
 
   const id = randomUUID();
@@ -17,7 +20,7 @@ export function bootstrapAdminUser(db: DB, password: string, username?: string):
     .values({
       id,
       username: username.toLowerCase(),
-      passwordHash: hashPassword(password)
+      passwordHash: hashPassword(password),
     })
     .run();
 

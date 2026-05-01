@@ -91,9 +91,14 @@ async function extractGradient(source: Buffer): Promise<string> {
   const hex = (r: number, g: number, b: number) =>
     `#${((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1)}`;
 
-  const c1 = hex(data[0], data[1], data[2]);
-  const c2 = hex(data[3], data[4], data[5]);
-  const c3 = hex(data[6], data[7], data[8]);
+  /* v8 ignore start */
+  if (data.length < 9) {
+    throw new Error(`gradient: expected 9 raw bytes from 3x1 sharp resize, got ${data.length}`);
+  }
+  /* v8 ignore stop */
+  const c1 = hex(data[0]!, data[1]!, data[2]!);
+  const c2 = hex(data[3]!, data[4]!, data[5]!);
+  const c3 = hex(data[6]!, data[7]!, data[8]!);
   return `linear-gradient(135deg, ${c1}, ${c2}, ${c3})`;
 }
 
@@ -105,7 +110,7 @@ async function extractGradient(source: Buffer): Promise<string> {
  */
 export async function generateImage(
   name: string,
-  imagesDir: string
+  imagesDir: string,
 ): Promise<{ hash: string; gradient: string }> {
   const svg = Buffer.from(buildSvg(name));
 

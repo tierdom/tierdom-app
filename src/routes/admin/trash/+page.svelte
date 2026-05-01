@@ -34,7 +34,7 @@
     const res = await fetch(action, {
       method: 'POST',
       headers: { 'x-sveltekit-action': 'true' },
-      body
+      body,
     });
     const result = deserialize(await res.text());
     if (result.type === 'failure') {
@@ -128,7 +128,7 @@
                     kind: 'purge-category',
                     id: cat.id,
                     name: cat.name,
-                    slug: cat.slug
+                    slug: cat.slug,
                   })}
               >
                 <Trash2 size={12} />delete forever
@@ -179,7 +179,7 @@
                     kind: 'purge-item',
                     id: item.id,
                     name: item.name,
-                    slug: item.slug
+                    slug: item.slug,
                   })}
               >
                 <Trash2 size={12} />delete forever

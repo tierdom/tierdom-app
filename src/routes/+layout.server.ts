@@ -17,6 +17,6 @@ export const load: LayoutServerLoad = async ({ locals }) => {
     categories,
     user: locals.user,
     setupComplete: isSetupComplete(db),
-    footerHtml
+    footerHtml,
   };
 };

@@ -14,7 +14,7 @@ staying simple to maintain and extend.
 
 ## Decision
 
-See the full domain model in [DOMAIN.md](../../DOMAIN.md).
+See the full domain model in [domain.md](../domain.md).
 
 **Category** is the top-level grouping (e.g. _Games_, _Books_). It owns a set of
 tier list items and controls the score-to-tier mapping for that topic.

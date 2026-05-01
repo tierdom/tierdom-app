@@ -16,7 +16,7 @@ export type CategoryFormResult =
 
 export function parseCategoryForm(
   data: FormData,
-  knownIconSetSlugs?: Set<string>
+  knownIconSetSlugs?: Set<string>,
 ): CategoryFormResult {
   const name = data.get('name')?.toString()?.trim();
   if (!name) return { error: 'Name is required' };
@@ -97,6 +97,6 @@ export function parseItemForm(data: FormData): ItemFormResult {
     props,
     returnTarget: (data.get('_returnTarget')?.toString() === 'categories'
       ? 'categories'
-      : 'items') as ReturnTarget
+      : 'items') as ReturnTarget,
   };
 }

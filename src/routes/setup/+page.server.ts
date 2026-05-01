@@ -44,5 +44,5 @@ export const actions: Actions = {
     }
 
     redirect(303, '/admin');
-  }
+  },
 };

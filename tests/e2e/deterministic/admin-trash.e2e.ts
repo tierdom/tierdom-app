@@ -48,7 +48,7 @@ test('move item to trash, restore from trash, item reappears', async ({ page }) 
 });
 
 test('cascade: trash category, items disappear from items list and category list', async ({
-  page
+  page,
 }) => {
   const main = page.getByRole('main');
   const catName = `Cascade-${Date.now()}`;
@@ -145,7 +145,7 @@ test('permanent delete: typed confirmation gates, then item is gone for good', a
 });
 
 test('permanent delete category: typed gate, then category and items are gone', async ({
-  page
+  page,
 }) => {
   const main = page.getByRole('main');
   const catName = `Purge-Cat-${Date.now()}`;

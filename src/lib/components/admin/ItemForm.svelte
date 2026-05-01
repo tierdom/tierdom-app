@@ -20,7 +20,7 @@
     initialValues = {},
     initialProps = [],
     returnTarget,
-    backUrl
+    backUrl,
   }: {
     mode: 'create' | 'edit';
     categories: Category[];
@@ -45,7 +45,7 @@
   // svelte-ignore state_referenced_locally — intentional: mutable copy of initial value
   let selectedCategoryId = $state(initialValues.categoryId ?? '');
   let suggestedKeys = $derived(
-    (categories.find((c) => c.id === selectedCategoryId)?.propKeys ?? []).map((pk) => pk.key)
+    (categories.find((c) => c.id === selectedCategoryId)?.propKeys ?? []).map((pk) => pk.key),
   );
 
   let pendingDiscard = $state(false);

@@ -24,7 +24,7 @@
     rows = 3,
     min,
     max,
-    step
+    step,
   }: Props = $props();
 
   const fieldClass =

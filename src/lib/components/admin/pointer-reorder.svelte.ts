@@ -3,7 +3,7 @@ export type DropPosition = 'above' | 'below';
 export function createPointerReorder({
   rowSelector,
   idAttr,
-  onCommit
+  onCommit,
 }: {
   rowSelector: string;
   idAttr: string;
@@ -24,7 +24,7 @@ export function createPointerReorder({
       if (clientY >= rect.top && clientY <= rect.bottom) {
         return {
           id,
-          position: clientY < rect.top + rect.height / 2 ? 'above' : 'below'
+          position: clientY < rect.top + rect.height / 2 ? 'above' : 'below',
         };
       }
     }
@@ -69,7 +69,7 @@ export function createPointerReorder({
       },
       onpointercancel(e: PointerEvent) {
         reset(e.currentTarget as HTMLElement, e.pointerId);
-      }
+      },
     };
   }
 
@@ -86,7 +86,7 @@ export function createPointerReorder({
     bindList(el: HTMLElement | undefined) {
       listEl = el;
     },
-    handlers
+    handlers,
   };
 }
 
@@ -94,13 +94,14 @@ export function applyReorder<T extends { id: string }>(
   items: T[],
   fromId: string,
   toId: string,
-  position: DropPosition
+  position: DropPosition,
 ): T[] {
   const fromIndex = items.findIndex((i) => i.id === fromId);
   const toIndex = items.findIndex((i) => i.id === toId);
   if (fromIndex === -1 || toIndex === -1) return items;
   const reordered = [...items];
   const [moved] = reordered.splice(fromIndex, 1);
+  if (!moved) return items;
   const insertAt =
     fromIndex < toIndex
       ? position === 'above'

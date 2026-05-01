@@ -6,7 +6,7 @@ export function setSessionCookie(event: RequestEvent, token: string, expiresAt: 
   event.cookies.set(SESSION_COOKIE, token, {
     sameSite: 'lax',
     path: '/',
-    expires: new Date(expiresAt)
+    expires: new Date(expiresAt),
   });
 }
 
@@ -14,7 +14,7 @@ export function deleteSessionCookie(event: RequestEvent): void {
   event.cookies.set(SESSION_COOKIE, '', {
     sameSite: 'lax',
     path: '/',
-    maxAge: 0
+    maxAge: 0,
   });
 }
 

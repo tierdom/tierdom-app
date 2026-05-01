@@ -26,7 +26,7 @@ export const load: PageServerLoad = ({ params }) => {
   return {
     importer: { id, label, description, status, accept, stubInfo },
     maxBytes: MAX_JSON_BYTES,
-    existingCategories
+    existingCategories,
   };
 };
 
@@ -49,7 +49,7 @@ export const actions: Actions = {
     }
     if (file.size > MAX_JSON_BYTES) {
       return fail(413, {
-        message: `File is too large (${file.size} bytes). Maximum is ${MAX_JSON_BYTES} bytes.`
+        message: `File is too large (${file.size} bytes). Maximum is ${MAX_JSON_BYTES} bytes.`,
       });
     }
 
@@ -63,10 +63,10 @@ export const actions: Actions = {
           updated: { categories: 0, items: 0 },
           skipped: { categories: 0, items: 0 },
           details: { inserted: [], updated: [], skipped: [] },
-          errors: plan.errors
+          errors: plan.errors,
         },
         strategy: 'skip' as MergeStrategy,
-        filename: file.name
+        filename: file.name,
       };
     }
 
@@ -97,14 +97,16 @@ export const actions: Actions = {
       return fail(400, { message: 'Malformed mapping form data.' });
     }
 
-    const mappings: CategoryMapping[] = fileSlugs.map((fileSlug, i) => {
-      if (actions[i] === 'skip') {
+    const mappings: CategoryMapping[] = fileSlugs.map((fileSlug, i): CategoryMapping => {
+      // Length parity is enforced above, so all parallel reads are safe.
+      const action = actions[i]!;
+      if (action === 'skip') {
         return { fileSlug, action: 'skip' };
       }
-      if (actions[i] === 'use-existing') {
-        return { fileSlug, action: 'use-existing', targetId: targetIds[i] };
+      if (action === 'use-existing') {
+        return { fileSlug, action: 'use-existing', targetId: targetIds[i]! };
       }
-      return { fileSlug, action: 'create-new', slug: newSlugs[i], name: newNames[i] };
+      return { fileSlug, action: 'create-new', slug: newSlugs[i]!, name: newNames[i]! };
     });
 
     const result = await importer.commit!(planId, mappings, strategy);
@@ -122,5 +124,5 @@ export const actions: Actions = {
       }
     }
     return { cancelled: true };
-  }
+  },
 };

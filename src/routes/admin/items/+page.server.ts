@@ -22,7 +22,7 @@ export const load: PageServerLoad = async () => {
       cutoffE: category.cutoffE,
       cutoffF: category.cutoffF,
       updatedAt: tierListItem.updatedAt,
-      props: tierListItem.props
+      props: tierListItem.props,
     })
     .from(tierListItem)
     .innerJoin(category, eq(category.id, tierListItem.categoryId))
@@ -39,5 +39,5 @@ export const actions: Actions = {
 
     softDeleteItem(db, id);
     return { success: true };
-  }
+  },
 };

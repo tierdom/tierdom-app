@@ -46,7 +46,7 @@
         score: data.item.score,
         description: data.item.description,
         categoryId: data.item.categoryId,
-        imageHash: data.item.imageHash
+        imageHash: data.item.imageHash,
       }}
       initialProps={data.item.props}
       returnTarget={data.returnTarget}

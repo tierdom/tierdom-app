@@ -65,7 +65,7 @@
                 onclick={() =>
                   (pendingDelete = {
                     id: cat.id,
-                    name: String(cat.name)
+                    name: String(cat.name),
                   })}
               >
                 <Trash2 size={12} />trash

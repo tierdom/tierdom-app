@@ -5,7 +5,7 @@ import {
   validateSession,
   getSessionToken,
   setSessionCookie,
-  deleteSessionCookie
+  deleteSessionCookie,
 } from '$lib/server/auth/session';
 import { isSetupComplete } from '$lib/server/setup';
 import { db } from '$lib/server/db';

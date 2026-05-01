@@ -39,7 +39,7 @@ export function validateProps(raw: unknown): Prop[] | string {
 export function filterSuggestions(
   suggestedKeys: string[],
   query: string,
-  usedKeys: string[]
+  usedKeys: string[],
 ): string[] {
   if (suggestedKeys.length === 0) return [];
   const q = query.toLowerCase();
@@ -55,7 +55,7 @@ export function isNonStandardKey(key: string, suggestedKeys: string[]): boolean 
 
 export function validatePropKeys(
   raw: unknown,
-  knownIconSetSlugs?: Set<string>
+  knownIconSetSlugs?: Set<string>,
 ): PropKeyConfig[] | string {
   if (!Array.isArray(raw)) return 'Prop keys must be an array';
   if (raw.length > MAX_PROP_KEYS) return `Maximum ${MAX_PROP_KEYS} prop keys allowed`;

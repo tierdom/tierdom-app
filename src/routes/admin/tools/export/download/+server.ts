@@ -15,7 +15,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
   const { stream, filename } = buildExport(
     { includeDb, includeJson, includeImages, includeMarkdown },
-    { appVersion: APP_VERSION }
+    { appVersion: APP_VERSION },
   );
 
   // No Content-Length: total size is unknown until the ZIP is fully composed,
@@ -25,7 +25,7 @@ export const GET: RequestHandler = async ({ url }) => {
     headers: {
       'Content-Type': 'application/zip',
       'Content-Disposition': `attachment; filename="${filename}"`,
-      'Cache-Control': 'no-store'
-    }
+      'Cache-Control': 'no-store',
+    },
   });
 };

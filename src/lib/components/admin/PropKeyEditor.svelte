@@ -10,7 +10,7 @@
 
   let {
     propKeys,
-    onchange
+    onchange,
   }: {
     propKeys: PropKeyConfig[];
     onchange: () => void;
@@ -19,7 +19,7 @@
   // eslint-disable-next-line svelte/no-unused-svelte-ignore
   // svelte-ignore state_referenced_locally — intentional: mutable copy of initial prop
   let items = $state<InternalKey[]>(
-    propKeys.map((pk) => ({ id: crypto.randomUUID(), key: pk.key, iconSet: pk.iconSet }))
+    propKeys.map((pk) => ({ id: crypto.randomUUID(), key: pk.key, iconSet: pk.iconSet })),
   );
 
   function emit() {
@@ -37,7 +37,7 @@
     onCommit: ({ fromId, toId, position }) => {
       items = applyReorder(items, fromId, toId, position);
       emit();
-    }
+    },
   });
 
   function add() {
@@ -62,7 +62,9 @@
   }
 
   let serialized = $derived(
-    JSON.stringify(items.map((i) => ({ key: i.key, ...(i.iconSet ? { iconSet: i.iconSet } : {}) })))
+    JSON.stringify(
+      items.map((i) => ({ key: i.key, ...(i.iconSet ? { iconSet: i.iconSet } : {}) })),
+    ),
   );
 
   let duplicateKeys = $derived.by(() => {
@@ -116,7 +118,7 @@
             value={item.key}
             oninput={(e) => handleInput(item.id, e.currentTarget.value)}
             class="key-input min-w-0 rounded border bg-surface px-2 py-1.5 text-sm text-primary placeholder:text-secondary/50 focus:outline-none {isDuplicate(
-              item.key
+              item.key,
             )
               ? 'border-red-500/60 focus:border-red-500'
               : 'border-subtle focus:border-accent'}"

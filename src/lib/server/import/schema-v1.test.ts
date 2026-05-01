@@ -13,16 +13,16 @@ const sampleExport: ExportData = {
         title: 'About',
         content: '# About',
         createdAt: '2026-04-27T00:00:00.000Z',
-        updatedAt: '2026-04-27T00:00:00.000Z'
-      }
+        updatedAt: '2026-04-27T00:00:00.000Z',
+      },
     ],
     siteSettings: [
       {
         key: 'footer',
         value: 'My footer',
         createdAt: '2026-04-27T00:00:00.000Z',
-        updatedAt: '2026-04-27T00:00:00.000Z'
-      }
+        updatedAt: '2026-04-27T00:00:00.000Z',
+      },
     ],
     categories: [
       {
@@ -53,12 +53,12 @@ const sampleExport: ExportData = {
             placeholder: null,
             props: [{ key: 'Year', value: '2010' }],
             createdAt: '2026-04-27T00:00:00.000Z',
-            updatedAt: '2026-04-27T00:00:00.000Z'
-          }
-        ]
-      }
-    ]
-  }
+            updatedAt: '2026-04-27T00:00:00.000Z',
+          },
+        ],
+      },
+    ],
+  },
 };
 
 describe('schema-v1.json', () => {
@@ -83,7 +83,7 @@ describe('schema-v1.json', () => {
     }
     const itemRequired = schema.$defs.Item.required as string[];
     for (const key of itemRequired) {
-      expect(sampleExport.data.categories[0].items[0]).toHaveProperty(key);
+      expect(sampleExport.data.categories[0]!.items[0]).toHaveProperty(key);
     }
     const pageRequired = schema.$defs.Page.required as string[];
     for (const key of pageRequired) {

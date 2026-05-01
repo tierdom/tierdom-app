@@ -9,7 +9,7 @@ const ALLOWED_MIME_TYPES = new Set([
   'image/png',
   'image/webp',
   'image/gif',
-  'image/avif'
+  'image/avif',
 ]);
 const MAX_FILE_SIZE = 1024 * 1024; // 1 MB
 const IMAGE_SIZE = 250;
@@ -42,9 +42,16 @@ export async function extractGradient(source: Buffer): Promise<string> {
     .raw()
     .toBuffer({ resolveWithObject: true });
 
-  const c1 = rgbToHex(data[0], data[1], data[2]);
-  const c2 = rgbToHex(data[3], data[4], data[5]);
-  const c3 = rgbToHex(data[6], data[7], data[8]);
+  /* v8 ignore start */
+  if (data.length < 9) {
+    throw new Error(
+      `extractGradient: expected 9 raw bytes from 3x1 sharp resize, got ${data.length}`,
+    );
+  }
+  /* v8 ignore stop */
+  const c1 = rgbToHex(data[0]!, data[1]!, data[2]!);
+  const c2 = rgbToHex(data[3]!, data[4]!, data[5]!);
+  const c3 = rgbToHex(data[6]!, data[7]!, data[8]!);
   return `linear-gradient(135deg, ${c1}, ${c2}, ${c3})`;
 }
 

@@ -24,7 +24,7 @@
   // committing for the loading spinner; form for "Import again" / cancel).
   const phase = $derived<ImportPhase>(
     phaseOverride ??
-      (cancelled || (!plan && !result) ? 'form' : result ? 'result' : plan ? 'review' : 'form')
+      (cancelled || (!plan && !result) ? 'form' : result ? 'result' : plan ? 'review' : 'form'),
   );
 
   const setPhase = (p: ImportPhase | null) => (phaseOverride = p);

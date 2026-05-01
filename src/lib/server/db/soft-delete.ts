@@ -22,7 +22,7 @@ export type SoftDeleteErrorCode = 'slug_conflict' | 'parent_in_trash';
 export class SoftDeleteError extends Error {
   constructor(
     public code: SoftDeleteErrorCode,
-    message: string
+    message: string,
   ) {
     super(message);
     this.name = 'SoftDeleteError';
@@ -78,7 +78,7 @@ export function restoreCategory(db: DB, id: string): void {
     if (conflict) {
       throw new SoftDeleteError(
         'slug_conflict',
-        `Cannot restore — slug "${cat.slug}" is already used by an active category. Rename or delete the active one first.`
+        `Cannot restore — slug "${cat.slug}" is already used by an active category. Rename or delete the active one first.`,
       );
     }
 
@@ -88,8 +88,8 @@ export function restoreCategory(db: DB, id: string): void {
         and(
           eq(tierListItemTable.categoryId, id),
           eq(tierListItemTable.deletedWithCascade, true),
-          isNotNull(tierListItemTable.deletedAt)
-        )
+          isNotNull(tierListItemTable.deletedAt),
+        ),
       )
       .run();
     tx.update(categoryTable).set({ deletedAt: null }).where(eq(categoryTable.id, id)).run();
@@ -107,7 +107,7 @@ export function restoreItem(db: DB, id: string): void {
       .select({
         slug: tierListItemTable.slug,
         categoryId: tierListItemTable.categoryId,
-        deletedAt: tierListItemTable.deletedAt
+        deletedAt: tierListItemTable.deletedAt,
       })
       .from(tierListItemTable)
       .where(eq(tierListItemTable.id, id))
@@ -122,7 +122,7 @@ export function restoreItem(db: DB, id: string): void {
     if (parent?.deletedAt) {
       throw new SoftDeleteError(
         'parent_in_trash',
-        'Cannot restore — the parent category is in trash. Restore the category first.'
+        'Cannot restore — the parent category is in trash. Restore the category first.',
       );
     }
 
@@ -133,14 +133,14 @@ export function restoreItem(db: DB, id: string): void {
         and(
           eq(tierListItemTable.categoryId, item.categoryId),
           eq(tierListItemTable.slug, item.slug),
-          isNull(tierListItemTable.deletedAt)
-        )
+          isNull(tierListItemTable.deletedAt),
+        ),
       )
       .get();
     if (conflict) {
       throw new SoftDeleteError(
         'slug_conflict',
-        `Cannot restore — slug "${item.slug}" is already used by an active item in this category.`
+        `Cannot restore — slug "${item.slug}" is already used by an active item in this category.`,
       );
     }
 
@@ -158,7 +158,7 @@ export function restoreItem(db: DB, id: string): void {
 export function permanentlyDeleteCategory(
   db: DB,
   id: string,
-  deleteImage: (hash: string) => void = defaultDeleteImage
+  deleteImage: (hash: string) => void = defaultDeleteImage,
 ): void {
   const items = db
     .select({ imageHash: tierListItemTable.imageHash })
@@ -175,7 +175,7 @@ export function permanentlyDeleteCategory(
 export function permanentlyDeleteItem(
   db: DB,
   id: string,
-  deleteImage: (hash: string) => void = defaultDeleteImage
+  deleteImage: (hash: string) => void = defaultDeleteImage,
 ): void {
   const item = db
     .select({ imageHash: tierListItemTable.imageHash })
@@ -198,7 +198,7 @@ export function permanentlyDeleteItem(
  */
 export function countStaleTrash(
   db: DB,
-  days: number = STALE_TRASH_DAYS
+  days: number = STALE_TRASH_DAYS,
 ): { categories: number; items: number } {
   const cutoff = sql`datetime('now', ${'-' + days + ' days'})`;
   const cats = db
@@ -220,7 +220,7 @@ export function listTrashed(db: DB) {
       id: categoryTable.id,
       slug: categoryTable.slug,
       name: categoryTable.name,
-      deletedAt: categoryTable.deletedAt
+      deletedAt: categoryTable.deletedAt,
     })
     .from(categoryTable)
     .where(isNotNull(categoryTable.deletedAt))
@@ -233,7 +233,7 @@ export function listTrashed(db: DB) {
       name: tierListItemTable.name,
       deletedAt: tierListItemTable.deletedAt,
       categoryId: tierListItemTable.categoryId,
-      categoryName: categoryTable.name
+      categoryName: categoryTable.name,
     })
     .from(tierListItemTable)
     .innerJoin(categoryTable, eq(categoryTable.id, tierListItemTable.categoryId))

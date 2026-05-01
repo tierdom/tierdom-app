@@ -19,7 +19,7 @@
   count: number,
   title: string,
   items: DashboardItem[],
-  extras?: Snippet
+  extras?: Snippet,
 )}
   <div>
     <a
@@ -76,9 +76,9 @@
       data.pages.map((pg) => ({
         path: `/admin/cms/pages/${pg.slug}`,
         label: pg.title,
-        detail: `/${pg.slug} \u00B7 ${formatRelativeDate(pg.updatedAt)}`
+        detail: `/${pg.slug} \u00B7 ${formatRelativeDate(pg.updatedAt)}`,
       })),
-      cmsExtras
+      cmsExtras,
     )}
 
     {@render dashboardCard(
@@ -88,8 +88,8 @@
       data.categories.map((cat) => ({
         path: `/admin/categories/${cat.id}`,
         label: cat.name,
-        detail: `${cat.itemCount} items \u00B7 ${formatRelativeDate(cat.updatedAt)}`
-      }))
+        detail: `${cat.itemCount} items \u00B7 ${formatRelativeDate(cat.updatedAt)}`,
+      })),
     )}
 
     {@render dashboardCard(
@@ -99,9 +99,9 @@
       data.recentItems.map((item) => ({
         path: `/admin/items/${item.id}`,
         label: item.name,
-        detail: `${item.categoryName} \u00B7 ${formatRelativeDate(item.updatedAt)}`
+        detail: `${item.categoryName} \u00B7 ${formatRelativeDate(item.updatedAt)}`,
       })),
-      itemsExtras
+      itemsExtras,
     )}
   </div>
 </section>

@@ -7,7 +7,7 @@ import {
   deleteImportTemp,
   readImportTemp,
   sweepImportTemp,
-  writeImportTemp
+  writeImportTemp,
 } from '../temp-storage';
 import type { ExportData, ExportedCategory, ExportedItem } from '$lib/server/export/json-schema';
 import type {
@@ -16,7 +16,7 @@ import type {
   ImportResult,
   Importer,
   MergeStrategy,
-  ProposedCategory
+  ProposedCategory,
 } from '../types';
 import { emptyPlan, emptyResult } from '../types';
 
@@ -31,7 +31,7 @@ export const tierdomJsonImporter: Importer = {
   status: 'available',
   accept: 'application/json,.json',
   plan: (file) => planTierdomJsonImport(file),
-  commit: (planId, mappings, strategy) => commitTierdomJsonImport(planId, mappings, strategy)
+  commit: (planId, mappings, strategy) => commitTierdomJsonImport(planId, mappings, strategy),
 };
 
 export async function planTierdomJsonImport(file: File, conn: DB = defaultDb): Promise<ImportPlan> {
@@ -69,7 +69,7 @@ export async function planTierdomJsonImport(file: File, conn: DB = defaultDb): P
       fileName: category.name,
       itemCount: category.items.length,
       matchedExistingId: match?.id ?? null,
-      matchedExistingName: match?.name ?? null
+      matchedExistingName: match?.name ?? null,
     };
   });
 
@@ -80,7 +80,7 @@ export async function commitTierdomJsonImport(
   planId: string,
   mappings: CategoryMapping[],
   strategy: MergeStrategy,
-  conn: DB = defaultDb
+  conn: DB = defaultDb,
 ): Promise<ImportResult> {
   let bytes: Buffer;
   try {
@@ -95,7 +95,7 @@ export async function commitTierdomJsonImport(
   } catch (e) {
     return {
       ...emptyResult(),
-      errors: [`Invalid JSON in stored plan: ${e instanceof Error ? e.message : String(e)}`]
+      errors: [`Invalid JSON in stored plan: ${e instanceof Error ? e.message : String(e)}`],
     };
   }
   if (!validateExport(parsed)) {
@@ -132,7 +132,7 @@ export async function commitTierdomJsonImport(
   } catch (e) {
     return {
       ...emptyResult(),
-      errors: [`Database error: ${e instanceof Error ? e.message : String(e)}`]
+      errors: [`Database error: ${e instanceof Error ? e.message : String(e)}`],
     };
   }
 
@@ -144,7 +144,7 @@ function applyCategoryMapping(
   tx: Tx,
   category: ExportedCategory,
   mapping: Exclude<CategoryMapping, { action: 'skip' }>,
-  result: ImportResult
+  result: ImportResult,
 ): string | null {
   if (mapping.action === 'use-existing') {
     const exists = tx
@@ -154,7 +154,7 @@ function applyCategoryMapping(
       .get();
     if (!exists) {
       result.errors.push(
-        `Target category ${mapping.targetId} for "${category.slug}" no longer exists.`
+        `Target category ${mapping.targetId} for "${category.slug}" no longer exists.`,
       );
       result.skipped.categories++;
       result.details.skipped.push(`categories/${category.slug}`);
@@ -172,7 +172,7 @@ function applyCategoryMapping(
     .get();
   if (slugClash) {
     result.errors.push(
-      `Cannot create category "${targetSlug}": slug already in use by ${slugClash.id}.`
+      `Cannot create category "${targetSlug}": slug already in use by ${slugClash.id}.`,
     );
     result.skipped.categories++;
     result.details.skipped.push(`categories/${targetSlug}`);
@@ -194,7 +194,7 @@ function applyCategoryMapping(
       cutoffD: category.cutoffD,
       cutoffE: category.cutoffE,
       cutoffF: category.cutoffF,
-      propKeys: category.propKeys
+      propKeys: category.propKeys,
     })
     .run();
   result.inserted.categories++;
@@ -208,7 +208,7 @@ function applyItem(
   fileCategorySlug: string,
   targetCategoryId: string,
   strategy: MergeStrategy,
-  result: ImportResult
+  result: ImportResult,
 ) {
   const path = `categories/${fileCategorySlug}/items/${item.slug}`;
   const existing = tx
@@ -218,8 +218,8 @@ function applyItem(
       and(
         eq(tierListItemTable.categoryId, targetCategoryId),
         eq(tierListItemTable.slug, item.slug),
-        isNull(tierListItemTable.deletedAt)
-      )
+        isNull(tierListItemTable.deletedAt),
+      ),
     )
     .get();
 
@@ -241,7 +241,7 @@ function applyItem(
     score: item.score,
     order: item.order,
     placeholder: item.placeholder,
-    props: item.props
+    props: item.props,
   };
 
   if (existing) {

@@ -22,10 +22,10 @@ export const actions: Actions = {
       name,
       description,
       propKeys,
-      order: maxOrder.max + 1,
-      ...cutoffs
+      order: (maxOrder?.max ?? -1) + 1,
+      ...cutoffs,
     });
 
     redirect(303, '/admin/categories');
-  }
+  },
 };

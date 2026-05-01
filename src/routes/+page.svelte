@@ -12,7 +12,7 @@
     { letter: 'C', label: 'Decent', color: 'var(--tier-c-bg)' },
     { letter: 'D', label: 'Meh', color: 'var(--tier-d-bg)' },
     { letter: 'E', label: 'Rubbish', color: 'var(--tier-e-bg)' },
-    { letter: 'F', label: 'Abysmal', color: 'var(--tier-f-bg)' }
+    { letter: 'F', label: 'Abysmal', color: 'var(--tier-f-bg)' },
   ];
 </script>
 

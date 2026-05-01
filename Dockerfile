@@ -24,10 +24,10 @@ COPY --from=build /app/package.json /app/package-lock.json ./
 RUN npm pkg delete scripts.prepare && npm ci --omit=dev
 
 # Caddy configuration
-COPY Caddyfile /etc/caddy/Caddyfile
+COPY deploy/Caddyfile /etc/caddy/Caddyfile
 
 # Entrypoint script
-COPY docker-entrypoint.sh /docker-entrypoint.sh
+COPY deploy/docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
 # Default database path for zero-config trial — override at runtime

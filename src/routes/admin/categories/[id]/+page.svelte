@@ -36,7 +36,7 @@
       data.category.cutoffC != null ||
       data.category.cutoffD != null ||
       data.category.cutoffE != null ||
-      data.category.cutoffF != null
+      data.category.cutoffF != null,
   );
   const showCutoffs = $derived(userWantsCutoffs || hasCutoffs);
 
@@ -47,7 +47,7 @@
     C: data.category.cutoffC,
     D: data.category.cutoffD,
     E: data.category.cutoffE,
-    F: data.category.cutoffF
+    F: data.category.cutoffF,
   });
 
   function markDirty() {

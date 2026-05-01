@@ -25,7 +25,7 @@ describe('setSessionCookie', () => {
     expect(set).toHaveBeenCalledWith(COOKIE_NAME, 'tok', {
       sameSite: 'lax',
       path: '/',
-      expires: new Date(expiresAt)
+      expires: new Date(expiresAt),
     });
   });
 });
@@ -39,7 +39,7 @@ describe('deleteSessionCookie', () => {
     expect(set).toHaveBeenCalledWith(COOKIE_NAME, '', {
       sameSite: 'lax',
       path: '/',
-      maxAge: 0
+      maxAge: 0,
     });
   });
 });

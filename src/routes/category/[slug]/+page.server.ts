@@ -20,7 +20,7 @@ export const load: PageServerLoad = async ({ params }) => {
     C: cat.cutoffC,
     D: cat.cutoffD,
     E: cat.cutoffE,
-    F: cat.cutoffF
+    F: cat.cutoffF,
   };
 
   const items = await db
@@ -33,7 +33,7 @@ export const load: PageServerLoad = async ({ params }) => {
     ...item,
     image: item.imageHash ? `/assets/images/${item.imageHash}.webp` : null,
     placeholder: item.placeholder,
-    descriptionHtml: renderMarkdown(item.description)
+    descriptionHtml: renderMarkdown(item.description),
   }));
 
   // Group items by tier, preserving S→F order
@@ -45,11 +45,11 @@ export const load: PageServerLoad = async ({ params }) => {
 
   const tiers = TIERS.map((t) => ({
     tier: t,
-    items: grouped.get(t)!
+    items: grouped.get(t)!,
   }));
 
   return {
     category: { ...cat, descriptionHtml: renderMarkdown(cat.description) },
-    tiers
+    tiers,
   };
 };

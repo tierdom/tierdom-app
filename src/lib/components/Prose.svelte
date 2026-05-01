@@ -16,11 +16,11 @@
   const sizeClasses: Record<string, string> = {
     sm: 'prose-sm',
     base: '',
-    lg: 'prose-lg'
+    lg: 'prose-lg',
   };
 
   let classes = $derived(
-    ['prose prose-invert', sizeClasses[size], className].filter(Boolean).join(' ')
+    ['prose prose-invert', sizeClasses[size], className].filter(Boolean).join(' '),
   );
 </script>
 

@@ -16,7 +16,7 @@
     C: 'bg-[var(--tier-c-bg)] text-[var(--tier-c-fg)]',
     D: 'bg-[var(--tier-d-bg)] text-[var(--tier-d-fg)]',
     E: 'bg-[var(--tier-e-bg)] text-[var(--tier-e-fg)]',
-    F: 'bg-[var(--tier-f-bg)] text-[var(--tier-f-fg)]'
+    F: 'bg-[var(--tier-f-bg)] text-[var(--tier-f-fg)]',
   };
 
   const tierBorderStyles: Record<string, string> = {
@@ -26,11 +26,11 @@
     C: 'border-[var(--tier-c-bg)]',
     D: 'border-[var(--tier-d-bg)]',
     E: 'border-[var(--tier-e-bg)]',
-    F: 'border-[var(--tier-f-bg)]'
+    F: 'border-[var(--tier-f-bg)]',
   };
 
   let allItems = $derived(
-    data.tiers.flatMap((t) => t.items.map((item) => ({ ...item, tier: t.tier })))
+    data.tiers.flatMap((t) => t.items.map((item) => ({ ...item, tier: t.tier }))),
   );
 
   let selectedItem = $derived.by(() => {
