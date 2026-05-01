@@ -77,28 +77,6 @@ tests/e2e/
 
 ## Unit-testing DB code
 
-Server-side helpers that need a real database (transactions, multi-statement logic, view behaviour) can be unit-tested against an in-memory SQLite:
-
-```ts
-import Database from 'better-sqlite3';
-import { drizzle } from 'drizzle-orm/better-sqlite3';
-import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
-import * as schema from './db/schema';
-
-vi.mock('$env/dynamic/private', () => ({ env: { DATA_PATH: '/tmp/test' } }));
-vi.mock('sharp', () => ({ default: vi.fn() }));
-
-function makeDb() {
-  const client = new Database(':memory:');
-  client.pragma('foreign_keys = ON');
-  const db = drizzle(client, { schema });
-  migrate(db, { migrationsFolder: 'drizzle' });
-  return db;
-}
-```
-
-For this to work, the helper under test must accept the `db` as a parameter rather than relying solely on the singleton from `$lib/server/db`. Match the convention from `seed-utils.ts` / `soft-delete.ts` / `reorder.ts`: take `db: DB` as the last argument, defaulting to `defaultDb` from the singleton. App code keeps calling without the arg; tests pass their own. If the function imports the singleton transitively (via `$lib/server/db`), `vi.mock('$lib/server/db', () => ({ db: {} }))` keeps the import side-effect-free.
-
-See `src/lib/server/db/soft-delete.test.ts` and `src/lib/server/reorder.test.ts` for live examples.
+For helpers needing a real database (transactions, multi-statement logic, views), see the in-memory SQLite pattern in `src/lib/server/db/soft-delete.test.ts` and `src/lib/server/reorder.test.ts`. Helpers must accept `db: DB` as the last argument with a default to the singleton — see `seed-utils.ts` / `soft-delete.ts` / `reorder.ts` for the convention.
 
 $ARGUMENTS
