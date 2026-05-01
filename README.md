@@ -3,11 +3,18 @@
 A self-hosted personal tier list aggregator.
 Replace scattered tools like Goodreads, IMDB, BoardGameGeek, and others with a single app you own and run yourself.
 
-> ⚠️🤖 This project has been created relying heavily on GenAI, including Agentic workflows and even Vibe Coding. This has both upsides (the project coming to life as quickly as it did, for one), and many downsides (that come along with using GenAI). We place this disclaimer here so anyone can make their own judgement about whether they want to use this project or not.
+Take it for an adhoc test drive by running:
 
-**Another warning**: the project is still in early alpha phase.
-Consider it a preview version.
-Try it out through the repository or Docker Hub, at your own risk.
+```sh
+docker run -p 3000:3000 tierdom/tierdom-app
+```
+
+Read [docs/hosting.md](docs/hosting.md) for additional details on running Tierdom yourself.
+
+## Dislaimers
+
+- 🤖 This project has been created relying heavily on GenAI - but is signed off on and owned by humans. To each their own judgement call if they then want to use this project.
+- ✨ The project is still in alpha phase. Consider it a preview version, and let me know what you think! Using it for production _is_ possible, at your own risk. Backup your data often.
 
 ## What it is
 
@@ -23,23 +30,23 @@ The database is a SQLite file mounted as a volume, so it lives outside the conta
 
 ## Features
 
-- Topic sections (Games, Books, Movies, Board Games, and more — fully configurable)
-- Tier list view per section with customizable tier labels
-- Item images with placeholder gradients
-- Key/value props per item with category-default keys and icon-set support ([ADR-0019](docs/decisions/0019-prop-keys-with-icon-set-support.md))
-- Soft-delete with trash and recovery ([ADR-0022](docs/decisions/0022-soft-delete-and-trash.md))
-- Database export to streaming ZIP (markdown / JSON) ([ADR-0023](docs/decisions/0023-export-tooling-streaming-zip.md))
-- Import from the project's own export format ([ADR-0024](docs/decisions/0024-import-tooling-architecture.md))
-- Lightweight built-in CMS for static pages (Home, About) with customizable footer ([ADR-0020](docs/decisions/0020-customizable-site-content.md))
-- Admin interface protected behind single-user authentication
-- Self-contained: no external services required
-- Single Docker image — runs on any VPS
+- **Public tier list website**
+  - Categories 100% of your own choosing (Books, Movies, TV Series, Video Games, Board Games, Applications, Recipes, Albums or Artists, Restaurants, Hiking Areas, Beers, Wines ... you name it!) with each their own tier list;
+  - Each category ranks items in tiers based on their 0-100 scores, in a visually appealing way;
+  - Each item can get a thumbnail image, a full review in markdown, and custom properties;
+  - Create deep-links to individual images (e.g. to share a reviewed item online);
+  - Customizable Home and About pages, Footer, etc.
+- **Admin interface**
+  - Securely log in to manage everything;
+  - Update CMS values to your liking;
+  - Manage Categories and Tier List Items with an easy CRUD interface;
+  - Import your data from various sources (Goodreads, IMDB, BoardGameGeek, etc. - or just generic JSON import);
+  - Export your data in various formats (SQLite, Markdown Files, JSON);
+- **Host and own everything yourself**
+  - Host online on a tiny VPS or anything that can run Docker - or even a home PC or Raspberry;
+  - Backup through a simple data volume copy;
 
 For open roadmap items and known issues, see [TODO.md](TODO.md).
-
-## Self-hosting
-
-See [docs/hosting.md](docs/hosting.md) for quick-trial, server, and HTTPS setup.
 
 ## Tech stack
 
@@ -85,10 +92,11 @@ Architectural decisions are documented as ADRs in [`docs/decisions/`](docs/decis
 
 ## References
 
-| Document                                 | Description                                  |
-| ---------------------------------------- | -------------------------------------------- |
-| [docs/domain.md](docs/domain.md)         | Core domain model — entities, tiers, scoring |
-| [CONTRIBUTING.md](CONTRIBUTING.md)       | How to contribute, including AI-usage policy |
-| [SECURITY.md](SECURITY.md)               | Reporting security issues                    |
-| [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) | Community standards                          |
-| [CLAUDE.md](CLAUDE.md)                   | AI assistant instructions for this repo      |
+| Document                                 | Description                                     |
+| ---------------------------------------- | ----------------------------------------------- |
+| [docs/domain.md](docs/domain.md)         | Core domain model — entities, tiers, scoring    |
+| [docs/hosting.md](docs/hosting.md)       | How to run and host the application with Docker |
+| [CONTRIBUTING.md](CONTRIBUTING.md)       | How to contribute, including AI-usage policy    |
+| [SECURITY.md](SECURITY.md)               | Reporting security issues                       |
+| [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) | Community standards                             |
+| [CLAUDE.md](CLAUDE.md)                   | AI assistant instructions for this repo         |

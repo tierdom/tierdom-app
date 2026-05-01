@@ -1,24 +1,32 @@
 # TODO
 
-Open items, tracked here so the README can stay focused on what the project _is_ rather than what's not done yet.
+This file serves as a light-weight backlog of open features.
 
-## Roadmap (open)
+## Epics and big features
 
+- [ ] Tweak and finalize design for a v1 release
 - [ ] Option to add more static CMS pages
 - [ ] Live rendered-markdown preview alongside the CMS editor textarea
-- [ ] Import from external sources (Goodreads CSV, etc.)
+- [ ] Improved UX for "well-known" props like "Platform" for Video Games style categories
+- [ ] Well-known prop "ISBN" support for Books-like categories
+- [ ] Well-known prop "Author" support for Books-like categories
+- [ ] Well-known prop "Year" support for Books-like categories
+- [ ] Import from Goodreads
+- [ ] Import from IMDB
+- [ ] Import from TMDB
+- [ ] Import from BoardGameGeek
 - [ ] Build external API for automated operations
-- [ ] Create an MCP server to access a Tierdom instance from AI tooling
+- [ ] Create an MCP server to access a Tierdom instance with AI tooling
 - [ ] Add CI/CD
+- [ ] Sync (mirror) to external services (e.g. Goodreads, IMDB, etc.) with Tierdom being the source of truth
 
-## Known issues and small TODOs
+## Small issues and bugs
 
 - [ ] Improve markdown in Footer (lists, code block, table, etc.)
 - [ ] SortableList keyboard reordering (a11y follow-up)
 - [ ] Full color contrast audit with manual verification (a11y follow-up)
 - [ ] `aria-live` regions for loading states and form feedback (a11y follow-up)
 - [ ] Improve image upload (better checks on file type and limit, UX improvements)
-- [ ] Require double-confirmation for heavy deletes (e.g. category)
 - [ ] Add `eslint-plugin-better-tailwindcss` to catch deprecated Tailwind v4 classes in lint
 - [ ] Session cookies are missing `httpOnly` and `secure` flags
 - [ ] Security headers (CSP, X-Frame-Options, X-Content-Type-Options) not yet configured
