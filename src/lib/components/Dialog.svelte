@@ -43,7 +43,7 @@
   >
     <button
       onclick={onclose}
-      class="absolute top-4 right-4 cursor-pointer p-1 text-secondary transition-colors hover:text-primary"
+      class="absolute top-2 right-2 cursor-pointer p-3 text-secondary transition-colors hover:text-primary"
       aria-label="Close"
     >
       <svg

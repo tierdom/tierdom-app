@@ -38,33 +38,23 @@
 </script>
 
 <div class="flex flex-col gap-4">
-  <h2 class="pr-8 text-xl font-bold text-primary">{name}</h2>
+  <h2 class="pr-8 text-2xl font-bold text-primary">{name}</h2>
 
-  <div class="flex items-center gap-3">
+  <div class="flex flex-wrap items-center gap-3">
     <span
-      class="inline-flex h-8 w-8 items-center justify-center rounded text-sm font-black"
+      class="inline-flex h-6 w-6 items-center justify-center text-xs font-black"
       style:background={tierColors[tier as keyof typeof tierColors]?.bg ?? 'var(--c-subtle)'}
       style:color="#0a0a0a"
     >
       {tier}
     </span>
-    <span class="text-lg font-bold text-primary">{score}</span>
-    <span class="text-sm text-secondary">/ 100</span>
+    <span class="text-sm font-bold text-primary">
+      {score}<span class="font-normal text-secondary">/100</span>
+    </span>
+    {#each props as p (p.key)}
+      <span class="bg-subtle px-2.5 py-0.5 text-sm text-secondary">{p.key}: {p.value}</span>
+    {/each}
   </div>
-
-  <div class="h-3 w-full overflow-hidden bg-black/30">
-    <div class="h-full opacity-80" style:width="{score}%" style:background={barColor}></div>
-  </div>
-
-  {#if props.length > 0}
-    <div class="flex flex-wrap gap-1.5">
-      {#each props as p (p.key)}
-        <span class="rounded-full border border-subtle px-2.5 py-0.5 text-xs text-secondary"
-          >{p.key}: {p.value}</span
-        >
-      {/each}
-    </div>
-  {/if}
 
   {#if descriptionHtml}
     <Prose html={descriptionHtml} size="sm" />
@@ -88,4 +78,8 @@
       {/each}
     </div>
   {/if}
+
+  <div class="mt-auto h-3 w-full overflow-hidden bg-black/30">
+    <div class="h-full opacity-80" style:width="{score}%" style:background={barColor}></div>
+  </div>
 </div>
