@@ -49,12 +49,15 @@ For tier colors use CSS variables directly: `style="background: var(--tier-s-bg)
 
 ## Tailwind usage
 
-- Use Tailwind utilities for spacing, typography, flex/grid layout, and color
-- Use native CSS (in `@layer base` or `<style>`) for:
-  - Transitions and animations
-  - Pseudo-element styling
-  - Complex selectors that would produce noisy class strings
-- Avoid chains longer than ~8 utilities on a single element — extract to a component
+- Tailwind utilities are the default for spacing, typography, flex/grid layout, color, and standard animations (`animate-spin`, `animate-pulse`).
+- Reach for a scoped `<style>` block only when Tailwind can't model it cleanly:
+  - `::backdrop`, `@starting-style`, `transition: ... allow-discrete`
+  - `::before`/`::after` with `content`
+  - `grid-template-areas`
+  - One-off `@keyframes`
+  - Complex selectors that would otherwise become a wall of arbitrary-value utilities
+- Leave a 1–2 line comment at the top of any `<style>` block explaining which of the above applies.
+- Avoid chains longer than ~8 utilities on a single element — extract to a component.
 
 ## Modern CSS
 

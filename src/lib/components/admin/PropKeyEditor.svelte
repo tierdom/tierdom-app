@@ -197,6 +197,8 @@
 </fieldset>
 
 <style>
+  /* Native CSS: grid-template-areas (swapped at the sm breakpoint) and
+     ::before/::after drop indicators don't translate cleanly to utilities. */
   .prop-key-list {
     display: flex;
     flex-direction: column;

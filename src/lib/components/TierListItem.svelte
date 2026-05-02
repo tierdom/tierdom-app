@@ -76,6 +76,8 @@
 </div>
 
 <style>
+  /* Native CSS: group-hover transform + multi-stop text-shadow would be a
+     wall of arbitrary-value utilities; scoped CSS reads clearer. */
   .card-props {
     position: absolute;
     right: 0.375rem;

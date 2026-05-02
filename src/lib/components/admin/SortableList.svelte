@@ -65,6 +65,8 @@
 </div>
 
 <style>
+  /* Native CSS: ::before/::after drop-indicator bars with `content: ''`
+     read better here than long `before:`/`after:` arbitrary-value chains. */
   .sortable-list {
     display: flex;
     flex-direction: column;

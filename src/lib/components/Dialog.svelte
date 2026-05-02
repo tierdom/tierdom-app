@@ -63,6 +63,8 @@
 </dialog>
 
 <style>
+  /* Native CSS: Tailwind has no first-class story for ::backdrop,
+     @starting-style, or `transition: ... allow-discrete`. */
   .dialog {
     background: transparent;
     border: none;

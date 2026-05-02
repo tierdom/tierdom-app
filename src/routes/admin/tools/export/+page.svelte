@@ -158,6 +158,7 @@
 </section>
 
 <style>
+  /* Native CSS: one-off @keyframes — not worth a Tailwind config entry. */
   @keyframes bob {
     0%,
     100% {
