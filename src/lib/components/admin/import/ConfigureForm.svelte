@@ -58,7 +58,7 @@
     <fieldset class="rounded-lg border border-subtle bg-elevated px-5 py-4">
       <legend class="px-2 text-sm font-medium text-primary">{opt.label}</legend>
       {#if opt.type === 'checkbox'}
-        <label class="flex items-start gap-2 text-sm text-secondary">
+        <label class="flex cursor-pointer items-start gap-2 text-sm text-secondary">
           <input
             type="checkbox"
             checked={values[opt.id] as boolean}
@@ -75,7 +75,7 @@
             <p class="text-xs">{opt.help}</p>
           {/if}
           {#each opt.choices as choice (choice.value)}
-            <label class="flex items-start gap-2">
+            <label class="flex cursor-pointer items-start gap-2">
               <input
                 type="radio"
                 name={`option:${opt.id}`}

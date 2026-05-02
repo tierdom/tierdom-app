@@ -1,7 +1,6 @@
-import { randomUUID } from 'node:crypto';
 import { and, eq, isNull } from 'drizzle-orm';
 import { db as defaultDb } from '$lib/server/db';
-import { categoryTable, tierListItemTable } from '$lib/server/db/schema';
+import { categoryTable } from '$lib/server/db/schema';
 import { MAX_JSON_BYTES, formatAjvErrors, validateExport } from '../validate';
 import {
   deleteImportTemp,
@@ -9,7 +8,8 @@ import {
   sweepImportTemp,
   writeImportTemp,
 } from '../temp-storage';
-import type { ExportData, ExportedCategory, ExportedItem } from '$lib/server/export/json-schema';
+import { applyCategoryMapping, applyItem } from '../apply';
+import type { ExportData } from '$lib/server/export/json-schema';
 import type {
   CategoryMapping,
   ImportPlan,
@@ -21,7 +21,6 @@ import type {
 import { emptyPlan, emptyResult } from '../types';
 
 type DB = typeof defaultDb;
-type Tx = Parameters<Parameters<DB['transaction']>[0]>[0];
 
 export const tierdomJsonImporter: Importer = {
   id: 'json',
@@ -138,121 +137,4 @@ export async function commitTierdomJsonImport(
 
   deleteImportTemp(planId);
   return result;
-}
-
-function applyCategoryMapping(
-  tx: Tx,
-  category: ExportedCategory,
-  mapping: Exclude<CategoryMapping, { action: 'skip' }>,
-  result: ImportResult,
-): string | null {
-  if (mapping.action === 'use-existing') {
-    const exists = tx
-      .select({ id: categoryTable.id })
-      .from(categoryTable)
-      .where(and(eq(categoryTable.id, mapping.targetId), isNull(categoryTable.deletedAt)))
-      .get();
-    if (!exists) {
-      result.errors.push(
-        `Target category ${mapping.targetId} for "${category.slug}" no longer exists.`,
-      );
-      result.skipped.categories++;
-      result.details.skipped.push(`categories/${category.slug}`);
-      return null;
-    }
-    return mapping.targetId;
-  }
-
-  // create-new
-  const targetSlug = mapping.slug;
-  const slugClash = tx
-    .select({ id: categoryTable.id })
-    .from(categoryTable)
-    .where(and(eq(categoryTable.slug, targetSlug), isNull(categoryTable.deletedAt)))
-    .get();
-  if (slugClash) {
-    result.errors.push(
-      `Cannot create category "${targetSlug}": slug already in use by ${slugClash.id}.`,
-    );
-    result.skipped.categories++;
-    result.details.skipped.push(`categories/${targetSlug}`);
-    return null;
-  }
-
-  const newId = randomUUID();
-  tx.insert(categoryTable)
-    .values({
-      id: newId,
-      slug: targetSlug,
-      name: mapping.name,
-      description: category.description,
-      order: category.order,
-      cutoffS: category.cutoffS,
-      cutoffA: category.cutoffA,
-      cutoffB: category.cutoffB,
-      cutoffC: category.cutoffC,
-      cutoffD: category.cutoffD,
-      cutoffE: category.cutoffE,
-      cutoffF: category.cutoffF,
-      propKeys: category.propKeys,
-    })
-    .run();
-  result.inserted.categories++;
-  result.details.inserted.push(`categories/${targetSlug}`);
-  return newId;
-}
-
-function applyItem(
-  tx: Tx,
-  item: ExportedItem,
-  fileCategorySlug: string,
-  targetCategoryId: string,
-  strategy: MergeStrategy,
-  result: ImportResult,
-) {
-  const path = `categories/${fileCategorySlug}/items/${item.slug}`;
-  const existing = tx
-    .select({ id: tierListItemTable.id })
-    .from(tierListItemTable)
-    .where(
-      and(
-        eq(tierListItemTable.categoryId, targetCategoryId),
-        eq(tierListItemTable.slug, item.slug),
-        isNull(tierListItemTable.deletedAt),
-      ),
-    )
-    .get();
-
-  if (existing && strategy === 'skip') {
-    result.skipped.items++;
-    result.details.skipped.push(path);
-    return;
-  }
-
-  // imageHash deliberately not copied: it references an image file in the
-  // exporter's data dir, which doesn't exist on this server. Importing it
-  // would leave the item pointing at a missing image. See ADR-0024
-  // ("No image imports").
-  const values = {
-    categoryId: targetCategoryId,
-    slug: item.slug,
-    name: item.name,
-    description: item.description,
-    score: item.score,
-    order: item.order,
-    placeholder: item.placeholder,
-    props: item.props,
-  };
-
-  if (existing) {
-    tx.update(tierListItemTable).set(values).where(eq(tierListItemTable.id, existing.id)).run();
-    result.updated.items++;
-    result.details.updated.push(path);
-  } else {
-    tx.insert(tierListItemTable)
-      .values({ id: randomUUID(), ...values })
-      .run();
-    result.inserted.items++;
-    result.details.inserted.push(path);
-  }
 }
