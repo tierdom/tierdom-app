@@ -4,9 +4,12 @@ This file serves as a light-weight backlog of open features.
 
 ## Epics and big features
 
+- [ ] Performance tests (e.g. Lighthouse?) to ensure a blazingly fast production system
 - [ ] Tweak and finalize design for a v1 release
+- [ ] Improved URL structure with shorter URL's (for public site)
 - [ ] Option to add more static CMS pages
 - [ ] Live rendered-markdown preview alongside the CMS editor textarea
+- [ ] Prop marked per category to show up on the Tier List item square in tier liests
 - [ ] Improved UX for "well-known" props like "Platform" for Video Games style categories
 - [ ] Well-known prop "ISBN" support for Books-like categories
 - [ ] Well-known prop "Author" support for Books-like categories
@@ -19,9 +22,16 @@ This file serves as a light-weight backlog of open features.
 - [ ] Create an MCP server to access a Tierdom instance with AI tooling
 - [ ] Add CI/CD
 - [ ] Sync (mirror) to external services (e.g. Goodreads, IMDB, etc.) with Tierdom being the source of truth
+- [ ] Improve the logo top-left to include the name (for brand recognition)
+- [ ] Support (at the least docs, but perhaps also changes) for serving through a CDN
+- [ ] Support (at the least docs, perhaps also changes) for setting up SSL/TLS on a running app
+- [ ] Support for better logging, APM, and monitoring
+- [ ] Meta tags and schema.org support
+- [ ] DX: Ensure development on other OS's and with other AI harnesses works well
 
 ## Small issues and bugs
 
+- [ ] Use a "Poster Child" tier list item for category thumbnail on the home page
 - [ ] Improve markdown in Footer (lists, code block, table, etc.)
 - [ ] SortableList keyboard reordering (a11y follow-up)
 - [ ] Full color contrast audit with manual verification (a11y follow-up)
