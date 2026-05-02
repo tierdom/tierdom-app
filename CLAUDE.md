@@ -23,7 +23,7 @@ Use `/test`. Pre-commit auto-runs unit + svelte-check. After UI-visible changes 
 3. **Structure the plan around milestones.** After each milestone, **STOP and PAUSE** for user review. After a `/commit`, continue immediately. Each milestone must leave the build green: bundle dependent steps (e.g. schema rename + call-site updates) into one milestone if needed.
 4. **Branch audit before closing.** Self-driven review for loose ends: stale comments / READMEs / fixtures referring to renamed files; defensive code without tests; abandoned scaffolding; partially-wired features (UI without server, server without UI). Surface findings as a short list; let the user pick what to fix.
 5. **Coverage check before closing.** Re-run `npm run test:unit:coverage`. If anything dropped, decide with the user: write tests, add a deliberate `vite.config.ts` exclude with reason, or document the gap in the ADR.
-6. **Close with the ADR.** Update it to reflect decisions actually made, flip **Proposed → Accepted**. Plans that skipped the ADR also skip this step.
+6. **Close with the ADR.** Update it to reflect decisions actually made, flip **Proposed → Accepted**. Plans that skipped the ADR also skip this step. If we did a feature from `TODO.md` remove it now.
 7. **After the final milestone**, remind the user about `/learnings` (unless they want more tweaks).
 
 **Never** include merging the branch as part of a plan — merges are separate.

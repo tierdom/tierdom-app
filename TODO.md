@@ -15,7 +15,6 @@ This file serves as a light-weight backlog of open features.
 - Well-known prop "Year" support for Books-like categories
 - Import from Goodreads
 - Import from StoryGraph
-- Import from IMDB
 - Import from TMDB
 - Import from BoardGameGeek
 - Import from Untappd
