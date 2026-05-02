@@ -15,11 +15,7 @@
   const loader = createAdminLoader();
   const { enhance } = loader;
 
-  let currentValue = $state<string>('');
-  // Sync initial / server-rerendered value. User input keeps currentValue updated via oninput.
-  $effect(() => {
-    currentValue = form?.value ?? data.value;
-  });
+  let currentValue = $derived<string>(form?.value ?? data.value);
   let byteLength = $derived(new TextEncoder().encode(currentValue).length);
   let overLimit = $derived(byteLength > data.maxBytes);
 
