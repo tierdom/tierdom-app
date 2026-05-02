@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed
+Accepted
 
 ## Context
 
@@ -21,7 +21,7 @@ Proposed
 ## Consequences
 
 - **Positive:** glanceable per-category metadata; opt-in per key; no schema migration.
-- **Negative:** narrow card real estate constrains overflow strategies; users may mark too many keys and crowd the card (mitigated by the 3-value cap + fade).
+- **Negative:** narrow card real estate constrains overflow strategies; users may mark too many keys and crowd the card (mitigated by `max-height: 50%` with grow-upward wrapping).
 - **Neutral:** card now consumes `cardProps` from the load; future card overlays (e.g. icon glyphs from `iconSet`) can extend the same channel.
 
 ## Coverage

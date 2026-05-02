@@ -58,21 +58,21 @@ export function validatePropKeys(
   raw: unknown,
   knownIconSetSlugs?: Set<string>,
 ): PropKeyConfig[] | string {
-  if (!Array.isArray(raw)) return 'Prop keys must be an array';
-  if (raw.length > MAX_PROP_KEYS) return `Maximum ${MAX_PROP_KEYS} prop keys allowed`;
+  if (!Array.isArray(raw)) return 'Properties must be an array';
+  if (raw.length > MAX_PROP_KEYS) return `Maximum ${MAX_PROP_KEYS} properties allowed`;
 
   const seen = new Set<string>();
   const result: PropKeyConfig[] = [];
 
   for (const entry of raw) {
     if (typeof entry !== 'object' || entry === null)
-      return 'Each prop key must be a { key, iconSet? } object';
+      return 'Each property must be a { key, iconSet? } object';
 
     const { key, iconSet, showOnCard } = entry as Record<string, unknown>;
-    if (typeof key !== 'string') return 'Each prop key must have a string key';
+    if (typeof key !== 'string') return 'Each property must have a string key';
 
     const trimmed = key.trim();
-    if (!trimmed) return 'Prop keys must not be empty';
+    if (!trimmed) return 'Property keys must not be empty';
     if (trimmed.length > MAX_KEY_LENGTH)
       return `Key "${trimmed}" exceeds ${MAX_KEY_LENGTH} characters`;
 

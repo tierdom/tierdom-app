@@ -158,30 +158,30 @@ describe('validatePropKeys', () => {
   });
 
   it('rejects non-array input', () => {
-    expect(validatePropKeys('nope')).toBe('Prop keys must be an array');
-    expect(validatePropKeys(null)).toBe('Prop keys must be an array');
+    expect(validatePropKeys('nope')).toBe('Properties must be an array');
+    expect(validatePropKeys(null)).toBe('Properties must be an array');
   });
 
   it(`rejects more than ${MAX_PROP_KEYS} keys`, () => {
     const tooMany = Array.from({ length: MAX_PROP_KEYS + 1 }, (_, i) => pk(`k${i}`));
-    expect(validatePropKeys(tooMany)).toBe(`Maximum ${MAX_PROP_KEYS} prop keys allowed`);
+    expect(validatePropKeys(tooMany)).toBe(`Maximum ${MAX_PROP_KEYS} properties allowed`);
   });
 
   it('rejects non-object entries', () => {
-    expect(validatePropKeys([42])).toBe('Each prop key must be a { key, iconSet? } object');
-    expect(validatePropKeys(['Platform'])).toBe('Each prop key must be a { key, iconSet? } object');
+    expect(validatePropKeys([42])).toBe('Each property must be a { key, iconSet? } object');
+    expect(validatePropKeys(['Platform'])).toBe('Each property must be a { key, iconSet? } object');
   });
 
   it('rejects entries without a string key', () => {
-    expect(validatePropKeys([{ key: 42 }])).toBe('Each prop key must have a string key');
+    expect(validatePropKeys([{ key: 42 }])).toBe('Each property must have a string key');
   });
 
   it('rejects empty key strings', () => {
-    expect(validatePropKeys([pk('')])).toBe('Prop keys must not be empty');
+    expect(validatePropKeys([pk('')])).toBe('Property keys must not be empty');
   });
 
   it('rejects whitespace-only key strings', () => {
-    expect(validatePropKeys([pk('  ')])).toBe('Prop keys must not be empty');
+    expect(validatePropKeys([pk('  ')])).toBe('Property keys must not be empty');
   });
 
   it(`rejects key exceeding ${MAX_KEY_LENGTH} characters`, () => {
