@@ -2,6 +2,7 @@ import Papa from 'papaparse';
 import { and, eq, isNull } from 'drizzle-orm';
 import { db as defaultDb } from '$lib/server/db';
 import { categoryTable } from '$lib/server/db/schema';
+import { formatGradient } from '$lib/server/gradient';
 import { slugify } from '$lib/server/slugify';
 import type { PropKeyConfig } from '$lib/props';
 import {
@@ -387,6 +388,9 @@ function genreForRow(row: ImdbCsvRow, mode: string): string | null {
   return null;
 }
 
+// HSL palette mirrors the SVG used by `generate-image.ts` so import
+// placeholders look at home next to seeded ones. The format is centralised
+// in `gradient.ts`; we just supply three colour stops.
 function gradientFromSeed(seed: string): string {
   let h = 0;
   for (let i = 0; i < seed.length; i++) {
@@ -395,7 +399,11 @@ function gradientFromSeed(seed: string): string {
   const hue1 = Math.abs(h) % 360;
   const hue2 = (hue1 + 30) % 360;
   const hue3 = (hue1 + 60) % 360;
-  return `linear-gradient(135deg, hsl(${hue1}, 45%, 25%), hsl(${hue2}, 40%, 18%), hsl(${hue3}, 35%, 12%))`;
+  return formatGradient(
+    `hsl(${hue1}, 45%, 25%)`,
+    `hsl(${hue2}, 40%, 18%)`,
+    `hsl(${hue3}, 35%, 12%)`,
+  );
 }
 
 function isRated(row: ImdbCsvRow): boolean {
