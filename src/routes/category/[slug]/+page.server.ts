@@ -29,11 +29,16 @@ export const load: PageServerLoad = async ({ params }) => {
     .where(eq(tierListItem.categoryId, cat.id))
     .orderBy(asc(tierListItem.order));
 
+  const cardKeys = (cat.propKeys ?? []).filter((pk) => pk.showOnCard);
+
   const enrichedItems = items.map((item) => ({
     ...item,
     image: item.imageHash ? `/assets/images/${item.imageHash}.webp` : null,
     placeholder: item.placeholder,
     descriptionHtml: renderMarkdown(item.description),
+    cardProps: cardKeys
+      .map((pk) => item.props.find((p) => p.key === pk.key)?.value?.trim())
+      .filter((v): v is string => Boolean(v)),
   }));
 
   // Group items by tier, preserving S→F order
