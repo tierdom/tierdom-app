@@ -52,7 +52,7 @@
       {score}<span class="font-normal text-secondary">/100</span>
     </span>
     {#each props as p (p.key)}
-      <span class="bg-subtle px-2.5 py-0.5 text-sm text-secondary">{p.key}: {p.value}</span>
+      <span class="bg-subtle px-2.5 py-0.5 text-sm text-primary">{p.key}: {p.value}</span>
     {/each}
   </div>
 

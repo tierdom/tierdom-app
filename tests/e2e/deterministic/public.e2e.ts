@@ -60,7 +60,7 @@ test.describe('category page', () => {
     const dialog = page.locator('dialog[open]');
     await expect(dialog).toBeVisible();
     await expect(dialog.getByText('Hollow Knight')).toBeVisible();
-    await expect(dialog.getByText('/ 100')).toBeVisible();
+    await expect(dialog.getByText('/100')).toBeVisible();
     await expect(dialog.getByText('Platform: PC')).toBeVisible();
   });
 
