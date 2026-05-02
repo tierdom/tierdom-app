@@ -10,10 +10,12 @@
     description: string;
     accept?: string;
     maxMb: number;
+    hasOptions: boolean;
     setPhase: (phase: ImportPhase | null) => void;
+    onFileChosen: (file: File) => void;
   };
 
-  let { label, description, accept, maxMb, setPhase }: Props = $props();
+  let { label, description, accept, maxMb, hasOptions, setPhase, onFileChosen }: Props = $props();
 </script>
 
 <a
@@ -29,7 +31,16 @@
   method="POST"
   action="?/plan"
   enctype="multipart/form-data"
-  use:enhance={() => {
+  use:enhance={({ formData, cancel }) => {
+    if (hasOptions) {
+      const file = formData.get('file');
+      if (file instanceof File && file.size > 0) {
+        onFileChosen(file);
+        setPhase('configure');
+      }
+      cancel();
+      return () => {};
+    }
     setPhase('planning');
     return async ({ update }) => {
       await update({ reset: false });

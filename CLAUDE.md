@@ -14,6 +14,8 @@ Run `npm run verify` (lint + svelte-check + unit tests + coverage with threshold
 
 Use `/test`. Pre-commit auto-runs unit + svelte-check. After UI-visible changes run smoke E2E (any DB state). Before merging or after schema changes run deterministic E2E (resets DB). Skip for config/docs-only work. Test artefacts live in gitignored `test-data/` — never share paths with the dev server.
 
+**Importer / parser fixtures are hand-curated, not generated.** Real-world inputs (IMDb, Goodreads, BGG exports) come from a human picking representative rows; never use an LLM-generated sample, and prefer hand-picked over scripted-deterministic for "real export" fixtures. Hallucinated fields drift away from what real users actually upload.
+
 ## Plan mode (epics & multi-step features)
 
 1. **Branch check first.** If on `main`, stop and ask the user for a branch name (kebab-case, no `feat/`/`chore/` prefix).
@@ -21,7 +23,7 @@ Use `/test`. Pre-commit auto-runs unit + svelte-check. After UI-visible changes 
 3. **Structure the plan around milestones.** After each milestone, **STOP and PAUSE** for user review. After a `/commit`, continue immediately. Each milestone must leave the build green: bundle dependent steps (e.g. schema rename + call-site updates) into one milestone if needed.
 4. **Branch audit before closing.** Self-driven review for loose ends: stale comments / READMEs / fixtures referring to renamed files; defensive code without tests; abandoned scaffolding; partially-wired features (UI without server, server without UI). Surface findings as a short list; let the user pick what to fix.
 5. **Coverage check before closing.** Re-run `npm run test:unit:coverage`. If anything dropped, decide with the user: write tests, add a deliberate `vite.config.ts` exclude with reason, or document the gap in the ADR.
-6. **Close with the ADR.** Update it to reflect decisions actually made, flip **Proposed → Accepted**. Plans that skipped the ADR also skip this step.
+6. **Close with the ADR.** Update it to reflect decisions actually made, flip **Proposed → Accepted**. Plans that skipped the ADR also skip this step. If we did a feature from `TODO.md` remove it now.
 7. **After the final milestone**, remind the user about `/learnings` (unless they want more tweaks).
 
 **Never** include merging the branch as part of a plan — merges are separate.

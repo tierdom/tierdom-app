@@ -91,6 +91,7 @@ Architectural decisions are documented as ADRs in [`docs/decisions/`](docs/decis
 | [0023](docs/decisions/0023-export-tooling-streaming-zip.md)             | Export Tooling — Streaming ZIP (fflate)       |
 | [0024](docs/decisions/0024-import-tooling-architecture.md)              | Import Tooling Architecture                   |
 | [0025](docs/decisions/0025-card-face-properties.md)                     | Card-face Properties on Tier List Items       |
+| [0026](docs/decisions/0026-importer-options-and-imdb-csv.md)            | Importer Options Framework + IMDb CSV         |
 
 ## References
 

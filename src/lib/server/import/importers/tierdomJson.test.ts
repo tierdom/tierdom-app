@@ -450,7 +450,7 @@ describe('tierdomJson importer', () => {
       const tooBig = new File(['x'.repeat(11 * 1024 * 1024)], 'huge.json', {
         type: 'application/json',
       });
-      const plan = await tierdomJsonImporter.plan!(tooBig);
+      const plan = await tierdomJsonImporter.plan!(tooBig, {});
       expect(plan.errors[0]).toMatch(/maximum is/);
     });
 

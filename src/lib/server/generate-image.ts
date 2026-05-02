@@ -10,6 +10,7 @@ import sharp from 'sharp';
 import { createHash } from 'node:crypto';
 import { existsSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
+import { extractGradient } from './gradient';
 
 const IMAGE_SIZE = 250;
 const WEBP_QUALITY = 80;
@@ -79,27 +80,6 @@ function buildSvg(name: string): string {
   <rect width="${IMAGE_SIZE}" height="${IMAGE_SIZE}" fill="url(#bg)"/>
   ${textElements}
 </svg>`;
-}
-
-async function extractGradient(source: Buffer): Promise<string> {
-  const { data } = await sharp(source)
-    .resize(3, 1, { fit: 'cover', position: 'centre' })
-    .removeAlpha()
-    .raw()
-    .toBuffer({ resolveWithObject: true });
-
-  const hex = (r: number, g: number, b: number) =>
-    `#${((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1)}`;
-
-  /* v8 ignore start */
-  if (data.length < 9) {
-    throw new Error(`gradient: expected 9 raw bytes from 3x1 sharp resize, got ${data.length}`);
-  }
-  /* v8 ignore stop */
-  const c1 = hex(data[0]!, data[1]!, data[2]!);
-  const c2 = hex(data[3]!, data[4]!, data[5]!);
-  const c3 = hex(data[6]!, data[7]!, data[8]!);
-  return `linear-gradient(135deg, ${c1}, ${c2}, ${c3})`;
 }
 
 /**

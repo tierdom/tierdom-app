@@ -15,7 +15,6 @@ This file serves as a light-weight backlog of open features.
 - Well-known prop "Year" support for Books-like categories
 - Import from Goodreads
 - Import from StoryGraph
-- Import from IMDB
 - Import from TMDB
 - Import from BoardGameGeek
 - Import from Untappd
@@ -32,6 +31,7 @@ This file serves as a light-weight backlog of open features.
 
 ## Small issues and bugs
 
+- Import from IMDb should support custom Tier Cutoffs (because ratings are whole numbers this becomes more important for a 7-tier system)
 - Use a "Poster Child" tier list item for category thumbnail on the home page
 - Improve markdown in Footer (lists, code block, table, etc.)
 - SortableList keyboard reordering (a11y follow-up)

@@ -3,6 +3,11 @@ import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync, unlinkSync, existsSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { env } from '$env/dynamic/private';
+import { extractGradient, rgbToHex } from './gradient';
+
+// Re-exported so existing callers (and tests) keep their `from './images'`
+// imports working; the implementations live in `gradient.ts`.
+export { extractGradient, rgbToHex };
 
 const ALLOWED_MIME_TYPES = new Set([
   'image/jpeg',
@@ -29,30 +34,6 @@ export function ensureImageDir(): void {
   if (!existsSync(dir)) {
     mkdirSync(dir, { recursive: true });
   }
-}
-
-export function rgbToHex(r: number, g: number, b: number): string {
-  return `#${((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1)}`;
-}
-
-export async function extractGradient(source: Buffer): Promise<string> {
-  const { data } = await sharp(source)
-    .resize(3, 1, { fit: 'cover', position: 'centre' })
-    .removeAlpha()
-    .raw()
-    .toBuffer({ resolveWithObject: true });
-
-  /* v8 ignore start */
-  if (data.length < 9) {
-    throw new Error(
-      `extractGradient: expected 9 raw bytes from 3x1 sharp resize, got ${data.length}`,
-    );
-  }
-  /* v8 ignore stop */
-  const c1 = rgbToHex(data[0]!, data[1]!, data[2]!);
-  const c2 = rgbToHex(data[3]!, data[4]!, data[5]!);
-  const c3 = rgbToHex(data[6]!, data[7]!, data[8]!);
-  return `linear-gradient(135deg, ${c1}, ${c2}, ${c3})`;
 }
 
 export function validateUpload(file: File): void {

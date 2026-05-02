@@ -9,7 +9,7 @@ vi.mock('$lib/server/db/schema', () => ({
   categoryTable: { id: 'id', slug: 'slug', name: 'name', deletedAt: 'deletedAt' },
 }));
 vi.mock('$lib/server/import/registry', () => ({ getImporter: () => undefined }));
-vi.mock('$lib/server/import/validate', () => ({ MAX_JSON_BYTES: 0 }));
+vi.mock('$lib/server/import/validate', () => ({ MAX_IMPORT_BYTES: 0 }));
 
 const { deleteSpy } = vi.hoisted(() => ({ deleteSpy: vi.fn() }));
 vi.mock('$lib/server/import/temp-storage', () => ({
