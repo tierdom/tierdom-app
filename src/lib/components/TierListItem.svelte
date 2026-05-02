@@ -12,7 +12,7 @@
 
   let { name, score, image, gradient, cardProps = [], onclick }: Props = $props();
 
-  let cardPropsLine = $derived(cardProps.join(' · '));
+  let cardPropsLine = $derived(cardProps.join(', '));
 
   function handleKeydown(e: KeyboardEvent) {
     if (onclick && (e.key === 'Enter' || e.key === ' ')) {
@@ -80,10 +80,11 @@
     position: absolute;
     right: 0.375rem;
     bottom: 0.5rem;
-    max-width: 65%;
-    white-space: nowrap;
+    max-width: 75%;
+    max-height: 50%;
     overflow: hidden;
-    text-overflow: ellipsis;
+    text-align: right;
+    overflow-wrap: anywhere;
     pointer-events: none;
     color: white;
     text-shadow:
@@ -91,6 +92,6 @@
       0 0 4px rgba(0, 0, 0, 0.4);
     font-size: 0.75rem;
     font-weight: 600;
-    line-height: 1;
+    line-height: 1.15;
   }
 </style>
