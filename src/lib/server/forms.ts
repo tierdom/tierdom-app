@@ -31,7 +31,7 @@ export function parseCategoryForm(
     try {
       parsed = JSON.parse(propKeysRaw);
     } catch {
-      return { error: 'Invalid prop keys format' };
+      return { error: 'Invalid properties format' };
     }
     const result = validatePropKeys(parsed, knownIconSetSlugs);
     if (typeof result === 'string') return { error: result };

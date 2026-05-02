@@ -6,7 +6,7 @@
   import { iconSets } from '$lib/icon-sets';
   import { createPointerReorder, applyReorder } from './pointer-reorder.svelte';
 
-  type InternalKey = { id: string; key: string; iconSet?: string };
+  type InternalKey = { id: string; key: string; iconSet?: string; showOnCard?: boolean };
 
   let {
     propKeys,
@@ -19,7 +19,12 @@
   // eslint-disable-next-line svelte/no-unused-svelte-ignore
   // svelte-ignore state_referenced_locally — intentional: mutable copy of initial prop
   let items = $state<InternalKey[]>(
-    propKeys.map((pk) => ({ id: crypto.randomUUID(), key: pk.key, iconSet: pk.iconSet })),
+    propKeys.map((pk) => ({
+      id: crypto.randomUUID(),
+      key: pk.key,
+      iconSet: pk.iconSet,
+      showOnCard: pk.showOnCard ?? false,
+    })),
   );
 
   function emit() {
@@ -61,9 +66,18 @@
     emit();
   }
 
+  function handleShowOnCardChange(id: string, value: boolean) {
+    items = items.map((k) => (k.id === id ? { ...k, showOnCard: value } : k));
+    emit();
+  }
+
   let serialized = $derived(
     JSON.stringify(
-      items.map((i) => ({ key: i.key, ...(i.iconSet ? { iconSet: i.iconSet } : {}) })),
+      items.map((i) => ({
+        key: i.key,
+        ...(i.iconSet ? { iconSet: i.iconSet } : {}),
+        ...(i.showOnCard ? { showOnCard: true } : {}),
+      })),
     ),
   );
 
@@ -78,9 +92,9 @@
 </script>
 
 <fieldset class="flex flex-col gap-1">
-  <legend class="text-xs font-medium text-secondary">Prop keys</legend>
+  <legend class="text-xs font-medium text-secondary">Properties</legend>
   <p class="text-xs text-secondary">
-    Suggested keys for items in this category. Order determines autocomplete priority.
+    Properties suggested for items in this category. Order determines autocomplete priority.
   </p>
 
   {#if items.length > 0}
@@ -128,7 +142,7 @@
             aria-label="Icon set for {item.key || 'this key'}"
             value={item.iconSet ?? ''}
             onchange={(e) => handleIconSetChange(item.id, e.currentTarget.value)}
-            class="iconset-select min-w-0 rounded border border-subtle bg-surface px-1.5 py-1.5 text-xs text-secondary focus:border-accent focus:outline-none sm:w-28 sm:shrink-0"
+            class="iconset-select min-w-0 rounded border border-subtle bg-surface px-2 py-1.5 text-xs text-secondary focus:border-accent focus:outline-none"
           >
             <option value="">No icons</option>
             {#each iconSets as set (set.slug)}
@@ -136,12 +150,25 @@
             {/each}
           </select>
 
+          <label
+            class="show-card-cell flex items-center gap-1.5 text-xs text-secondary select-none"
+            title="Show this property's value on the item square in the public tier list"
+          >
+            <input
+              type="checkbox"
+              checked={item.showOnCard ?? false}
+              onchange={(e) => handleShowOnCardChange(item.id, e.currentTarget.checked)}
+              aria-label="Show {item.key || 'this property'} on item square"
+            />
+            <span>Show on card</span>
+          </label>
+
           <span class="delete-cell">
             <Button
               variant="danger-ghost"
               compact
               type="button"
-              aria-label="Remove prop key"
+              aria-label="Remove property"
               onclick={() => remove(item.id)}
             >
               <Trash2 size={12} aria-hidden="true" />
@@ -162,7 +189,7 @@
   <div class="mt-1 flex">
     <div class="drag-handle-spacer"></div>
     <Button compact type="button" onclick={add} disabled={items.length >= MAX_PROP_KEYS}>
-      <Plus size={12} />Add key
+      <Plus size={12} />Add property
     </Button>
   </div>
 
@@ -180,18 +207,19 @@
     grid-template-columns: auto 1fr auto;
     grid-template-areas:
       'handle key delete'
-      'handle iconset delete';
+      'handle iconset delete'
+      'handle showcard delete';
     align-items: center;
-    gap: 0.375rem;
-    padding: 0.25rem 0;
+    gap: 0.5rem;
+    padding: 0.375rem 0;
     position: relative;
     transition: opacity 150ms ease;
   }
 
   @media (min-width: 640px) {
     .prop-key-row {
-      grid-template-columns: auto 1fr auto auto;
-      grid-template-areas: 'handle key iconset delete';
+      grid-template-columns: auto 1fr 9rem auto auto;
+      grid-template-areas: 'handle key iconset showcard delete';
     }
   }
 
@@ -205,6 +233,13 @@
 
   .prop-key-row .iconset-select {
     grid-area: iconset;
+    width: 100%;
+  }
+
+  .prop-key-row .show-card-cell {
+    grid-area: showcard;
+    cursor: pointer;
+    white-space: nowrap;
   }
 
   .prop-key-row .delete-cell {

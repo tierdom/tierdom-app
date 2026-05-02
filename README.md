@@ -89,6 +89,7 @@ Architectural decisions are documented as ADRs in [`docs/decisions/`](docs/decis
 | [0022](docs/decisions/0022-soft-delete-and-trash.md)                    | Soft Delete and Trash                         |
 | [0023](docs/decisions/0023-export-tooling-streaming-zip.md)             | Export Tooling — Streaming ZIP (fflate)       |
 | [0024](docs/decisions/0024-import-tooling-architecture.md)              | Import Tooling Architecture                   |
+| [0025](docs/decisions/0025-card-face-properties.md)                     | Card-face Properties on Tier List Items       |
 
 ## References
 

@@ -83,6 +83,7 @@
                 score={item.score}
                 image={item.image ?? undefined}
                 gradient={item.placeholder ?? undefined}
+                cardProps={item.cardProps}
                 onclick={() => openItem(item.slug)}
               />
             {/each}

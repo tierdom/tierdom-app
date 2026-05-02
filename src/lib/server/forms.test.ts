@@ -93,7 +93,7 @@ describe('parseCategoryForm', () => {
   it('rejects malformed propKeys JSON', () => {
     expect.assertions(1);
     const result = parseCategoryForm(form({ name: 'Games', propKeys: 'not json' }));
-    expect(result).toEqual({ error: 'Invalid prop keys format' });
+    expect(result).toEqual({ error: 'Invalid properties format' });
   });
 
   it('rejects duplicate propKeys', () => {

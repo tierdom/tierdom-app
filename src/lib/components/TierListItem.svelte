@@ -6,10 +6,13 @@
     score: number;
     image?: string;
     gradient?: string;
+    cardProps?: string[];
     onclick?: () => void;
   };
 
-  let { name, score, image, gradient, onclick }: Props = $props();
+  let { name, score, image, gradient, cardProps = [], onclick }: Props = $props();
+
+  let cardPropsLine = $derived(cardProps.join(', '));
 
   function handleKeydown(e: KeyboardEvent) {
     if (onclick && (e.key === 'Enter' || e.key === ' ')) {
@@ -56,10 +59,14 @@
   </div>
 
   <span
-    class="absolute bottom-3 left-1.5 block origin-bottom-left text-xs leading-none font-bold text-white drop-shadow-md transition-transform duration-200 group-hover:scale-115"
+    class="absolute bottom-2 left-1.5 block origin-bottom-left text-xs leading-none font-bold text-white drop-shadow-md transition-transform duration-200 group-hover:scale-115"
   >
     {score}
   </span>
+
+  {#if cardPropsLine}
+    <span class="card-props">{cardPropsLine}</span>
+  {/if}
 
   <div
     class="absolute inset-x-0 bottom-0 h-1 bg-black/30 transition-[height] duration-200 group-hover:h-2"
@@ -67,3 +74,24 @@
     <div class="h-full opacity-60" style:width="{score}%" style:background={barColor}></div>
   </div>
 </div>
+
+<style>
+  .card-props {
+    position: absolute;
+    right: 0.375rem;
+    bottom: 0.5rem;
+    max-width: 75%;
+    max-height: 50%;
+    overflow: hidden;
+    text-align: right;
+    overflow-wrap: anywhere;
+    pointer-events: none;
+    color: white;
+    text-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.7),
+      0 0 4px rgba(0, 0, 0, 0.4);
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.15;
+  }
+</style>
