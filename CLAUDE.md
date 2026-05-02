@@ -14,6 +14,8 @@ Run `npm run verify` (lint + svelte-check + unit tests + coverage with threshold
 
 Use `/test`. Pre-commit auto-runs unit + svelte-check. After UI-visible changes run smoke E2E (any DB state). Before merging or after schema changes run deterministic E2E (resets DB). Skip for config/docs-only work. Test artefacts live in gitignored `test-data/` — never share paths with the dev server.
 
+**Importer / parser fixtures are hand-curated, not generated.** Real-world inputs (IMDb, Goodreads, BGG exports) come from a human picking representative rows; never use an LLM-generated sample, and prefer hand-picked over scripted-deterministic for "real export" fixtures. Hallucinated fields drift away from what real users actually upload.
+
 ## Plan mode (epics & multi-step features)
 
 1. **Branch check first.** If on `main`, stop and ask the user for a branch name (kebab-case, no `feat/`/`chore/` prefix).

@@ -93,6 +93,18 @@ When a `<form>` posts to a SvelteKit endpoint (no `+page` exists at that path â€
 
 This pattern shows up in download forms (the export wizard) and any other "submit form, get a file back, swap to a confirmation panel" flow.
 
+## Seeding `$state` from a prop
+
+Reading a `$props()` value directly inside a `$state(...)` initializer trips Svelte's `state_referenced_locally` warning ("This reference only captures the initial value of `options`"). The reactive read isn't tracked, so subsequent prop changes won't update the state â€” usually fine but the warning is real noise. Wrap the seed in `untrack(() => ...)` to acknowledge "I want the value at mount, not a subscription":
+
+```ts
+import { untrack } from 'svelte';
+let { options } = $props();
+let values = $state(untrack(() => options.map((o) => [o.id, o.default])));
+```
+
+Use this when the prop is a stable schema you only need at mount; if the prop genuinely changes over the component's life, restructure to `$derived` or a keyed `{#if}` instead.
+
 ## Code style
 
 - Alphabetise Tailwind class strings (Prettier handles this automatically)
