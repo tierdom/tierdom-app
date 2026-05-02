@@ -59,7 +59,7 @@
   </div>
 
   <span
-    class="absolute bottom-2 left-1.5 block origin-bottom-left text-xs leading-none font-bold text-white drop-shadow-md transition-transform duration-200 group-hover:scale-115"
+    class="absolute bottom-3 left-1.5 block origin-bottom-left text-xs leading-none font-bold text-white opacity-60 drop-shadow-md transition-[transform,opacity] duration-200 group-hover:scale-115 group-hover:opacity-100"
   >
     {score}
   </span>
@@ -79,8 +79,8 @@
   .card-props {
     position: absolute;
     right: 0.375rem;
-    bottom: 0.5rem;
-    max-width: 75%;
+    bottom: 0.75rem;
+    max-width: 65%;
     max-height: 50%;
     overflow: hidden;
     text-align: right;
@@ -93,5 +93,15 @@
     font-size: 0.75rem;
     font-weight: 600;
     line-height: 1.15;
+    opacity: 0.6;
+    transform-origin: bottom right;
+    transition:
+      opacity 200ms,
+      transform 200ms;
+  }
+
+  .group:hover .card-props {
+    opacity: 1;
+    transform: scale(1.15);
   }
 </style>
