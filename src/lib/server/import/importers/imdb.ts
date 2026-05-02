@@ -35,8 +35,30 @@ const REQUIRED_HEADERS = [
   'Title Type',
   'IMDb Rating',
   'Year',
+  'Genres',
   'Directors',
 ] as const;
+
+// Hard-coded tier cutoffs for IMDb imports: maps the "act as if 0–10" rating
+// scale onto the seven-tier scheme. Re-rating a 7 vs an 8 should land in
+// neighbouring tiers, which is what these breakpoints achieve.
+const IMDB_TIER_CUTOFFS: {
+  cutoffS: number;
+  cutoffA: number;
+  cutoffB: number;
+  cutoffC: number;
+  cutoffD: number;
+  cutoffE: number;
+  cutoffF: number;
+} = {
+  cutoffS: 91,
+  cutoffA: 81,
+  cutoffB: 71,
+  cutoffC: 61,
+  cutoffD: 51,
+  cutoffE: 41,
+  cutoffF: 0,
+};
 
 type ImdbCsvRow = Record<string, string>;
 
@@ -98,6 +120,25 @@ const IMDB_OPTIONS: ImporterOption[] = [
       { value: 'import', label: 'Import them with a score of 0' },
     ],
   },
+  {
+    id: 'genres',
+    type: 'radio',
+    label: 'Genres',
+    help: 'IMDb stores a comma-separated list of genres per row. Picking either import option also creates a "Genres" property on the category.',
+    default: 'none',
+    choices: [
+      { value: 'none', label: "Don't import genres" },
+      { value: 'main', label: 'Import the main genre (the first one in the list)' },
+      { value: 'all', label: 'Import all genres as a single property value' },
+    ],
+  },
+  {
+    id: 'placeholders',
+    type: 'checkbox',
+    label: 'Generate gradient placeholders',
+    help: 'Each imported item gets a deterministic random gradient as its background, so the empty-image fallback looks varied instead of flat.',
+    default: true,
+  },
 ];
 
 interface ImdbStashedPlan {
@@ -158,6 +199,8 @@ export async function planImdbImport(file: File, options: ImporterOptions): Prom
   const importYear = options.importYear !== false;
   const importDirectors = options.importDirectors === true;
   const importUrl = options.importUrl !== false;
+  const placeholders = options.placeholders !== false;
+  const genres = String(options.genres ?? 'none');
 
   const usedSlugs = new Set<string>();
   const items: IncomingItem[] = sorted.map((row, index) => {
@@ -175,6 +218,8 @@ export async function planImdbImport(file: File, options: ImporterOptions): Prom
     if (importDirectors && row['Directors']) {
       props.push({ key: 'Directors', value: row['Directors']! });
     }
+    const genreValue = genreForRow(row, genres);
+    if (genreValue) props.push({ key: 'Genres', value: genreValue });
 
     return {
       slug,
@@ -182,7 +227,7 @@ export async function planImdbImport(file: File, options: ImporterOptions): Prom
       description,
       score,
       order: index,
-      placeholder: null,
+      placeholder: placeholders ? gradientFromSeed(row['Const'] ?? slug) : null,
       props,
     };
   });
@@ -190,6 +235,7 @@ export async function planImdbImport(file: File, options: ImporterOptions): Prom
   const propKeys: PropKeyConfig[] = [];
   if (importYear) propKeys.push({ key: 'Year', showOnCard: true });
   if (importDirectors) propKeys.push({ key: 'Directors' });
+  if (genres !== 'none') propKeys.push({ key: 'Genres' });
 
   const { fileSlug, fileName } = syntheticCategory(titleType);
   const stash: ImdbStashedPlan = { fileSlug, fileName, items, propKeys };
@@ -258,21 +304,16 @@ export async function commitImdbImport(
           slug: stash.fileSlug,
           description: null,
           order: 0,
-          cutoffS: null,
-          cutoffA: null,
-          cutoffB: null,
-          cutoffC: null,
-          cutoffD: null,
-          cutoffE: null,
-          cutoffF: null,
+          ...IMDB_TIER_CUTOFFS,
           propKeys: stash.propKeys,
         },
         mapping,
         result,
       );
       if (!targetId) return;
-      if (mapping.action === 'use-existing' && stash.propKeys.length > 0) {
-        ensurePropKeys(tx, targetId, stash.propKeys);
+      if (mapping.action === 'use-existing') {
+        if (stash.propKeys.length > 0) ensurePropKeys(tx, targetId, stash.propKeys);
+        ensureTierCutoffs(tx, targetId);
       }
       for (const item of stash.items) {
         applyItem(tx, item, stash.fileSlug, targetId, strategy, result);
@@ -305,6 +346,56 @@ function ensurePropKeys(tx: Tx, categoryId: string, incoming: PropKeyConfig[]): 
     .set({ propKeys: [...current, ...additions] })
     .where(eq(categoryTable.id, categoryId))
     .run();
+}
+
+function ensureTierCutoffs(tx: Tx, categoryId: string): void {
+  const existing = tx
+    .select({
+      cutoffS: categoryTable.cutoffS,
+      cutoffA: categoryTable.cutoffA,
+      cutoffB: categoryTable.cutoffB,
+      cutoffC: categoryTable.cutoffC,
+      cutoffD: categoryTable.cutoffD,
+      cutoffE: categoryTable.cutoffE,
+      cutoffF: categoryTable.cutoffF,
+    })
+    .from(categoryTable)
+    .where(and(eq(categoryTable.id, categoryId), isNull(categoryTable.deletedAt)))
+    .get();
+  if (!existing) return;
+  // Only fill in cutoffs that are currently NULL — never override an explicit
+  // value the user set on the existing category.
+  const updates: Partial<typeof IMDB_TIER_CUTOFFS> = {};
+  for (const [key, value] of Object.entries(IMDB_TIER_CUTOFFS) as [
+    keyof typeof IMDB_TIER_CUTOFFS,
+    number,
+  ][]) {
+    if (existing[key] == null) updates[key] = value;
+  }
+  if (Object.keys(updates).length === 0) return;
+  tx.update(categoryTable).set(updates).where(eq(categoryTable.id, categoryId)).run();
+}
+
+function genreForRow(row: ImdbCsvRow, mode: string): string | null {
+  const raw = row['Genres'];
+  if (!raw) return null;
+  if (mode === 'main') {
+    const first = raw.split(',')[0]?.trim();
+    return first || null;
+  }
+  if (mode === 'all') return raw.trim();
+  return null;
+}
+
+function gradientFromSeed(seed: string): string {
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) {
+    h = ((h << 5) - h + seed.charCodeAt(i)) | 0;
+  }
+  const hue1 = Math.abs(h) % 360;
+  const hue2 = (hue1 + 30) % 360;
+  const hue3 = (hue1 + 60) % 360;
+  return `linear-gradient(135deg, hsl(${hue1}, 45%, 25%), hsl(${hue2}, 40%, 18%), hsl(${hue3}, 35%, 12%))`;
 }
 
 function isRated(row: ImdbCsvRow): boolean {

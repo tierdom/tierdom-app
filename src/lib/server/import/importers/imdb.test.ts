@@ -41,6 +41,8 @@ const DEFAULTS: ImporterOptions = {
   importUrl: true,
   sortBy: 'title',
   unratedRows: 'skip',
+  genres: 'none',
+  placeholders: true,
 };
 
 beforeAll(() => mkdirSync(TMP_ROOT, { recursive: true }));
@@ -312,6 +314,229 @@ describe('imdb importer', () => {
       const keys = cat!.propKeys ?? [];
       // Existing Year (no showOnCard) preserved; Network preserved; Directors added.
       expect(keys).toEqual([{ key: 'Year' }, { key: 'Network' }, { key: 'Directors' }]);
+    });
+
+    it('applies the IMDb tier cutoffs on a new category', async () => {
+      const db = makeDb() as unknown as Parameters<typeof commitImdbImport>[3];
+      const plan = await planImdbImport(fileFromFixture('imdb-sample.csv'), DEFAULTS);
+      await commitImdbImport(
+        plan.planId,
+        [
+          {
+            fileSlug: 'imdb-watchlist',
+            action: 'create-new',
+            slug: 'imdb-watchlist',
+            name: 'IMDb Watchlist',
+          },
+        ],
+        'skip',
+        db,
+      );
+      const realDb = db as unknown as ReturnType<typeof makeDb>;
+      const cat = realDb
+        .select()
+        .from(categoryTable)
+        .where(eq(categoryTable.slug, 'imdb-watchlist'))
+        .get();
+      expect({
+        S: cat!.cutoffS,
+        A: cat!.cutoffA,
+        B: cat!.cutoffB,
+        C: cat!.cutoffC,
+        D: cat!.cutoffD,
+        E: cat!.cutoffE,
+        F: cat!.cutoffF,
+      }).toEqual({ S: 91, A: 81, B: 71, C: 61, D: 51, E: 41, F: 0 });
+    });
+
+    it('fills in missing tier cutoffs on use-existing without overriding set ones', async () => {
+      const db = makeDb() as unknown as Parameters<typeof commitImdbImport>[3];
+      const realDb = db as unknown as ReturnType<typeof makeDb>;
+      // Existing has only S and A set; the rest must be filled with IMDb defaults.
+      realDb
+        .insert(categoryTable)
+        .values({
+          id: '00000000-0000-4000-8000-000000000002',
+          slug: 'imdb-watchlist',
+          name: 'IMDb Watchlist',
+          description: null,
+          order: 0,
+          cutoffS: 95,
+          cutoffA: 85,
+          propKeys: [],
+        })
+        .run();
+      const plan = await planImdbImport(fileFromFixture('imdb-sample.csv'), DEFAULTS);
+      await commitImdbImport(
+        plan.planId,
+        [
+          {
+            fileSlug: 'imdb-watchlist',
+            action: 'use-existing',
+            targetId: '00000000-0000-4000-8000-000000000002',
+          },
+        ],
+        'skip',
+        db,
+      );
+      const cat = realDb
+        .select()
+        .from(categoryTable)
+        .where(eq(categoryTable.id, '00000000-0000-4000-8000-000000000002'))
+        .get();
+      expect(cat!.cutoffS).toBe(95); // preserved
+      expect(cat!.cutoffA).toBe(85); // preserved
+      expect(cat!.cutoffB).toBe(71); // filled
+      expect(cat!.cutoffF).toBe(0); // filled
+    });
+
+    it('writes a deterministic gradient placeholder by default and skips when toggled off', async () => {
+      const db = makeDb() as unknown as Parameters<typeof commitImdbImport>[3];
+      const planOn = await planImdbImport(fileFromFixture('imdb-sample.csv'), DEFAULTS);
+      await commitImdbImport(
+        planOn.planId,
+        [
+          {
+            fileSlug: 'imdb-watchlist',
+            action: 'create-new',
+            slug: 'imdb-watchlist',
+            name: 'IMDb Watchlist',
+          },
+        ],
+        'skip',
+        db,
+      );
+      const realDb = db as unknown as ReturnType<typeof makeDb>;
+      const item = realDb
+        .select()
+        .from(tierListItemTable)
+        .where(eq(tierListItemTable.slug, 'breaking-bad'))
+        .get();
+      expect(item!.placeholder).toMatch(/^linear-gradient\(135deg, hsl\(/);
+
+      // A second importer with placeholders off lands in a fresh category.
+      const dbOff = makeDb() as unknown as Parameters<typeof commitImdbImport>[3];
+      const planOff = await planImdbImport(fileFromFixture('imdb-sample.csv'), {
+        ...DEFAULTS,
+        placeholders: false,
+      });
+      await commitImdbImport(
+        planOff.planId,
+        [
+          {
+            fileSlug: 'imdb-watchlist',
+            action: 'create-new',
+            slug: 'imdb-watchlist',
+            name: 'IMDb Watchlist',
+          },
+        ],
+        'skip',
+        dbOff,
+      );
+      const realDbOff = dbOff as unknown as ReturnType<typeof makeDb>;
+      const itemOff = realDbOff
+        .select()
+        .from(tierListItemTable)
+        .where(eq(tierListItemTable.slug, 'breaking-bad'))
+        .get();
+      expect(itemOff!.placeholder).toBeNull();
+    });
+
+    it('imports the main genre and seeds the Genres prop key', async () => {
+      const db = makeDb() as unknown as Parameters<typeof commitImdbImport>[3];
+      const plan = await planImdbImport(fileFromFixture('imdb-sample.csv'), {
+        ...DEFAULTS,
+        genres: 'main',
+      });
+      await commitImdbImport(
+        plan.planId,
+        [
+          {
+            fileSlug: 'imdb-watchlist',
+            action: 'create-new',
+            slug: 'imdb-watchlist',
+            name: 'IMDb Watchlist',
+          },
+        ],
+        'skip',
+        db,
+      );
+      const realDb = db as unknown as ReturnType<typeof makeDb>;
+      const cat = realDb
+        .select()
+        .from(categoryTable)
+        .where(eq(categoryTable.slug, 'imdb-watchlist'))
+        .get();
+      expect((cat!.propKeys ?? []).find((k) => k.key === 'Genres')).toEqual({ key: 'Genres' });
+
+      const breakingBad = realDb
+        .select()
+        .from(tierListItemTable)
+        .where(eq(tierListItemTable.slug, 'breaking-bad'))
+        .get();
+      // Breaking Bad's Genres CSV cell is "Drama, Crime, Thriller" — main = "Drama".
+      expect((breakingBad!.props ?? []).find((p) => p.key === 'Genres')?.value).toBe('Drama');
+    });
+
+    it('imports all genres as a single property value', async () => {
+      const db = makeDb() as unknown as Parameters<typeof commitImdbImport>[3];
+      const plan = await planImdbImport(fileFromFixture('imdb-sample.csv'), {
+        ...DEFAULTS,
+        genres: 'all',
+      });
+      await commitImdbImport(
+        plan.planId,
+        [
+          {
+            fileSlug: 'imdb-watchlist',
+            action: 'create-new',
+            slug: 'imdb-watchlist',
+            name: 'IMDb Watchlist',
+          },
+        ],
+        'skip',
+        db,
+      );
+      const realDb = db as unknown as ReturnType<typeof makeDb>;
+      const breakingBad = realDb
+        .select()
+        .from(tierListItemTable)
+        .where(eq(tierListItemTable.slug, 'breaking-bad'))
+        .get();
+      expect((breakingBad!.props ?? []).find((p) => p.key === 'Genres')?.value).toBe(
+        'Drama, Crime, Thriller',
+      );
+    });
+
+    it('omits the Genres prop and prop key when mode is "none"', async () => {
+      const db = makeDb() as unknown as Parameters<typeof commitImdbImport>[3];
+      const plan = await planImdbImport(fileFromFixture('imdb-sample.csv'), DEFAULTS);
+      await commitImdbImport(
+        plan.planId,
+        [
+          {
+            fileSlug: 'imdb-watchlist',
+            action: 'create-new',
+            slug: 'imdb-watchlist',
+            name: 'IMDb Watchlist',
+          },
+        ],
+        'skip',
+        db,
+      );
+      const realDb = db as unknown as ReturnType<typeof makeDb>;
+      const cat = realDb
+        .select()
+        .from(categoryTable)
+        .where(eq(categoryTable.slug, 'imdb-watchlist'))
+        .get();
+      expect((cat!.propKeys ?? []).find((k) => k.key === 'Genres')).toBeUndefined();
+      const item = realDb
+        .select()
+        .from(tierListItemTable)
+        .where(eq(tierListItemTable.slug, 'breaking-bad'))
+        .get();
+      expect((item!.props ?? []).find((p) => p.key === 'Genres')).toBeUndefined();
     });
 
     it('orders items by Your Rating DESC with the chosen tie-breaker, Const last', async () => {
