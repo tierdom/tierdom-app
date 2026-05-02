@@ -49,6 +49,8 @@ Proposed
 
    **Amendments held to the same bar.** When updating an existing ADR (status flip Proposed→Accepted, or refining decisions made during implementation), apply every rule above to the new bullets too. Easy drift modes when amending: speculation about future use cases, implementation detail that belongs in code comments, "this enables X" rhetorical add-ons, parenthetical motivations on every bullet. Compare the amended length against the previous accepted version — if it grew without the decision space growing, you're padding.
 
+   **On Proposed → Accepted:** run `npm run test:unit:coverage` and append a row to the `## Coverage` table ("After initial implementation", or "After rework" for a follow-up). Keep the proposal-baseline row. If no baseline exists, say so — don't back-fill.
+
 5. Add or update the entry in the **Architecture Decision Records** table in `README.md` at the project root. Match the existing table format (ADR link, Title, Status columns). If updating an existing ADR, update its row; if creating a new one, append a row.
 6. Print the file path so I can open it.
 
