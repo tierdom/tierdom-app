@@ -15,8 +15,7 @@ Proposed
 - **No DB migration.** `propKeys` is a JSON `text` column; old rows treat the field as falsy.
 - **Public load** (`src/routes/category/[slug]/+page.server.ts`) computes per-item `cardProps: string[]` by intersecting `category.propKeys.filter(showOnCard)` with `item.props` in propKey order. Only values are passed; keys are not rendered on the card.
 - **Render position**: bottom-right of `TierListItem`, mirroring the existing bottom-left score, white text + drop-shadow over scrim.
-- **Overflow degradation**: gradient mask fade (`mask-image: linear-gradient(to left, transparent 0, black 1.25em)`). Two alternates (vertical pills, comma-joined) prototyped behind a temporary `?cardStyle=` query toggle and removed before merge once the user picks visually. Final choice recorded here on Accepted.
-- **Cap at 3 rendered values** to leave room for the score; further values collapse to a "…" marker.
+- **Layout**: values joined with `·` on a single line; standard `text-overflow: ellipsis` truncation. Rejected during prototype: gradient mask fade and per-value pills — both added visual weight without earning it for the common one-value case.
 - **Admin editor**: `PropKeyEditor.svelte` legend renamed "Prop keys" → "Properties"; row layout widens the icon-set column and inserts a "Show on card" checkbox between iconset and delete.
 
 ## Consequences

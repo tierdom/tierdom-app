@@ -33,11 +33,6 @@
     data.tiers.flatMap((t) => t.items.map((item) => ({ ...item, tier: t.tier }))),
   );
 
-  let cardStyle = $derived.by<'fade' | 'pills' | 'comma'>(() => {
-    const v = page.url.searchParams.get('cardStyle');
-    return v === 'pills' || v === 'comma' ? v : 'fade';
-  });
-
   let selectedItem = $derived.by(() => {
     const slug = page.state.item ?? page.url.searchParams.get('item');
     return slug ? (allItems.find((i) => i.slug === slug) ?? null) : null;
@@ -89,7 +84,6 @@
                 image={item.image ?? undefined}
                 gradient={item.placeholder ?? undefined}
                 cardProps={item.cardProps}
-                {cardStyle}
                 onclick={() => openItem(item.slug)}
               />
             {/each}
