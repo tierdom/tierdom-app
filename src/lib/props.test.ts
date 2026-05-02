@@ -216,6 +216,42 @@ describe('validatePropKeys', () => {
     const result = validatePropKeys([{ key: 'Platform', iconSet: null }]);
     expect(result).toEqual([{ key: 'Platform' }]);
   });
+
+  it('round-trips showOnCard: true', () => {
+    const result = validatePropKeys([{ key: 'Platform', showOnCard: true }]);
+    expect(result).toEqual([{ key: 'Platform', showOnCard: true }]);
+  });
+
+  it('omits showOnCard when false', () => {
+    const result = validatePropKeys([{ key: 'Platform', showOnCard: false }]);
+    expect(result).toEqual([{ key: 'Platform' }]);
+  });
+
+  it('omits showOnCard when missing', () => {
+    const result = validatePropKeys([{ key: 'Platform' }]);
+    expect(result).toEqual([{ key: 'Platform' }]);
+  });
+
+  it('omits showOnCard when null', () => {
+    const result = validatePropKeys([{ key: 'Platform', showOnCard: null }]);
+    expect(result).toEqual([{ key: 'Platform' }]);
+  });
+
+  it('rejects non-boolean showOnCard values', () => {
+    expect(validatePropKeys([{ key: 'Platform', showOnCard: 'yes' }])).toBe(
+      'showOnCard for "Platform" must be a boolean',
+    );
+    expect(validatePropKeys([{ key: 'Platform', showOnCard: 1 }])).toBe(
+      'showOnCard for "Platform" must be a boolean',
+    );
+  });
+
+  it('round-trips showOnCard alongside iconSet', () => {
+    const result = validatePropKeys([
+      { key: 'Platform', iconSet: 'gaming-platforms', showOnCard: true },
+    ]);
+    expect(result).toEqual([{ key: 'Platform', iconSet: 'gaming-platforms', showOnCard: true }]);
+  });
 });
 
 describe('findDuplicateKeys', () => {

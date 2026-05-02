@@ -1,5 +1,5 @@
 export type Prop = { key: string; value: string };
-export type PropKeyConfig = { key: string; iconSet?: string };
+export type PropKeyConfig = { key: string; iconSet?: string; showOnCard?: boolean };
 
 export const MAX_PROPS = 10;
 export const MAX_PROP_KEYS = 10;
@@ -30,6 +30,7 @@ export function validateProps(raw: unknown): Prop[] | string {
 
     const normalized = key.trim().toLowerCase();
     if (keys.has(normalized)) return `Duplicate key "${key}"`;
+
     keys.add(normalized);
   }
 
@@ -67,12 +68,14 @@ export function validatePropKeys(
     if (typeof entry !== 'object' || entry === null)
       return 'Each prop key must be a { key, iconSet? } object';
 
-    const { key, iconSet } = entry as Record<string, unknown>;
+    const { key, iconSet, showOnCard } = entry as Record<string, unknown>;
     if (typeof key !== 'string') return 'Each prop key must have a string key';
+
     const trimmed = key.trim();
     if (!trimmed) return 'Prop keys must not be empty';
     if (trimmed.length > MAX_KEY_LENGTH)
       return `Key "${trimmed}" exceeds ${MAX_KEY_LENGTH} characters`;
+
     const normalized = trimmed.toLowerCase();
     if (seen.has(normalized)) return `Duplicate key "${trimmed}"`;
     seen.add(normalized);
@@ -83,6 +86,11 @@ export function validatePropKeys(
       if (knownIconSetSlugs && !knownIconSetSlugs.has(iconSet))
         return `Unknown icon set "${iconSet}" for key "${trimmed}"`;
       config.iconSet = iconSet;
+    }
+
+    if (showOnCard !== undefined && showOnCard !== null && showOnCard !== false) {
+      if (typeof showOnCard !== 'boolean') return `showOnCard for "${trimmed}" must be a boolean`;
+      config.showOnCard = true;
     }
 
     result.push(config);
