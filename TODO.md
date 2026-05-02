@@ -14,9 +14,11 @@ This file serves as a light-weight backlog of open features.
 - Well-known prop "Author" support for Books-like categories
 - Well-known prop "Year" support for Books-like categories
 - Import from Goodreads
+- Import from StoryGraph
 - Import from IMDB
 - Import from TMDB
 - Import from BoardGameGeek
+- Import from Untappd
 - Build external API for automated operations
 - Create an MCP server to access a Tierdom instance with AI tooling
 - Add CI/CD

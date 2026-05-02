@@ -1,7 +1,8 @@
 # Tierdom App
 
 A self-hosted personal tier list aggregator.
-Replace scattered tools like Goodreads, IMDB, BoardGameGeek, and others with a single app you own and run yourself.
+**No more (semi-)walled gardens (co-)owning your reviews!**
+Replace scattered tools like Goodreads, IMDB, BoardGameGeek, Untappd, and others with a single app you own and run yourself.
 
 Take it for an adhoc test drive by running:
 
