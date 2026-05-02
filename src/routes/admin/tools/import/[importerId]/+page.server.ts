@@ -5,7 +5,12 @@ import { categoryTable } from '$lib/server/db/schema';
 import { getImporter } from '$lib/server/import/registry';
 import { MAX_JSON_BYTES } from '$lib/server/import/validate';
 import { deleteImportTemp } from '$lib/server/import/temp-storage';
-import type { CategoryMapping, MergeStrategy } from '$lib/server/import/types';
+import type {
+  CategoryMapping,
+  ImporterOption,
+  ImporterOptions,
+  MergeStrategy,
+} from '$lib/server/import/types';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = ({ params }) => {
@@ -13,7 +18,7 @@ export const load: PageServerLoad = ({ params }) => {
   if (!importer) {
     error(404, `No importer with id "${params.importerId}".`);
   }
-  const { id, label, description, status, accept, stubInfo } = importer;
+  const { id, label, description, status, accept, options, stubInfo } = importer;
   const existingCategories =
     importer.status === 'available'
       ? db
@@ -24,11 +29,27 @@ export const load: PageServerLoad = ({ params }) => {
           .all()
       : [];
   return {
-    importer: { id, label, description, status, accept, stubInfo },
+    importer: { id, label, description, status, accept, options, stubInfo },
     maxBytes: MAX_JSON_BYTES,
     existingCategories,
   };
 };
+
+function parseOptions(schema: ImporterOption[] | undefined, data: FormData): ImporterOptions {
+  const out: ImporterOptions = {};
+  for (const opt of schema ?? []) {
+    const fieldName = `option:${opt.id}`;
+    if (opt.type === 'checkbox') {
+      out[opt.id] = data.get(fieldName) != null;
+    } else {
+      const raw = data.get(fieldName);
+      const value = typeof raw === 'string' ? raw : '';
+      const valid = opt.choices.some((c) => c.value === value);
+      out[opt.id] = valid ? value : opt.default;
+    }
+  }
+  return out;
+}
 
 function requireImporter(importerId: string) {
   const importer = getImporter(importerId);
@@ -53,7 +74,8 @@ export const actions: Actions = {
       });
     }
 
-    const plan = await importer.plan!(file);
+    const opts = parseOptions(importer.options, data);
+    const plan = await importer.plan!(file, opts);
     if (plan.errors.length > 0 || !plan.planId) {
       // Surface validation errors using the same `result` shape the result
       // page already understands — no need for a dedicated error widget.

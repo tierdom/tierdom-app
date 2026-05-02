@@ -1,4 +1,5 @@
 <script lang="ts">
+  import ConfigureForm from '$lib/components/admin/import/ConfigureForm.svelte';
   import LoadingPhase from '$lib/components/admin/import/LoadingPhase.svelte';
   import StubPanel from '$lib/components/admin/import/StubPanel.svelte';
   import UploadForm from '$lib/components/admin/import/UploadForm.svelte';
@@ -9,6 +10,7 @@
 
   let { data, form }: { data: PageData; form: ActionData } = $props();
   const importer = $derived(data.importer);
+  const hasOptions = $derived((importer.options?.length ?? 0) > 0);
   const result = $derived(form && 'result' in form ? (form.result ?? null) : null);
   const failureMessage = $derived(form && 'message' in form ? (form.message ?? null) : null);
   const filename = $derived(form && 'filename' in form ? (form.filename ?? null) : null);
@@ -18,6 +20,7 @@
   const maxMb = $derived(Math.round(data.maxBytes / (1024 * 1024)));
 
   let phaseOverride = $state<ImportPhase | null>(null);
+  let selectedFile = $state<File | null>(null);
 
   // The default phase is derived from whatever the most recent form action
   // returned. The override lets us flip into transient phases (planning /
@@ -43,6 +46,13 @@
       description={importer.description}
       stubInfo={importer.stubInfo}
     />
+  {:else if phase === 'configure' && selectedFile && importer.options}
+    <ConfigureForm
+      label={importer.label}
+      file={selectedFile}
+      options={importer.options}
+      {setPhase}
+    />
   {:else if phase === 'planning'}
     <LoadingPhase title="Reading file…" subtitle="Validating against the Tierdom schema." />
   {:else if phase === 'committing'}
@@ -63,7 +73,9 @@
       description={importer.description}
       accept={importer.accept}
       {maxMb}
+      {hasOptions}
       {setPhase}
+      onFileChosen={(file) => (selectedFile = file)}
     />
   {/if}
 </section>

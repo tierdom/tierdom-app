@@ -37,13 +37,36 @@ export interface ImportResult {
   errors: string[];
 }
 
+export type ImporterOptionValue = string | boolean;
+
+export type ImporterOptions = Record<string, ImporterOptionValue>;
+
+export type ImporterOption =
+  | {
+      id: string;
+      type: 'checkbox';
+      label: string;
+      help?: string;
+      default: boolean;
+    }
+  | {
+      id: string;
+      type: 'radio';
+      label: string;
+      help?: string;
+      default: string;
+      choices: Array<{ value: string; label: string }>;
+      footnote?: string;
+    };
+
 export interface Importer {
   id: string;
   label: string;
   description: string;
   status: ImporterStatus;
   accept?: string;
-  plan?: (file: File) => Promise<ImportPlan>;
+  options?: ImporterOption[];
+  plan?: (file: File, options: ImporterOptions) => Promise<ImportPlan>;
   commit?: (
     planId: string,
     mappings: CategoryMapping[],
