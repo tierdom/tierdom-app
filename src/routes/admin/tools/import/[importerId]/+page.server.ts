@@ -3,7 +3,7 @@ import { asc, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { categoryTable } from '$lib/server/db/schema';
 import { getImporter } from '$lib/server/import/registry';
-import { MAX_JSON_BYTES } from '$lib/server/import/validate';
+import { MAX_IMPORT_BYTES } from '$lib/server/import/validate';
 import { deleteImportTemp } from '$lib/server/import/temp-storage';
 import type {
   CategoryMapping,
@@ -30,7 +30,7 @@ export const load: PageServerLoad = ({ params }) => {
       : [];
   return {
     importer: { id, label, description, status, accept, options, stubInfo },
-    maxBytes: MAX_JSON_BYTES,
+    maxBytes: MAX_IMPORT_BYTES,
     existingCategories,
   };
 };
@@ -68,9 +68,9 @@ export const actions: Actions = {
     if (!(file instanceof File) || file.size === 0) {
       return fail(400, { message: 'Pick a file to import.' });
     }
-    if (file.size > MAX_JSON_BYTES) {
+    if (file.size > MAX_IMPORT_BYTES) {
       return fail(413, {
-        message: `File is too large (${file.size} bytes). Maximum is ${MAX_JSON_BYTES} bytes.`,
+        message: `File is too large (${file.size} bytes). Maximum is ${MAX_IMPORT_BYTES} bytes.`,
       });
     }
 

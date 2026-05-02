@@ -14,4 +14,4 @@ export function formatAjvErrors(): string[] {
   );
 }
 
-export const MAX_JSON_BYTES = 10 * 1024 * 1024;
+export const MAX_IMPORT_BYTES = 10 * 1024 * 1024;

@@ -1,7 +1,7 @@
 import { and, eq, isNull } from 'drizzle-orm';
 import { db as defaultDb } from '$lib/server/db';
 import { categoryTable } from '$lib/server/db/schema';
-import { MAX_JSON_BYTES, formatAjvErrors, validateExport } from '../validate';
+import { MAX_IMPORT_BYTES, formatAjvErrors, validateExport } from '../validate';
 import {
   deleteImportTemp,
   readImportTemp,
@@ -38,8 +38,8 @@ export async function planTierdomJsonImport(file: File, conn: DB = defaultDb): P
   // (admin uploaded then navigated away without Cancel) on the natural cadence
   // of fresh import attempts. Cheap — readdir + stat over a tiny dir.
   sweepImportTemp();
-  if (file.size > MAX_JSON_BYTES) {
-    return emptyPlan('', [`File is ${file.size} bytes; maximum is ${MAX_JSON_BYTES}.`]);
+  if (file.size > MAX_IMPORT_BYTES) {
+    return emptyPlan('', [`File is ${file.size} bytes; maximum is ${MAX_IMPORT_BYTES}.`]);
   }
 
   const text = await file.text();

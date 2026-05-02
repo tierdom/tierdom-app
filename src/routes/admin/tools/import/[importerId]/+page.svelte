@@ -54,7 +54,7 @@
       {setPhase}
     />
   {:else if phase === 'planning'}
-    <LoadingPhase title="Reading file…" subtitle="Validating against the Tierdom schema." />
+    <LoadingPhase title="Reading file…" subtitle="Parsing and validating contents." />
   {:else if phase === 'committing'}
     <LoadingPhase title="Importing…" subtitle="Writing to the database." />
   {:else if phase === 'review' && plan}

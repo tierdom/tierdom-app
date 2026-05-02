@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { MAX_JSON_BYTES, formatAjvErrors, validateExport } from './validate';
+import { MAX_IMPORT_BYTES, formatAjvErrors, validateExport } from './validate';
 
 const FIXTURES_DIR = 'tests/fixtures/imports';
 
@@ -92,8 +92,8 @@ describe('formatAjvErrors', () => {
   });
 });
 
-describe('MAX_JSON_BYTES', () => {
+describe('MAX_IMPORT_BYTES', () => {
   it('is exactly 10 MiB', () => {
-    expect(MAX_JSON_BYTES).toBe(10 * 1024 * 1024);
+    expect(MAX_IMPORT_BYTES).toBe(10 * 1024 * 1024);
   });
 });
