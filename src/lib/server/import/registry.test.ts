@@ -3,11 +3,11 @@ import { importers, getImporter, getImporterSummaries } from './registry';
 
 describe('import registry', () => {
   it('exposes all known importers in the expected order', () => {
-    expect(importers.map((i) => i.id)).toEqual(['json', 'goodreads', 'bgg', 'imdb']);
+    expect(importers.map((i) => i.id)).toEqual(['json', 'goodreads', 'bgg', 'imdb', 'storygraph']);
   });
 
   it('marks every importer as available', () => {
-    for (const id of ['json', 'imdb', 'goodreads', 'bgg']) {
+    for (const id of ['json', 'imdb', 'goodreads', 'bgg', 'storygraph']) {
       expect(getImporter(id)?.status).toBe('available');
     }
   });

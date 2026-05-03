@@ -11,6 +11,7 @@
     goodreads: BookOpen,
     bgg: Dice5,
     imdb: Film,
+    storygraph: BookOpen,
   };
 
   function iconFor(importer: ImporterSummary) {
