@@ -214,6 +214,11 @@ export const CATEGORIES: SeedCategory[] = [
         description:
           "Villeneuve proved a *Blade Runner* sequel could work. Deakins' cinematography is **breathtaking**.\n\nSlow, meditative, and visually perfect.",
       },
+      {
+        name: 'Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb',
+        score: 60,
+        props: [p('Year', '1964'), p('Genre', 'War')],
+      },
       { name: 'Parasite', score: 86, props: [p('Year', '2019'), p('Genre', 'Thriller')] },
       { name: 'Arrival', score: 84, props: [p('Year', '2016'), p('Genre', 'Sci-Fi')] },
       { name: 'Mad Max: Fury Road', score: 82, props: [p('Year', '2015'), p('Genre', 'Action')] },
@@ -291,6 +296,11 @@ export const CATEGORIES: SeedCategory[] = [
       'A small but growing collection of **tabletop games** ranked by replayability and fun factor.\n\nOnly the ones that actually hit the table more than once.',
     order: 3,
     items: [
+      {
+        name: 'Sherlock Holmes Consulting Detective: Jack the Ripper & West End Adventures',
+        score: 80,
+        props: [],
+      },
       { name: 'Gloomhaven', score: 95, props: [] },
       { name: 'Spirit Island', score: 92, props: [] },
       { name: 'Catan', score: 48, props: [] },
