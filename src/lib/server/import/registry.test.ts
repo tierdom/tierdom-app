@@ -6,21 +6,9 @@ describe('import registry', () => {
     expect(importers.map((i) => i.id)).toEqual(['json', 'goodreads', 'bgg', 'imdb']);
   });
 
-  it('marks the available importers and the remaining stubs', () => {
-    for (const id of ['json', 'imdb', 'goodreads']) {
+  it('marks every importer as available', () => {
+    for (const id of ['json', 'imdb', 'goodreads', 'bgg']) {
       expect(getImporter(id)?.status).toBe('available');
-    }
-    for (const id of ['bgg']) {
-      expect(getImporter(id)?.status).toBe('stub');
-    }
-  });
-
-  it('every stub points at the issue search page for that source', () => {
-    for (const importer of importers) {
-      if (importer.status !== 'stub') continue;
-      expect(importer.stubInfo?.issueUrl).toMatch(
-        /^https:\/\/github\.com\/tierdom\/tierdom-app\/issues\?q=/,
-      );
     }
   });
 
