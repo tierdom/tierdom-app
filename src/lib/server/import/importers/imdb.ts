@@ -1,19 +1,10 @@
-import Papa from 'papaparse';
 import { and, eq, isNull } from 'drizzle-orm';
 import { db as defaultDb } from '$lib/server/db';
 import { categoryTable } from '$lib/server/db/schema';
-import { formatGradient } from '$lib/server/gradient';
 import { slugify } from '$lib/server/slugify';
 import type { PropKeyConfig } from '$lib/props';
-import {
-  deleteImportTemp,
-  readImportTemp,
-  sweepImportTemp,
-  writeImportTemp,
-} from '../temp-storage';
-import { applyCategoryMapping, applyItem } from '../apply';
+import { writeImportTemp } from '../temp-storage';
 import type { IncomingItem } from '../apply';
-import { MAX_IMPORT_BYTES } from '../validate';
 import type {
   CategoryMapping,
   ImportPlan,
@@ -23,7 +14,13 @@ import type {
   ImporterOptions,
   MergeStrategy,
 } from '../types';
-import { emptyPlan, emptyResult } from '../types';
+import {
+  gradientFromSeed,
+  parseCsvWithHeaders,
+  runStashedCommit,
+  type StashedPlan,
+  type TierCutoffs,
+} from './_shared';
 
 type DB = typeof defaultDb;
 
@@ -43,15 +40,7 @@ const REQUIRED_HEADERS = [
 // Hard-coded tier cutoffs for IMDb imports: maps the "act as if 0–10" rating
 // scale onto the seven-tier scheme. Re-rating a 7 vs an 8 should land in
 // neighbouring tiers, which is what these breakpoints achieve.
-const IMDB_TIER_CUTOFFS: {
-  cutoffS: number;
-  cutoffA: number;
-  cutoffB: number;
-  cutoffC: number;
-  cutoffD: number;
-  cutoffE: number;
-  cutoffF: number;
-} = {
+const IMDB_TIER_CUTOFFS: TierCutoffs = {
   cutoffS: 91,
   cutoffA: 81,
   cutoffB: 71,
@@ -142,13 +131,6 @@ const IMDB_OPTIONS: ImporterOption[] = [
   },
 ];
 
-interface ImdbStashedPlan {
-  fileSlug: string;
-  fileName: string;
-  items: IncomingItem[];
-  propKeys: PropKeyConfig[];
-}
-
 export const imdbImporter: Importer = {
   id: 'imdb',
   label: 'IMDb',
@@ -165,39 +147,18 @@ export async function planImdbImport(
   options: ImporterOptions,
   conn: DB = defaultDb,
 ): Promise<ImportPlan> {
-  sweepImportTemp();
-  if (file.size > MAX_IMPORT_BYTES) {
-    return emptyPlan('', [`File is ${file.size} bytes; maximum is ${MAX_IMPORT_BYTES}.`]);
-  }
-
-  const text = await file.text();
-  const parsed = Papa.parse<ImdbCsvRow>(text, {
-    header: true,
-    skipEmptyLines: true,
-  });
-  /* v8 ignore start -- @preserve papaparse rarely emits errors when
-     `header: true` and the input is non-empty; we keep the branch in place
-     to surface anything truly malformed (e.g. a binary blob masquerading as
-     CSV) but the unit suite uses well-formed inputs. */
-  if (parsed.errors.length > 0) {
-    return emptyPlan(
-      '',
-      parsed.errors.slice(0, 5).map((e) => `CSV parse error: ${e.message}`),
-    );
-  }
-  /* v8 ignore stop */
-  const headers = parsed.meta.fields ?? [];
-  const missing = REQUIRED_HEADERS.filter((h) => !headers.includes(h));
-  if (missing.length > 0) {
-    return emptyPlan('', [
+  const parsed = await parseCsvWithHeaders<ImdbCsvRow>(
+    file,
+    REQUIRED_HEADERS,
+    (missing) =>
       `Missing required IMDb columns: ${missing.join(', ')}. Re-export your ratings from IMDb and try again.`,
-    ]);
-  }
+  );
+  if ('error' in parsed) return parsed.error;
 
   const titleType = String(options.titleType ?? 'all');
   const unratedRows = String(options.unratedRows ?? 'skip');
 
-  const filtered = parsed.data.filter((row) => {
+  const filtered = parsed.rows.filter((row) => {
     if (titleType === 'movie' && row['Title Type'] !== 'Movie') return false;
     if (titleType === 'tvSeries' && row['Title Type'] !== 'TV Series') return false;
     if (unratedRows === 'skip' && !isRated(row)) return false;
@@ -248,7 +209,7 @@ export async function planImdbImport(
   if (genres !== 'none') propKeys.push({ key: 'Genres' });
 
   const { fileSlug, fileName } = syntheticCategory(titleType);
-  const stash: ImdbStashedPlan = { fileSlug, fileName, items, propKeys };
+  const stash: StashedPlan = { fileSlug, fileName, items, propKeys };
   const planId = writeImportTemp(JSON.stringify(stash));
 
   const match = conn
@@ -278,126 +239,7 @@ export async function commitImdbImport(
   strategy: MergeStrategy,
   conn: DB = defaultDb,
 ): Promise<ImportResult> {
-  let bytes: Buffer;
-  try {
-    bytes = readImportTemp(planId);
-  } catch (e) {
-    return { ...emptyResult(), errors: [e instanceof Error ? e.message : String(e)] };
-  }
-
-  let stash: ImdbStashedPlan;
-  try {
-    stash = JSON.parse(bytes.toString('utf8')) as ImdbStashedPlan;
-    /* v8 ignore start -- @preserve defensive: temp-storage round-trip writes
-       the same JSON we parse here. Only triggered if something corrupts the
-       stash file between writeImportTemp and readImportTemp. */
-  } catch (e) {
-    return {
-      ...emptyResult(),
-      errors: [`Invalid stored plan: ${e instanceof Error ? e.message : String(e)}`],
-    };
-    /* v8 ignore stop */
-  }
-
-  const mapping = mappings.find((m) => m.fileSlug === stash.fileSlug);
-  const result = emptyResult();
-
-  if (!mapping || mapping.action === 'skip') {
-    if (!mapping) {
-      result.errors.push(`No mapping provided for category "${stash.fileSlug}".`);
-    }
-    result.skipped.categories++;
-    result.details.skipped.push(`categories/${stash.fileSlug}`);
-    for (const item of stash.items) {
-      result.skipped.items++;
-      result.details.skipped.push(`categories/${stash.fileSlug}/items/${item.slug}`);
-    }
-    deleteImportTemp(planId);
-    return result;
-  }
-
-  try {
-    conn.transaction((tx) => {
-      const targetId = applyCategoryMapping(
-        tx,
-        {
-          slug: stash.fileSlug,
-          description: null,
-          order: 0,
-          ...IMDB_TIER_CUTOFFS,
-          propKeys: stash.propKeys,
-        },
-        mapping,
-        result,
-      );
-      if (!targetId) return;
-      if (mapping.action === 'use-existing') {
-        if (stash.propKeys.length > 0) ensurePropKeys(tx, targetId, stash.propKeys);
-        ensureTierCutoffs(tx, targetId);
-      }
-      for (const item of stash.items) {
-        applyItem(tx, item, stash.fileSlug, targetId, strategy, result);
-      }
-    });
-    /* v8 ignore start -- @preserve defensive: drizzle errors are surfaced
-       through this catch only on a hard SQLite failure (disk full, schema
-       drift). Not triggered by the unit suite. */
-  } catch (e) {
-    return {
-      ...emptyResult(),
-      errors: [`Database error: ${e instanceof Error ? e.message : String(e)}`],
-    };
-  }
-  /* v8 ignore stop */
-
-  deleteImportTemp(planId);
-  return result;
-}
-
-type Tx = Parameters<Parameters<DB['transaction']>[0]>[0];
-
-function ensurePropKeys(tx: Tx, categoryId: string, incoming: PropKeyConfig[]): void {
-  const existing = tx
-    .select({ propKeys: categoryTable.propKeys })
-    .from(categoryTable)
-    .where(and(eq(categoryTable.id, categoryId), isNull(categoryTable.deletedAt)))
-    .get();
-  const current: PropKeyConfig[] = existing?.propKeys ?? [];
-  const have = new Set(current.map((p) => p.key));
-  const additions = incoming.filter((p) => !have.has(p.key));
-  if (additions.length === 0) return;
-  tx.update(categoryTable)
-    .set({ propKeys: [...current, ...additions] })
-    .where(eq(categoryTable.id, categoryId))
-    .run();
-}
-
-function ensureTierCutoffs(tx: Tx, categoryId: string): void {
-  const existing = tx
-    .select({
-      cutoffS: categoryTable.cutoffS,
-      cutoffA: categoryTable.cutoffA,
-      cutoffB: categoryTable.cutoffB,
-      cutoffC: categoryTable.cutoffC,
-      cutoffD: categoryTable.cutoffD,
-      cutoffE: categoryTable.cutoffE,
-      cutoffF: categoryTable.cutoffF,
-    })
-    .from(categoryTable)
-    .where(and(eq(categoryTable.id, categoryId), isNull(categoryTable.deletedAt)))
-    .get();
-  if (!existing) return;
-  // Only fill in cutoffs that are currently NULL — never override an explicit
-  // value the user set on the existing category.
-  const updates: Partial<typeof IMDB_TIER_CUTOFFS> = {};
-  for (const [key, value] of Object.entries(IMDB_TIER_CUTOFFS) as [
-    keyof typeof IMDB_TIER_CUTOFFS,
-    number,
-  ][]) {
-    if (existing[key] == null) updates[key] = value;
-  }
-  if (Object.keys(updates).length === 0) return;
-  tx.update(categoryTable).set(updates).where(eq(categoryTable.id, categoryId)).run();
+  return runStashedCommit(planId, mappings, strategy, conn, IMDB_TIER_CUTOFFS);
 }
 
 function genreForRow(row: ImdbCsvRow, mode: string): string | null {
@@ -409,24 +251,6 @@ function genreForRow(row: ImdbCsvRow, mode: string): string | null {
   }
   if (mode === 'all') return raw.trim();
   return null;
-}
-
-// HSL palette mirrors the SVG used by `generate-image.ts` so import
-// placeholders look at home next to seeded ones. The format is centralised
-// in `gradient.ts`; we just supply three colour stops.
-function gradientFromSeed(seed: string): string {
-  let h = 0;
-  for (let i = 0; i < seed.length; i++) {
-    h = ((h << 5) - h + seed.charCodeAt(i)) | 0;
-  }
-  const hue1 = Math.abs(h) % 360;
-  const hue2 = (hue1 + 30) % 360;
-  const hue3 = (hue1 + 60) % 360;
-  return formatGradient(
-    `hsl(${hue1}, 45%, 25%)`,
-    `hsl(${hue2}, 40%, 18%)`,
-    `hsl(${hue3}, 35%, 12%)`,
-  );
 }
 
 function isRated(row: ImdbCsvRow): boolean {
