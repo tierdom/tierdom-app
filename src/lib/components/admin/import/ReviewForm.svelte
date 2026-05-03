@@ -5,6 +5,7 @@
   import Button from '$lib/components/admin/Button.svelte';
   import type { ImportPlan, ProposedCategory } from '$lib/server/import/types';
   import type { ImportPhase } from './phase';
+  import { suggestUnique } from './suggest-unique';
 
   type ExistingCategory = { id: string; slug: string; name: string };
 
@@ -56,22 +57,6 @@
 
   function existingNameFor(id: string): string {
     return existingCategories.find((c) => c.id === id)?.name ?? '';
-  }
-
-  // If a category with `slug` already exists, append `-2` (then `-3`, …) until
-  // we find a free slot. The display name gets the same numeric suffix so the
-  // two values stay in sync. Without this the create-new defaults clash with
-  // the existing category and the commit fails — the user then has to back
-  // out and edit the form manually.
-  function suggestUnique(
-    slug: string,
-    name: string,
-    taken: Set<string>,
-  ): { slug: string; name: string } {
-    if (!taken.has(slug)) return { slug, name };
-    let n = 2;
-    while (taken.has(`${slug}-${n}`)) n++;
-    return { slug: `${slug}-${n}`, name: `${name} ${n}` };
   }
 </script>
 

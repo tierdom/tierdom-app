@@ -169,6 +169,7 @@ export const goodreadsImporter: Importer = {
 export async function planGoodreadsImport(
   file: File,
   options: ImporterOptions,
+  conn: DB = defaultDb,
 ): Promise<ImportPlan> {
   sweepImportTemp();
   if (file.size > MAX_IMPORT_BYTES) {
@@ -273,6 +274,12 @@ export async function planGoodreadsImport(
   };
   const planId = writeImportTemp(JSON.stringify(stash));
 
+  const match = conn
+    .select({ id: categoryTable.id, name: categoryTable.name })
+    .from(categoryTable)
+    .where(and(eq(categoryTable.slug, SYNTHETIC_SLUG), isNull(categoryTable.deletedAt)))
+    .get();
+
   return {
     planId,
     categories: [
@@ -280,8 +287,8 @@ export async function planGoodreadsImport(
         fileSlug: SYNTHETIC_SLUG,
         fileName: SYNTHETIC_NAME,
         itemCount: items.length,
-        matchedExistingId: null,
-        matchedExistingName: null,
+        matchedExistingId: match?.id ?? null,
+        matchedExistingName: match?.name ?? null,
       },
     ],
     errors: [],

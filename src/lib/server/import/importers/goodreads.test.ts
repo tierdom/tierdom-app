@@ -11,7 +11,15 @@ const { TMP_ROOT } = vi.hoisted(() => ({
 }));
 
 vi.mock('$env/dynamic/private', () => ({ env: { DATA_PATH: TMP_ROOT } }));
-vi.mock('$lib/server/db', () => ({ db: {} }));
+// Stub the default db with a chain that resolves to undefined — the planner's
+// matchedExisting lookup runs on every plan call, but most tests pass a real
+// makeDb() into plan/commit and don't exercise the default. Tests that DO want
+// to verify the lookup pass an in-memory DB explicitly.
+vi.mock('$lib/server/db', () => ({
+  db: {
+    select: () => ({ from: () => ({ where: () => ({ get: () => undefined }) }) }),
+  },
+}));
 
 import * as schema from '$lib/server/db/schema';
 import { categoryTable, tierListItemTable } from '$lib/server/db/schema';
@@ -267,6 +275,33 @@ describe('goodreads importer', () => {
       const plan = await planGoodreadsImport(huge, DEFAULTS);
       expect(plan.planId).toBe('');
       expect(plan.errors[0]).toMatch(/maximum is/);
+    });
+  });
+
+  describe('plan: matchedExisting', () => {
+    it('sets matchedExistingId/Name when a category with the synthetic slug already exists', async () => {
+      const db = makeDb();
+      const realDb = db as unknown as ReturnType<typeof makeDb>;
+      realDb
+        .insert(categoryTable)
+        .values({
+          id: '00000000-0000-4000-8000-0000000000bb',
+          slug: 'books',
+          name: 'My Books',
+          description: null,
+          order: 0,
+        })
+        .run();
+      const plan = await planGoodreadsImport(fileFromFixture('goodreads-sample.csv'), DEFAULTS, db);
+      expect(plan.categories[0]!.matchedExistingId).toBe('00000000-0000-4000-8000-0000000000bb');
+      expect(plan.categories[0]!.matchedExistingName).toBe('My Books');
+    });
+
+    it('returns matchedExisting nulls when the slug is free', async () => {
+      const db = makeDb();
+      const plan = await planGoodreadsImport(fileFromFixture('goodreads-sample.csv'), DEFAULTS, db);
+      expect(plan.categories[0]!.matchedExistingId).toBeNull();
+      expect(plan.categories[0]!.matchedExistingName).toBeNull();
     });
   });
 

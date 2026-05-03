@@ -13,7 +13,6 @@ This file serves as a light-weight backlog of open features.
 - Well-known prop "ISBN" support for Books-like categories
 - Well-known prop "Author" support for Books-like categories
 - Well-known prop "Year" support for Books-like categories
-- Import from Goodreads
 - Import from StoryGraph
 - Import from TMDB
 - Import from BoardGameGeek
