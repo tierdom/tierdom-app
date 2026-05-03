@@ -1,6 +1,6 @@
 <script lang="ts">
   import { resolve } from '$app/paths';
-  import { Download, FileJson, BookOpen, Dice5, Film, Sparkles } from 'lucide-svelte';
+  import { Download, FileJson, BookOpen, Dice5, Film, Gauge, Sparkles } from 'lucide-svelte';
   import type { PageData } from './$types';
   import type { ImporterSummary } from '$lib/server/import/types';
 
@@ -8,9 +8,13 @@
 
   const icons: Record<string, typeof FileJson> = {
     json: FileJson,
-    goodreads: BookOpen,
-    bgg: Dice5,
     imdb: Film,
+    tmdb: Film,
+    'rotten-tomatoes': Film,
+    goodreads: BookOpen,
+    storygraph: BookOpen,
+    bgg: Dice5,
+    metacritic: Gauge,
   };
 
   function iconFor(importer: ImporterSummary) {

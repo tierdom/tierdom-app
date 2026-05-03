@@ -13,9 +13,11 @@ This file serves as a light-weight backlog of open features.
 - Well-known prop "ISBN" support for Books-like categories
 - Well-known prop "Author" support for Books-like categories
 - Well-known prop "Year" support for Books-like categories
-- Import from StoryGraph
 - Import from TMDB
+- Import from Rotten Tomatoes
+- Import from Metacritic
 - Import from Untappd
+- Improve importers with better review and comment support, including sanitizing HTML found in some CSV exports (e.g. StoryGraph)
 - Build external API for automated operations
 - Create an MCP server to access a Tierdom instance with AI tooling
 - Add CI/CD
