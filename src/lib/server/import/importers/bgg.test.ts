@@ -318,13 +318,13 @@ describe('bgg importer', () => {
       expect(cat!.cutoffS).toBe(91);
       expect(cat!.cutoffA).toBe(81);
       expect(cat!.cutoffB).toBe(71);
-      expect(cat!.cutoffC).toBe(61);
-      expect(cat!.cutoffD).toBe(51);
-      expect(cat!.cutoffE).toBe(41);
+      expect(cat!.cutoffC).toBe(60);
+      expect(cat!.cutoffD).toBe(50);
+      expect(cat!.cutoffE).toBe(40);
       expect(cat!.cutoffF).toBe(0);
     });
 
-    it('seeds Year and Players prop keys with showOnCard', async () => {
+    it('seeds Year prop key with showOnCard, Players without', async () => {
       const db = makeDb() as unknown as Parameters<typeof commitBggImport>[3];
       const plan = await planBggImport(fileFromFixture('bgg-sample.csv'), DEFAULTS);
       await commitBggImport(plan.planId, [MAPPING], 'skip', db);
@@ -336,10 +336,7 @@ describe('bgg importer', () => {
         .get();
       const keys = cat!.propKeys ?? [];
       expect(keys.find((k) => k.key === 'Year')).toEqual({ key: 'Year', showOnCard: true });
-      expect(keys.find((k) => k.key === 'Players')).toEqual({
-        key: 'Players',
-        showOnCard: true,
-      });
+      expect(keys.find((k) => k.key === 'Players')).toEqual({ key: 'Players' });
     });
 
     it('builds description: comment + blank line + BGG link', async () => {
@@ -402,9 +399,9 @@ describe('bgg importer', () => {
           cutoffS: 91,
           cutoffA: 81,
           cutoffB: 71,
-          cutoffC: 61,
-          cutoffD: 51,
-          cutoffE: 41,
+          cutoffC: 60,
+          cutoffD: 50,
+          cutoffE: 40,
           cutoffF: 0,
           propKeys: [
             { key: 'Year', showOnCard: true },
@@ -475,7 +472,7 @@ describe('bgg importer', () => {
         .get();
       expect(cat!.cutoffS).toBe(95);
       expect(cat!.cutoffA).toBe(81);
-      expect(cat!.cutoffD).toBe(51);
+      expect(cat!.cutoffD).toBe(50);
       const keys = cat!.propKeys ?? [];
       expect(keys.map((k) => k.key)).toEqual(['Players', 'Genre', 'Year']);
     });

@@ -46,8 +46,8 @@ const REQUIRED_HEADERS = [
 ] as const;
 
 // BGG ratings are 1–10 (decimals allowed, but typical exports are integers).
-// Treat them like IMDb: rating × 10. Cutoffs mirror IMDb so adjacent integer
-// ratings land in neighbouring tiers.
+// Score = rating × 10. Cutoffs put 10→S, 9→A, 8→B, 7+6→C (a wider middle
+// band), 5→D, 4→E, 0–3→F.
 const BGG_TIER_CUTOFFS: {
   cutoffS: number;
   cutoffA: number;
@@ -60,9 +60,9 @@ const BGG_TIER_CUTOFFS: {
   cutoffS: 91,
   cutoffA: 81,
   cutoffB: 71,
-  cutoffC: 61,
-  cutoffD: 51,
-  cutoffE: 41,
+  cutoffC: 60,
+  cutoffD: 50,
+  cutoffE: 40,
   cutoffF: 0,
 };
 
@@ -237,7 +237,7 @@ export async function planBggImport(
 
   const propKeys: PropKeyConfig[] = [];
   if (importYear) propKeys.push({ key: 'Year', showOnCard: true });
-  if (importPlayers) propKeys.push({ key: 'Players', showOnCard: true });
+  if (importPlayers) propKeys.push({ key: 'Players' });
 
   const stash: BggStashedPlan = {
     fileSlug: SYNTHETIC_SLUG,
