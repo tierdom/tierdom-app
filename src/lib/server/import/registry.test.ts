@@ -6,11 +6,11 @@ describe('import registry', () => {
     expect(importers.map((i) => i.id)).toEqual(['json', 'goodreads', 'bgg', 'imdb']);
   });
 
-  it('marks the JSON and IMDb importers as available and the rest as stubs', () => {
-    for (const id of ['json', 'imdb']) {
+  it('marks the available importers and the remaining stubs', () => {
+    for (const id of ['json', 'imdb', 'goodreads']) {
       expect(getImporter(id)?.status).toBe('available');
     }
-    for (const id of ['goodreads', 'bgg']) {
+    for (const id of ['bgg']) {
       expect(getImporter(id)?.status).toBe('stub');
     }
   });
