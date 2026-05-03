@@ -214,8 +214,7 @@ export async function planStorygraphImport(
   const propKeys: PropKeyConfig[] = [];
   if (importAuthor) propKeys.push({ key: 'Author', showOnCard: true });
   if (importFormat) propKeys.push({ key: 'Format' });
-  const isbnKeyName = isbnPropKeyName(isbnKey);
-  if (isbnKeyName) propKeys.push({ key: isbnKeyName });
+  for (const key of isbnPropKeyNames(isbnKey)) propKeys.push({ key });
 
   const stash: StashedPlan = {
     fileSlug: SYNTHETIC_SLUG,
@@ -280,21 +279,21 @@ export function primaryAuthor(raw: string): string {
   return first;
 }
 
-// Returns the prop key name the importer will emit (or null) for `propKeys`
-// declarations on the category. Keep in sync with `isbnPropFor`.
-export function isbnPropKeyName(mode: string): string | null {
-  if (mode === 'skip') return null;
-  if (mode === 'uid') return 'UID';
-  // 'isbn' — we won't know per-row whether ISBN13 or ISBN10 ahead of time, but
-  // surfacing both potential columns is fine; rows just won't populate the one
-  // they don't match.
-  return null;
+// Returns the prop keys the importer may emit for the category-level
+// `propKeys` declaration. In 'isbn' mode we declare both ISBN13 and ISBN
+// because we don't know per-row which shape the value will take. Keep in sync
+// with `isbnPropFor`.
+export function isbnPropKeyNames(mode: string): string[] {
+  if (mode === 'skip') return [];
+  if (mode === 'uid') return ['UID'];
+  return ['ISBN13', 'ISBN'];
 }
 
+// ASIN-shaped values (e.g. `B00IHGVQ9I`) are only surfaced under 'uid' mode —
+// 'isbn' mode requires a 10- or 13-digit value, so non-ISBN UIDs are dropped.
 function isbnPropFor(value: string, mode: string): { key: string; value: string } | null {
   if (mode === 'skip' || !value) return null;
   if (mode === 'uid') return { key: 'UID', value };
-  // 'isbn' mode — only emit when value looks like an ISBN.
   const digits = value.replace(/-/g, '');
   if (/^\d{13}$/.test(digits)) return { key: 'ISBN13', value: digits };
   if (/^\d{10}$/.test(digits)) return { key: 'ISBN', value: digits };

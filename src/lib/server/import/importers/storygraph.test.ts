@@ -165,6 +165,17 @@ describe('storygraph importer', () => {
       expect(plan.categories[0]!.matchedExistingId).toBe('00000000-0000-4000-8000-0000000000bb');
       expect(plan.categories[0]!.matchedExistingName).toBe('My Books');
     });
+
+    it('returns matchedExisting nulls when the slug is free', async () => {
+      const db = makeDb();
+      const plan = await planStorygraphImport(
+        fileFromFixture('storygraph-sample.csv'),
+        DEFAULTS,
+        db,
+      );
+      expect(plan.categories[0]!.matchedExistingId).toBeNull();
+      expect(plan.categories[0]!.matchedExistingName).toBeNull();
+    });
   });
 
   describe('plan: filtering', () => {
@@ -402,6 +413,34 @@ describe('storygraph importer', () => {
         .get();
       expect((ten!.props ?? []).find((p) => p.key === 'ISBN')?.value).toBe('0061241895');
       expect((thirteen!.props ?? []).find((p) => p.key === 'ISBN13')?.value).toBe('9780061241895');
+      // Both prop keys are declared on the category up-front so the prop-config
+      // UI surfaces them even though each row only carries one shape.
+      const cat = realDb.select().from(categoryTable).where(eq(categoryTable.slug, 'books')).get();
+      const keys = (cat!.propKeys ?? []).map((k) => k.key);
+      expect(keys).toContain('ISBN13');
+      expect(keys).toContain('ISBN');
+    });
+
+    it('isbnKey=skip emits no ISBN/UID props on items or on the category', async () => {
+      const db = makeDb() as unknown as Parameters<typeof commitStorygraphImport>[3];
+      const plan = await planStorygraphImport(fileFromFixture('storygraph-sample.csv'), {
+        ...DEFAULTS,
+        isbnKey: 'skip',
+      });
+      await commitStorygraphImport(plan.planId, [BOOKS_MAPPING], 'skip', db);
+      const realDb = db as unknown as ReturnType<typeof makeDb>;
+      const items = realDb.select().from(tierListItemTable).all();
+      for (const item of items) {
+        const propKeys = (item.props ?? []).map((p) => p.key);
+        expect(propKeys).not.toContain('ISBN13');
+        expect(propKeys).not.toContain('ISBN');
+        expect(propKeys).not.toContain('UID');
+      }
+      const cat = realDb.select().from(categoryTable).where(eq(categoryTable.slug, 'books')).get();
+      const catKeys = (cat!.propKeys ?? []).map((k) => k.key);
+      expect(catKeys).not.toContain('ISBN13');
+      expect(catKeys).not.toContain('ISBN');
+      expect(catKeys).not.toContain('UID');
     });
 
     it('importFormat adds the Format prop and seeds the prop key', async () => {
@@ -607,7 +646,9 @@ describe('storygraph importer', () => {
       expect(cat!.cutoffS).toBe(95); // user-set, preserved
       expect(cat!.cutoffA).toBe(70); // filled from defaults
       const keys = cat!.propKeys ?? [];
-      expect(keys.map((k) => k.key)).toEqual(['Author', 'Genre']);
+      // Pre-existing 'Author' and 'Genre' preserved; importer adds the two
+      // ISBN keys (default isbnKey='isbn' declares both shapes).
+      expect(keys.map((k) => k.key)).toEqual(['Author', 'Genre', 'ISBN13', 'ISBN']);
     });
   });
 });
