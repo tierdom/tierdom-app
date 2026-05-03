@@ -51,7 +51,7 @@
   {/if}
 
   <div
-    class="title-clip absolute inset-x-0 top-0 max-h-[70%] overflow-hidden bg-linear-to-b from-black/50 to-transparent p-2"
+    class="title-clip absolute inset-x-0 top-0 max-h-[60%] overflow-hidden bg-linear-to-b from-black/50 to-transparent p-2"
   >
     <span
       class="block origin-top-left pr-4 text-xs leading-tight font-extrabold text-white drop-shadow-md transition-transform duration-200 group-hover:scale-115 sm:text-sm"
@@ -60,15 +60,17 @@
     </span>
   </div>
 
-  <span
-    class="absolute bottom-3 left-1.5 block origin-bottom-left text-xs leading-none font-bold text-white opacity-60 drop-shadow-md transition-[transform,opacity] duration-200 group-hover:scale-115 group-hover:opacity-100"
+  <div
+    class="absolute right-2 bottom-3 left-2 flex max-h-9 items-end gap-4 overflow-hidden text-xs leading-none font-bold text-white opacity-60 group-hover:opacity-100"
   >
-    {score}
-  </span>
+    <span class=" drop-shadow-md transition-[transform,opacity] duration-200">
+      {score}
+    </span>
 
-  {#if cardPropsLine}
-    <span class="card-props">{cardPropsLine}</span>
-  {/if}
+    {#if cardPropsLine}
+      <span class="card-props grow text-right">{cardPropsLine}</span>
+    {/if}
+  </div>
 
   <div
     class="absolute inset-x-0 bottom-0 h-1 bg-black/30 transition-[height] duration-200 group-hover:h-2"
@@ -86,31 +88,9 @@
   /* Native CSS: group-hover transform + multi-stop text-shadow would be a
      wall of arbitrary-value utilities; scoped CSS reads clearer. */
   .card-props {
-    position: absolute;
-    right: 0.375rem;
-    bottom: 0.75rem;
-    max-width: 65%;
-    max-height: 50%;
-    overflow: hidden;
-    text-align: right;
-    overflow-wrap: anywhere;
-    pointer-events: none;
-    color: white;
     text-shadow:
       0 1px 2px rgba(0, 0, 0, 0.7),
       0 0 4px rgba(0, 0, 0, 0.4);
-    font-size: 0.75rem;
-    font-weight: 600;
-    line-height: 1.15;
-    opacity: 0.6;
     transform-origin: bottom right;
-    transition:
-      opacity 200ms,
-      transform 200ms;
-  }
-
-  .group:hover .card-props {
-    opacity: 1;
-    transform: scale(1.15);
   }
 </style>
