@@ -19,6 +19,7 @@ test('Goodreads upload routes through a configure step before review', async ({ 
   const main = page.getByRole('main');
   await expect(main.getByRole('heading', { name: 'Configure Goodreads import' })).toBeVisible();
   for (const legend of [
+    'Title conciseness',
     'ISBN field to import',
     'Author',
     'Binding',

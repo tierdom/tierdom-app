@@ -40,10 +40,8 @@ const REQUIRED_HEADERS = [
   'Date Added',
 ] as const;
 
-// 0–5 star ratings map onto 0/20/40/60/80/100. Cutoffs map each integer rating
-// to a tier with D left deliberately empty (5★→S, 4★→A, 3★→B, 2★→C, 1★→E,
-// 0★→F) — leaving the gap at D matches how readers tend to think about a
-// 5-star scale (a 1★ book is bad, not just below average).
+// Goodreads ratings 1–5 map linearly to scores in 0-100 range for Tierdom
+// in a way that makes the best of the mismatch.
 const GOODREADS_TIER_CUTOFFS: {
   cutoffS: number;
   cutoffA: number;
@@ -53,18 +51,31 @@ const GOODREADS_TIER_CUTOFFS: {
   cutoffE: number;
   cutoffF: number;
 } = {
-  cutoffS: 91,
-  cutoffA: 71,
-  cutoffB: 51,
-  cutoffC: 31,
-  cutoffD: 21,
-  cutoffE: 11,
+  cutoffS: 90,
+  cutoffA: 70,
+  cutoffB: 50,
+  cutoffC: 30,
+  cutoffD: 20,
+  cutoffE: 10,
   cutoffF: 0,
 };
 
 type GoodreadsCsvRow = Record<string, string>;
 
 const GOODREADS_OPTIONS: ImporterOption[] = [
+  {
+    id: 'titleClean',
+    type: 'radio',
+    label: 'Title conciseness',
+    default: 'moderate',
+    choices: [
+      { value: 'verbatim', label: 'Import verbatim' },
+      { value: 'moderate', label: 'Moderate (lossy) title clean-up' },
+      { value: 'full', label: 'Full (lossy) title clean-up' },
+    ],
+    footnote:
+      'Goodreads stuffs subtitle, edition, and series into the title field. "Moderate" trims the subtitle (text after the last ": "). "Full" splits on the first ": " instead and also strips trailing parentheticals like " (Agile Software Development Series)". Both modes drop information from the original title — recommended for tier-list display, but flip to "verbatim" if you need the full text.',
+  },
   {
     id: 'isbnMode',
     type: 'radio',
@@ -191,6 +202,7 @@ export async function planGoodreadsImport(
   const isbnMode = String(options.isbnMode ?? 'isbn13');
   const pubYear = String(options.pubYear ?? 'original');
   const unratedRows = String(options.unratedRows ?? 'skip');
+  const titleClean = String(options.titleClean ?? 'moderate');
   const importAuthor = options.importAuthor !== false;
   const importBinding = options.importBinding === true;
   const placeholders = options.placeholders !== false;
@@ -208,7 +220,7 @@ export async function planGoodreadsImport(
   // dropping them would just count as extra unreachable branches.
   const usedSlugs = new Set<string>();
   const items: IncomingItem[] = sorted.map((row, index) => {
-    const title = row['Title']!;
+    const title = cleanTitle(row['Title']!, titleClean);
     const bookId = row['Book Id']!;
     let slug = slugify(title) || `goodreads-${bookId}`;
     if (usedSlugs.has(slug)) {
@@ -216,7 +228,7 @@ export async function planGoodreadsImport(
     }
     usedSlugs.add(slug);
 
-    const score = isRated(row) ? Number(row['My Rating']) * 20 : 0;
+    const score = isRated(row) ? (Number(row['My Rating']) - 1) * 25 : 0;
     const props = [];
     if (importAuthor && row['Author']) {
       props.push({ key: 'Author', value: row['Author']! });
@@ -248,7 +260,7 @@ export async function planGoodreadsImport(
 
   const propKeys: PropKeyConfig[] = [];
   if (importAuthor) propKeys.push({ key: 'Author', showOnCard: true });
-  if (pubYear !== 'none') propKeys.push({ key: 'Year', showOnCard: true });
+  if (pubYear !== 'none') propKeys.push({ key: 'Year' });
   if (importBinding) propKeys.push({ key: 'Binding' });
   if (isbnMode === 'isbn13' || isbnMode === 'both') propKeys.push({ key: 'ISBN13' });
   if (isbnMode === 'isbn10' || isbnMode === 'both') propKeys.push({ key: 'ISBN' });
@@ -408,6 +420,25 @@ function ensureTierCutoffs(tx: Tx, categoryId: string): void {
 export function unwrapIsbn(raw: string): string {
   const m = /^="(.*)"$/.exec(raw.trim());
   return m ? m[1]! : raw.trim();
+}
+
+// Goodreads stuffs subtitle, edition, series, and bibliographic noise into the
+// Title column. The two lossy modes shrink the title for tier-list display.
+// Falls back to the raw (trimmed) title if the cleanup produces an empty
+// string — guards against pathological inputs like "  : something".
+export function cleanTitle(raw: string, mode: string): string {
+  if (mode === 'verbatim') return raw.trim();
+  let work = raw;
+  if (mode === 'moderate') {
+    const idx = work.lastIndexOf(': ');
+    if (idx > 0) work = work.slice(0, idx);
+  } else if (mode === 'full') {
+    const idx = work.indexOf(': ');
+    if (idx > 0) work = work.slice(0, idx);
+    work = work.replace(/\s*\([^)]*\)\s*$/, '');
+  }
+  const cleaned = work.trim();
+  return cleaned || raw.trim();
 }
 
 function pubYearForRow(row: GoodreadsCsvRow, mode: string): string {

@@ -4,11 +4,11 @@ const TIERS: Tier[] = ['S', 'A', 'B', 'C', 'D', 'E', 'F'];
 
 const DEFAULT_CUTOFFS: Record<Tier, number> = {
   S: 90,
-  A: 80,
-  B: 70,
-  C: 55,
-  D: 40,
-  E: 20,
+  A: 70,
+  B: 55,
+  C: 40,
+  D: 20,
+  E: 10,
   F: 0,
 };
 

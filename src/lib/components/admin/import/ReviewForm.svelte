@@ -36,22 +36,42 @@
 
   // Hydrate the edit state whenever a fresh plan arrives.
   $effect(() => {
-    edits = plan.categories.map((c: ProposedCategory) => ({
-      fileSlug: c.fileSlug,
-      fileName: c.fileName,
-      itemCount: c.itemCount,
-      matchedExistingId: c.matchedExistingId,
-      matchedExistingName: c.matchedExistingName,
-      action: c.matchedExistingId ? 'use-existing' : 'create-new',
-      existingId: c.matchedExistingId ?? existingCategories[0]?.id ?? '',
-      newSlug: c.fileSlug,
-      newName: c.fileName,
-    }));
+    const takenSlugs = new Set(existingCategories.map((c) => c.slug));
+    edits = plan.categories.map((c: ProposedCategory) => {
+      const suggested = suggestUnique(c.fileSlug, c.fileName, takenSlugs);
+      return {
+        fileSlug: c.fileSlug,
+        fileName: c.fileName,
+        itemCount: c.itemCount,
+        matchedExistingId: c.matchedExistingId,
+        matchedExistingName: c.matchedExistingName,
+        action: c.matchedExistingId ? 'use-existing' : 'create-new',
+        existingId: c.matchedExistingId ?? existingCategories[0]?.id ?? '',
+        newSlug: suggested.slug,
+        newName: suggested.name,
+      };
+    });
     strategy = 'skip';
   });
 
   function existingNameFor(id: string): string {
     return existingCategories.find((c) => c.id === id)?.name ?? '';
+  }
+
+  // If a category with `slug` already exists, append `-2` (then `-3`, …) until
+  // we find a free slot. The display name gets the same numeric suffix so the
+  // two values stay in sync. Without this the create-new defaults clash with
+  // the existing category and the commit fails — the user then has to back
+  // out and edit the form manually.
+  function suggestUnique(
+    slug: string,
+    name: string,
+    taken: Set<string>,
+  ): { slug: string; name: string } {
+    if (!taken.has(slug)) return { slug, name };
+    let n = 2;
+    while (taken.has(`${slug}-${n}`)) n++;
+    return { slug: `${slug}-${n}`, name: `${name} ${n}` };
   }
 </script>
 

@@ -16,6 +16,7 @@ vi.mock('$lib/server/db', () => ({ db: {} }));
 import * as schema from '$lib/server/db/schema';
 import { categoryTable, tierListItemTable } from '$lib/server/db/schema';
 import {
+  cleanTitle,
   commitGoodreadsImport,
   goodreadsImporter,
   planGoodreadsImport,
@@ -40,6 +41,7 @@ function fileFromFixture(name: string): File {
 }
 
 const DEFAULTS: ImporterOptions = {
+  titleClean: 'moderate',
   isbnMode: 'isbn13',
   importAuthor: true,
   importBinding: false,
@@ -68,6 +70,7 @@ describe('goodreads importer', () => {
     it('exposes the configure options the route handler renders', () => {
       expect(goodreadsImporter.status).toBe('available');
       expect(goodreadsImporter.options?.map((o) => o.id)).toEqual([
+        'titleClean',
         'isbnMode',
         'importAuthor',
         'importBinding',
@@ -161,6 +164,82 @@ describe('goodreads importer', () => {
     });
   });
 
+  describe('cleanTitle', () => {
+    it('verbatim returns the trimmed input unchanged', () => {
+      expect(cleanTitle('Influence: The Psychology of Persuasion', 'verbatim')).toBe(
+        'Influence: The Psychology of Persuasion',
+      );
+      expect(cleanTitle('  spaces  ', 'verbatim')).toBe('spaces');
+    });
+
+    it('moderate splits on the LAST ": "', () => {
+      expect(cleanTitle('This is Lean: Resolving the Efficiency Paradox', 'moderate')).toBe(
+        'This is Lean',
+      );
+      // Multiple ": " — moderate keeps everything up to the final one.
+      expect(cleanTitle('A: B: C', 'moderate')).toBe('A: B');
+      // No ": " — unchanged.
+      expect(cleanTitle('Death March', 'moderate')).toBe('Death March');
+    });
+
+    it('full splits on the FIRST ": " and strips trailing parentheticals', () => {
+      // Same single-colon case as moderate.
+      expect(cleanTitle('This is Lean: Resolving the Efficiency Paradox', 'full')).toBe(
+        'This is Lean',
+      );
+      // Multiple ": " — full keeps only the head.
+      expect(cleanTitle('A: B: C', 'full')).toBe('A');
+      // Trailing parens stripped.
+      expect(
+        cleanTitle('Writing Effective Use Cases (Agile Software Development Series)', 'full'),
+      ).toBe('Writing Effective Use Cases');
+      // Colon-split happens first, then parens — order matters when both apply.
+      expect(cleanTitle('Foo: Bar (Baz)', 'full')).toBe('Foo');
+    });
+
+    it('falls back to the raw title when cleanup leaves an empty string', () => {
+      // Pathological: ": something" — moderate slices to '' (whitespace only).
+      expect(cleanTitle('  : something', 'moderate')).toBe(': something');
+      // Same in full mode.
+      expect(cleanTitle('  : something', 'full')).toBe(': something');
+    });
+  });
+
+  describe('plan: titleClean wiring', () => {
+    it('verbatim leaves bibliographic noise intact', async () => {
+      const plan = await planGoodreadsImport(fileFromFixture('goodreads-sample.csv'), {
+        ...DEFAULTS,
+        titleClean: 'verbatim',
+      });
+      const db = makeDb() as unknown as Parameters<typeof commitGoodreadsImport>[3];
+      await commitGoodreadsImport(plan.planId, [BOOKS_MAPPING], 'skip', db);
+      const realDb = db as unknown as ReturnType<typeof makeDb>;
+      const item = realDb
+        .select()
+        .from(tierListItemTable)
+        .where(eq(tierListItemTable.slug, 'influence-the-psychology-of-persuasion'))
+        .get();
+      expect(item!.name).toBe('Influence: The Psychology of Persuasion');
+    });
+
+    it('full mode strips the trailing series tag from the slug and name', async () => {
+      const plan = await planGoodreadsImport(fileFromFixture('goodreads-sample.csv'), {
+        ...DEFAULTS,
+        titleClean: 'full',
+      });
+      const db = makeDb() as unknown as Parameters<typeof commitGoodreadsImport>[3];
+      await commitGoodreadsImport(plan.planId, [BOOKS_MAPPING], 'skip', db);
+      const realDb = db as unknown as ReturnType<typeof makeDb>;
+      const item = realDb
+        .select()
+        .from(tierListItemTable)
+        .where(eq(tierListItemTable.slug, 'writing-effective-use-cases'))
+        .get();
+      expect(item).toBeDefined();
+      expect(item!.name).toBe('Writing Effective Use Cases');
+    });
+  });
+
   describe('unwrapIsbn', () => {
     it('strips the Excel-armoured ="..." wrapper', () => {
       expect(unwrapIsbn('="9780374275631"')).toBe('9780374275631');
@@ -226,7 +305,7 @@ describe('goodreads importer', () => {
       expect(result.inserted.items).toBe(19);
     });
 
-    it('multiplies My Rating by 20 to produce the 0-100 score', async () => {
+    it('maps My Rating 1-5 linearly onto scores 0/25/50/75/100', async () => {
       const db = makeDb() as unknown as Parameters<typeof commitGoodreadsImport>[3];
       const plan = await planGoodreadsImport(fileFromFixture('goodreads-sample.csv'), DEFAULTS);
       await commitGoodreadsImport(plan.planId, [BOOKS_MAPPING], 'skip', db);
@@ -234,23 +313,16 @@ describe('goodreads importer', () => {
       const influence = realDb
         .select()
         .from(tierListItemTable)
-        .where(
-          and(
-            eq(tierListItemTable.slug, 'influence-the-psychology-of-persuasion'),
-            isNull(tierListItemTable.deletedAt),
-          ),
-        )
+        .where(and(eq(tierListItemTable.slug, 'influence'), isNull(tierListItemTable.deletedAt)))
         .get();
       expect(influence).toBeDefined();
       expect(influence!.score).toBe(100); // rating 5 → 100
       const codeComplete = realDb
         .select()
         .from(tierListItemTable)
-        .where(
-          eq(tierListItemTable.slug, 'code-complete-a-practical-handbook-of-software-construction'),
-        )
+        .where(eq(tierListItemTable.slug, 'code-complete'))
         .get();
-      expect(codeComplete!.score).toBe(20); // rating 1 → 20
+      expect(codeComplete!.score).toBe(0); // rating 1 → 0 (the floor of the 1-5 scale)
     });
 
     it('writes Author and ISBN13 by default; omits ISBN10 and Binding', async () => {
@@ -318,7 +390,7 @@ describe('goodreads importer', () => {
       const master = realDb
         .select()
         .from(tierListItemTable)
-        .where(eq(tierListItemTable.slug, 'master-4d-time-management-delete-defer-delegate-do'))
+        .where(eq(tierListItemTable.slug, 'master-4d-time-management'))
         .get();
       const props = master!.props ?? [];
       expect(props.find((p) => p.key === 'ISBN13')).toBeUndefined();
@@ -333,7 +405,7 @@ describe('goodreads importer', () => {
       const mythical = realDb
         .select()
         .from(tierListItemTable)
-        .where(eq(tierListItemTable.slug, 'the-mythical-man-month-essays-on-software-engineering'))
+        .where(eq(tierListItemTable.slug, 'the-mythical-man-month'))
         .get();
       // Original=1975, Edition=1995 → original chosen
       expect((mythical!.props ?? []).find((p) => p.key === 'Year')?.value).toBe('1975');
@@ -358,7 +430,7 @@ describe('goodreads importer', () => {
       const mythicalEdition = realA
         .select()
         .from(tierListItemTable)
-        .where(eq(tierListItemTable.slug, 'the-mythical-man-month-essays-on-software-engineering'))
+        .where(eq(tierListItemTable.slug, 'the-mythical-man-month'))
         .get();
       expect((mythicalEdition!.props ?? []).find((p) => p.key === 'Year')?.value).toBe('1995');
 
@@ -372,7 +444,7 @@ describe('goodreads importer', () => {
       const mythicalNone = realB
         .select()
         .from(tierListItemTable)
-        .where(eq(tierListItemTable.slug, 'the-mythical-man-month-essays-on-software-engineering'))
+        .where(eq(tierListItemTable.slug, 'the-mythical-man-month'))
         .get();
       expect((mythicalNone!.props ?? []).find((p) => p.key === 'Year')).toBeUndefined();
       const cat = realB.select().from(categoryTable).where(eq(categoryTable.slug, 'books')).get();
@@ -403,16 +475,16 @@ describe('goodreads importer', () => {
       await commitGoodreadsImport(plan.planId, [BOOKS_MAPPING], 'skip', db);
       const realDb = db as unknown as ReturnType<typeof makeDb>;
       const cat = realDb.select().from(categoryTable).where(eq(categoryTable.slug, 'books')).get();
-      expect(cat!.cutoffS).toBe(91);
-      expect(cat!.cutoffA).toBe(71);
-      expect(cat!.cutoffB).toBe(51);
-      expect(cat!.cutoffC).toBe(31);
-      expect(cat!.cutoffD).toBe(21);
-      expect(cat!.cutoffE).toBe(11);
+      expect(cat!.cutoffS).toBe(90);
+      expect(cat!.cutoffA).toBe(70);
+      expect(cat!.cutoffB).toBe(50);
+      expect(cat!.cutoffC).toBe(30);
+      expect(cat!.cutoffD).toBe(20);
+      expect(cat!.cutoffE).toBe(10);
       expect(cat!.cutoffF).toBe(0);
     });
 
-    it('seeds Author and Year with showOnCard but ISBN13 without', async () => {
+    it('seeds Author with showOnCard but Year and ISBN13 without', async () => {
       const db = makeDb() as unknown as Parameters<typeof commitGoodreadsImport>[3];
       const plan = await planGoodreadsImport(fileFromFixture('goodreads-sample.csv'), DEFAULTS);
       await commitGoodreadsImport(plan.planId, [BOOKS_MAPPING], 'skip', db);
@@ -420,7 +492,7 @@ describe('goodreads importer', () => {
       const cat = realDb.select().from(categoryTable).where(eq(categoryTable.slug, 'books')).get();
       const keys = cat!.propKeys ?? [];
       expect(keys.find((k) => k.key === 'Author')).toEqual({ key: 'Author', showOnCard: true });
-      expect(keys.find((k) => k.key === 'Year')).toEqual({ key: 'Year', showOnCard: true });
+      expect(keys.find((k) => k.key === 'Year')).toEqual({ key: 'Year' });
       expect(keys.find((k) => k.key === 'ISBN13')).toEqual({ key: 'ISBN13' });
     });
 
@@ -460,8 +532,8 @@ describe('goodreads importer', () => {
         .where(eq(categoryTable.id, '00000000-0000-4000-8000-0000000000aa'))
         .get();
       expect(cat!.cutoffS).toBe(95);
-      expect(cat!.cutoffA).toBe(71); // filled in from defaults
-      expect(cat!.cutoffD).toBe(21);
+      expect(cat!.cutoffA).toBe(70); // filled in from defaults
+      expect(cat!.cutoffD).toBe(20);
       const keys = cat!.propKeys ?? [];
       expect(keys.map((k) => k.key)).toEqual(['Author', 'Genre', 'Year', 'ISBN13']);
     });
@@ -497,16 +569,16 @@ describe('goodreads importer', () => {
       const db = makeDb() as unknown as Parameters<typeof commitGoodreadsImport>[3];
       await commitGoodreadsImport(plan.planId, [BOOKS_MAPPING], 'skip', db);
       const realDb = db as unknown as ReturnType<typeof makeDb>;
-      // Within the 1-star band (score 20) the sample has three entries:
+      // Within the 1-star band (score 0) the sample has three entries:
       // Code Complete (2015/09/21), Writing Effective Use Cases (2015/09/21),
       // Agile Retrospectives (2015/12/15). Newest-first puts Agile first.
       const oneStar = realDb
         .select({ name: tierListItemTable.name, score: tierListItemTable.score })
         .from(tierListItemTable)
-        .where(eq(tierListItemTable.score, 20))
+        .where(eq(tierListItemTable.score, 0))
         .orderBy(tierListItemTable.order)
         .all();
-      expect(oneStar[0]!.name).toBe('Agile Retrospectives: Making Good Teams Great');
+      expect(oneStar[0]!.name).toBe('Agile Retrospectives');
     });
 
     it('dateAddedAsc orders ties by Date Added oldest first', async () => {
@@ -520,7 +592,7 @@ describe('goodreads importer', () => {
       const oneStar = realDb
         .select({ name: tierListItemTable.name })
         .from(tierListItemTable)
-        .where(eq(tierListItemTable.score, 20))
+        .where(eq(tierListItemTable.score, 0))
         .orderBy(tierListItemTable.order)
         .all();
       // Oldest-first: 2015/09/21 entries come before 2015/12/15. Among the
@@ -528,9 +600,11 @@ describe('goodreads importer', () => {
       // strings (matching the IMDb importer convention), so "161370" sorts
       // before "4845".
       expect(oneStar.map((i) => i.name)).toEqual([
+        // Title cleanup (moderate, the default) trims subtitles after the
+        // last ": " — names are already cleaned by the time they hit the DB.
         'Writing Effective Use Cases (Agile Software Development Series)',
-        'Code Complete: A Practical Handbook of Software Construction',
-        'Agile Retrospectives: Making Good Teams Great',
+        'Code Complete',
+        'Agile Retrospectives',
       ]);
     });
   });
