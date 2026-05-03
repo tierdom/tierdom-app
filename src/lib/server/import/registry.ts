@@ -4,13 +4,17 @@ import { goodreadsImporter } from './importers/goodreads';
 import { bggImporter } from './importers/bgg';
 import { imdbImporter } from './importers/imdb';
 import { storygraphImporter } from './importers/storygraph';
+import { metacriticImporter, tmdbImporter, rottenTomatoesImporter } from './importers/_stubs';
 
 export const importers: Importer[] = [
   tierdomJsonImporter,
-  goodreadsImporter,
-  bggImporter,
   imdbImporter,
+  tmdbImporter,
+  rottenTomatoesImporter,
+  goodreadsImporter,
   storygraphImporter,
+  bggImporter,
+  metacriticImporter,
 ];
 
 export function getImporter(id: string): Importer | undefined {

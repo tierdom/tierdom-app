@@ -14,6 +14,8 @@ This file serves as a light-weight backlog of open features.
 - Well-known prop "Author" support for Books-like categories
 - Well-known prop "Year" support for Books-like categories
 - Import from TMDB
+- Import from Rotten Tomatoes
+- Import from Metacritic
 - Import from Untappd
 - Build external API for automated operations
 - Create an MCP server to access a Tierdom instance with AI tooling
