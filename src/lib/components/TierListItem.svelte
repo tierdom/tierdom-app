@@ -50,7 +50,9 @@
     <div class="absolute inset-0" style:background={scrim}></div>
   {/if}
 
-  <div class="absolute inset-x-0 top-0 bg-linear-to-b from-black/50 to-transparent p-2">
+  <div
+    class="title-clip absolute inset-x-0 top-0 max-h-[70%] overflow-hidden bg-linear-to-b from-black/50 to-transparent p-2"
+  >
     <span
       class="block origin-top-left pr-4 text-xs leading-tight font-extrabold text-white drop-shadow-md transition-transform duration-200 group-hover:scale-115 sm:text-sm"
     >
@@ -76,6 +78,11 @@
 </div>
 
 <style>
+  /* mask-image with calc() can't be expressed cleanly as a Tailwind utility. */
+  .title-clip {
+    mask-image: linear-gradient(to bottom, black calc(100% - 10px), transparent 100%);
+  }
+
   /* Native CSS: group-hover transform + multi-stop text-shadow would be a
      wall of arbitrary-value utilities; scoped CSS reads clearer. */
   .card-props {
