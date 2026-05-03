@@ -160,7 +160,11 @@ export const imdbImporter: Importer = {
   commit: (planId, mappings, strategy) => commitImdbImport(planId, mappings, strategy),
 };
 
-export async function planImdbImport(file: File, options: ImporterOptions): Promise<ImportPlan> {
+export async function planImdbImport(
+  file: File,
+  options: ImporterOptions,
+  conn: DB = defaultDb,
+): Promise<ImportPlan> {
   sweepImportTemp();
   if (file.size > MAX_IMPORT_BYTES) {
     return emptyPlan('', [`File is ${file.size} bytes; maximum is ${MAX_IMPORT_BYTES}.`]);
@@ -247,6 +251,12 @@ export async function planImdbImport(file: File, options: ImporterOptions): Prom
   const stash: ImdbStashedPlan = { fileSlug, fileName, items, propKeys };
   const planId = writeImportTemp(JSON.stringify(stash));
 
+  const match = conn
+    .select({ id: categoryTable.id, name: categoryTable.name })
+    .from(categoryTable)
+    .where(and(eq(categoryTable.slug, fileSlug), isNull(categoryTable.deletedAt)))
+    .get();
+
   return {
     planId,
     categories: [
@@ -254,8 +264,8 @@ export async function planImdbImport(file: File, options: ImporterOptions): Prom
         fileSlug,
         fileName,
         itemCount: items.length,
-        matchedExistingId: null,
-        matchedExistingName: null,
+        matchedExistingId: match?.id ?? null,
+        matchedExistingName: match?.name ?? null,
       },
     ],
     errors: [],

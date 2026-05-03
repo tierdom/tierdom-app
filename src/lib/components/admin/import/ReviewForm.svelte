@@ -5,6 +5,7 @@
   import Button from '$lib/components/admin/Button.svelte';
   import type { ImportPlan, ProposedCategory } from '$lib/server/import/types';
   import type { ImportPhase } from './phase';
+  import { suggestUnique } from './suggest-unique';
 
   type ExistingCategory = { id: string; slug: string; name: string };
 
@@ -36,17 +37,21 @@
 
   // Hydrate the edit state whenever a fresh plan arrives.
   $effect(() => {
-    edits = plan.categories.map((c: ProposedCategory) => ({
-      fileSlug: c.fileSlug,
-      fileName: c.fileName,
-      itemCount: c.itemCount,
-      matchedExistingId: c.matchedExistingId,
-      matchedExistingName: c.matchedExistingName,
-      action: c.matchedExistingId ? 'use-existing' : 'create-new',
-      existingId: c.matchedExistingId ?? existingCategories[0]?.id ?? '',
-      newSlug: c.fileSlug,
-      newName: c.fileName,
-    }));
+    const takenSlugs = new Set(existingCategories.map((c) => c.slug));
+    edits = plan.categories.map((c: ProposedCategory) => {
+      const suggested = suggestUnique(c.fileSlug, c.fileName, takenSlugs);
+      return {
+        fileSlug: c.fileSlug,
+        fileName: c.fileName,
+        itemCount: c.itemCount,
+        matchedExistingId: c.matchedExistingId,
+        matchedExistingName: c.matchedExistingName,
+        action: c.matchedExistingId ? 'use-existing' : 'create-new',
+        existingId: c.matchedExistingId ?? existingCategories[0]?.id ?? '',
+        newSlug: suggested.slug,
+        newName: suggested.name,
+      };
+    });
     strategy = 'skip';
   });
 

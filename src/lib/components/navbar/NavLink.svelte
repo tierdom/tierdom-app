@@ -1,6 +1,7 @@
 <script lang="ts">
   import { page } from '$app/state';
   import { resolve } from '$app/paths';
+  import { isActiveNavLink } from './nav-active';
 
   type Props = {
     href: string;
@@ -11,9 +12,7 @@
 
   let { href, label, onclick, variant = 'desktop' }: Props = $props();
 
-  let active = $derived(
-    href === '/' ? page.url.pathname === '/' : page.url.pathname.startsWith(href),
-  );
+  let active = $derived(isActiveNavLink(href, page.url.pathname));
 </script>
 
 {#if variant === 'mobile'}

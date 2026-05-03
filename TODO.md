@@ -5,7 +5,7 @@ This file serves as a light-weight backlog of open features.
 ## Epics and big features
 
 - Performance tests (e.g. Lighthouse?) to ensure a blazingly fast production system
-- Tweak and finalize design for a v1 release
+- Tweak and finalize design for a v1 release (to include: long texts e.g. from book titles won't fit in Tier List Items)
 - Improved URL structure with shorter URL's (for public site)
 - Option to add more static CMS pages
 - Live rendered-markdown preview alongside the CMS editor textarea
@@ -13,7 +13,6 @@ This file serves as a light-weight backlog of open features.
 - Well-known prop "ISBN" support for Books-like categories
 - Well-known prop "Author" support for Books-like categories
 - Well-known prop "Year" support for Books-like categories
-- Import from Goodreads
 - Import from StoryGraph
 - Import from TMDB
 - Import from BoardGameGeek

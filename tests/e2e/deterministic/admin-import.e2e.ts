@@ -20,7 +20,7 @@ test('import index groups importers into Tierdom and Third-Party sections', asyn
 });
 
 test('every stub page renders the coming-soon panel', async ({ page }) => {
-  for (const id of ['goodreads', 'bgg']) {
+  for (const id of ['bgg']) {
     await page.goto(`/admin/tools/import/${id}`);
     await expect(page.getByText('Coming soon')).toBeVisible();
   }
@@ -40,6 +40,6 @@ test('import index is accessible', async ({ page }) => {
 });
 
 test('import stub page is accessible', async ({ page }) => {
-  await page.goto('/admin/tools/import/goodreads');
+  await page.goto('/admin/tools/import/bgg');
   await expectNoA11yViolations(page);
 });
