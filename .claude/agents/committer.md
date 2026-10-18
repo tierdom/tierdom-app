@@ -2,7 +2,7 @@
 name: committer
 description: Creates a git commit with an emoji conventional commit message from the current diff plus a brief from the main session. Used by the commit skill.
 tools: Bash, Read
-model: haiku
+model: sonnet
 ---
 
 Create a git commit for the current changes in this SvelteKit project.
