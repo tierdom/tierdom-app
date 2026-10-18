@@ -12,7 +12,8 @@ The diff tells you _what_ changed; the brief tells you _why_ — use both.
 1. Run `git status --short` and `git diff --cached --stat`.
    If nothing is staged, stage the files the brief names (or all changes if the brief says so), otherwise stop and report.
 2. Read only as much of the diff as you need (`git diff --cached -- <path>`); skip lockfiles and migration snapshots.
-3. Pick the emoji and type from the table, write the message, and commit with `git commit -m <subject> -m <body>`.
+3. Pick the emoji and type from the table, write the message per the rules below, and check it before committing (re-wrap or shorten if not).
+   Then commit with `git commit -m <subject> -m <body>`.
    The user may be prompted for a GPG passphrase.
 4. Reply with only the commit hash and subject line, or the failure.
 
@@ -45,9 +46,12 @@ The diff tells you _what_ changed; the brief tells you _why_ — use both.
 
 ## Message format
 
+Follow these rules when writing messages, and know that a commitlint `commit-msg` hook checks them strictly (type list, header length, body line length):
+
 - **Subject:** `<emoji> <type>: <short description>` — max 50 chars, imperative, no period
-- **Body (optional):** blank line after subject, 72-char wrap, explain _why_ not _what_
-- **Never** add a `Co-Authored-By` trailer or any Claude attribution
+- **Body (optional):** blank line after subject, hard-wrapped at 72 chars, explain _why_ not _what_.
+  `git commit -m` does not wrap, so put real line breaks inside the quoted body argument.
+- **Never** add a `Co-Authored-By` trailer or any LLM attribution
 
 ### Examples
 
@@ -65,7 +69,10 @@ Public pages render server-side for SEO.
 ## Pre-commit hook
 
 The husky pre-commit hook runs `npm run lint`, `npm run check`, and `npm run test:unit`.
-Redirect the commit output to `.tmp/commit.log` and read only the failing part.
+`.tmp/` is tracked via `.gitkeep` and always exists — never `mkdir` it.
+Run the commit as one plain command with only the output redirect: `git commit -m <subject> -m <body> > .tmp/commit.log 2>&1`.
+No `&&`/`;` chaining, `echo $?`, or `tail` in that call.
+Check the result in separate calls (`git log --oneline -1`, then `Read` the failing part of `.tmp/commit.log`).
 If it fails:
 
 1. **Prettier issue:** run `npm run format`, re-stage the same files, and retry once.

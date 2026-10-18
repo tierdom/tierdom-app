@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { PageData } from './$types';
   import { goto } from '$app/navigation';
+  import { resolve } from '$app/paths';
   import { page } from '$app/state';
   import TierListItem from '#lib/components/TierListItem.svelte';
   import Dialog from '#lib/components/Dialog.svelte';
@@ -39,11 +40,13 @@
   });
 
   function openItem(slug: string) {
-    // eslint-disable-next-line svelte/no-navigation-without-resolve -- page.url.pathname already includes the base path
-    goto(`${page.url.pathname}?item=${encodeURIComponent(slug)}`, {
-      shallow: true,
-      state: { item: slug },
-    });
+    goto(
+      resolve(`/category/[slug]?item=${encodeURIComponent(slug)}`, { slug: data.category.slug }),
+      {
+        shallow: true,
+        state: { item: slug },
+      },
+    );
   }
 
   function closeItem() {
@@ -51,8 +54,7 @@
     // page.url (sveltejs/kit#11492). After a fresh load with ?item=slug, a
     // shallow goto would leave page.url.searchParams stale and the dialog
     // would stay open.
-    // eslint-disable-next-line svelte/no-navigation-without-resolve -- page.url.pathname already includes the base path
-    goto(page.url.pathname, { reset: false });
+    goto(resolve('/category/[slug]', { slug: data.category.slug }), { reset: false });
   }
 </script>
 
