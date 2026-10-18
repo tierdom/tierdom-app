@@ -23,9 +23,6 @@ COPY --from=build /app/package.json /app/package-lock.json ./
 # Remove prepare script (svelte-kit sync + husky are dev-only) before installing
 RUN npm pkg delete scripts.prepare && npm ci --omit=dev
 
-# Caddy configuration
-COPY deploy/Caddyfile /etc/caddy/Caddyfile
-
 # Entrypoint script
 COPY deploy/docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
