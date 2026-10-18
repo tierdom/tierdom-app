@@ -1,6 +1,6 @@
-import { db } from '$lib/server/db';
-import { page } from '$lib/server/db/schema';
-import { siteContentBlocks } from '$lib/server/site-content';
+import { db } from '#lib/server/db/index.js';
+import { page } from '#lib/server/db/schema.js';
+import { siteContentBlocks } from '#lib/server/site-content.js';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {

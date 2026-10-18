@@ -1,7 +1,7 @@
 import { integer, sqliteTable, sqliteView, text } from 'drizzle-orm/sqlite-core';
 import { isNull, relations, sql } from 'drizzle-orm';
 import { randomUUID } from 'node:crypto';
-import type { Prop, PropKeyConfig } from '$lib/props';
+import type { Prop, PropKeyConfig } from '#lib/props.js';
 
 // The "Table" suffix makes explicit that it is for 'write' operations, with a
 // view for 'read' operations that account for soft-deleted items.

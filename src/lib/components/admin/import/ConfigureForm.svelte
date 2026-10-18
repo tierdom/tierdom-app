@@ -3,8 +3,8 @@
   import { applyAction, deserialize } from '$app/forms';
   import { invalidateAll } from '$app/navigation';
   import { ArrowLeft, ArrowRight } from 'lucide-svelte';
-  import Button from '$lib/components/admin/Button.svelte';
-  import type { ImporterOption, ImporterOptionValue } from '$lib/server/import/types';
+  import Button from '#lib/components/admin/Button.svelte';
+  import type { ImporterOption, ImporterOptionValue } from '#lib/server/import/types.js';
   import type { ImportPhase } from './phase';
 
   type Props = {

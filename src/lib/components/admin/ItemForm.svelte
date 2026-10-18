@@ -2,15 +2,15 @@
   import { goto } from '$app/navigation';
   import { resolve } from '$app/paths';
   import { Plus, Save, X, Trash2 } from 'lucide-svelte';
-  import Button from '$lib/components/admin/Button.svelte';
-  import ConfirmDialog from '$lib/components/admin/ConfirmDialog.svelte';
-  import FormField from '$lib/components/admin/FormField.svelte';
-  import ImageField from '$lib/components/admin/ImageField.svelte';
-  import MarkdownField from '$lib/components/admin/MarkdownField.svelte';
-  import PropEditor from '$lib/components/admin/PropEditor.svelte';
-  import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
-  import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
-  import type { Prop, PropKeyConfig } from '$lib/props';
+  import Button from '#lib/components/admin/Button.svelte';
+  import ConfirmDialog from '#lib/components/admin/ConfirmDialog.svelte';
+  import FormField from '#lib/components/admin/FormField.svelte';
+  import ImageField from '#lib/components/admin/ImageField.svelte';
+  import MarkdownField from '#lib/components/admin/MarkdownField.svelte';
+  import PropEditor from '#lib/components/admin/PropEditor.svelte';
+  import AdminOverlay from '#lib/components/admin/AdminOverlay.svelte';
+  import { createAdminLoader } from '#lib/components/admin/admin-loader.svelte.js';
+  import type { Prop, PropKeyConfig } from '#lib/props.js';
 
   type Category = { id: string; name: string; propKeys: PropKeyConfig[] };
 

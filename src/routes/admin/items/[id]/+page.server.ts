@@ -1,14 +1,14 @@
-import { db } from '$lib/server/db';
-import { category, tierListItem, tierListItemTable } from '$lib/server/db/schema';
+import { db } from '#lib/server/db/index.js';
+import { category, tierListItem, tierListItemTable } from '#lib/server/db/schema.js';
 import { asc, eq } from 'drizzle-orm';
 import { error, fail, redirect } from '@sveltejs/kit';
-import { insertByScore } from '$lib/server/reorder';
-import { softDeleteItem } from '$lib/server/db/soft-delete';
+import { insertByScore } from '#lib/server/reorder.js';
+import { softDeleteItem } from '#lib/server/db/soft-delete.js';
 import { join } from 'node:path';
-import { env } from '$env/dynamic/private';
-import { processUpload, deleteImage } from '$lib/server/images';
-import { generateImage } from '$lib/server/generate-image';
-import { parseItemForm } from '$lib/server/forms';
+import { DATA_PATH } from '$app/env/private';
+import { processUpload, deleteImage } from '#lib/server/images.js';
+import { generateImage } from '#lib/server/generate-image.js';
+import { parseItemForm } from '#lib/server/forms.js';
 import type { PageServerLoad, Actions } from './$types';
 
 type ReturnTarget = 'categories' | 'items';
@@ -28,7 +28,7 @@ async function handleImage(data: FormData) {
   } else if (wantsGenerate) {
     const name = data.get('name')?.toString()?.trim();
     if (!name) return undefined;
-    const result = await generateImage(name, join(env.DATA_PATH!, 'images'));
+    const result = await generateImage(name, join(DATA_PATH!, 'images'));
     return { imageHash: result.hash, placeholder: result.gradient } as const;
   } else if (wantsRemoveImage) {
     return { imageHash: null, placeholder: null } as const;
@@ -41,8 +41,13 @@ export const load: PageServerLoad = async ({ params, url }) => {
   const isNew = params.id === 'new-item';
   const returnTarget: ReturnTarget =
     url.searchParams.get('returnTo') === 'categories' ? 'categories' : 'items';
+
   const categories = await db
-    .select({ id: category.id, name: category.name, propKeys: category.propKeys })
+    .select({
+      id: category.id,
+      name: category.name,
+      propKeys: category.propKeys,
+    })
     .from(category)
     .orderBy(asc(category.order));
 
@@ -158,7 +163,6 @@ export const actions: Actions = {
     const data = await request.formData();
     const returnTarget: ReturnTarget =
       data.get('_returnTarget')?.toString() === 'categories' ? 'categories' : 'items';
-
     const [item] = await db
       .select({ categoryId: tierListItem.categoryId })
       .from(tierListItem)

@@ -1,7 +1,7 @@
-import { db } from '$lib/server/db';
-import { category, tierListItem, page, siteSetting } from '$lib/server/db/schema';
-import { siteContentBlocks } from '$lib/server/site-content';
-import { countStaleTrash, STALE_TRASH_DAYS } from '$lib/server/db/soft-delete';
+import { db } from '#lib/server/db/index.js';
+import { category, tierListItem, page, siteSetting } from '#lib/server/db/schema.js';
+import { siteContentBlocks } from '#lib/server/site-content.js';
+import { countStaleTrash, STALE_TRASH_DAYS } from '#lib/server/db/soft-delete.js';
 import { count, eq, asc, desc } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';
 

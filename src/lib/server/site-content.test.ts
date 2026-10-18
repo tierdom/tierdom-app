@@ -14,7 +14,7 @@ function resetMockDb() {
   insertCount = 0;
 }
 
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.js', () => ({
   db: {
     select: () => ({
       from: () => ({
@@ -52,7 +52,7 @@ vi.mock('$lib/server/db', () => ({
 // drizzle's eq(column, value) returns a predicate; our mock `where` reads
 // `.key` off whatever's passed, so we forward the column's name alongside
 // the value.
-vi.mock('$lib/server/db/schema', () => ({
+vi.mock('#lib/server/db/schema.js', () => ({
   siteSetting: { key: { name: 'key' } },
 }));
 

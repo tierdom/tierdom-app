@@ -1,7 +1,7 @@
 <script lang="ts">
   import './layout.css';
-  import Navbar from '$lib/components/navbar/Navbar.svelte';
-  import Prose from '$lib/components/Prose.svelte';
+  import Navbar from '#lib/components/navbar/Navbar.svelte';
+  import Prose from '#lib/components/Prose.svelte';
 
   let { children, data } = $props();
 </script>

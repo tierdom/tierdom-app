@@ -1,4 +1,4 @@
-import { db } from '$lib/server/db';
+import { db } from '#lib/server/db/index.js';
 import { fail } from '@sveltejs/kit';
 import {
   SoftDeleteError,
@@ -9,7 +9,7 @@ import {
   permanentlyDeleteItem,
   restoreCategory,
   restoreItem,
-} from '$lib/server/db/soft-delete';
+} from '#lib/server/db/soft-delete.js';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async () => {

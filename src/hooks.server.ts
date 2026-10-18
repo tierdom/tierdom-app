@@ -1,14 +1,14 @@
-import type { Handle } from '@sveltejs/kit';
+import type { Handle } from '@sveltejs/kit/hooks';
 import { redirect } from '@sveltejs/kit';
-import { initializeApp } from '$lib/server/db/init';
+import { initializeApp } from '#lib/server/db/init.js';
 import {
   validateSession,
   getSessionToken,
   setSessionCookie,
   deleteSessionCookie,
-} from '$lib/server/auth/session';
-import { isSetupComplete } from '$lib/server/setup';
-import { db } from '$lib/server/db';
+} from '#lib/server/auth/session.js';
+import { isSetupComplete } from '#lib/server/setup.js';
+import { db } from '#lib/server/db/index.js';
 
 initializeApp();
 

@@ -1,11 +1,11 @@
 <script lang="ts">
-  import ConfigureForm from '$lib/components/admin/import/ConfigureForm.svelte';
-  import LoadingPhase from '$lib/components/admin/import/LoadingPhase.svelte';
-  import StubPanel from '$lib/components/admin/import/StubPanel.svelte';
-  import UploadForm from '$lib/components/admin/import/UploadForm.svelte';
-  import ReviewForm from '$lib/components/admin/import/ReviewForm.svelte';
-  import ResultPanel from '$lib/components/admin/import/ResultPanel.svelte';
-  import type { ImportPhase } from '$lib/components/admin/import/phase';
+  import ConfigureForm from '#lib/components/admin/import/ConfigureForm.svelte';
+  import LoadingPhase from '#lib/components/admin/import/LoadingPhase.svelte';
+  import StubPanel from '#lib/components/admin/import/StubPanel.svelte';
+  import UploadForm from '#lib/components/admin/import/UploadForm.svelte';
+  import ReviewForm from '#lib/components/admin/import/ReviewForm.svelte';
+  import ResultPanel from '#lib/components/admin/import/ResultPanel.svelte';
+  import type { ImportPhase } from '#lib/components/admin/import/phase.js';
   import type { ActionData, PageData } from './$types';
 
   let { data, form }: { data: PageData; form: ActionData } = $props();

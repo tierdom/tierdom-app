@@ -8,7 +8,7 @@ const { TMP_ROOT } = vi.hoisted(() => ({
   TMP_ROOT: `/tmp/tierdom-images-test-${process.pid}-${Date.now()}`,
 }));
 
-vi.mock('$env/dynamic/private', () => ({ env: { DATA_PATH: TMP_ROOT } }));
+vi.mock('$app/env/private', () => ({ DATA_PATH: TMP_ROOT }));
 
 import {
   deleteImage,

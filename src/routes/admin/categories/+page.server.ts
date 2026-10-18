@@ -1,9 +1,9 @@
-import { db } from '$lib/server/db';
-import { category, categoryTable, tierListItem } from '$lib/server/db/schema';
+import { db } from '#lib/server/db/index.js';
+import { category, categoryTable, tierListItem } from '#lib/server/db/schema.js';
 import { asc, count, eq } from 'drizzle-orm';
 import { fail } from '@sveltejs/kit';
-import { applyOrder } from '$lib/server/reorder';
-import { softDeleteCategory } from '$lib/server/db/soft-delete';
+import { applyOrder } from '#lib/server/reorder.js';
+import { softDeleteCategory } from '#lib/server/db/soft-delete.js';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async () => {

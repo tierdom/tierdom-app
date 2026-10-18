@@ -47,6 +47,7 @@ docker compose up -d
 The SQLite database is stored in `/app/data/db.sqlite` and uploaded images in `/app/data/images/`.
 `ADMIN_USERNAME` and `ADMIN_PASSWORD` create the admin account on first boot only — changing them later has no effect.
 `ORIGIN` should match the URL users visit (needed for SvelteKit's CSRF protection).
+Set it whenever TLS is terminated by a proxy in front of the container; without it, the origin is derived from each request.
 
 ## Automatic HTTPS
 

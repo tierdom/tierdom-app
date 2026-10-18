@@ -1,8 +1,8 @@
-import { db } from '$lib/server/db';
-import { tierListItem, category } from '$lib/server/db/schema';
+import { db } from '#lib/server/db/index.js';
+import { tierListItem, category } from '#lib/server/db/schema.js';
 import { eq, desc } from 'drizzle-orm';
 import { fail } from '@sveltejs/kit';
-import { softDeleteItem } from '$lib/server/db/soft-delete';
+import { softDeleteItem } from '#lib/server/db/soft-delete.js';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async () => {

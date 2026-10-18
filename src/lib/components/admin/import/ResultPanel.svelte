@@ -1,8 +1,8 @@
 <script lang="ts">
   import { resolve } from '$app/paths';
   import { AlertTriangle, Check, CheckCircle2, RotateCcw } from 'lucide-svelte';
-  import Button from '$lib/components/admin/Button.svelte';
-  import type { ImportResult } from '$lib/server/import/types';
+  import Button from '#lib/components/admin/Button.svelte';
+  import type { ImportResult } from '#lib/server/import/types.js';
 
   type Props = {
     result: ImportResult | null;
@@ -107,7 +107,7 @@
       <RotateCcw size={14} aria-hidden="true" />
       Import again
     </Button>
-    <Button href={resolve('/admin/tools/import')}>
+    <Button href={resolve('admin/tools/import')}>
       <Check size={14} aria-hidden="true" />
       Done
     </Button>

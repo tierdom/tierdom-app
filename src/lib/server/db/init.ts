@@ -1,10 +1,10 @@
-import { db } from '$lib/server/db';
+import { db } from '#lib/server/db/index.js';
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
-import { env } from '$env/dynamic/private';
-import { bootstrapAdminUser } from '$lib/server/auth/bootstrap';
-import { isSetupComplete } from '$lib/server/setup';
-import { ensureImageDir } from '$lib/server/images';
-import { sweepImportTemp } from '$lib/server/import/temp-storage';
+import { ADMIN_PASSWORD, ADMIN_USERNAME } from '$app/env/private';
+import { bootstrapAdminUser } from '#lib/server/auth/bootstrap.js';
+import { isSetupComplete } from '#lib/server/setup.js';
+import { ensureImageDir } from '#lib/server/images.js';
+import { sweepImportTemp } from '#lib/server/import/temp-storage.js';
 
 let initialized = false;
 
@@ -17,8 +17,8 @@ export function initializeApp(): void {
   // Only auto-create the admin from env vars if the setup wizard has
   // already run. When setup is pending the wizard creates the user
   // with the credentials chosen in the form.
-  if (isSetupComplete(db) && env.ADMIN_PASSWORD) {
-    bootstrapAdminUser(db, env.ADMIN_PASSWORD, env.ADMIN_USERNAME);
+  if (isSetupComplete(db) && ADMIN_PASSWORD) {
+    bootstrapAdminUser(db, ADMIN_PASSWORD, ADMIN_USERNAME);
   }
 
   ensureImageDir();

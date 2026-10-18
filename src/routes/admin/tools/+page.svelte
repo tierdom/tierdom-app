@@ -18,7 +18,7 @@
 
   <div class="mt-6 grid gap-3 sm:grid-cols-2">
     <a
-      href={resolve('/admin/tools/export')}
+      href={resolve('admin/tools/export')}
       class="flex items-start gap-4 rounded-lg border border-subtle bg-elevated px-5 py-4 transition-colors hover:border-accent/40"
     >
       <!-- From the user perspective "Upload" icon makes more sense here. -->
@@ -32,7 +32,7 @@
     </a>
 
     <a
-      href={resolve('/admin/tools/import')}
+      href={resolve('admin/tools/import')}
       class="flex items-start gap-4 rounded-lg border border-subtle bg-elevated px-5 py-4 transition-colors hover:border-accent/40"
     >
       <!-- From the user perspective "Download" icon makes more sense here. -->

@@ -10,19 +10,19 @@ const { TMP_ROOT } = vi.hoisted(() => ({
   TMP_ROOT: `/tmp/tierdom-imdb-test-${process.pid}-${Date.now()}`,
 }));
 
-vi.mock('$env/dynamic/private', () => ({ env: { DATA_PATH: TMP_ROOT } }));
+vi.mock('$app/env/private', () => ({ DATA_PATH: TMP_ROOT }));
 // Stub the default db with a chain that resolves to undefined — the planner's
 // matchedExisting lookup runs on every plan call, but most tests pass a real
 // makeDb() into plan/commit and don't exercise the default. Tests that DO want
 // to verify the lookup pass an in-memory DB explicitly.
-vi.mock('$lib/server/db', () => ({
+vi.mock('#lib/server/db/index.js', () => ({
   db: {
     select: () => ({ from: () => ({ where: () => ({ get: () => undefined }) }) }),
   },
 }));
 
-import * as schema from '$lib/server/db/schema';
-import { categoryTable, tierListItemTable } from '$lib/server/db/schema';
+import * as schema from '#lib/server/db/schema.js';
+import { categoryTable, tierListItemTable } from '#lib/server/db/schema.js';
 import { commitImdbImport, imdbImporter, planImdbImport } from './imdb';
 import type { CategoryMapping, ImporterOptions } from '../types';
 

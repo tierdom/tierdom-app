@@ -4,11 +4,11 @@ import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import { asc, eq } from 'drizzle-orm';
 
-vi.mock('$env/dynamic/private', () => ({ env: { DATA_PATH: '/tmp/test' } }));
+vi.mock('$app/env/private', () => ({ DATA_PATH: '/tmp/test' }));
 vi.mock('sharp', () => ({ default: vi.fn() }));
 // Stub the singleton db so reorder.ts can be imported without opening a real
 // SQLite file. Each test passes its own in-memory db to the function.
-vi.mock('$lib/server/db', () => ({ db: {} }));
+vi.mock('#lib/server/db/index.js', () => ({ db: {} }));
 
 import * as schema from './db/schema';
 import { categoryTable, tierListItemTable } from './db/schema';

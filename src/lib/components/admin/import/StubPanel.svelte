@@ -13,7 +13,7 @@
 </script>
 
 <a
-  href={resolve('/admin/tools/import')}
+  href={resolve('admin/tools/import')}
   class="inline-flex items-center gap-1 text-xs text-secondary hover:text-primary"
 >
   <ArrowLeft class="h-3 w-3" aria-hidden="true" /> All importers
@@ -27,11 +27,11 @@
     <p class="font-medium text-primary">Coming soon</p>
     <p class="mt-1">
       This importer isn't built yet. In the meantime you can wrangle your data into the
-      <a class="text-accent underline" href={resolve('/schemas/tierdom-import-v1.json')}
+      <a class="text-accent underline" href={resolve('schemas/tierdom-import-v1.json')}
         >Tierdom JSON Schema</a
       >
       and use the
-      <a class="text-accent underline" href={resolve('/admin/tools/import/json')}>Tierdom JSON</a>
+      <a class="text-accent underline" href={resolve('admin/tools/import/json')}>Tierdom JSON</a>
       importer.
     </p>
     {#if stubInfo}

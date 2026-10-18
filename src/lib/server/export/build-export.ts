@@ -5,10 +5,10 @@ import { join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { asc } from 'drizzle-orm';
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
-import { env } from '$env/dynamic/private';
-import { db as defaultDb, backupDatabaseTo } from '$lib/server/db';
-import * as schema from '$lib/server/db/schema';
-import { category, tierListItem, page, siteSetting } from '$lib/server/db/schema';
+import { DATA_PATH } from '$app/env/private';
+import { db as defaultDb, backupDatabaseTo } from '#lib/server/db/index.js';
+import * as schema from '#lib/server/db/schema.js';
+import { category, tierListItem, page, siteSetting } from '#lib/server/db/schema.js';
 import {
   EXPORT_SCHEMA_VERSION,
   type ExportData,
@@ -65,7 +65,7 @@ export function buildExport(
   const stamp = iso.replace(/\.\d{3}Z$/, 'Z').replace(/:/g, '-');
   const filename = `tierdom-backup-${stamp}.zip`;
   const folder = `tierdom-backup-${stamp}`;
-  const imagesDir = ctx.imagesDir ?? join(env.DATA_PATH ?? '', 'images');
+  const imagesDir = ctx.imagesDir ?? join(DATA_PATH ?? '', 'images');
 
   let snapshotPath: string | null = null;
   const cleanup = async (): Promise<void> => {

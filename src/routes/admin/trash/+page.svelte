@@ -2,12 +2,12 @@
   import { invalidateAll } from '$app/navigation';
   import { deserialize } from '$app/forms';
   import { RotateCcw, Trash2 } from 'lucide-svelte';
-  import { formatRelativeDate } from '$lib/format-date';
-  import Button from '$lib/components/admin/Button.svelte';
-  import ConfirmDialog from '$lib/components/admin/ConfirmDialog.svelte';
-  import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
-  import AdminWarning from '$lib/components/admin/AdminWarning.svelte';
-  import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
+  import { formatRelativeDate } from '#lib/format-date.js';
+  import Button from '#lib/components/admin/Button.svelte';
+  import ConfirmDialog from '#lib/components/admin/ConfirmDialog.svelte';
+  import AdminOverlay from '#lib/components/admin/AdminOverlay.svelte';
+  import AdminWarning from '#lib/components/admin/AdminWarning.svelte';
+  import { createAdminLoader } from '#lib/components/admin/admin-loader.svelte.js';
   import type { PageData } from './$types';
 
   let { data }: { data: PageData } = $props();

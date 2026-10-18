@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import schema from './schema-v1.json';
-import { EXPORT_SCHEMA_VERSION, type ExportData } from '$lib/server/export/json-schema';
+import { EXPORT_SCHEMA_VERSION, type ExportData } from '#lib/server/export/json-schema.js';
 
 const sampleExport: ExportData = {
   schemaVersion: EXPORT_SCHEMA_VERSION,

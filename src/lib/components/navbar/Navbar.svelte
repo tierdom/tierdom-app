@@ -15,7 +15,9 @@
 
   const extraLinks: { href: string; label: string }[] = [{ href: '/about', label: 'About' }];
 
-  afterNavigate(() => {
+  afterNavigate(({ shallow, type }) => {
+    if (shallow && type === 'goto') return;
+
     menuOpen = false;
   });
 </script>

@@ -1,8 +1,8 @@
 import { and, eq, isNull } from 'drizzle-orm';
-import { db as defaultDb } from '$lib/server/db';
-import { categoryTable } from '$lib/server/db/schema';
-import { slugify } from '$lib/server/slugify';
-import type { PropKeyConfig } from '$lib/props';
+import { db as defaultDb } from '#lib/server/db/index.js';
+import { categoryTable } from '#lib/server/db/schema.js';
+import { slugify } from '#lib/server/slugify.js';
+import type { PropKeyConfig } from '#lib/props.js';
 import { writeImportTemp } from '../temp-storage';
 import type { IncomingItem } from '../apply';
 import type {

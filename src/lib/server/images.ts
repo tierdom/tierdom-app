@@ -2,7 +2,7 @@ import sharp from 'sharp';
 import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync, unlinkSync, existsSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { env } from '$env/dynamic/private';
+import { DATA_PATH } from '$app/env/private';
 import { extractGradient, rgbToHex } from './gradient';
 
 // Re-exported so existing callers (and tests) keep their `from './images'`
@@ -22,7 +22,7 @@ const WEBP_QUALITY = 80;
 const HASH_LENGTH = 12;
 
 function getImagesDir(): string {
-  return join(env.DATA_PATH!, 'images');
+  return join(DATA_PATH!, 'images');
 }
 
 export function getImagePath(hash: string): string {

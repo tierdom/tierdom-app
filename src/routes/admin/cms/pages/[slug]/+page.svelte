@@ -1,12 +1,12 @@
 <script lang="ts">
   import { resolve } from '$app/paths';
   import { Save } from 'lucide-svelte';
-  import Button from '$lib/components/admin/Button.svelte';
-  import FormField from '$lib/components/admin/FormField.svelte';
-  import MarkdownField from '$lib/components/admin/MarkdownField.svelte';
-  import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
-  import Timestamps from '$lib/components/admin/Timestamps.svelte';
-  import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
+  import Button from '#lib/components/admin/Button.svelte';
+  import FormField from '#lib/components/admin/FormField.svelte';
+  import MarkdownField from '#lib/components/admin/MarkdownField.svelte';
+  import AdminOverlay from '#lib/components/admin/AdminOverlay.svelte';
+  import Timestamps from '#lib/components/admin/Timestamps.svelte';
+  import { createAdminLoader } from '#lib/components/admin/admin-loader.svelte.js';
   import type { PageData } from './$types';
 
   let { data }: { data: PageData } = $props();
@@ -21,7 +21,7 @@
 
 <section>
   <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
-    <a href={resolve('/admin/cms')} class="text-sm text-secondary hover:text-primary">&larr; CMS</a>
+    <a href={resolve('admin/cms')} class="text-sm text-secondary hover:text-primary">&larr; CMS</a>
     <h1 class="text-xl font-bold text-primary">Edit: {data.page.title}</h1>
     <Timestamps createdAt={data.page.createdAt} updatedAt={data.page.updatedAt} />
   </div>

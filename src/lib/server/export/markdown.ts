@@ -1,4 +1,4 @@
-import { scoreToTier, type Tier } from '$lib/tier';
+import { scoreToTier, type Tier } from '#lib/tier.js';
 import type { ExportedCategory, ExportedItem } from './json-schema';
 
 const TIERS: Tier[] = ['S', 'A', 'B', 'C', 'D', 'E', 'F'];

@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 import { error } from '@sveltejs/kit';
-import { readImage } from '$lib/server/images';
+import { readImage } from '#lib/server/images.js';
 
 const HASH_PATTERN = /^[0-9a-f]{12}$/;
 

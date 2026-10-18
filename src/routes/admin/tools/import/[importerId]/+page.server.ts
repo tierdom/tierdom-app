@@ -1,16 +1,16 @@
 import { error, fail } from '@sveltejs/kit';
 import { asc, isNull } from 'drizzle-orm';
-import { db } from '$lib/server/db';
-import { categoryTable } from '$lib/server/db/schema';
-import { getImporter } from '$lib/server/import/registry';
-import { MAX_IMPORT_BYTES } from '$lib/server/import/validate';
-import { deleteImportTemp } from '$lib/server/import/temp-storage';
+import { db } from '#lib/server/db/index.js';
+import { categoryTable } from '#lib/server/db/schema.js';
+import { getImporter } from '#lib/server/import/registry.js';
+import { MAX_IMPORT_BYTES } from '#lib/server/import/validate.js';
+import { deleteImportTemp } from '#lib/server/import/temp-storage.js';
 import type {
   CategoryMapping,
   ImporterOption,
   ImporterOptions,
   MergeStrategy,
-} from '$lib/server/import/types';
+} from '#lib/server/import/types.js';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = ({ params }) => {

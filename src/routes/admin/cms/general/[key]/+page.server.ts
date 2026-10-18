@@ -7,7 +7,7 @@ import {
   isSiteContentKey,
   setSiteContent,
   siteContentBlocks,
-} from '$lib/server/site-content';
+} from '#lib/server/site-content.js';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {

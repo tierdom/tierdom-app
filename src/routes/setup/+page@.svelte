@@ -1,6 +1,6 @@
 <script lang="ts">
   import '../layout.css';
-  import Button from '$lib/components/admin/Button.svelte';
+  import Button from '#lib/components/admin/Button.svelte';
   import type { ActionData } from './$types';
 
   let { form }: { form: ActionData } = $props();

@@ -1,8 +1,8 @@
 import { randomUUID } from 'node:crypto';
 import { and, eq, isNull } from 'drizzle-orm';
-import { db as defaultDb } from '$lib/server/db';
-import { categoryTable, tierListItemTable } from '$lib/server/db/schema';
-import type { Prop, PropKeyConfig } from '$lib/props';
+import { db as defaultDb } from '#lib/server/db/index.js';
+import { categoryTable, tierListItemTable } from '#lib/server/db/schema.js';
+import type { Prop, PropKeyConfig } from '#lib/props.js';
 import type { CategoryMapping, ImportResult, MergeStrategy } from './types';
 
 type DB = typeof defaultDb;

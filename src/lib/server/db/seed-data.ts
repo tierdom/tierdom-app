@@ -1,4 +1,4 @@
-import type { Prop, PropKeyConfig } from '$lib/props';
+import type { Prop, PropKeyConfig } from '#lib/props.js';
 
 export type SeedItem = { name: string; score: number; props: Prop[]; description?: string };
 

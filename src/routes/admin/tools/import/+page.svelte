@@ -2,7 +2,7 @@
   import { resolve } from '$app/paths';
   import { Download, FileJson, BookOpen, Dice5, Film, Gauge, Sparkles } from 'lucide-svelte';
   import type { PageData } from './$types';
-  import type { ImporterSummary } from '$lib/server/import/types';
+  import type { ImporterSummary } from '#lib/server/import/types.js';
 
   let { data }: { data: PageData } = $props();
 
@@ -38,7 +38,7 @@
     <h2 class="text-xl font-bold text-primary">Import</h2>
     <p class="mt-1 text-sm text-secondary">
       Bring data into Tierdom. Pick a source below. The Tierdom JSON format is the canonical on-ramp
-      — its <a class="text-accent underline" href={resolve('/schemas/tierdom-import-v1.json')}
+      — its <a class="text-accent underline" href={resolve('schemas/tierdom-import-v1.json')}
         >JSON Schema</a
       > is published so you can wrangle data from any system into it.
     </p>
@@ -52,7 +52,7 @@
         {@const available = importer.status === 'available'}
         <li>
           <a
-            href={resolve(`/admin/tools/import/${importer.id}`)}
+            href={resolve(`admin/tools/import/${importer.id}`)}
             class="flex items-start gap-4 rounded-lg border border-subtle bg-elevated px-5 py-4 transition-colors hover:border-accent/40"
           >
             <Icon
@@ -85,7 +85,7 @@
         {@const available = importer.status === 'available'}
         <li>
           <a
-            href={resolve(`/admin/tools/import/${importer.id}`)}
+            href={resolve(`admin/tools/import/${importer.id}`)}
             class="flex items-start gap-4 rounded-lg border border-subtle bg-elevated px-5 py-4 transition-colors hover:border-accent/40"
           >
             <Icon

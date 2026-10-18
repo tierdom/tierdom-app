@@ -20,7 +20,7 @@ test('import index groups importers into Tierdom and Third-Party sections', asyn
 });
 
 test('every stub page renders the coming-soon panel', async ({ page }) => {
-  for (const id of ['bgg']) {
+  for (const id of ['metacritic', 'tmdb', 'rotten-tomatoes']) {
     await page.goto(`/admin/tools/import/${id}`);
     await expect(page.getByText('Coming soon')).toBeVisible();
   }

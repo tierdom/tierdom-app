@@ -1,10 +1,10 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import { formatRelativeDate } from '$lib/format-date';
+  import { formatRelativeDate } from '#lib/format-date.js';
   import { resolve } from '$app/paths';
   import { Plus } from 'lucide-svelte';
-  import Button from '$lib/components/admin/Button.svelte';
-  import AdminWarning from '$lib/components/admin/AdminWarning.svelte';
+  import Button from '#lib/components/admin/Button.svelte';
+  import AdminWarning from '#lib/components/admin/AdminWarning.svelte';
   import type { PageData } from './$types';
 
   let { data }: { data: PageData } = $props();
@@ -60,7 +60,7 @@
 
   {#if staleTrashTotal > 0}
     <div class="mt-4">
-      <AdminWarning href={resolve('/admin/trash')} cta="Open Trash">
+      <AdminWarning href={resolve('admin/trash')} cta="Open Trash">
         {staleTrashTotal}
         {staleTrashTotal === 1 ? 'item' : 'items'} have been in Trash for {data.staleTrashDays}+
         days. Consider permanently deleting them to keep your data tidy.
@@ -112,7 +112,7 @@
     {#each data.siteContent as block (block.key)}
       <li>
         <a
-          href={resolve(`/admin/cms/general/${block.key}`)}
+          href={resolve(`admin/cms/general/${block.key}`)}
           class="flex items-center justify-between rounded border border-subtle bg-surface px-3 py-2 text-sm transition-colors hover:border-accent/40"
         >
           <span class="text-primary">{block.title}</span>
@@ -129,7 +129,7 @@
 
 {#snippet itemsExtras()}
   <div class="mt-2 flex justify-end">
-    <Button href={resolve('/admin/items/new-item')} compact>
+    <Button href={resolve('admin/items/new-item')} compact>
       <Plus size={12} />New item
     </Button>
   </div>

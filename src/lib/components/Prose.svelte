@@ -1,5 +1,5 @@
 <!--
-  Renders pre-sanitised HTML (from $lib/server/markdown.ts) inside a
+  Renders pre-sanitised HTML (from #lib/server/markdown.ts) inside a
   Tailwind Typography prose container. All {@html} usage is centralised
   here so the eslint suppression and prose-invert setup live in one place.
 -->

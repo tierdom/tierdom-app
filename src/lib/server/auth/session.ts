@@ -1,8 +1,8 @@
 import { createHash, randomBytes } from 'node:crypto';
 import { eq } from 'drizzle-orm';
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
-import { session, user } from '$lib/server/db/schema';
-import type * as schema from '$lib/server/db/schema';
+import { session, user } from '#lib/server/db/schema.js';
+import type * as schema from '#lib/server/db/schema.js';
 
 export { setSessionCookie, deleteSessionCookie, getSessionToken } from './cookies';
 

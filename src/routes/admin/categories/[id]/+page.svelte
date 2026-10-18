@@ -1,20 +1,20 @@
 <script lang="ts">
-  import { formatRelativeDate } from '$lib/format-date';
+  import { formatRelativeDate } from '#lib/format-date.js';
   import { goto, invalidateAll } from '$app/navigation';
   import { resolve } from '$app/paths';
   import { ArrowDown, Save, X, Trash2, Plus } from 'lucide-svelte';
-  import Button from '$lib/components/admin/Button.svelte';
-  import ConfirmDialog from '$lib/components/admin/ConfirmDialog.svelte';
-  import FormField from '$lib/components/admin/FormField.svelte';
-  import MarkdownField from '$lib/components/admin/MarkdownField.svelte';
-  import PropKeyEditor from '$lib/components/admin/PropKeyEditor.svelte';
-  import TierCutoffsInput from '$lib/components/admin/TierCutoffsInput.svelte';
-  import SortableList from '$lib/components/admin/SortableList.svelte';
-  import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
-  import Timestamps from '$lib/components/admin/Timestamps.svelte';
-  import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
-  import { scoreToTier } from '$lib/tier';
-  import TierBadge from '$lib/components/admin/TierBadge.svelte';
+  import Button from '#lib/components/admin/Button.svelte';
+  import ConfirmDialog from '#lib/components/admin/ConfirmDialog.svelte';
+  import FormField from '#lib/components/admin/FormField.svelte';
+  import MarkdownField from '#lib/components/admin/MarkdownField.svelte';
+  import PropKeyEditor from '#lib/components/admin/PropKeyEditor.svelte';
+  import TierCutoffsInput from '#lib/components/admin/TierCutoffsInput.svelte';
+  import SortableList from '#lib/components/admin/SortableList.svelte';
+  import AdminOverlay from '#lib/components/admin/AdminOverlay.svelte';
+  import Timestamps from '#lib/components/admin/Timestamps.svelte';
+  import { createAdminLoader } from '#lib/components/admin/admin-loader.svelte.js';
+  import { scoreToTier } from '#lib/tier.js';
+  import TierBadge from '#lib/components/admin/TierBadge.svelte';
   import type { PageData } from './$types';
 
   let { data }: { data: PageData } = $props();
@@ -59,7 +59,7 @@
       pendingDiscard = true;
       return;
     }
-    goto(resolve('/admin/categories'));
+    goto(resolve('admin/categories'));
   }
 
   const handleReorderItems = loader.withLoading(async (orderedIds: string[]) => {
@@ -75,7 +75,7 @@
 
   const performDeleteCategory = loader.withLoading(async () => {
     await fetch('?/delete', { method: 'POST', body: new FormData() });
-    await goto(resolve('/admin/categories'));
+    await goto(resolve('admin/categories'));
   });
 
   const performDeleteItem = loader.withLoading(async (id: string) => {
@@ -93,7 +93,7 @@
 <section>
   <AdminOverlay loading={loader.loading} />
   <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
-    <a href={resolve('/admin/categories')} class="text-sm text-secondary hover:text-primary"
+    <a href={resolve('admin/categories')} class="text-sm text-secondary hover:text-primary"
       >&larr; Back</a
     >
     <h1 class="text-xl font-bold text-primary">{data.category.name}</h1>
@@ -148,7 +148,7 @@
     <Button
       variant="secondary"
       compact
-      href={resolve(`/admin/items/new-item?category=${data.category.id}&returnTo=categories`)}
+      href={resolve(`admin/items/new-item?category=${data.category.id}&returnTo=categories`)}
     >
       <Plus size={12} />New item
     </Button>
@@ -176,7 +176,7 @@
             <div class="min-w-0 flex-1 text-primary">
               <div class="flex items-center gap-1.5">
                 <a
-                  href={resolve(`/admin/items/${item.id}?returnTo=categories`)}
+                  href={resolve(`admin/items/${item.id}?returnTo=categories`)}
                   class="shrink-0 text-accent hover:underline"
                 >
                   {item.name}
@@ -216,9 +216,7 @@
   {/if}
 
   <div class="mt-6">
-    <Button
-      href={resolve(`/admin/items/new-item?category=${data.category.id}&returnTo=categories`)}
-    >
+    <Button href={resolve(`admin/items/new-item?category=${data.category.id}&returnTo=categories`)}>
       <Plus size={16} />New item
     </Button>
   </div>
@@ -233,7 +231,7 @@
   oncancel={() => (pendingDiscard = false)}
   onconfirm={async () => {
     pendingDiscard = false;
-    await goto(resolve('/admin/categories'));
+    await goto(resolve('admin/categories'));
   }}
 />
 

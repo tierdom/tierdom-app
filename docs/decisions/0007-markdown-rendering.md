@@ -16,7 +16,7 @@ Markdown is the authoring format for all user-facing text. Authors write Markdow
 
 - **Parser: `marked`.** Fast, synchronous, zero deps, GFM out of the box. Rejected: unified/remark — heavier than needed; no AST transforms required.
 - **Sanitization: `isomorphic-dompurify`.** All rendered HTML goes through DOMPurify before reaching templates — defense-in-depth against accidental or future-multi-user XSS. Wraps DOMPurify for SSR via `jsdom`.
-- **Server-side only.** Conversion happens in `+page.server.ts` load functions; the utility lives in `$lib/server/markdown.ts` so it is never bundled for the client. Templates render the pre-sanitized HTML with `{@html}`.
+- **Server-side only.** Conversion happens in `+page.server.ts` load functions; the utility lives in `#lib/server/markdown.ts` so it is never bundled for the client. Templates render the pre-sanitized HTML with `{@html}`.
 - **Typography: `@tailwindcss/typography`.** `prose prose-invert` styles rendered Markdown blocks. CSS variable overrides remap `--tw-prose-invert-*` to the app's `--c-*` semantic tokens (ADR-0005), so prose uses the app palette rather than the default inverted grays.
 - **CMS: `page` table** (`slug`, `title`, `content`) holds Markdown for Home and About, replacing hardcoded HTML. Integrates naturally with admin (ADR-0006) when page editing lands.
 - **Lint:** each `{@html}` carries an inline `eslint-disable-next-line svelte/no-at-html-tags` since the rule fires on every usage; the sanitization guarantee justifies it.
