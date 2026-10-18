@@ -65,7 +65,10 @@ Public pages render server-side for SEO.
 ## Pre-commit hook
 
 The husky pre-commit hook runs `npm run lint`, `npm run check`, and `npm run test:unit`.
-Redirect the commit output to `.tmp/commit.log` and read only the failing part.
+`.tmp/` is tracked via `.gitkeep` and always exists — never `mkdir` it.
+Run the commit as one plain command with only the output redirect: `git commit -m <subject> -m <body> > .tmp/commit.log 2>&1`.
+No `&&`/`;` chaining, `echo $?`, or `tail` in that call.
+Check the result in separate calls (`git log --oneline -1`, then `Read` the failing part of `.tmp/commit.log`).
 If it fails:
 
 1. **Prettier issue:** run `npm run format`, re-stage the same files, and retry once.
