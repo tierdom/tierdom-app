@@ -1,9 +1,16 @@
 <script lang="ts">
   import './layout.css';
+  import { onMount } from 'svelte';
   import Navbar from '#lib/components/navbar/Navbar.svelte';
   import Prose from '#lib/components/Prose.svelte';
 
   let { children, data } = $props();
+
+  // Root onMount runs after the whole tree has hydrated. E2E tests wait for
+  // this marker so they don't click SSR markup before handlers are attached.
+  onMount(() => {
+    document.documentElement.dataset.hydrated = '';
+  });
 </script>
 
 <svelte:head>

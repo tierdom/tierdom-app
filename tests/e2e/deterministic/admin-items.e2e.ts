@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/test';
 
 const TEST_IMAGE = path.resolve('tests/e2e/fixtures/test-image.png');
 

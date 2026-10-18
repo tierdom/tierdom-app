@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/test';
 
 test('trash page is reachable from the admin nav', async ({ page }) => {
   await page.goto('/admin');

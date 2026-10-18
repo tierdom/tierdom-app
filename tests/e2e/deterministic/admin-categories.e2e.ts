@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/test';
 
 test('categories list shows seeded categories', async ({ page }) => {
   await page.goto('/admin/categories');

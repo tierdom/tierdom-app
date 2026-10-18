@@ -40,4 +40,23 @@ export default defineConfig(
       },
     },
   },
+  {
+    files: ['tests/e2e/**/*.ts'],
+    ignores: ['tests/e2e/fixtures/**'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: '@playwright/test',
+              importNames: ['test'],
+              message:
+                "Import `test` from '../fixtures/test' — it waits for hydration after page.goto/reload.",
+            },
+          ],
+        },
+      ],
+    },
+  },
 );
