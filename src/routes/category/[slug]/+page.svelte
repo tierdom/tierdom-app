@@ -47,9 +47,10 @@
   }
 
   function closeItem() {
-    // Use goto (not pushState) because pushState never updates page.url
-    // (sveltejs/kit#11492). After a fresh load with ?item=slug, pushState
-    // would leave page.url.searchParams stale and the dialog would stay open.
+    // Use a full goto (not shallow) because shallow navigation never updates
+    // page.url (sveltejs/kit#11492). After a fresh load with ?item=slug, a
+    // shallow goto would leave page.url.searchParams stale and the dialog
+    // would stay open.
     // eslint-disable-next-line svelte/no-navigation-without-resolve -- page.url.pathname already includes the base path
     goto(page.url.pathname, { reset: false });
   }

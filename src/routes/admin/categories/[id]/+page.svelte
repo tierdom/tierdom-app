@@ -1,6 +1,6 @@
 <script lang="ts">
   import { formatRelativeDate } from '#lib/format-date.js';
-  import { goto, invalidateAll } from '$app/navigation';
+  import { goto, refreshAll } from '$app/navigation';
   import { resolve } from '$app/paths';
   import { ArrowDown, Save, X, Trash2, Plus } from 'lucide-svelte';
   import Button from '#lib/components/admin/Button.svelte';
@@ -82,7 +82,7 @@
     const body = new FormData();
     body.set('id', id);
     await fetch('?/deleteItem', { method: 'POST', body });
-    await invalidateAll();
+    await refreshAll();
   });
 </script>
 

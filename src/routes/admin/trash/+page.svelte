@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { invalidateAll } from '$app/navigation';
+  import { refreshAll } from '$app/navigation';
   import { deserialize } from '$app/forms';
   import { RotateCcw, Trash2 } from 'lucide-svelte';
   import { formatRelativeDate } from '#lib/format-date.js';
@@ -51,7 +51,7 @@
       actionError = err;
       return;
     }
-    await invalidateAll();
+    await refreshAll();
   });
 
   function deletedAtDisplay(deletedAt: string): string {

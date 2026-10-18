@@ -1,6 +1,6 @@
 <script lang="ts">
   import { resolve } from '$app/paths';
-  import { invalidateAll } from '$app/navigation';
+  import { refreshAll } from '$app/navigation';
   import { formatRelativeDate } from '#lib/format-date.js';
   import { ArrowDown, Plus, Trash2 } from 'lucide-svelte';
   import Button from '#lib/components/admin/Button.svelte';
@@ -22,7 +22,7 @@
     const body = new FormData();
     body.set('id', id);
     await fetch('?/delete', { method: 'POST', body });
-    await invalidateAll();
+    await refreshAll();
   });
 
   let filtered = $derived(() => {

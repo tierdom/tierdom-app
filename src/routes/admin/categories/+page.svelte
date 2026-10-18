@@ -1,6 +1,6 @@
 <script lang="ts">
   import { resolve } from '$app/paths';
-  import { invalidateAll } from '$app/navigation';
+  import { refreshAll } from '$app/navigation';
   import { Plus, Trash2 } from 'lucide-svelte';
   import Button from '#lib/components/admin/Button.svelte';
   import ConfirmDialog from '#lib/components/admin/ConfirmDialog.svelte';
@@ -25,7 +25,7 @@
     const body = new FormData();
     body.set('id', id);
     await fetch('?/delete', { method: 'POST', body });
-    await invalidateAll();
+    await refreshAll();
   });
 </script>
 

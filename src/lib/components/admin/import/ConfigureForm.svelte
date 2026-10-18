@@ -1,7 +1,7 @@
 <script lang="ts">
   import { untrack } from 'svelte';
   import { applyAction, deserialize } from '$app/forms';
-  import { invalidateAll } from '$app/navigation';
+  import { refreshAll } from '$app/navigation';
   import { ArrowLeft, ArrowRight } from 'lucide-svelte';
   import Button from '#lib/components/admin/Button.svelte';
   import type { ImporterOption, ImporterOptionValue } from '#lib/server/import/types.js';
@@ -36,7 +36,7 @@
     const res = await fetch('?/plan', { method: 'POST', body: fd });
     const result = deserialize(await res.text());
     if (result.type === 'success' || result.type === 'failure') {
-      await invalidateAll();
+      await refreshAll();
     }
     await applyAction(result);
     setPhase(null);
