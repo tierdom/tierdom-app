@@ -4,6 +4,10 @@
 
 **Never** commit on your own — always wait for the user to invoke `/commit`. Applies to every change without exception.
 
+**Don't stage** changes outside `/commit` (no `git add` / `git rm`) — the user stages during review.
+
+**Don't delete** artefacts, worktrees, or directories (`rm -rf`, `git worktree remove`, `git checkout -- .`) as cleanup. List what can go and let the user clean up.
+
 **Always** be brief. No filler or pleasantries.
 
 ## Verify before claiming done
