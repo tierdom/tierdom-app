@@ -1,71 +1,19 @@
 ---
 name: commit
-description: Stage and commit changes with an emoji conventional commit message. Reviews staged/unstaged diffs, suggests a message, and creates the commit.
-allowed-tools: Bash Read
+description: Stage and commit changes with an emoji conventional commit message. Writes a brief from the session and delegates the commit to the `committer` subagent.
+allowed-tools: Agent
 ---
 
-Help me create a git commit for the current changes in this SvelteKit project.
+Commit the current changes by delegating to the `committer` subagent.
+Don't run `git status` or `git diff` yourself — the subagent does that, keeping diff and hook output out of this context.
 
-1. Run `git status` and `git diff` (both staged and unstaged) to understand what has changed.
-2. Pick the most fitting emoji and type from the table below.
-3. If the diff touches routes, components, navigation, auth, schema, seeds, or hooks — **ask** the user whether to run E2E tests (smoke or deterministic) via `/test` before committing. Skip this for config/docs/test/cosmetic-only changes.
-4. Stage the relevant files and create the commit immediately — do not ask for confirmation first. Claude Code's built-in permission prompt is the approval gate.
-
-Note: the user may be prompted for a GPG signing passphrase after the commit command.
-
-If this commit is the milestone checkpoint of an in-progress plan (see CLAUDE.md "Plan mode"), continue to the next milestone immediately after the commit succeeds — no need to wait for further instruction.
-
-## Emoji types
-
-| Emoji | Type          | Use for                                         |
-| ----- | ------------- | ----------------------------------------------- |
-| ✨    | `feat`        | New feature or capability                       |
-| 🐛    | `fix`         | Bug fix                                         |
-| 🔥    | `remove`      | Deleting code or files                          |
-| ♻️    | `refactor`    | Restructuring without behavior change           |
-| 📝    | `docs`        | Documentation only                              |
-| 🎨    | `style`       | Formatting, linting, whitespace                 |
-| ✅    | `test`        | Adding or updating tests                        |
-| 🔧    | `config`      | Config files, tooling setup                     |
-| 📦    | `deps`        | Adding or updating dependencies                 |
-| 🗑️    | `deps-remove` | Removing dependencies                           |
-| 🚀    | `perf`        | Performance improvement                         |
-| 🔒    | `security`    | Security fix or hardening                       |
-| 🗄️    | `db`          | Database schema or migration                    |
-| 🐳    | `docker`      | Dockerfile or container changes                 |
-| 🌐    | `i18n`        | Internationalisation / translations             |
-| 💄    | `ui`          | Visual or layout changes                        |
-| 🏗️    | `arch`        | Architectural changes                           |
-| 🔀    | `merge`       | Merge branch                                    |
-| 🏷️    | `types`       | Type definitions only                           |
-| 🚧    | `wip`         | Work in progress (avoid committing if possible) |
-| 🔖    | `release`     | Version bump or release tag                     |
-| 🤔    | `other`       | Anything that doesn't fit above                 |
-
-## Message format
-
-- **Subject:** `<emoji> <type>: <short description>` — max 50 chars, imperative, no period
-- **Body (optional):** blank line after subject, 72-char wrap, explain _why_ not _what_
-- **Never** add a `Co-Authored-By` trailer or any Claude attribution
-
-### Examples
-
-```
-✨ feat: add tier list section routing
-
-Sections are now dynamically routed via [section] param.
-Public pages render server-side for SEO.
-```
-
-```
-🐛 fix: redirect unauthenticated admin requests
-```
-
-## Pre-commit hook
-
-The husky pre-commit hook runs `npm run lint`, `npm run check`, and `npm run test:unit`. If it fails:
-
-1. **Prettier issue:** run `npm run format`, re-stage, and retry without asking.
-2. **Any other failure:** STOP and report to the user.
+1. If this session changed routes, components, navigation, auth, schema, seeds, or hooks and E2E hasn't run since — **ask** the user whether to run E2E tests (smoke or deterministic) via `/test` first.
+   Skip for config/docs/test/cosmetic-only changes.
+2. Call `Agent` with `subagent_type: "committer"` and a brief of at most ~8 lines:
+   - **Intent:** why these changes were made (the user's goal, the problem solved).
+   - **Must mention:** decisions, trade-offs, or caveats from the session worth recording in the body.
+   - **Scope:** which files belong in this commit if not everything staged/changed should go in.
+   - The user's arguments below, verbatim, if any.
+3. Relay the subagent's result in one line. If the hook failed, show the reported errors and stop.
 
 $ARGUMENTS
