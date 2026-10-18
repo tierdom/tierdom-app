@@ -12,8 +12,7 @@ The diff tells you _what_ changed; the brief tells you _why_ — use both.
 1. Run `git status --short` and `git diff --cached --stat`.
    If nothing is staged, stage the files the brief names (or all changes if the brief says so), otherwise stop and report.
 2. Read only as much of the diff as you need (`git diff --cached -- <path>`); skip lockfiles and migration snapshots.
-3. Pick the emoji and type from the table and write the message.
-   Before committing, check it: subject at most 50 chars, every body line at most 72 (re-wrap if not).
+3. Pick the emoji and type from the table, write the message per the rules below, and check it before committing (re-wrap or shorten if not).
    Then commit with `git commit -m <subject> -m <body>`.
    The user may be prompted for a GPG passphrase.
 4. Reply with only the commit hash and subject line, or the failure.
@@ -46,6 +45,8 @@ The diff tells you _what_ changed; the brief tells you _why_ — use both.
 | 🤔    | `other`       | Anything that doesn't fit above                 |
 
 ## Message format
+
+Follow these rules when writing messages, and know that a commitlint `commit-msg` hook checks them strictly (type list, header length, body line length):
 
 - **Subject:** `<emoji> <type>: <short description>` — max 50 chars, imperative, no period
 - **Body (optional):** blank line after subject, hard-wrapped at 72 chars, explain _why_ not _what_.
