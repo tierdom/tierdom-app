@@ -50,7 +50,7 @@ The diff tells you _what_ changed; the brief tells you _why_ — use both.
 - **Subject:** `<emoji> <type>: <short description>` — max 50 chars, imperative, no period
 - **Body (optional):** blank line after subject, hard-wrapped at 72 chars, explain _why_ not _what_.
   `git commit -m` does not wrap, so put real line breaks inside the quoted body argument.
-- **Never** add a `Co-Authored-By` trailer or any Claude attribution
+- **Never** add a `Co-Authored-By` trailer or any LLM attribution
 
 ### Examples
 
