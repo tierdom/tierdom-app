@@ -7,10 +7,10 @@ import { mkdtemp, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-vi.mock('$env/dynamic/private', () => ({ env: { DATA_PATH: '/tmp/tierdom-export-test-stub' } }));
-// `db/index.ts` imports from `$env/dynamic/private`; stub the singleton to a noop
+vi.mock('$app/env/private', () => ({ DATA_PATH: '/tmp/tierdom-export-test-stub' }));
+// `db/index.ts` imports from `$app/env/private`; stub the singleton to a noop
 // so the module loads without opening a real on-disk SQLite file.
-vi.mock('$lib/server/db', async () => {
+vi.mock('#lib/server/db/index.js', async () => {
   const real = await vi.importActual<typeof import('drizzle-orm')>('drizzle-orm');
   return {
     db: {},
@@ -21,8 +21,8 @@ vi.mock('$lib/server/db', async () => {
   };
 });
 
-import * as schema from '$lib/server/db/schema';
-import { categoryTable, tierListItemTable, page, siteSetting } from '$lib/server/db/schema';
+import * as schema from '#lib/server/db/schema.js';
+import { categoryTable, tierListItemTable, page, siteSetting } from '#lib/server/db/schema.js';
 import { buildExport, streamToBuffer } from './build-export';
 import { EXPORT_SCHEMA_VERSION, type ExportData, type ExportManifest } from './json-schema';
 

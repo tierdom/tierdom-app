@@ -1,6 +1,10 @@
 import { redirect } from '@sveltejs/kit';
-import { db } from '$lib/server/db';
-import { invalidateSession, getSessionToken, deleteSessionCookie } from '$lib/server/auth/session';
+import { db } from '#lib/server/db/index.js';
+import {
+  invalidateSession,
+  getSessionToken,
+  deleteSessionCookie,
+} from '#lib/server/auth/session.js';
 import type { Actions } from './$types';
 
 export const actions: Actions = {

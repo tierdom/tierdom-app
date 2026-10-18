@@ -1,7 +1,7 @@
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import { eq } from 'drizzle-orm';
-import { page } from '$lib/server/db/schema';
-import type * as schema from '$lib/server/db/schema';
+import { page } from '#lib/server/db/schema.js';
+import type * as schema from '#lib/server/db/schema.js';
 
 type DB = BetterSQLite3Database<typeof schema>;
 

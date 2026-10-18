@@ -1,4 +1,4 @@
-import type { Prop, PropKeyConfig } from '$lib/props';
+import type { Prop, PropKeyConfig } from '#lib/props.js';
 
 export const EXPORT_SCHEMA_VERSION = 1;
 

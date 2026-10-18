@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { tierColors, type Tier } from '$lib/tier';
+  import { tierColors, type Tier } from '#lib/tier.js';
 
   let { tier }: { tier: Tier } = $props();
 

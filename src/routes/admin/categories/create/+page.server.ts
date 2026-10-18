@@ -1,8 +1,8 @@
-import { db } from '$lib/server/db';
-import { category, categoryTable } from '$lib/server/db/schema';
+import { db } from '#lib/server/db/index.js';
+import { category, categoryTable } from '#lib/server/db/schema.js';
 import { fail, redirect } from '@sveltejs/kit';
 import { sql } from 'drizzle-orm';
-import { parseCategoryForm } from '$lib/server/forms';
+import { parseCategoryForm } from '#lib/server/forms.js';
 import type { Actions } from './$types';
 
 export const actions: Actions = {

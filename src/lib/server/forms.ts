@@ -1,6 +1,6 @@
-import { slugify } from '$lib/server/slugify';
-import type { Tier } from '$lib/tier';
-import { type Prop, type PropKeyConfig, validateProps, validatePropKeys } from '$lib/props';
+import { slugify } from '#lib/server/slugify.js';
+import type { Tier } from '#lib/tier.js';
+import { type Prop, type PropKeyConfig, validateProps, validatePropKeys } from '#lib/props.js';
 
 type ReturnTarget = 'categories' | 'items';
 

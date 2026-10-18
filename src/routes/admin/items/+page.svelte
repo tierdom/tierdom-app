@@ -1,14 +1,14 @@
 <script lang="ts">
   import { resolve } from '$app/paths';
-  import { invalidateAll } from '$app/navigation';
-  import { formatRelativeDate } from '$lib/format-date';
+  import { refreshAll } from '$app/navigation';
+  import { formatRelativeDate } from '#lib/format-date.js';
   import { ArrowDown, Plus, Trash2 } from 'lucide-svelte';
-  import Button from '$lib/components/admin/Button.svelte';
-  import ConfirmDialog from '$lib/components/admin/ConfirmDialog.svelte';
-  import TierBadge from '$lib/components/admin/TierBadge.svelte';
-  import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
-  import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
-  import { scoreToTier } from '$lib/tier';
+  import Button from '#lib/components/admin/Button.svelte';
+  import ConfirmDialog from '#lib/components/admin/ConfirmDialog.svelte';
+  import TierBadge from '#lib/components/admin/TierBadge.svelte';
+  import AdminOverlay from '#lib/components/admin/AdminOverlay.svelte';
+  import { createAdminLoader } from '#lib/components/admin/admin-loader.svelte.js';
+  import { scoreToTier } from '#lib/tier.js';
   import type { PageData } from './$types';
 
   let { data }: { data: PageData } = $props();
@@ -22,7 +22,7 @@
     const body = new FormData();
     body.set('id', id);
     await fetch('?/delete', { method: 'POST', body });
-    await invalidateAll();
+    await refreshAll();
   });
 
   let filtered = $derived(() => {
@@ -47,7 +47,7 @@
   <div class="flex items-center justify-between">
     <h1 class="text-xl font-bold text-primary">Items ({data.items.length})</h1>
     <a
-      href={resolve('/admin/items/new-item')}
+      href={resolve('admin/items/new-item')}
       class="inline-flex items-center gap-1.5 rounded bg-accent px-4 py-2 text-sm font-semibold text-canvas transition-opacity hover:opacity-80"
     >
       <Plus size={16} />New item
@@ -94,7 +94,7 @@
             <td class="py-2 text-primary">
               <div class="flex items-center gap-1.5">
                 <a
-                  href={resolve(`/admin/items/${item.id}`)}
+                  href={resolve(`admin/items/${item.id}`)}
                   class="shrink-0 text-accent hover:underline"
                 >
                   {item.name}

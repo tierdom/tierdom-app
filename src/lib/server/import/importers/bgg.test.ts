@@ -10,15 +10,15 @@ const { TMP_ROOT } = vi.hoisted(() => ({
   TMP_ROOT: `/tmp/tierdom-bgg-test-${process.pid}-${Date.now()}`,
 }));
 
-vi.mock('$env/dynamic/private', () => ({ env: { DATA_PATH: TMP_ROOT } }));
-vi.mock('$lib/server/db', () => ({
+vi.mock('$app/env/private', () => ({ DATA_PATH: TMP_ROOT }));
+vi.mock('#lib/server/db/index.js', () => ({
   db: {
     select: () => ({ from: () => ({ where: () => ({ get: () => undefined }) }) }),
   },
 }));
 
-import * as schema from '$lib/server/db/schema';
-import { categoryTable, tierListItemTable } from '$lib/server/db/schema';
+import * as schema from '#lib/server/db/schema.js';
+import { categoryTable, tierListItemTable } from '#lib/server/db/schema.js';
 import {
   bggImporter,
   buildDescription,

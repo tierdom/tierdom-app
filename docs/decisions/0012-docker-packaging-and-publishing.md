@@ -71,14 +71,14 @@ Caddy writes structured JSON access logs to stderr; Node sends startup/errors to
 
 ### Environment variable contract
 
-| Variable         | Required | Default                                               | Purpose                                         |
-| ---------------- | -------- | ----------------------------------------------------- | ----------------------------------------------- |
-| `DATA_PATH`      | Yes      | `/app/data`                                           | Directory for database and images               |
-| `ADMIN_PASSWORD` | No       | —                                                     | Creates admin account on first boot if set      |
-| `ADMIN_USERNAME` | No       | `admin`                                               | Username for the bootstrapped admin             |
-| `ORIGIN`         | No       | Inferred from `TLS_DOMAIN` or `http://localhost:3000` | SvelteKit CSRF protection origin                |
-| `TLS_DOMAIN`     | No       | —                                                     | Domain for automatic Let's Encrypt HTTPS        |
-| `LOG_VERBOSE`    | No       | —                                                     | `true` to include full request/response headers |
+| Variable         | Required | Default                                              | Purpose                                         |
+| ---------------- | -------- | ---------------------------------------------------- | ----------------------------------------------- |
+| `DATA_PATH`      | Yes      | `/app/data`                                          | Directory for database and images               |
+| `ADMIN_PASSWORD` | No       | —                                                    | Creates admin account on first boot if set      |
+| `ADMIN_USERNAME` | No       | `admin`                                              | Username for the bootstrapped admin             |
+| `ORIGIN`         | No       | Inferred from `TLS_DOMAIN`, else derived per request | SvelteKit CSRF protection origin (via Caddy)    |
+| `TLS_DOMAIN`     | No       | —                                                    | Domain for automatic Let's Encrypt HTTPS        |
+| `LOG_VERBOSE`    | No       | —                                                    | `true` to include full request/response headers |
 
 ### Volume contract
 
@@ -92,3 +92,9 @@ Caddy writes structured JSON access logs to stderr; Node sends startup/errors to
 - Publishing is manual by design — no automated release pipeline.
 - Self-hosters running directly on a public IP get automatic HTTPS with one extra env var.
 - Caddy's structured logs give queryable access logs with zero setup.
+
+## Amendment 1: `ORIGIN` enforced by Caddy
+
+SvelteKit 3 (adapter-node 6) dropped the `ORIGIN` env var; its replacement `paths.origin` is build-time and can't vary per deployment of one published image.
+`ORIGIN` remains our runtime contract: the entrypoint makes Caddy pin `Host` and `X-Forwarded-Proto` to it, and Node runs with `PROTOCOL_HEADER=x-forwarded-proto`.
+When neither `ORIGIN` nor `TLS_DOMAIN` is set, the origin is derived per request instead of defaulting to `http://localhost:3000`, so any host port mapping works.

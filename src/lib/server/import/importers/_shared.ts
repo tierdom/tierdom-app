@@ -1,9 +1,9 @@
 import Papa from 'papaparse';
 import { and, eq, isNull } from 'drizzle-orm';
-import { db as defaultDb } from '$lib/server/db';
-import { categoryTable } from '$lib/server/db/schema';
-import { formatGradient } from '$lib/server/gradient';
-import type { PropKeyConfig } from '$lib/props';
+import { db as defaultDb } from '#lib/server/db/index.js';
+import { categoryTable } from '#lib/server/db/schema.js';
+import { formatGradient } from '#lib/server/gradient.js';
+import type { PropKeyConfig } from '#lib/props.js';
 import { applyCategoryMapping, applyItem, type IncomingItem } from '../apply';
 import { deleteImportTemp, readImportTemp, sweepImportTemp } from '../temp-storage';
 import { MAX_IMPORT_BYTES } from '../validate';

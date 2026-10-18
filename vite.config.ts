@@ -1,9 +1,24 @@
+import adapter from '@sveltejs/adapter-node';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vitest/config';
 import { sveltekit } from '@sveltejs/kit/vite';
 
 export default defineConfig({
-  plugins: [tailwindcss(), sveltekit()],
+  plugins: [
+    tailwindcss(),
+    sveltekit({
+      adapter: adapter(),
+      // Force runes mode for project files; leave node_modules in legacy.
+      // Done via dynamicCompileOptions (per Svelte docs) rather than a function
+      // in compilerOptions.runes — the function form can't be statically read by
+      // svelte-eslint-parser, which silently disables runes-aware lint rules.
+      // Removable in Svelte 6, where runes will be the default.
+      dynamicCompileOptions({ filename, compileOptions }) {
+        if (filename.includes('node_modules')) return;
+        if (compileOptions.runes === undefined) return { runes: true };
+      },
+    }),
+  ],
   test: {
     expect: { requireAssertions: true },
     coverage: {

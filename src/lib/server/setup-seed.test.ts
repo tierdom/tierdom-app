@@ -5,7 +5,7 @@ import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import { eq } from 'drizzle-orm';
 
 // setup-seed transitively imports seed-images → sharp → $env. Stub both.
-vi.mock('$env/dynamic/private', () => ({ env: { DATA_PATH: '/tmp/test' } }));
+vi.mock('$app/env/private', () => ({ DATA_PATH: '/tmp/test' }));
 vi.mock('sharp', () => ({ default: vi.fn() }));
 
 // Mock seed-images so the with-images test can simulate the real UPDATE
@@ -14,7 +14,7 @@ vi.mock('sharp', () => ({ default: vi.fn() }));
 const generateSeedImagesMock =
   vi.fn<(db: BetterSQLite3Database<typeof schema>, dataPath: string) => Promise<number>>();
 generateSeedImagesMock.mockImplementation(async () => 0);
-vi.mock('$lib/server/db/seed-images', () => ({
+vi.mock('#lib/server/db/seed-images.js', () => ({
   generateSeedImages: (db: BetterSQLite3Database<typeof schema>, dataPath: string) =>
     generateSeedImagesMock(db, dataPath),
 }));

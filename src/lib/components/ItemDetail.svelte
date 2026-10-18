@@ -1,8 +1,8 @@
 <script lang="ts">
-  import Prose from '$lib/components/Prose.svelte';
-  import { scoreToBarColor, tierColors } from '$lib/tier';
-  import type { Prop, PropKeyConfig } from '$lib/props';
-  import { getIcon } from '$lib/icon-sets';
+  import Prose from '#lib/components/Prose.svelte';
+  import { scoreToBarColor, tierColors } from '#lib/tier.js';
+  import type { Prop, PropKeyConfig } from '#lib/props.js';
+  import { getIcon } from '#lib/icon-sets/index.js';
 
   type Props = {
     name: string;

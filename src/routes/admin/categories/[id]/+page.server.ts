@@ -1,10 +1,10 @@
-import { db } from '$lib/server/db';
-import { category, categoryTable, tierListItem, tierListItemTable } from '$lib/server/db/schema';
+import { db } from '#lib/server/db/index.js';
+import { category, categoryTable, tierListItem, tierListItemTable } from '#lib/server/db/schema.js';
 import { eq, asc } from 'drizzle-orm';
 import { error, fail, redirect } from '@sveltejs/kit';
-import { applyOrder, sortCategoryByScore } from '$lib/server/reorder';
-import { softDeleteCategory, softDeleteItem } from '$lib/server/db/soft-delete';
-import { parseCategoryForm } from '$lib/server/forms';
+import { applyOrder, sortCategoryByScore } from '#lib/server/reorder.js';
+import { softDeleteCategory, softDeleteItem } from '#lib/server/db/soft-delete.js';
+import { parseCategoryForm } from '#lib/server/forms.js';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {

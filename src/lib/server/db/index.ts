@@ -2,13 +2,13 @@ import { drizzle, type BetterSQLite3Database } from 'drizzle-orm/better-sqlite3'
 import { sql } from 'drizzle-orm';
 import Database from 'better-sqlite3';
 import * as schema from './schema';
-import { env } from '$env/dynamic/private';
+import { DATA_PATH } from '$app/env/private';
 
 import { join } from 'node:path';
 
-if (!env.DATA_PATH) throw new Error('DATA_PATH is not set');
+if (!DATA_PATH) throw new Error('DATA_PATH is not set');
 
-const client = new Database(join(env.DATA_PATH, 'db.sqlite'));
+const client = new Database(join(DATA_PATH, 'db.sqlite'));
 
 // Enable WAL mode for better concurrent read performance
 client.pragma('journal_mode = WAL');

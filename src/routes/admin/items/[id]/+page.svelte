@@ -1,7 +1,7 @@
 <script lang="ts">
   import { resolve } from '$app/paths';
-  import Timestamps from '$lib/components/admin/Timestamps.svelte';
-  import ItemForm from '$lib/components/admin/ItemForm.svelte';
+  import Timestamps from '#lib/components/admin/Timestamps.svelte';
+  import ItemForm from '#lib/components/admin/ItemForm.svelte';
   import type { PageData } from './$types';
 
   let { data }: { data: PageData } = $props();

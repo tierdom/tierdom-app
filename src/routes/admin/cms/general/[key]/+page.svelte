@@ -2,12 +2,12 @@
   import { resolve } from '$app/paths';
   import { goto } from '$app/navigation';
   import { RotateCcw, Save } from 'lucide-svelte';
-  import Button from '$lib/components/admin/Button.svelte';
-  import ConfirmDialog from '$lib/components/admin/ConfirmDialog.svelte';
-  import MarkdownField from '$lib/components/admin/MarkdownField.svelte';
-  import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
-  import Timestamps from '$lib/components/admin/Timestamps.svelte';
-  import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
+  import Button from '#lib/components/admin/Button.svelte';
+  import ConfirmDialog from '#lib/components/admin/ConfirmDialog.svelte';
+  import MarkdownField from '#lib/components/admin/MarkdownField.svelte';
+  import AdminOverlay from '#lib/components/admin/AdminOverlay.svelte';
+  import Timestamps from '#lib/components/admin/Timestamps.svelte';
+  import { createAdminLoader } from '#lib/components/admin/admin-loader.svelte.js';
   import type { ActionData, PageData } from './$types';
 
   let { data, form }: { data: PageData; form: ActionData } = $props();
@@ -23,7 +23,7 @@
 
   const performReset = loader.withLoading(async () => {
     await fetch('?/reset', { method: 'POST', body: new FormData() });
-    await goto(resolve('/admin/cms'));
+    await goto(resolve('admin/cms'));
   });
 </script>
 
@@ -33,7 +33,7 @@
 
 <section>
   <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
-    <a href={resolve('/admin/cms')} class="text-sm text-secondary hover:text-primary">&larr; CMS</a>
+    <a href={resolve('admin/cms')} class="text-sm text-secondary hover:text-primary">&larr; CMS</a>
     <h1 class="text-xl font-bold text-primary">Edit: {data.title}</h1>
     {#if data.createdAt && data.updatedAt}
       <Timestamps createdAt={data.createdAt} updatedAt={data.updatedAt} />

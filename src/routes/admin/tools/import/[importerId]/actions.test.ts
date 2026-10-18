@@ -3,16 +3,16 @@ import { describe, expect, it, vi, beforeEach } from 'vitest';
 // Stub everything the route module pulls in transitively. The action under
 // test is the small `cancel` handler — we only care that it forwards the
 // posted planId to deleteImportTemp and tolerates failures.
-vi.mock('$env/dynamic/private', () => ({ env: { DATA_PATH: '/tmp/test' } }));
-vi.mock('$lib/server/db', () => ({ db: {} }));
-vi.mock('$lib/server/db/schema', () => ({
+vi.mock('$app/env/private', () => ({ DATA_PATH: '/tmp/test' }));
+vi.mock('#lib/server/db/index.js', () => ({ db: {} }));
+vi.mock('#lib/server/db/schema.js', () => ({
   categoryTable: { id: 'id', slug: 'slug', name: 'name', deletedAt: 'deletedAt' },
 }));
-vi.mock('$lib/server/import/registry', () => ({ getImporter: () => undefined }));
-vi.mock('$lib/server/import/validate', () => ({ MAX_IMPORT_BYTES: 0 }));
+vi.mock('#lib/server/import/registry.js', () => ({ getImporter: () => undefined }));
+vi.mock('#lib/server/import/validate.js', () => ({ MAX_IMPORT_BYTES: 0 }));
 
 const { deleteSpy } = vi.hoisted(() => ({ deleteSpy: vi.fn() }));
-vi.mock('$lib/server/import/temp-storage', () => ({
+vi.mock('#lib/server/import/temp-storage.js', () => ({
   deleteImportTemp: (id: string) => deleteSpy(id),
 }));
 

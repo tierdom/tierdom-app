@@ -1,8 +1,8 @@
 import { createHash, randomBytes } from 'node:crypto';
 import { eq } from 'drizzle-orm';
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
-import { session, user } from '$lib/server/db/schema';
-import type * as schema from '$lib/server/db/schema';
+import { session, user } from '#lib/server/db/schema.js';
+import type * as schema from '#lib/server/db/schema.js';
 
 export { setSessionCookie, deleteSessionCookie, getSessionToken } from './cookies';
 
@@ -14,8 +14,7 @@ const SESSION_REFRESH_MS = 15 * 24 * 60 * 60 * 1000;
 export type SessionUser = { id: string; username: string };
 
 export type SessionValidationResult =
-  | { session: { id: string; expiresAt: number }; user: SessionUser }
-  | { session: null; user: null };
+  { session: { id: string; expiresAt: number }; user: SessionUser } | { session: null; user: null };
 
 export function hashToken(token: string): string {
   return createHash('sha256').update(token).digest('hex');

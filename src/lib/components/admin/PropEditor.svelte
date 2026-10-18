@@ -1,8 +1,8 @@
 <script lang="ts">
   import { flip } from 'svelte/animate';
   import { Plus, Sparkle, Trash2 } from 'lucide-svelte';
-  import Button from '$lib/components/admin/Button.svelte';
-  import type { Prop } from '$lib/props';
+  import Button from '#lib/components/admin/Button.svelte';
+  import type { Prop } from '#lib/props.js';
   import {
     MAX_PROPS,
     MAX_KEY_LENGTH,
@@ -10,7 +10,7 @@
     findDuplicateKeys,
     filterSuggestions,
     isNonStandardKey,
-  } from '$lib/props';
+  } from '#lib/props.js';
   import { createPointerReorder, applyReorder } from './pointer-reorder.svelte';
 
   type InternalProp = Prop & { id: string };

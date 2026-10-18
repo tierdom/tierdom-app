@@ -4,6 +4,10 @@
 
 **Never** commit on your own — always wait for the user to invoke `/commit`. Applies to every change without exception.
 
+**Don't stage** changes outside `/commit` (no `git add` / `git rm`) — the user stages during review.
+
+**Don't delete** artefacts, worktrees, or directories (`rm -rf`, `git worktree remove`, `git checkout -- .`) as cleanup. List what can go and let the user clean up.
+
 **Always** be brief. No filler or pleasantries.
 
 ## Verify before claiming done
@@ -45,7 +49,7 @@ For noisy command output (verify, coverage, full type-checks), redirect to a fil
 ## Code style
 
 - No section-heading comments (`// ─── Section ───`). Extract a separate module if a heading is warranted.
-- Keep SvelteKit-idiomatic imports (`$env/dynamic/private`, `$app/paths`) in app code. Code that also runs from standalone scripts (seed, tests) goes in a SvelteKit-free module that both can import.
+- Keep SvelteKit-idiomatic imports (`$app/env/private`, `$app/paths`) in app code. Code that also runs from standalone scripts (seed, tests) goes in a SvelteKit-free module that both can import.
 - When a Svelte component grows complex, extract pure logic (filtering, validation, classification) into a `.ts` module for unit testing.
 - Tailwind utilities are the default. Drop into a `<style>` block only for things Tailwind can't model cleanly (`::backdrop`, `@starting-style`, `::before`/`::after` with `content`, `grid-template-areas`, one-off `@keyframes`). Comment the reason at the top of the block. See the `frontend` skill for the full rule.
 

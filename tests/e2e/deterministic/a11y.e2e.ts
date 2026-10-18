@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/test';
 import { expectNoA11yViolations } from '../fixtures/axe';
 
 test.describe('accessibility — public pages', () => {

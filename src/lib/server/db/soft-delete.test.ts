@@ -4,9 +4,9 @@ import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import { eq } from 'drizzle-orm';
 
-// Soft-delete imports `images.ts`, which reads `$env/dynamic/private` and
+// Soft-delete imports `images.ts`, which reads `$app/env/private` and
 // loads `sharp` — stub both so the module graph imports cleanly in vitest.
-vi.mock('$env/dynamic/private', () => ({ env: { DATA_PATH: '/tmp/test' } }));
+vi.mock('$app/env/private', () => ({ DATA_PATH: '/tmp/test' }));
 vi.mock('sharp', () => ({ default: vi.fn() }));
 
 import * as schema from './schema';

@@ -1,6 +1,6 @@
 import { error } from '@sveltejs/kit';
-import { buildExport } from '$lib/server/export/build-export';
-import { APP_VERSION } from '$lib/server/app-version';
+import { buildExport } from '#lib/server/export/build-export.js';
+import { APP_VERSION } from '#lib/server/app-version.js';
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ url }) => {

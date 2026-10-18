@@ -1,11 +1,11 @@
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
-import { env } from '$env/dynamic/private';
-import { page } from '$lib/server/db/schema';
-import type * as schema from '$lib/server/db/schema';
-import { CATEGORIES, PAGES } from '$lib/server/db/seed-data';
-import { seedCategories } from '$lib/server/db/seed-utils';
-import { generateSeedImages } from '$lib/server/db/seed-images';
-import { randomizeSeedTimestamps } from '$lib/server/db/seed-timestamps';
+import { DATA_PATH } from '$app/env/private';
+import { page } from '#lib/server/db/schema.js';
+import type * as schema from '#lib/server/db/schema.js';
+import { CATEGORIES, PAGES } from '#lib/server/db/seed-data.js';
+import { seedCategories } from '#lib/server/db/seed-utils.js';
+import { generateSeedImages } from '#lib/server/db/seed-images.js';
+import { randomizeSeedTimestamps } from '#lib/server/db/seed-timestamps.js';
 
 type DB = BetterSQLite3Database<typeof schema>;
 
@@ -75,7 +75,7 @@ export async function seedPreset(db: DB, preset: string, images = false): Promis
   }
 
   if (images) {
-    await generateSeedImages(db, env.DATA_PATH!);
+    await generateSeedImages(db, DATA_PATH!);
   }
 
   // Must run AFTER generateSeedImages — that pass UPDATEs every tier_list_item

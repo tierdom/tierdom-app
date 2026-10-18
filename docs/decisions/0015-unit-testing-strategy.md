@@ -44,7 +44,7 @@ E2E tests remain in `tests/e2e/` per ADR-0014.
 
 - **Fake timers** (`vi.useFakeTimers`) for `formatRelativeDate` and rate-limit window expiry.
 - **Dynamic import** for rate-limit module to ensure `setInterval` cleanup timer uses fake timers.
-- **Module mock** (`vi.mock('$lib/server/db')`) for `hashToken` test to prevent DB initialization on import.
+- **Module mock** (`vi.mock('#lib/server/db')`) for `hashToken` test to prevent DB initialization on import.
 - **No new dependencies** required — vitest is already installed and configured.
 
 ## Consequences

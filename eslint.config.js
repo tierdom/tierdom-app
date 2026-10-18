@@ -6,7 +6,9 @@ import svelte from 'eslint-plugin-svelte';
 import { defineConfig } from 'eslint/config';
 import globals from 'globals';
 import ts from 'typescript-eslint';
-import svelteConfig from './svelte.config.js';
+import { loadConfig } from '@sveltejs/load-config';
+
+const svelteConfig = (await loadConfig('./', { traverse: false }))?.config;
 
 const gitignorePath = path.resolve(import.meta.dirname, '.gitignore');
 
@@ -36,6 +38,25 @@ export default defineConfig(
         parser: ts.parser,
         svelteConfig,
       },
+    },
+  },
+  {
+    files: ['tests/e2e/**/*.ts'],
+    ignores: ['tests/e2e/fixtures/**'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: '@playwright/test',
+              importNames: ['test'],
+              message:
+                "Import `test` from '../fixtures/test' — it waits for hydration after page.goto/reload.",
+            },
+          ],
+        },
+      ],
     },
   },
 );

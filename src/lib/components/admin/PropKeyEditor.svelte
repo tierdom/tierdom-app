@@ -1,9 +1,9 @@
 <script lang="ts">
   import { flip } from 'svelte/animate';
   import { Plus, Trash2 } from 'lucide-svelte';
-  import Button from '$lib/components/admin/Button.svelte';
-  import { MAX_PROP_KEYS, MAX_KEY_LENGTH, type PropKeyConfig } from '$lib/props';
-  import { iconSets } from '$lib/icon-sets';
+  import Button from '#lib/components/admin/Button.svelte';
+  import { MAX_PROP_KEYS, MAX_KEY_LENGTH, type PropKeyConfig } from '#lib/props.js';
+  import { iconSets } from '#lib/icon-sets/index.js';
   import { createPointerReorder, applyReorder } from './pointer-reorder.svelte';
 
   type InternalKey = { id: string; key: string; iconSet?: string; showOnCard?: boolean };

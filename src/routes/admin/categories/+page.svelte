@@ -1,12 +1,12 @@
 <script lang="ts">
   import { resolve } from '$app/paths';
-  import { invalidateAll } from '$app/navigation';
+  import { refreshAll } from '$app/navigation';
   import { Plus, Trash2 } from 'lucide-svelte';
-  import Button from '$lib/components/admin/Button.svelte';
-  import ConfirmDialog from '$lib/components/admin/ConfirmDialog.svelte';
-  import SortableList from '$lib/components/admin/SortableList.svelte';
-  import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
-  import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
+  import Button from '#lib/components/admin/Button.svelte';
+  import ConfirmDialog from '#lib/components/admin/ConfirmDialog.svelte';
+  import SortableList from '#lib/components/admin/SortableList.svelte';
+  import AdminOverlay from '#lib/components/admin/AdminOverlay.svelte';
+  import { createAdminLoader } from '#lib/components/admin/admin-loader.svelte.js';
   import type { PageData } from './$types';
 
   let { data }: { data: PageData } = $props();
@@ -25,7 +25,7 @@
     const body = new FormData();
     body.set('id', id);
     await fetch('?/delete', { method: 'POST', body });
-    await invalidateAll();
+    await refreshAll();
   });
 </script>
 
@@ -51,7 +51,7 @@
         {#snippet row(cat)}
           <div class="flex flex-1 items-center py-2">
             <div class="flex-1 text-primary">
-              <a href={resolve(`/admin/categories/${cat.id}`)} class="text-accent hover:underline">
+              <a href={resolve(`admin/categories/${cat.id}`)} class="text-accent hover:underline">
                 {cat.name}
               </a>
             </div>
@@ -80,7 +80,7 @@
   {/if}
 
   <div class="mt-8">
-    <Button href={resolve('/admin/categories/create')}><Plus size={16} />New category</Button>
+    <Button href={resolve('admin/categories/create')}><Plus size={16} />New category</Button>
   </div>
 </section>
 

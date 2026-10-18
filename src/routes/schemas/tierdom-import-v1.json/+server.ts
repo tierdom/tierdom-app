@@ -1,4 +1,4 @@
-import schemaV1 from '$lib/server/import/schema-v1.json';
+import schemaV1 from '#lib/server/import/schema-v1.json';
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = () => {

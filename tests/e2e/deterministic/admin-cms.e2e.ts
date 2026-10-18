@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/test';
 
 test('pages list shows seeded pages', async ({ page }) => {
   await page.goto('/admin/cms');

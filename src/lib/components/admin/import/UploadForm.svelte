@@ -2,7 +2,7 @@
   import { resolve } from '$app/paths';
   import { enhance } from '$app/forms';
   import { ArrowLeft, Upload } from 'lucide-svelte';
-  import Button from '$lib/components/admin/Button.svelte';
+  import Button from '#lib/components/admin/Button.svelte';
   import type { ImportPhase } from './phase';
 
   type Props = {
@@ -19,7 +19,7 @@
 </script>
 
 <a
-  href={resolve('/admin/tools/import')}
+  href={resolve('admin/tools/import')}
   class="inline-flex items-center gap-1 text-xs text-secondary hover:text-primary"
 >
   <ArrowLeft class="h-3 w-3" aria-hidden="true" /> All importers

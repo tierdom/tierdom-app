@@ -1,8 +1,8 @@
-import { db as defaultDb } from '$lib/server/db';
+import { db as defaultDb } from '#lib/server/db/index.js';
 import { sql } from 'drizzle-orm';
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
-import { tierListItem, tierListItemTable } from '$lib/server/db/schema';
-import type * as schema from '$lib/server/db/schema';
+import { tierListItem, tierListItemTable } from '#lib/server/db/schema.js';
+import type * as schema from '#lib/server/db/schema.js';
 import type { SQLiteTable, SQLiteColumn } from 'drizzle-orm/sqlite-core';
 
 type DB = BetterSQLite3Database<typeof schema>;

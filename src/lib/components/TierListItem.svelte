@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { scoreToBarColor } from '$lib/tier';
+  import { scoreToBarColor } from '#lib/tier.js';
 
   type Props = {
     name: string;

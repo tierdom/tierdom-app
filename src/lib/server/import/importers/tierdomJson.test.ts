@@ -10,11 +10,11 @@ const { TMP_ROOT } = vi.hoisted(() => ({
   TMP_ROOT: `/tmp/tierdom-import-test-${process.pid}-${Date.now()}`,
 }));
 
-vi.mock('$env/dynamic/private', () => ({ env: { DATA_PATH: TMP_ROOT } }));
-vi.mock('$lib/server/db', () => ({ db: {} }));
+vi.mock('$app/env/private', () => ({ DATA_PATH: TMP_ROOT }));
+vi.mock('#lib/server/db/index.js', () => ({ db: {} }));
 
-import * as schema from '$lib/server/db/schema';
-import { categoryTable, tierListItemTable } from '$lib/server/db/schema';
+import * as schema from '#lib/server/db/schema.js';
+import { categoryTable, tierListItemTable } from '#lib/server/db/schema.js';
 import { commitTierdomJsonImport, planTierdomJsonImport, tierdomJsonImporter } from './tierdomJson';
 import type { CategoryMapping } from '../types';
 

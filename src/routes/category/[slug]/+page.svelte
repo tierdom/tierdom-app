@@ -1,11 +1,11 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { goto, pushState } from '$app/navigation';
+  import { goto } from '$app/navigation';
   import { page } from '$app/state';
-  import TierListItem from '$lib/components/TierListItem.svelte';
-  import Dialog from '$lib/components/Dialog.svelte';
-  import ItemDetail from '$lib/components/ItemDetail.svelte';
-  import Prose from '$lib/components/Prose.svelte';
+  import TierListItem from '#lib/components/TierListItem.svelte';
+  import Dialog from '#lib/components/Dialog.svelte';
+  import ItemDetail from '#lib/components/ItemDetail.svelte';
+  import Prose from '#lib/components/Prose.svelte';
 
   let { data }: { data: PageData } = $props();
 
@@ -40,15 +40,19 @@
 
   function openItem(slug: string) {
     // eslint-disable-next-line svelte/no-navigation-without-resolve -- page.url.pathname already includes the base path
-    pushState(`${page.url.pathname}?item=${encodeURIComponent(slug)}`, { item: slug });
+    goto(`${page.url.pathname}?item=${encodeURIComponent(slug)}`, {
+      shallow: true,
+      state: { item: slug },
+    });
   }
 
   function closeItem() {
-    // Use goto (not pushState) because pushState never updates page.url
-    // (sveltejs/kit#11492). After a fresh load with ?item=slug, pushState
-    // would leave page.url.searchParams stale and the dialog would stay open.
+    // Use a full goto (not shallow) because shallow navigation never updates
+    // page.url (sveltejs/kit#11492). After a fresh load with ?item=slug, a
+    // shallow goto would leave page.url.searchParams stale and the dialog
+    // would stay open.
     // eslint-disable-next-line svelte/no-navigation-without-resolve -- page.url.pathname already includes the base path
-    goto(page.url.pathname, { noScroll: true, keepFocus: true });
+    goto(page.url.pathname, { reset: false });
   }
 </script>
 

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/test';
 
 test('health endpoint returns ok', async ({ request }) => {
   const res = await request.get('/health');

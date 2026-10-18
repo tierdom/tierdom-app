@@ -1,8 +1,8 @@
 import type { PageServerLoad } from './$types';
-import { db } from '$lib/server/db';
-import { category, tierListItem, page } from '$lib/server/db/schema';
+import { db } from '#lib/server/db/index.js';
+import { category, tierListItem, page } from '#lib/server/db/schema.js';
 import { asc, count, eq } from 'drizzle-orm';
-import { renderMarkdown } from '$lib/server/markdown';
+import { renderMarkdown } from '#lib/server/markdown.js';
 
 export const load: PageServerLoad = async () => {
   const categories = await db

@@ -1,10 +1,10 @@
 import { error } from '@sveltejs/kit';
 import { eq, asc } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';
-import { db } from '$lib/server/db';
-import { category, tierListItem } from '$lib/server/db/schema';
-import { renderMarkdown } from '$lib/server/markdown';
-import { type Tier, scoreToTier } from '$lib/tier';
+import { db } from '#lib/server/db/index.js';
+import { category, tierListItem } from '#lib/server/db/schema.js';
+import { renderMarkdown } from '#lib/server/markdown.js';
+import { type Tier, scoreToTier } from '#lib/tier.js';
 
 const TIERS: Tier[] = ['S', 'A', 'B', 'C', 'D', 'E', 'F'];
 

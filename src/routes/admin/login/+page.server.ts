@@ -1,10 +1,10 @@
 import { fail, redirect } from '@sveltejs/kit';
-import { db } from '$lib/server/db';
-import { user } from '$lib/server/db/schema';
+import { db } from '#lib/server/db/index.js';
+import { user } from '#lib/server/db/schema.js';
 import { eq } from 'drizzle-orm';
-import { verifyPassword } from '$lib/server/auth/password';
-import { createSession, setSessionCookie } from '$lib/server/auth/session';
-import { isRateLimited, recordFailedAttempt, clearAttempts } from '$lib/server/auth/rate-limit';
+import { verifyPassword } from '#lib/server/auth/password.js';
+import { createSession, setSessionCookie } from '#lib/server/auth/session.js';
+import { isRateLimited, recordFailedAttempt, clearAttempts } from '#lib/server/auth/rate-limit.js';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {

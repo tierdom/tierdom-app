@@ -1,7 +1,7 @@
 <script lang="ts">
   import { resolve } from '$app/paths';
   import type { PageData } from './$types';
-  import Prose from '$lib/components/Prose.svelte';
+  import Prose from '#lib/components/Prose.svelte';
 
   let { data }: { data: PageData } = $props();
 
@@ -34,7 +34,7 @@
     <div class="flex flex-wrap justify-center gap-4">
       {#each data.categoriesWithCounts as cat (cat.id)}
         <a
-          href={resolve(`/category/${cat.slug}`)}
+          href={resolve(`category/${cat.slug}`)}
           class="group w-full rounded-lg border border-subtle bg-surface p-6 transition-colors hover:border-accent/40 hover:bg-elevated sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.75rem)]"
         >
           <h3 class="text-lg font-bold text-primary group-hover:text-accent">

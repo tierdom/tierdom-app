@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, waitForHydration } from '../fixtures/test';
 
 // These tests use a fresh browser context (no storageState) to test auth flows.
 test.use({ storageState: { cookies: [], origins: [] } });
@@ -26,6 +26,7 @@ test('logout clears session and redirects to login', async ({ page }) => {
   await page.locator('#password').fill('admin');
   await page.locator('button[type="submit"]').click();
   await expect(page).toHaveURL(/\/admin(?!\/login)/);
+  await waitForHydration(page);
 
   // Open user menu dropdown and click sign out
   await page.locator('[data-user-menu] button').first().click();

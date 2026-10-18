@@ -1,8 +1,8 @@
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import { count } from 'drizzle-orm';
 import { randomUUID } from 'node:crypto';
-import { user } from '$lib/server/db/schema';
-import type * as schema from '$lib/server/db/schema';
+import { user } from '#lib/server/db/schema.js';
+import type * as schema from '#lib/server/db/schema.js';
 import { hashPassword } from './password';
 
 type DB = BetterSQLite3Database<typeof schema>;

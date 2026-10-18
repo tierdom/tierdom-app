@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { formatRelativeDate } from '$lib/format-date';
+  import { formatRelativeDate } from '#lib/format-date.js';
 
   let { createdAt, updatedAt }: { createdAt: string; updatedAt: string } = $props();
 </script>

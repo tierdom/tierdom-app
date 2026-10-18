@@ -11,7 +11,9 @@
   let { user }: Props = $props();
   let open = $state(false);
 
-  afterNavigate(() => {
+  afterNavigate(({ shallow, type }) => {
+    if (shallow && type === 'goto') return;
+
     open = false;
   });
 
@@ -61,7 +63,7 @@
         <p class="px-3 py-2 text-xs text-secondary">Signed in as {user.username}</p>
         <div class="border-t border-subtle"></div>
         <a
-          href={resolve('/admin')}
+          href={resolve('admin')}
           role="menuitem"
           class="block px-3 py-2 text-sm text-secondary transition-colors hover:bg-surface hover:text-primary"
         >
@@ -78,7 +80,7 @@
         </form>
       {:else}
         <a
-          href={resolve('/admin/login')}
+          href={resolve('admin/login')}
           role="menuitem"
           class="block px-3 py-2 text-sm text-secondary transition-colors hover:bg-surface hover:text-primary"
         >

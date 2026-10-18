@@ -1,9 +1,9 @@
 import { redirect, fail } from '@sveltejs/kit';
-import { db } from '$lib/server/db';
-import { isSetupComplete } from '$lib/server/setup';
-import { seedPreset } from '$lib/server/setup-seed';
-import { bootstrapAdminUser } from '$lib/server/auth/bootstrap';
-import { createSession, setSessionCookie } from '$lib/server/auth/session';
+import { db } from '#lib/server/db/index.js';
+import { isSetupComplete } from '#lib/server/setup.js';
+import { seedPreset } from '#lib/server/setup-seed.js';
+import { bootstrapAdminUser } from '#lib/server/auth/bootstrap.js';
+import { createSession, setSessionCookie } from '#lib/server/auth/session.js';
 import type { PageServerLoad, Actions } from './$types';
 
 const VALID_PRESETS = new Set(['empty', 'minimal', 'demo']);

@@ -1,4 +1,4 @@
-import { test as setup } from '@playwright/test';
+import { test as setup } from '../fixtures/test';
 import { loginAsAdmin } from '../fixtures/auth';
 
 setup('authenticate as admin', async ({ page }) => {

@@ -1,6 +1,6 @@
 import { and, eq, isNull } from 'drizzle-orm';
-import { db as defaultDb } from '$lib/server/db';
-import { categoryTable } from '$lib/server/db/schema';
+import { db as defaultDb } from '#lib/server/db/index.js';
+import { categoryTable } from '#lib/server/db/schema.js';
 import { MAX_IMPORT_BYTES, formatAjvErrors, validateExport } from '../validate';
 import {
   deleteImportTemp,
@@ -9,7 +9,7 @@ import {
   writeImportTemp,
 } from '../temp-storage';
 import { applyCategoryMapping, applyItem } from '../apply';
-import type { ExportData } from '$lib/server/export/json-schema';
+import type { ExportData } from '#lib/server/export/json-schema.js';
 import type {
   CategoryMapping,
   ImportPlan,

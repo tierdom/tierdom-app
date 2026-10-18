@@ -1,7 +1,7 @@
 <script lang="ts">
   import { resolve } from '$app/paths';
   import { Package, Info, TriangleAlert, RotateCcw, Check } from 'lucide-svelte';
-  import Button from '$lib/components/admin/Button.svelte';
+  import Button from '#lib/components/admin/Button.svelte';
 
   let submitted = $state(false);
 
@@ -54,7 +54,7 @@
           <RotateCcw size={14} aria-hidden="true" />
           Export again
         </Button>
-        <Button href={resolve('/admin/tools')}>
+        <Button href={resolve('admin/tools')}>
           <Check size={14} aria-hidden="true" />
           Done
         </Button>
@@ -62,7 +62,7 @@
     </div>
   {:else}
     <p class="text-xs text-secondary">
-      <a href={resolve('/admin/tools')} class="hover:text-primary">&larr; Tools</a>
+      <a href={resolve('admin/tools')} class="hover:text-primary">&larr; Tools</a>
     </p>
     <h2 class="mt-2 text-xl font-bold text-primary">Export</h2>
     <p class="mt-2 text-sm text-secondary">
@@ -72,7 +72,7 @@
 
     <form
       method="GET"
-      action={resolve('/admin/tools/export/download')}
+      action={resolve('admin/tools/export/download')}
       data-sveltekit-reload
       onsubmit={onFormSubmit}
       class="mt-6 flex flex-col gap-4"

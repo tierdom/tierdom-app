@@ -2,14 +2,14 @@
   import { goto } from '$app/navigation';
   import { resolve } from '$app/paths';
   import { Plus, X } from 'lucide-svelte';
-  import Button from '$lib/components/admin/Button.svelte';
-  import ConfirmDialog from '$lib/components/admin/ConfirmDialog.svelte';
-  import FormField from '$lib/components/admin/FormField.svelte';
-  import MarkdownField from '$lib/components/admin/MarkdownField.svelte';
-  import PropKeyEditor from '$lib/components/admin/PropKeyEditor.svelte';
-  import TierCutoffsInput from '$lib/components/admin/TierCutoffsInput.svelte';
-  import AdminOverlay from '$lib/components/admin/AdminOverlay.svelte';
-  import { createAdminLoader } from '$lib/components/admin/admin-loader.svelte';
+  import Button from '#lib/components/admin/Button.svelte';
+  import ConfirmDialog from '#lib/components/admin/ConfirmDialog.svelte';
+  import FormField from '#lib/components/admin/FormField.svelte';
+  import MarkdownField from '#lib/components/admin/MarkdownField.svelte';
+  import PropKeyEditor from '#lib/components/admin/PropKeyEditor.svelte';
+  import TierCutoffsInput from '#lib/components/admin/TierCutoffsInput.svelte';
+  import AdminOverlay from '#lib/components/admin/AdminOverlay.svelte';
+  import { createAdminLoader } from '#lib/components/admin/admin-loader.svelte.js';
 
   const loader = createAdminLoader();
   const { enhance } = loader;
@@ -26,7 +26,7 @@
       pendingDiscard = true;
       return;
     }
-    goto(resolve('/admin/categories'));
+    goto(resolve('admin/categories'));
   }
 </script>
 
@@ -37,7 +37,7 @@
 <section>
   <AdminOverlay loading={loader.loading} />
   <div class="flex items-center gap-3">
-    <a href={resolve('/admin/categories')} class="text-sm text-secondary hover:text-primary"
+    <a href={resolve('admin/categories')} class="text-sm text-secondary hover:text-primary"
       >&larr; Back</a
     >
     <h1 class="text-xl font-bold text-primary">New category</h1>
@@ -78,6 +78,6 @@
   oncancel={() => (pendingDiscard = false)}
   onconfirm={async () => {
     pendingDiscard = false;
-    await goto(resolve('/admin/categories'));
+    await goto(resolve('admin/categories'));
   }}
 />

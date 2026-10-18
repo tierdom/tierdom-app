@@ -10,7 +10,7 @@ import {
   writeFileSync,
 } from 'node:fs';
 import { join, resolve, sep } from 'node:path';
-import { env } from '$env/dynamic/private';
+import { DATA_PATH } from '$app/env/private';
 
 const TTL_MS = 2 * 60 * 60 * 1000;
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
@@ -21,7 +21,7 @@ const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 const TEMP_FILE_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.json$/;
 
 function getTempDir(): string {
-  return join(env.DATA_PATH!, 'tmp', 'imports');
+  return join(DATA_PATH!, 'tmp', 'imports');
 }
 
 function ensureTempDir(): void {

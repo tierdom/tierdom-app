@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import Prose from '$lib/components/Prose.svelte';
+  import Prose from '#lib/components/Prose.svelte';
 
   let { data }: { data: PageData } = $props();
 </script>
